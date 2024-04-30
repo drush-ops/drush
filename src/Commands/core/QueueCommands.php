@@ -76,7 +76,9 @@ final class QueueCommands extends DrushCommands
 
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
+                // @phpstan-ignore-next-line
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id ?? $item->qid]));
+                // @phpstan-ignore-next-line
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;

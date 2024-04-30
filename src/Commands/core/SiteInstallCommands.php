@@ -13,6 +13,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drupal\Core\Installer\Exception\InstallerException;
+use Drupal\Core\Installer\InstallerKernel;
 use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
@@ -201,7 +202,9 @@ final class SiteInstallCommands extends DrushCommands
 
         if (empty($profile)) {
             $boot = $this->bootstrapManager->bootstrap();
-            $profile = $boot->getKernel()->getInstallProfile();
+            $kernel = $boot->getKernel();
+            assert($kernel instanceof InstallerKernel);
+            $profile = $kernel->getInstallProfile();
         }
 
         if (empty($profile)) {

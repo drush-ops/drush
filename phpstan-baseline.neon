@@ -1,21 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Drush\\\\Boot\\\\Boot\\:\\:addDrupalModuleDrushCommands\\(\\)\\.$#"
-			count: 1
-			path: src/Boot/BootstrapManager.php
-
-		-
-			message: "#^Call to an undefined method Drush\\\\Boot\\\\Boot\\:\\:setLogger\\(\\)\\.$#"
-			count: 1
-			path: src/Boot/BootstrapManager.php
-
-		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\DrupalKernelInterface\\:\\:terminate\\(\\)\\.$#"
-			count: 1
-			path: src/Boot/DrupalBoot8.php
-
-		-
 			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Style\\\\SymfonyStyle\\:\\:askWithCompletion\\(\\)\\.$#"
 			count: 1
 			path: src/Commands/DrushCommands.php
@@ -26,34 +11,9 @@ parameters:
 			path: src/Commands/DrushCommands.php
 
 		-
-			message: "#^Call to an undefined method Consolidation\\\\SiteProcess\\\\ProcessBase\\:\\:chdirToSiteRoot\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/config/ConfigPullCommands.php
-
-		-
 			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
 			count: 1
 			path: src/Commands/core/MigrateRunnerCommands.php
-
-		-
-			message: "#^Cannot access property \\$data on object\\|true\\.$#"
-			count: 1
-			path: src/Commands/core/QueueCommands.php
-
-		-
-			message: "#^Cannot access property \\$qid on object\\|true\\.$#"
-			count: 1
-			path: src/Commands/core/QueueCommands.php
-
-		-
-			message: "#^Call to an undefined method Consolidation\\\\Config\\\\ConfigInterface\\:\\:combine\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/core/RsyncCommands.php
-
-		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\DrupalKernelInterface\\:\\:getInstallProfile\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/core/SiteInstallCommands.php
 
 		-
 			message: "#^Result of method Drush\\\\Style\\\\DrushStyle\\:\\:text\\(\\) \\(void\\) is used\\.$#"
@@ -61,59 +21,14 @@ parameters:
 			path: src/Commands/core/SiteInstallCommands.php
 
 		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\Update\\\\UpdateRegistry\\:\\:getModuleUpdateFunctions\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/core/UpdateDBCommands.php
-
-		-
 			message: "#^Result of method Drush\\\\Style\\\\DrushStyle\\:\\:text\\(\\) \\(void\\) is used\\.$#"
 			count: 2
 			path: src/Commands/field/FieldBaseOverrideCreateCommands.php
 
 		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\Entity\\\\EntityInterface\\:\\:setComponent\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/field/FieldCreateCommands.php
-
-		-
 			message: "#^Result of method Drush\\\\Style\\\\DrushStyle\\:\\:text\\(\\) \\(void\\) is used\\.$#"
 			count: 4
 			path: src/Commands/field/FieldCreateCommands.php
-
-		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\Field\\\\FieldStorageDefinitionInterface\\:\\:delete\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/field/FieldDeleteCommands.php
-
-		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\Field\\\\FieldStorageDefinitionInterface\\:\\:getBundles\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/field/FieldDeleteCommands.php
-
-		-
-			message: "#^Call to an undefined method Drupal\\\\Core\\\\Field\\\\FieldStorageDefinitionInterface\\:\\:isLocked\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/field/FieldDeleteCommands.php
-
-		-
-			message: "#^Call to an undefined method Consolidation\\\\Config\\\\ConfigInterface\\:\\:addContext\\(\\)\\.$#"
-			count: 2
-			path: src/Config/ConfigLocator.php
-
-		-
-			message: "#^Call to an undefined method Consolidation\\\\Config\\\\ConfigInterface\\:\\:getContext\\(\\)\\.$#"
-			count: 3
-			path: src/Config/ConfigLocator.php
-
-		-
-			message: "#^Call to an undefined method Consolidation\\\\Config\\\\ConfigInterface\\:\\:isWindows\\(\\)\\.$#"
-			count: 1
-			path: src/Config/ConfigLocator.php
-
-		-
-			message: "#^Call to an undefined method Consolidation\\\\Config\\\\Loader\\\\ConfigLoaderInterface\\:\\:load\\(\\)\\.$#"
-			count: 1
-			path: src/Config/ConfigLocator.php
 
 		-
 			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
@@ -139,33 +54,3 @@ parameters:
 			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
 			count: 1
 			path: src/Drupal/UpdateKernel.php
-
-		-
-			message: "#^Call to an undefined method Drush\\\\Preflight\\\\PreflightArgsInterface\\:\\:hasUri\\(\\)\\.$#"
-			count: 1
-			path: src/Preflight/PreflightSiteLocator.php
-
-		-
-			message: "#^Call to an undefined method Drush\\\\Preflight\\\\PreflightArgsInterface\\:\\:selectedSite\\(\\)\\.$#"
-			count: 1
-			path: src/Preflight/PreflightSiteLocator.php
-
-		-
-			message: "#^Call to an undefined method Drush\\\\Preflight\\\\PreflightArgsInterface\\:\\:uri\\(\\)\\.$#"
-			count: 2
-			path: src/Preflight/PreflightSiteLocator.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface\\:\\:page\\(\\)\\.$#"
-			count: 1
-			path: src/Psysh/DrushCommand.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:asText\\(\\)\\.$#"
-			count: 1
-			path: src/Psysh/DrushHelpCommand.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface\\:\\:page\\(\\)\\.$#"
-			count: 2
-			path: src/Psysh/DrushHelpCommand.php

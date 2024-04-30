@@ -137,7 +137,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * For use in testing
      */
-    public function injectBootstrap(Boot $bootstrap): void
+    public function injectBootstrap(DrupalBoot8 $bootstrap): void
     {
         $bootstrap->setLogger($this->logger());
         $this->bootstrap = $bootstrap;
