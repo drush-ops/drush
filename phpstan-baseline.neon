@@ -41,16 +41,6 @@ parameters:
 			path: src/Drupal/InstallerKernel.php
 
 		-
-			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:addListener\\(\\)\\.$#"
-			count: 1
-			path: src/Drupal/Migrate/MigrateExecutable.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Contracts\\\\EventDispatcher\\\\EventDispatcherInterface\\:\\:removeListener\\(\\)\\.$#"
-			count: 1
-			path: src/Drupal/Migrate/MigrateExecutable.php
-
-		-
 			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
 			count: 1
 			path: src/Drupal/UpdateKernel.php
