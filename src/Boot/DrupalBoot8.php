@@ -16,6 +16,7 @@ use Drush\Drush;
 use Drush\Runtime\LegacyServiceFinder;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\ServiceManager;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
@@ -58,7 +59,7 @@ class DrupalBoot8 extends DrupalBoot
      */
     public function setLogger(LoggerInterface $logger): void
     {
-        if ($this->drupalLoggerAdapter) {
+        if ($this->drupalLoggerAdapter && $this->drupalLoggerAdapter instanceof LoggerAwareInterface) {
             $this->drupalLoggerAdapter->setLogger($logger);
         }
         parent::setLogger($logger);
@@ -79,7 +80,7 @@ class DrupalBoot8 extends DrupalBoot
         return false;
     }
 
-    public function getVersion($drupal_root): string
+    public function getVersion($root): string
     {
         return \Drupal::VERSION;
     }

@@ -113,6 +113,7 @@ EOT;
             $body = "#### Topics\n\n";
             foreach ($topics as $name) {
                 $value = "- `drush $name`\n";
+                /** @var AnnotatedCommand $topic_command */
                 $topic_command = Drush::getApplication()->find($name);
                 $topic_description = $topic_command->getDescription();
                 if ($docs_relative = $topic_command->getAnnotationData()->get('topic')) {

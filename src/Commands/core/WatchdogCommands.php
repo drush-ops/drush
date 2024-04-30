@@ -348,7 +348,7 @@ final class WatchdogCommands extends DrushCommands
      *   A database result object.
      * @param $extended
      *   Return extended message details.
-     * @return
+     * @return \stdClass
      *   The result object with some attributes themed.
      */
     protected function formatResult(\stdClass $result, bool $extended = false): \stdClass

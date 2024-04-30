@@ -4,17 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
-use Drush\Log\Logger;
 use League\Container\Container;
-use Drush\Drush;
-use Symfony\Component\Console\Application;
-use Composer\Autoload\ClassLoader;
-use Drush\Command\DrushCommandInfoAlterer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Yaml\Yaml;
-use Robo\Robo;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Use the Symfony Dependency Injection Container to instantiate services.
@@ -109,7 +103,7 @@ class LegacyServiceInstantiator
      * The services created may be retrieved via the `taggedServices()`
      * method.
      *
-     * @param array $serviceFiles List of drush.services.yml files
+     * @param array $services List of drush services
      */
     public function instantiateServices(array $services)
     {
@@ -159,12 +153,12 @@ class LegacyServiceInstantiator
      *
      * @param string $class Class containing implementation
      * @param string[] $arguments Parameters to class constructor
-     * @param array Method names and arguments to call after object is instantiated
+     * @param array $calls Method names and arguments to call after object is instantiated
      *
      * @return object
      *   Instantiated command handler from the service file
      */
-    public function create($class, array $arguments, array $calls)
+    public function create(string $class, array $arguments, array $calls)
     {
         $instance = $this->instantiateObject($class, $arguments);
         foreach ($calls as $callInfo) {
@@ -222,7 +216,7 @@ class LegacyServiceInstantiator
      * Look up one argument in the appropriate container, or
      * return it as-is.
      *
-     * @param array $argument Argument to resolve
+     * @param array $arg Argument to resolve
      *
      * @return object
      *   Argument after it has been resolved by DI container
@@ -265,7 +259,8 @@ class LegacyServiceInstantiator
      * @param Container $container Drupal DI container
      * @param string $arg Argument to resolve
      *
-     * @param object Resolved object from DI container
+     * @return object
+     *   Resolved object from DI container
      */
     protected function resolveFromContainer($container, string $arg)
     {
@@ -307,12 +302,12 @@ class LegacyServiceInstantiator
      * resolved. `set` methods with non-required DI container references
      * are not called at all if the optional references are not in the container.
      *
-     * @param string $arg Name of reference
+     * @param array $args Names of references
      *
      * @return bool
      *   True if at least one argument is not empty
      */
-    protected function atLeastOneValue($args)
+    protected function atLeastOneValue(array $args): bool
     {
         foreach ($args as $arg) {
             if ($arg) {
