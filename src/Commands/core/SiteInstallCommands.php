@@ -315,9 +315,8 @@ final class SiteInstallCommands extends DrushCommands
                         );
                     }
                     if (isset($formOptions['password'])) {
-                        $databaseInfo['password'] = $this->io()->ask(
+                        $databaseInfo['password'] = $this->io()->password(
                             $formOptions['password']['#title'],
-                            default: 'drupal',
                             hint: (string) ($formOptions['password']['#description'] ?? null),
                         );
                     }
@@ -339,7 +338,7 @@ final class SiteInstallCommands extends DrushCommands
                         $databaseInfo['prefix'] = $this->io()->ask(
                             $formOptions['advanced_options']['prefix']['#title'],
                             default: $formOptions['advanced_options']['prefix']['#default_value'],
-                            hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? null),
+                            hint: MailFormatHelper::htmlToText($formOptions['advanced_options']['prefix']['#description'] ?? null),
                         );
                     }
                     $connectionClass = $driverNamespace . '\\Connection';

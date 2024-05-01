@@ -6,7 +6,6 @@
 
 namespace Drush\Commands;
 
-use Drush\Exceptions\UserAbortException;
 use Drush\Runtime\Runtime;
 use Laravel\Prompts\ConfirmPrompt;
 use Laravel\Prompts\MultiSearchPrompt;
@@ -47,8 +46,7 @@ trait ConfiguresPrompts
         ));
 
         PasswordPrompt::fallbackUsing(fn (PasswordPrompt $prompt) => $this->promptUntilValid(
-            // @todo there is no secret().
-            fn () => (new SymfonyStyle($this->input, $this->output))->secret($prompt->label) ?? '',
+            fn() => (new SymfonyStyle($this->input, $this->output))->askHidden($prompt->label) ?? '',
             $prompt->required,
             $prompt->validate
         ));
@@ -87,8 +85,7 @@ trait ConfiguresPrompts
         });
 
         SuggestPrompt::fallbackUsing(fn (SuggestPrompt $prompt) => $this->promptUntilValid(
-            // @todo No askWithCompletion
-            fn () => (new SymfonyStyle($this->input, $this->output))->askWithCompletion($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
+            fn() => (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
             $prompt->required,
             $prompt->validate
         ));

@@ -52,14 +52,14 @@ class DrushStyle extends SymfonyStyle
      * Prompt the user for text input.
      */
     public function ask(
-        string $question,
+        \Stringable|string $question,
         ?string $default = null,
         #[Deprecated('Use $validate parameter instead.')]
         ?callable $validator = null,
-        string $placeholder = '',
+        \Stringable|string $placeholder = '',
         bool|string $required = false,
         ?\Closure $validate = null,
-        string $hint = ''
+        \Stringable|string $hint = ''
     ): mixed {
         assert($validator === null, 'The $validator parameter is non-functional. Use $validate instead.');
         return (new TextPrompt($question, $placeholder, (string)$default, $required, $validate, $hint))->prompt();
@@ -68,7 +68,7 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for input, hiding the value.
      */
-    public function password(string $label, string $placeholder = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
+    public function password(\Stringable|string $label, \Stringable|string $placeholder = '', bool|string $required = false, ?\Closure $validate = null, \Stringable|string $hint = ''): string
     {
         return (new PasswordPrompt($label, $placeholder, $required, $validate, $hint))->prompt();
     }
