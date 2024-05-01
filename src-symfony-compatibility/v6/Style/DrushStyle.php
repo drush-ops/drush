@@ -13,6 +13,7 @@ use Laravel\Prompts\SearchPrompt;
 use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\Spinner;
 use Laravel\Prompts\SuggestPrompt;
+use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -50,17 +51,18 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for text input.
      */
-    public function text(
-        $label,
+    public function ask(
+        string $question,
+        ?string $default = null,
+        #[Deprecated('Use $validate parameter instead.')]
+        ?callable $validator = null,
         string $placeholder = '',
-        string $default = '',
         bool|string $required = false,
         ?\Closure $validate = null,
         string $hint = ''
-    ): void
-    {
-        // @todo return type of parent has changed
-        // return (new TextPrompt($label, $placeholder, $default, $required, $validate, $hint))->prompt();
+    ): mixed {
+        assert($validator === null, 'The $validator parameter is non-functional. Use $validate instead.');
+        return (new TextPrompt($question, $placeholder, (string)$default, $required, $validate, $hint))->prompt();
     }
 
     /**

@@ -101,8 +101,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     #[CLI\Option(name: 'existing-field-name', description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')]
     #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
     #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
-    #[CLI\Usage(name: 'field-create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
-    #[CLI\Usage(name: 'field-create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
+    #[CLI\Usage(name: 'field:create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
     #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function fieldCreate(?string $entityType = null, ?string $bundle = null, array $options = [
@@ -280,7 +280,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         while (!$fieldName) {
-            $answer = $this->io()->text('Field name', default: $machineName, required: true, validate: function ($answer) use ($entityType) {
+            $answer = $this->io()->ask('Field name', default: $machineName, required: true, validate: function ($answer) use ($entityType) {
                 if (!preg_match('/^[_a-z]+[_a-z0-9]*$/', $answer)) {
                     return'Only lowercase alphanumeric chars/underscores allowed; only letters/underscore allowed as first character.';
                 }
@@ -302,12 +302,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return $this->io()->text('Field label', required: true);
+        return $this->io()->ask('Field label', required: true);
     }
 
     protected function askFieldDescription(): ?string
     {
-        return $this->io()->text('Field description');
+        return $this->io()->ask('Field description');
     }
 
     protected function askFieldType(): string
@@ -391,7 +391,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         $limit = FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED;
         while ($cardinality === 'Limited' && $limit < 1) {
-            $limit = (int) $this->io()->text('Allowed number of values', default: '1');
+            $limit = (int)$this->io()->ask('Allowed number of values', default: '1');
         }
 
         return $limit;

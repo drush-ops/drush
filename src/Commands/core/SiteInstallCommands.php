@@ -302,41 +302,41 @@ final class SiteInstallCommands extends DrushCommands
                         'driver' => $driverList[$driverNamespace]->getDriverName(),
                         'module' => $driverList[$driverNamespace]->getModule()->getName(),
                     ];
-                    $databaseInfo['database'] = $this->io()->text(
+                    $databaseInfo['database'] = $this->io()->ask(
                         $formOptions['database']['#title'],
                         default: $formOptions['database']['#default_value'] ?: 'drupal',
                         hint: (string) ($formOptions['database']['#description'] ?? null),
                     );
                     if (isset($formOptions['username'])) {
-                        $databaseInfo['username'] = $this->io()->text(
+                        $databaseInfo['username'] = $this->io()->ask(
                             $formOptions['username']['#title'],
                             default: 'drupal',
                             hint: (string) ($formOptions['username']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['password'])) {
-                        $databaseInfo['password'] = $this->io()->text(
+                        $databaseInfo['password'] = $this->io()->ask(
                             $formOptions['password']['#title'],
                             default: 'drupal',
                             hint: (string) ($formOptions['password']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['host'])) {
-                        $databaseInfo['host'] = $this->io()->text(
+                        $databaseInfo['host'] = $this->io()->ask(
                             $formOptions['advanced_options']['host']['#title'],
                             default: $formOptions['advanced_options']['host']['#default_value'],
                             hint: (string) ($formOptions['advanced_options']['host']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['port'])) {
-                        $databaseInfo['port'] = $this->io()->text(
+                        $databaseInfo['port'] = $this->io()->ask(
                             $formOptions['advanced_options']['port']['#title'],
                             default: $formOptions['advanced_options']['port']['#default_value'],
                             hint: (string) ($formOptions['advanced_options']['port']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['prefix'])) {
-                        $databaseInfo['prefix'] = $this->io()->text(
+                        $databaseInfo['prefix'] = $this->io()->ask(
                             $formOptions['advanced_options']['prefix']['#title'],
                             default: $formOptions['advanced_options']['prefix']['#default_value'],
                             hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? null),
