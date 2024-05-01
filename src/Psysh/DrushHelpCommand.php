@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Drush\Psysh;
 
 use Drush\Commands\DrushCommands;
+use Psy\Command\Command;
 use Psy\Command\Command as BaseCommand;
+use Psy\Output\ShellOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -44,9 +46,13 @@ class DrushHelpCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        assert($output instanceof ShellOutput);
+
         if ($name = $input->getArgument('command_name')) {
             // Help for an individual command.
-            $output->page($this->getApplication()->get($name)->asText());
+            /** @var Command $command */
+            $command = $this->getApplication()->get($name);
+            $output->page($command->asText());
         } else {
             $namespaces = [];
 

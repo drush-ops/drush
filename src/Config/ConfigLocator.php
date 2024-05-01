@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drush\Config;
 
 use Consolidation\Config\ConfigInterface;
-use Consolidation\Config\Loader\ConfigLoaderInterface;
+use Consolidation\Config\Loader\ConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
 use Drush\Config\Loader\YamlConfigLoader;
@@ -32,12 +32,9 @@ use Symfony\Component\Filesystem\Path;
  */
 class ConfigLocator
 {
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
+    protected DrushConfig $config;
 
-    protected $isLocal;
+    protected bool $isLocal;
 
     protected $sources = false;
 
@@ -194,7 +191,9 @@ class ConfigLocator
      */
     public function addEnvironment(Environment $environment): self
     {
-        $this->config->getContext(self::ENVIRONMENT_CONTEXT)->import($environment->exportConfigData());
+        /** @var DrushConfig $context */
+        $context = $this->config->getContext(self::ENVIRONMENT_CONTEXT);
+        $context->replace($environment->exportConfigData());
         return $this;
     }
 
@@ -317,7 +316,7 @@ class ConfigLocator
     /**
      * Adds $configFiles to the list of config files.
      */
-    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoaderInterface $loader, array $configFiles): void
+    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoader $loader, array $configFiles): void
     {
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));

@@ -21,6 +21,7 @@ use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\TerminableInterface;
 
 class DrupalBoot8 extends DrupalBoot
 {
@@ -321,6 +322,7 @@ class DrupalBoot8 extends DrupalBoot
             } else {
                 $response = new HtmlResponse();
             }
+            assert($this->kernel instanceof TerminableInterface);
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }

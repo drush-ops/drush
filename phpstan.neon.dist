@@ -1,5 +1,5 @@
 parameters:
-    level: 1
+    level: 2
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     bootstrapFiles:
         - phpstan-bootstrap.php
@@ -27,3 +27,4 @@ parameters:
         - '#Constant TIDEWAYS_XHPROF_FLAGS_MEMORY not found.#'
 includes:
     - vendor/mglaman/phpstan-drupal/extension.neon
+    - phpstan-baseline.neon

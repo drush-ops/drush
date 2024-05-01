@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\FieldConfigInterface;
+use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -251,6 +252,8 @@ final class FieldDeleteCommands extends DrushCommands
     protected function deleteFieldConfig(FieldConfigInterface $fieldConfig): void
     {
         $fieldStorage = $fieldConfig->getFieldStorageDefinition();
+        assert($fieldStorage instanceof FieldStorageConfigInterface);
+
         $bundles = $this->entityTypeBundleInfo->getBundleInfo($fieldConfig->getTargetEntityTypeId());
         $bundleLabel = $bundles[$fieldConfig->getTargetBundle()]['label'];
 

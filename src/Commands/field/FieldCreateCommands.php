@@ -489,6 +489,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $storage->save();
         }
 
+        assert($storage instanceof EntityDisplayInterface);
         $storage->setComponent($fieldName, $values)->save();
     }
 
