@@ -340,6 +340,10 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     {
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
+        // Override the output verbosity so static::doRenderThrowable() shows a
+        // backtrace.
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+
         $this->doRenderThrowable($e, $output);
     }
 }
