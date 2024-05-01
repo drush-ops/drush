@@ -151,12 +151,12 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
 
     protected function askFieldLabel(string $default): string
     {
-        return $this->io()->text('Field label', default: $default);
+        return $this->io()->ask('Field label', default: $default);
     }
 
     protected function askFieldDescription(?string $default): ?string
     {
-        return $this->io()->text('Field description', default: $default);
+        return $this->io()->ask('Field description', default: $default);
     }
 
     protected function askRequired(bool $default): bool
