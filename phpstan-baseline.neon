@@ -1,16 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Style\\\\SymfonyStyle\\:\\:askWithCompletion\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/DrushCommands.php
-
-		-
-			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Style\\\\SymfonyStyle\\:\\:secret\\(\\)\\.$#"
-			count: 1
-			path: src/Commands/DrushCommands.php
-
-		-
 			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
 			count: 1
 			path: src/Commands/core/MigrateRunnerCommands.php
