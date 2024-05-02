@@ -23,7 +23,6 @@ use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
 use Psr\Container\ContainerInterface as DrushContainer;
-use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
@@ -462,8 +461,8 @@ class ServiceManager
         if ($object instanceof ConfigAwareInterface) {
             $object->setConfig($container->get('config'));
         }
-        if ($object instanceof LoggerAwareInterface) {
-            $object->setLogger($container->get('logger'));
+        if (method_exists($object, 'setLoggerIfEmpty')) {
+            $object->setLoggerIfEmpty($container->get('logger'));
         }
         // Made available by DrushCommands (must preserve for basic bc)
         if ($object instanceof ProcessManagerAwareInterface) {
