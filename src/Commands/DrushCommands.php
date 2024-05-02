@@ -21,7 +21,6 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
@@ -68,19 +67,9 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Sets a logger, if none is available yet.
-     */
-    public function setLoggerIfEmpty(LoggerInterface $logger): void
-    {
-        if ($this->logger === null) {
-            $this->setLogger($logger);
-        }
-    }
-
-    /**
      * Returns a logger object.
      */
-    protected function logger(): ?DrushLoggerManager
+    public function logger(): ?DrushLoggerManager
     {
         return $this->logger;
     }
