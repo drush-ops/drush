@@ -68,12 +68,10 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
 
     /**
      * Sets a logger, if none is available yet.
-     *
-     * @param LoggerInterface $logger
      */
     public function setLoggerIfEmpty(LoggerInterface $logger): void
     {
-        if ($this->logger === NULL) {
+        if ($this->logger === null) {
             $this->setLogger($logger);
         }
     }
