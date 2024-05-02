@@ -17,8 +17,10 @@ use Drush\Style\DrushStyle;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
@@ -62,6 +64,17 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
             $this->io = new DrushStyle($this->input(), $this->output());
         }
         return $this->io;
+    }
+
+    /**
+     * Sets a logger, if none is available yet.
+     */
+    #[Deprecated('Use logger() in Drush 13+')]
+    public function setLoggerIfEmpty(LoggerInterface $logger): void
+    {
+        if ($this->logger === null) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
