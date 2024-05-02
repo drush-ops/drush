@@ -45,7 +45,7 @@
     "dflydev/dot-access-data": "^3.0.2",
     "grasmash/yaml-cli": "^3.1",
     "guzzlehttp/guzzle": "^7.0",
-    "laravel/prompts": "^0.1.15",
+    "laravel/prompts": "^0.1.21",
     "league/container": "^4.2",
     "psy/psysh": "~0.11",
     "symfony/event-dispatcher": "^6 || ^7",
