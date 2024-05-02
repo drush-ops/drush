@@ -69,7 +69,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    protected function logger(): ?DrushLoggerManager
+    public function logger(): ?DrushLoggerManager
     {
         return $this->logger;
     }
