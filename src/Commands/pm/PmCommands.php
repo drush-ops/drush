@@ -297,8 +297,8 @@ final class PmCommands extends DrushCommands
      * @param $extension
      *   Object of a single extension info.
      *
-     * @return
-     *   String describing extension status. Values: enabled|disabled.
+     * @return string
+     *   Status. Values: enabled|disabled.
      */
     public function extensionStatus($extension): string
     {

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Core\Update\UpdateRegistry;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -271,14 +271,7 @@ final class UpdateDBCommands extends DrushCommands
         }
 
         list($extension, $name) = explode('_post_update_', $function, 2);
-        $update_registry = \Drupal::service('update.post_update_registry');
-        // https://www.drupal.org/project/drupal/issues/3259188 Support theme's
-        // having post update functions when it is supported in Drupal core.
-        if (method_exists($update_registry, 'getUpdateFunctions')) {
-            \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
-        } else {
-            \Drupal::service('update.post_update_registry')->getModuleUpdateFunctions($extension);
-        }
+        \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
 
         if (function_exists($function)) {
             if (empty($context['results'][$extension][$name]['type'])) {

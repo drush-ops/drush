@@ -126,7 +126,8 @@ class ArgsPreprocessor
      * @param $optionsTable Table of option names and the name of the
      *   method that should be called to process that option.
      * @param $opt The option string to check
-     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
+     * @return array
+     *   [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function findMethodForOptionWithValues(array $optionsTable, string $opt): array
     {
@@ -156,7 +157,8 @@ class ArgsPreprocessor
      *   '--'.  If $key ends with '=', then the option must have a value.
      *   Otherwise, it cannot be supplied with a value, and always defaults
      *   to 'true'.
-     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
+     * @return array
+     *   [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function checkMatchingOption(string $opt, string $keyParam, string $methodName): array
     {

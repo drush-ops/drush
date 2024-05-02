@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drush\Drupal\Migrate\ValidateMigrationId;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
@@ -22,10 +21,10 @@ use Drupal\migrate\Plugin\RequirementsInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Drush\Drupal\Migrate;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateMessage;
 use Drush\Drupal\Migrate\MigrateUtils;
+use Drush\Drupal\Migrate\ValidateMigrationId;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -202,7 +201,7 @@ class MigrateRunnerCommands extends DrushCommands
      * @param MigrationInterface $migration
      *   The migration plugin instance.
      *
-     * @return int|null
+     * @return int
      *   The number of items that needs update.
      */
     protected function getMigrationNeedingUpdateCount(MigrationInterface $migration): int

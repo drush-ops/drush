@@ -6,13 +6,13 @@ namespace Drush\Commands\core;
 
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
-use Consolidation\SiteProcess\ProcessManager;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\SiteAlias\ProcessManager;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class DeployCommands extends DrushCommands

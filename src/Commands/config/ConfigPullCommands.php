@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteProcess\SiteProcess;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
@@ -96,6 +97,7 @@ final class ConfigPullCommands extends DrushCommands
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager->get($commandData->input()->getArgument('destination'));
+            /** @var SiteProcess $process */
             $process = $this->processManager()->siteProcess($destinationRecord, ['git', 'diff', '--quiet']);
             $process->chdirToSiteRoot();
             $process->run();

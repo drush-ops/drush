@@ -206,7 +206,6 @@ class Preflight
             4 => 'v4',  // Drupal 9
             5 => 'v4',  // Early Drupal 10 (Symfony 5 works with Symfony 4 classes, so we don't keep an extra copy)
             6 => 'v6',  // Drupal 10
-            // @TODO Revisit if needed.
             7 => 'v6',  // Drupal 11
         ];
 

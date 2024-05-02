@@ -1,0 +1,21 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
+			count: 1
+			path: src/Commands/core/MigrateRunnerCommands.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
+			count: 1
+			path: src/Drupal/DrupalKernel.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
+			count: 1
+			path: src/Drupal/InstallerKernel.php
+
+		-
+			message: "#^Call to an undefined method Drupal\\\\Core\\\\DependencyInjection\\\\ServiceModifierInterface\\:\\:check\\(\\)\\.$#"
+			count: 1
+			path: src/Drupal/UpdateKernel.php

@@ -1,12 +1,16 @@
 parameters:
-    level: 1
+    level: 2
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     bootstrapFiles:
         - phpstan-bootstrap.php
     paths:
         - src
     drupal:
-        drupal_root: sut
+        drupal_root: %currentWorkingDirectory%/sut
+    universalObjectCratesClasses:
+        # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
+        - Drupal\Core\Extension\Extension
+        - Drupal\views\ViewExecutable
     excludePaths:
         # Deliberately calls optional external code.
         - src/Psysh/Caster.php
@@ -23,3 +27,4 @@ parameters:
         - '#Constant TIDEWAYS_XHPROF_FLAGS_MEMORY not found.#'
 includes:
     - vendor/mglaman/phpstan-drupal/extension.neon
+    - phpstan-baseline.neon
