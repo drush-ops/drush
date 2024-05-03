@@ -11,5 +11,5 @@ use Drupal\Core\Update\UpdateKernel as DrupalUpdateKernel;
  */
 class UpdateKernel extends DrupalUpdateKernel
 {
-    use DrupalKernelTrait;
+    // Nothing here anymore, but kept in case we need it later.
 }
