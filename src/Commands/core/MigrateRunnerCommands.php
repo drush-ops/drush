@@ -388,6 +388,10 @@ class MigrateRunnerCommands extends DrushCommands
             }
         }
         if (!empty($userData['options']['force'])) {
+            // @todo Use the new MigrationInterface::setRequirements() method,
+            //   instead of Migration::set() and remove the PHPStan exception
+            //   from phpstan-baseline.neon when #2796755 lands in Drupal core.
+            // @see https://www.drupal.org/i/2796755
             $migration->set('requirements', []);
         }
         if (!empty($userData['options']['update'])) {
