@@ -112,6 +112,7 @@ final class QueueCommands extends DrushCommands
             $remaining = $end - time();
         }
         $elapsed = microtime(true) - $start;
+        $this->io()->progressFinish();
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
     }
 
