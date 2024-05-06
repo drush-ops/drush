@@ -74,7 +74,10 @@ final class QueueCommands extends DrushCommands
             $queue->garbageCollection();
         }
 
-        $this->io()->progressStart($items_limit ?: $queue->numberOfItems());
+        $max = $items_limit ?: $queue->numberOfItems();
+        if ($max > 0) {
+            $this->io()->progressStart($max);
+        }
 
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
@@ -112,7 +115,9 @@ final class QueueCommands extends DrushCommands
             $remaining = $end - time();
         }
         $elapsed = microtime(true) - $start;
-        $this->io()->progressFinish();
+        if ($max > 0) {
+            $this->io()->progressFinish();
+        }
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
     }
 
