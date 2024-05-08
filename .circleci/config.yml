@@ -37,6 +37,16 @@ commands:
           fi
 
 executors:
+  sqlite-lowest:
+    docker:
+      - image: wodby/php:$WODBY_TAG
+        environment:
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
+  sqlite-highest:
+    docker:
+      - image: wodby/php:latest
+        environment:
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   mysql-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
@@ -44,11 +54,6 @@ executors:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
-  sqlite-lowest:
-    docker:
-      - image: wodby/php:$WODBY_TAG
-        environment:
-          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   mysql-highest:
     docker:
       - image: wodby/php:latest
