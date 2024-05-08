@@ -165,13 +165,13 @@ workflows:
               suite: [integration, functional]
               release: [ lowest, highest ]
             exclude:
-              # Only run highest tests on mysql+sqlite. Excluding each suite is unfortunate but needed.
-              #              - release: highest
-              #                dbms: sqlite
-              #                suite: integration
-              #              - release: highest
-              #                dbms: sqlite
-              #                suite: functional
+              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
+              - release: highest
+                dbms: mysql
+                suite: integration
+              - release: highest
+                dbms: mysql
+                suite: functional
               - release: highest
                 dbms: postgres
                 suite: integration
