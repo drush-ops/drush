@@ -4,7 +4,7 @@
   "homepage": "http://www.drush.org",
   "license": "GPL-2.0-or-later",
   "minimum-stability": "dev",
-  "prefer-stable": true,
+  "prefer-stable": false,
   "authors": [
     { "name": "Moshe Weitzman", "email": "weitzman@tejasa.com" },
     { "name": "Owen Barton", "email": "drupal@owenbarton.com" },
