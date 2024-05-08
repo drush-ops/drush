@@ -161,8 +161,7 @@ workflows:
           <<: *poststeps
           matrix:
             parameters:
-              #sqlite removed pending https://github.com/wodby/php/issues/194
-              dbms: [ mysql, postgres ]
+              dbms: [ mysql, postgres, sqlite ]
               suite: [integration, functional]
               release: [ lowest, highest ]
 #            exclude:
