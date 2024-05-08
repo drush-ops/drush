@@ -75,7 +75,7 @@ final class QueueCommands extends DrushCommands
      * Run a specific queue by name.
      */
     #[CLI\Command(name: self::RUN, aliases: ['queue-run'])]
-    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in either hook_queue_info or hook_cron_queue_info.')]
+    #[CLI\Argument(name: 'name', description: 'The name of the queue to run, as defined in QueueWorker annotation class.')]
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]

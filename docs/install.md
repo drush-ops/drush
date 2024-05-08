@@ -38,7 +38,7 @@ Drupal Compatibility
     <td> 8.1+ </td>
     <!-- Released Jun 2023 -->
     <td> TBD </td>
-    <td></td> <td></td> <td></td> <td><b>✅</b></td> <td><b>✅</b></td>
+    <td></td> <td></td> <td></td> <td><b>✅</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 11 </td>
@@ -103,4 +103,3 @@ Drupal Compatibility
     </tr>
     
 </table>
-

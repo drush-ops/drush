@@ -45,7 +45,7 @@ final class ConfigPullCommands extends DrushCommands implements SiteAliasManager
             'yes' => null,
             'format' => 'string',
         ];
-        $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
+        $this->logger()->notice(dt('Starting to export configuration on :source.', [':source' => $source]));
         $process = $this->processManager()->drush($sourceRecord, ConfigExportCommands::EXPORT, [], $export_options + $global_options);
         $process->mustRun();
 
