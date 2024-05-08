@@ -197,9 +197,9 @@ final class ArchiveDumpCommands extends DrushCommands
                         foreach (
                             $iterator = new \RecursiveIteratorIterator(
                                 new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
-                            \RecursiveIteratorIterator::SELF_FIRST) as $item
-                        )
-                        {
+                                \RecursiveIteratorIterator::SELF_FIRST
+                            ) as $item
+                        ) {
                             if ($item->isDir()) {
                                 mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             } else {
