@@ -169,15 +169,15 @@ final class ArchiveDumpCommands extends DrushCommands
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
         stream_wrapper_restore('phar');
-        $this->logger()->info(var_export($archivePath, TRUE));
+        $this->logger()->info(var_export($archivePath, true));
         $archive = new PharData($archivePath);
 
         $this->createManifestFile($options);
 
-        $this->logger()->info(var_export($this->archiveDir, TRUE));
+        $this->logger()->info(var_export($this->archiveDir, true));
 
         // If symlinks are disabled, convert symlinks to full content.
-        if ($options['convert-symlinks'] === TRUE && is_dir($this->archiveDir)) {
+        if ($options['convert-symlinks'] === true && is_dir($this->archiveDir)) {
             $this->logger()->info(dt('Converting symlinks...'));
 
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
@@ -197,8 +197,9 @@ final class ArchiveDumpCommands extends DrushCommands
                         foreach (
                             $iterator = new \RecursiveIteratorIterator(
                                 new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
-                                \RecursiveIteratorIterator::SELF_FIRST) as $item
-                        ) {
+                            \RecursiveIteratorIterator::SELF_FIRST) as $item
+                        )
+                        {
                             if ($item->isDir()) {
                                 mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
                             } else {
