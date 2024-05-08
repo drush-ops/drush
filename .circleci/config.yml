@@ -60,13 +60,24 @@ executors:
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
-      - image: cimg/mysql:5.7.38
+      - image: cimg/mysql:8.0
   postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
       - image: wodby/postgres:14
+        environment:
+          POSTGRES_DB_EXTENSIONS: pg_trgm
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
+  postgres-highest:
+    docker:
+      - image: wodby/php:latest
+        environment:
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
+      - image: wodby/postgres:latest
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
@@ -169,17 +180,17 @@ workflows:
               dbms: [ mysql, postgres, sqlite ]
               suite: [integration, functional]
               release: [ lowest, highest ]
-            exclude:
-              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
-              - release: highest
-                dbms: mysql
-                suite: integration
-              - release: highest
-                dbms: mysql
-                suite: functional
-              - release: highest
-                dbms: postgres
-                suite: integration
-              - release: highest
-                dbms: postgres
-                suite: functional
+#            exclude:
+#              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
+#              - release: highest
+#                dbms: mysql
+#                suite: integration
+#              - release: highest
+#                dbms: mysql
+#                suite: functional
+#              - release: highest
+#                dbms: postgres
+#                suite: integration
+#              - release: highest
+#                dbms: postgres
+#                suite: functional
