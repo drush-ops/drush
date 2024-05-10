@@ -27,7 +27,6 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
@@ -414,8 +413,7 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         if ($msg) {
-            // Awkwardly use the text() method from parent because DrushStyle uses it for a prompt.
-            (new SymfonyStyle($this->input, $this->output))->text(dt('You are about to:'));
+            $this->io()->text(dt('You are about to:'));
             $this->io()->listing($msg);
         }
 
