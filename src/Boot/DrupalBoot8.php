@@ -232,7 +232,7 @@ class DrupalBoot8 extends DrupalBoot
 
         // Directly add the Drupal core bootstrapped commands.
         Drush::getApplication()->addCommands($this->serviceManager->instantiateDrupalCoreBootstrappedCommands());
-        
+
         $this->addDrupalModuleDrushCommands($manager);
 
         // Set a default account to make sure the correct timezone is set
