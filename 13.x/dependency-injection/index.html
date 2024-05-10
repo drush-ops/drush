@@ -3580,6 +3580,110 @@
 
             
           
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+      
+      
+      <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_25" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_6_25" id="__nav_6_25_label" tabindex="0">
+          yaml
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_25_label" aria-expanded="false">
+        <label class="md-nav__title" for="__nav_6_25">
+          <span class="md-nav__icon md-icon"></span>
+          yaml
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/yaml_get_value/" class="md-nav__link">
+        yaml:get:value
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/yaml_lint/" class="md-nav__link">
+        yaml:lint
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/yaml_unset_key/" class="md-nav__link">
+        yaml:unset:key
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/yaml_update_key/" class="md-nav__link">
+        yaml:update:key
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/yaml_update_value/" class="md-nav__link">
+        yaml:update:value
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
         </ul>
       </nav>
     </li>
@@ -3788,6 +3892,20 @@
   
   
     <li class="md-nav__item">
+      <a href="../generators/readme/" class="md-nav__link">
+        readme
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../generators/render-element/" class="md-nav__link">
         render-element
       </a>
@@ -3804,6 +3922,20 @@
     <li class="md-nav__item">
       <a href="../generators/service-provider/" class="md-nav__link">
         service-provider
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generators/single-directory-component/" class="md-nav__link">
+        single-directory-component
       </a>
     </li>
   
@@ -5083,7 +5215,7 @@
 <p>If your command is not found by Drush, add the <code>-vvv</code> option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own <code>create()</code> method (see below).</p>
 <h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
-<p>Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a <a href="https://container.thephpleague.com/">League container</a> with a delegate to the Drupal container. Note that the type hint should be to <code>Psr\Container\ContanierInterface</code> not <code>Symfony\Component\DependencyInjection\ContainerInterface</code>. A create() method and constructor will look something like this:
+<p>Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a <a href="https://container.thephpleague.com/">League container</a> with a delegate to the Drupal container. Note that the type hint should be to <code>Psr\Container\ContainerInterface</code> not <code>Symfony\Component\DependencyInjection\ContainerInterface</code>. A create() method and constructor will look something like this:
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
 <span class="p">{</span>
     <span class="k">protected</span> <span class="nv">$configFactory</span><span class="p">;</span>
@@ -5118,7 +5250,7 @@ projects that are <em>not</em> Drupal modules.</p>
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 23, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 9, 2024</span>
       
     
   </small>
@@ -5133,7 +5265,7 @@ projects that are <em>not</em> Drupal modules.</p>
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:lieverdink@reliefweb.int'>Peter Lieverdink</a></span>
             </small>
         </div>
     
