@@ -425,9 +425,9 @@ final class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            (new Filesystem())->mkdir($confPath);
             if (!$this->getConfig()->simulate()) {
-                throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
+                $fs = new Filesystem();
+                $fs->mkdir($confPath);
             }
         } else {
             $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', ['@subdir' => $confPath]));
