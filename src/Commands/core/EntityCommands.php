@@ -115,7 +115,7 @@ final class EntityCommands extends DrushCommands
             $this->logger()->success(dt('No matching entities found.'));
         } else {
             $this->io()->progressStart(count($result));
-            foreach (array_chunk($result, $options['chunks'], true) as $chunk) {
+            foreach (array_chunk($result, (int) $options['chunks'], true) as $chunk) {
                 drush_op([$this, 'doSave'], $entity_type, $chunk);
                 $this->io()->progressAdvance(count($chunk));
             }
