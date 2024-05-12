@@ -12,6 +12,7 @@ use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
+use Drupal\Core\Recipe\RecipeCommand;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
 use Drush\Boot\DrupalBootLevels;
@@ -287,6 +288,27 @@ class ServiceManager
             $instance->setHelp('See https://github.com/grasmash/yaml-cli for a README and bug reports.');
             $instances[] = $instance;
         }
+        return $instances;
+    }
+
+    /**
+     * Instantiate commands from Drupal Core that we want to expose
+     * as Drush commands.
+     *
+     * These require a bootstrapped Drupal.
+     *
+     * @return Command[]
+     *   List of Symfony Command objects
+     */
+    public function instantiateDrupalCoreBootstrappedCommands(): array
+    {
+        $instances = [];
+        if (class_exists(RecipeCommand::class)) {
+            $instance = new RecipeCommand($this->autoloader);
+            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            $instances[] = $instance;
+        }
+
         return $instances;
     }
 

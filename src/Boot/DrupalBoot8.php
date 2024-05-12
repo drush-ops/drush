@@ -229,6 +229,10 @@ class DrupalBoot8 extends DrupalBoot
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull($manager);
+
+        // Directly add the Drupal core bootstrapped commands.
+        Drush::getApplication()->addCommands($this->serviceManager->instantiateDrupalCoreBootstrappedCommands());
+
         $this->addDrupalModuleDrushCommands($manager);
 
         // Set a default account to make sure the correct timezone is set
