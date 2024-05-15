@@ -176,20 +176,20 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->logger()->info(var_export($this->archiveDir, true));
 
         // If symlinks are disabled, convert symlinks to full content.
-        if ($options['convert-symlinks'] === true && is_dir($this->archiveDir)) {
+        if (is_dir($this->archiveDir)) {
             $this->logger()->info(dt('Converting symlinks...'));
 
             $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
 
             foreach ($iterator as $file) {
-                if ($file->isLink()) {
+                if ($file->isLink() && ($options['convert-symlinks'] === true || strpos($file->getPathName(), $archivePath) == 0)) {
                     $target = readlink($file->getPathname());
 
                     if (is_file($target)) {
                         $content = file_get_contents($target);
                         unlink($file->getPathname());
                         file_put_contents($file->getPathname(), $content);
-                    } elseif (is_dir($target)) {
+                    } elseif (is_dir($target) && ($options['convert-symlinks'] === true || strpos($file->getPathName(), $archivePath) == 0)) {
                         $path = $file->getPathname();
                         unlink($path);
                         mkdir($path, 0755);
