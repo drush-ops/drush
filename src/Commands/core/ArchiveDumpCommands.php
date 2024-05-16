@@ -174,41 +174,7 @@ final class ArchiveDumpCommands extends DrushCommands
         $this->createManifestFile($options);
 
         $this->logger()->info(var_export($this->archiveDir, true));
-
-        // If symlinks are disabled, convert symlinks to full content.
-        if (is_dir($this->archiveDir)) {
-            $this->logger()->info(dt('Converting symlinks...'));
-
-            $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir), RecursiveIteratorIterator::SELF_FIRST);
-
-            foreach ($iterator as $file) {
-                if ($file->isLink() && ($options['convert-symlinks'] === true || strpos($file->getPathName(), $archivePath) == 0)) {
-                    $target = readlink($file->getPathname());
-
-                    if (is_file($target)) {
-                        $content = file_get_contents($target);
-                        unlink($file->getPathname());
-                        file_put_contents($file->getPathname(), $content);
-                    } elseif (is_dir($target) && ($options['convert-symlinks'] === true || strpos($file->getPathName(), $archivePath) == 0)) {
-                        $path = $file->getPathname();
-                        unlink($path);
-                        mkdir($path, 0755);
-                        foreach (
-                            $iterator = new \RecursiveIteratorIterator(
-                                new \RecursiveDirectoryIterator($target, \RecursiveDirectoryIterator::SKIP_DOTS),
-                                \RecursiveIteratorIterator::SELF_FIRST
-                            ) as $item
-                        ) {
-                            if ($item->isDir()) {
-                                mkdir($path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
-                            } else {
-                                copy($item->getPathname(), $path . DIRECTORY_SEPARATOR . $iterator->getSubPathname());
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        $this->convertSymlinks($options, $archivePath);
 
         $archive->buildFromDirectory($this->archiveDir);
 
@@ -628,5 +594,60 @@ final class ArchiveDumpCommands extends DrushCommands
             }
         }
         return $destination;
+    }
+
+    /**
+     * Converts symlinks to full content for an archive.
+     *
+     * @param $convert_symlinks
+     *  Whether to convert symlinks.
+     * @param $archivePath
+     *   The file path of the archive.
+     *
+     * @return void
+     */
+    public function convertSymlinks(
+        $convert_symlinks,
+        $archivePath
+    ): void {
+        // If symlinks are disabled, convert symlinks to full content.
+        $this->logger()->info(dt('Converting symlinks...'));
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->archiveDir),
+            RecursiveIteratorIterator::SELF_FIRST);
+
+        foreach ($iterator as $file) {
+            if ($file->isLink() && ($convert_symlinks === true || strpos($file->getPathName(),
+                        $archivePath) == 0)) {
+                $target = readlink($file->getPathname());
+
+                if (is_file($target)) {
+                    $content = file_get_contents($target);
+                    unlink($file->getPathname());
+                    file_put_contents($file->getPathname(), $content);
+                }
+                elseif (is_dir($target) && ($convert_symlinks === true || strpos($file->getPathName(),
+                            $archivePath) == 0)) {
+                    $path = $file->getPathname();
+                    unlink($path);
+                    mkdir($path, 0755);
+                    foreach (
+                        $iterator = new \RecursiveIteratorIterator(
+                            new \RecursiveDirectoryIterator($target,
+                                \RecursiveDirectoryIterator::SKIP_DOTS),
+                            \RecursiveIteratorIterator::SELF_FIRST
+                        ) as $item
+                    ) {
+                        if ($item->isDir()) {
+                            mkdir($path.DIRECTORY_SEPARATOR.$iterator->getSubPathname());
+                        }
+                        else {
+                            copy($item->getPathname(),
+                                $path.DIRECTORY_SEPARATOR.$iterator->getSubPathname());
+                        }
+                    }
+                }
+            }
+        }
     }
 }
