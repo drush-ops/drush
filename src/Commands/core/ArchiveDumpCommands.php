@@ -168,13 +168,12 @@ final class ArchiveDumpCommands extends DrushCommands
         $archivePath = Path::join(dirname($this->archiveDir), self::ARCHIVE_FILE_NAME);
 
         stream_wrapper_restore('phar');
-        $this->logger()->info(var_export($archivePath, true));
         $archive = new PharData($archivePath);
 
         $this->createManifestFile($options);
 
         $this->logger()->info(var_export($this->archiveDir, true));
-        $this->convertSymlinks($options, $archivePath);
+        $this->convertSymlinks($options['convert-symlinks'], $archivePath);
 
         $archive->buildFromDirectory($this->archiveDir);
 
