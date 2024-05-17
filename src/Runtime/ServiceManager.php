@@ -12,6 +12,7 @@ use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
+use Drupal\Core\Recipe\RecipeCommand;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
 use Drush\Boot\DrupalBootLevels;
@@ -22,12 +23,13 @@ use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use Psr\Container\ContainerInterface as DrushContainer;
+use League\Container\Container as DrushContainer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputAwareInterface;
 
 /**
@@ -63,7 +65,7 @@ class ServiceManager
      * Ensure that any discovered class that is not part of the autoloader
      * is, in fact, included.
      *
-     * @param array Associative array mapping path => class.
+     * @param array $commandClasses Associative array mapping path => class.
      */
     protected function loadCommandClasses(array $commandClasses): void
     {
@@ -290,13 +292,33 @@ class ServiceManager
     }
 
     /**
+     * Instantiate commands from Drupal Core that we want to expose
+     * as Drush commands.
+     *
+     * These require a bootstrapped Drupal.
+     *
+     * @return Command[]
+     *   List of Symfony Command objects
+     */
+    public function instantiateDrupalCoreBootstrappedCommands(): array
+    {
+        $instances = [];
+        if (class_exists(RecipeCommand::class)) {
+            $instance = new RecipeCommand($this->autoloader);
+            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            $instances[] = $instance;
+        }
+
+        return $instances;
+    }
+
+    /**
      * Instantiate objects given a list of classes. For each class, if it has
      * a static `create` factory, use that to instantiate it, passing both the
      * Drupal and Drush DI containers. If there is no static factory, then
      * instantiate it via 'new $class'
      *
      * @param string[] $bootstrapCommandClasses Classes to instantiate.
-     * @param Drupal\Component\DependencyInjection\ContainerInterface $container
      *
      * @return object[]
      *   List of instantiated service objects
@@ -451,7 +473,7 @@ class ServiceManager
         if ($object instanceof ConfigAwareInterface) {
             $object->setConfig($container->get('config'));
         }
-        if ($object instanceof LoggerAwareInterface) {
+        if ($object instanceof LoggerAwareInterface && (!method_exists($object, 'logger') || empty($object->logger()))) {
             $object->setLogger($container->get('logger'));
         }
         // Made available by DrushCommands (must preserve for basic bc)

@@ -16,10 +16,12 @@ use Drush\Drush;
 use Drush\Runtime\LegacyServiceFinder;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\ServiceManager;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\TerminableInterface;
 
 class DrupalBoot8 extends DrupalBoot
 {
@@ -58,7 +60,7 @@ class DrupalBoot8 extends DrupalBoot
      */
     public function setLogger(LoggerInterface $logger): void
     {
-        if ($this->drupalLoggerAdapter) {
+        if ($this->drupalLoggerAdapter && $this->drupalLoggerAdapter instanceof LoggerAwareInterface) {
             $this->drupalLoggerAdapter->setLogger($logger);
         }
         parent::setLogger($logger);
@@ -79,7 +81,7 @@ class DrupalBoot8 extends DrupalBoot
         return false;
     }
 
-    public function getVersion($drupal_root): string
+    public function getVersion($root): string
     {
         return \Drupal::VERSION;
     }
@@ -227,6 +229,10 @@ class DrupalBoot8 extends DrupalBoot
         $this->logger->debug(dt('Finished bootstrap of the Drupal Kernel.'));
 
         parent::bootstrapDrupalFull($manager);
+
+        // Directly add the Drupal core bootstrapped commands.
+        Drush::getApplication()->addCommands($this->serviceManager->instantiateDrupalCoreBootstrappedCommands());
+
         $this->addDrupalModuleDrushCommands($manager);
 
         // Set a default account to make sure the correct timezone is set
@@ -320,6 +326,7 @@ class DrupalBoot8 extends DrupalBoot
             } else {
                 $response = new HtmlResponse();
             }
+            assert($this->kernel instanceof TerminableInterface);
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }

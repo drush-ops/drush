@@ -13,6 +13,7 @@ use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Installer\Exception\AlreadyInstalledException;
 use Drupal\Core\Installer\Exception\InstallerException;
+use Drupal\Core\Installer\InstallerKernel;
 use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
@@ -26,7 +27,6 @@ use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
@@ -201,7 +201,9 @@ final class SiteInstallCommands extends DrushCommands
 
         if (empty($profile)) {
             $boot = $this->bootstrapManager->bootstrap();
-            $profile = $boot->getKernel()->getInstallProfile();
+            $kernel = $boot->getKernel();
+            assert($kernel instanceof InstallerKernel);
+            $profile = $kernel->getInstallProfile();
         }
 
         if (empty($profile)) {
@@ -299,44 +301,43 @@ final class SiteInstallCommands extends DrushCommands
                         'driver' => $driverList[$driverNamespace]->getDriverName(),
                         'module' => $driverList[$driverNamespace]->getModule()->getName(),
                     ];
-                    $databaseInfo['database'] = $this->io()->text(
+                    $databaseInfo['database'] = $this->io()->ask(
                         $formOptions['database']['#title'],
                         default: $formOptions['database']['#default_value'] ?: 'drupal',
                         hint: (string) ($formOptions['database']['#description'] ?? null),
                     );
                     if (isset($formOptions['username'])) {
-                        $databaseInfo['username'] = $this->io()->text(
+                        $databaseInfo['username'] = $this->io()->ask(
                             $formOptions['username']['#title'],
                             default: 'drupal',
                             hint: (string) ($formOptions['username']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['password'])) {
-                        $databaseInfo['password'] = $this->io()->text(
+                        $databaseInfo['password'] = $this->io()->password(
                             $formOptions['password']['#title'],
-                            default: 'drupal',
                             hint: (string) ($formOptions['password']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['host'])) {
-                        $databaseInfo['host'] = $this->io()->text(
+                        $databaseInfo['host'] = $this->io()->ask(
                             $formOptions['advanced_options']['host']['#title'],
                             default: $formOptions['advanced_options']['host']['#default_value'],
                             hint: (string) ($formOptions['advanced_options']['host']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['port'])) {
-                        $databaseInfo['port'] = $this->io()->text(
+                        $databaseInfo['port'] = $this->io()->ask(
                             $formOptions['advanced_options']['port']['#title'],
                             default: $formOptions['advanced_options']['port']['#default_value'],
                             hint: (string) ($formOptions['advanced_options']['port']['#description'] ?? null),
                         );
                     }
                     if (isset($formOptions['advanced_options']['prefix'])) {
-                        $databaseInfo['prefix'] = $this->io()->text(
+                        $databaseInfo['prefix'] = $this->io()->ask(
                             $formOptions['advanced_options']['prefix']['#title'],
                             default: $formOptions['advanced_options']['prefix']['#default_value'],
-                            hint: (string) ($formOptions['advanced_options']['prefix']['#description'] ?? null),
+                            hint: MailFormatHelper::htmlToText($formOptions['advanced_options']['prefix']['#description'] ?? null),
                         );
                     }
                     $connectionClass = $driverNamespace . '\\Connection';
@@ -412,8 +413,7 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         if ($msg) {
-            // Awkwardly use the text() method from parent because DrushStyle uses it for a prompt.
-            (new SymfonyStyle($this->input, $this->output))->text(dt('You are about to:'));
+            $this->io()->text(dt('You are about to:'));
             $this->io()->listing($msg);
         }
 
@@ -423,22 +423,23 @@ final class SiteInstallCommands extends DrushCommands
 
         // Can't install without sites subdirectory and settings.php.
         if (!file_exists($confPath)) {
-            if ((new Filesystem())->mkdir($confPath) && !$this->config->simulate()) {
-                throw new \Exception(dt('Failed to create directory @confPath', ['@confPath' => $confPath]));
+            if (!$this->getConfig()->simulate()) {
+                $fs = new Filesystem();
+                $fs->mkdir($confPath);
             }
         } else {
             $this->logger()->info(dt('Sites directory @subdir already exists - proceeding.', ['@subdir' => $confPath]));
         }
 
         if (!drush_file_not_empty($settingsfile)) {
-            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->config->simulate()) {
+            if (!drush_op('copy', 'sites/default/default.settings.php', $settingsfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/default/default.settings.php to @settingsfile', ['@settingsfile' => $settingsfile]));
             }
         }
 
         // Write an empty sites.php if we using multi-site.
         if ($sitesfile_write) {
-            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->config->simulate()) {
+            if (!drush_op('copy', 'sites/example.sites.php', $sitesfile) && !$this->getConfig()->simulate()) {
                 throw new \Exception(dt('Failed to copy sites/example.sites.php to @sitesfile', ['@sitesfile' => $sitesfile]));
             }
         }

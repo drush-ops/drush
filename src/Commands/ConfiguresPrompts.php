@@ -6,7 +6,6 @@
 
 namespace Drush\Commands;
 
-use Drush\Exceptions\UserAbortException;
 use Drush\Runtime\Runtime;
 use Laravel\Prompts\ConfirmPrompt;
 use Laravel\Prompts\MultiSearchPrompt;
@@ -16,6 +15,7 @@ use Laravel\Prompts\Prompt;
 use Laravel\Prompts\SearchPrompt;
 use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\SuggestPrompt;
+use Laravel\Prompts\TextareaPrompt;
 use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -46,9 +46,14 @@ trait ConfiguresPrompts
             $prompt->validate
         ));
 
+        TextareaPrompt::fallbackUsing(fn(TextareaPrompt $prompt) => $this->promptUntilValid(
+            fn() => (new SymfonyStyle($this->input, $this->output))->ask($prompt->label, $prompt->default ?: null) ?? '', // multiline: true
+            $prompt->required,
+            $prompt->validate
+        ));
+
         PasswordPrompt::fallbackUsing(fn (PasswordPrompt $prompt) => $this->promptUntilValid(
-            // @todo there is no secret().
-            fn () => (new SymfonyStyle($this->input, $this->output))->secret($prompt->label) ?? '',
+            fn() => (new SymfonyStyle($this->input, $this->output))->askHidden($prompt->label) ?? '',
             $prompt->required,
             $prompt->validate
         ));
@@ -87,8 +92,7 @@ trait ConfiguresPrompts
         });
 
         SuggestPrompt::fallbackUsing(fn (SuggestPrompt $prompt) => $this->promptUntilValid(
-            // @todo No askWithCompletion
-            fn () => (new SymfonyStyle($this->input, $this->output))->askWithCompletion($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
+            fn() => (new SymfonyStyle($this->input, $this->output))->choice($prompt->label, $prompt->options, $prompt->default ?: null) ?? '',
             $prompt->required,
             $prompt->validate
         ));

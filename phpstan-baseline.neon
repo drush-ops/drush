@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		# Remove once MigrationInterface::setRequirements() is added in https://www.drupal.org/i/2796755
+		-
+			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
+			count: 1
+			path: src/Commands/core/MigrateRunnerCommands.php

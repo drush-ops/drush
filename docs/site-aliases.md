@@ -102,7 +102,7 @@ See [Additional Site Alias Options](#additional-site-alias-options) for more inf
 
 ### Altering aliases:
 
-See [examples/Commands/SiteAliasAlterCommands.php](https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/)) for an example.
+See [examples/Commands/SiteAliasAlterCommands.php](https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/) for an example.
 
 ### Site specifications:
 

@@ -14,6 +14,7 @@ use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use Drush\Log\DrushLoggerManager;
+use Drush\SiteAlias\ProcessManager;
 use Drush\Style\DrushStyle;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
@@ -68,7 +69,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    protected function logger(): ?DrushLoggerManager
+    public function logger(): ?DrushLoggerManager
     {
         return $this->logger;
     }
@@ -139,5 +140,13 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
         $stack = HandlerStack::create();
         $stack->push(Middleware::log($this->logger(), new MessageFormatter(Drush::debug() ? MessageFormatter::DEBUG : MessageFormatter::SHORT)));
         return $stack;
+    }
+
+    /**
+     * This method overrides the trait in order to provide a more specific return type.
+     */
+    public function processManager(): ProcessManager
+    {
+        return $this->processManager;
     }
 }

@@ -37,31 +37,47 @@ commands:
           fi
 
 executors:
-  mysql-stable:
+  sqlite-lowest:
+    docker:
+      - image: wodby/php:$WODBY_TAG
+        environment:
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
+  sqlite-highest:
+    docker:
+      - image: wodby/php:latest
+        environment:
+          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
+  mysql-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:5.7.38
-  sqlite-stable:
-    docker:
-      - image: wodby/php:$WODBY_TAG
-        environment:
-          - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   mysql-highest:
     docker:
       - image: wodby/php:latest
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
-      - image: cimg/mysql:5.7.38
-  postgres-stable:
+      - image: cimg/mysql:8.0
+  postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
       - image: wodby/postgres:14
+        environment:
+          POSTGRES_DB_EXTENSIONS: pg_trgm
+          POSTGRES_PASSWORD: unish
+          POSTGRES_DB: unish_dev
+          POSTGRES_USER: unish
+  postgres-highest:
+    docker:
+      - image: wodby/php:latest
+        environment:
+          - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
+      - image: wodby/postgres:latest
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
@@ -76,7 +92,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:$WODBY_TAG
+      - image: wodby/php:8.2
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
@@ -117,16 +133,16 @@ jobs:
       - when:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ]
+              - equal: [ lowest, << parameters.release >> ]
           steps:
-            - run: composer -n install
+            - run: composer -n update --prefer-lowest
       - unless:
           condition:
             and:
-              - equal: [ stable, << parameters.release >> ]
+              - equal: [ lowest, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
+            - run: composer -n require --dev drupal/core-recommended:11.0.x-dev --no-update
             - run: composer -n update
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
@@ -161,21 +177,20 @@ workflows:
           <<: *poststeps
           matrix:
             parameters:
-              #sqlite removed pending https://github.com/wodby/php/issues/194
-              dbms: [ mysql, postgres ]
+              dbms: [ mysql, postgres, sqlite ]
               suite: [integration, functional]
-              release: [stable, highest]
-            exclude:
-              # Only run highest test on mysql. Excluding each suite is unfortunate but needed.
-              - release: highest
-                dbms: sqlite
-                suite: integration
-              - release: highest
-                dbms: sqlite
-                suite: functional
-              - release: highest
-                dbms: postgres
-                suite: integration
-              - release: highest
-                dbms: postgres
-                suite: functional
+              release: [ lowest, highest ]
+#            exclude:
+#              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
+#              - release: highest
+#                dbms: mysql
+#                suite: integration
+#              - release: highest
+#                dbms: mysql
+#                suite: functional
+#              - release: highest
+#                dbms: postgres
+#                suite: integration
+#              - release: highest
+#                dbms: postgres
+#                suite: functional

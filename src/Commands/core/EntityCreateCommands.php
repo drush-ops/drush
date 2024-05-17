@@ -9,7 +9,6 @@ use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityConstraintViolationListInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Session\AccountSwitcherInterface;
@@ -56,6 +55,7 @@ final class EntityCreateCommands extends DrushCommands
     public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
+        /** @var ContentEntityInterface $entity */
         $entity = $this->entityTypeManager->getStorage($entity_type)->create([$bundleKey => $bundle]);
         $instances = $this->entityFieldManager->getFieldDefinitions($entity_type, $bundle);
         $skip_fields = StringUtils::csvToArray($options['skip-fields']);
@@ -211,7 +211,7 @@ final class EntityCreateCommands extends DrushCommands
         }
     }
 
-    protected function setValue(EntityInterface $entity, int|string $name, mixed $value): void
+    protected function setValue(ContentEntityInterface $entity, int|string $name, mixed $value): void
     {
         switch ($entity->get($name)->getFieldDefinition()->getType()) {
             case 'timestamp':

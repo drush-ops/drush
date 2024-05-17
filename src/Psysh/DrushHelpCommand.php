@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Drush\Psysh;
 
 use Drush\Commands\DrushCommands;
+use Psy\Command\Command;
 use Psy\Command\Command as BaseCommand;
-use Symfony\Component\Console\Command\Command;
+use Psy\Output\ShellOutput;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,13 +28,6 @@ class DrushHelpCommand extends BaseCommand
     const PSYSH_CATEGORY = 'PsySH';
 
     /**
-     * The currently set subcommand.
-     *
-     * @var \Symfony\Component\Console\Command\Command
-     */
-    protected $command;
-
-    /**
      * {@inheritdoc}
      */
     protected function configure(): void
@@ -48,25 +42,17 @@ class DrushHelpCommand extends BaseCommand
     }
 
     /**
-     * Helper for setting a subcommand to retrieve help for.
-     */
-    public function setCommand(Command $command): void
-    {
-        $this->command = $command;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->command !== null) {
+        assert($output instanceof ShellOutput);
+
+        if ($name = $input->getArgument('command_name')) {
             // Help for an individual command.
-            $output->page($this->command->asText());
-            $this->command = null;
-        } elseif ($name = $input->getArgument('command_name')) {
-            // Help for an individual command.
-            $output->page($this->getApplication()->get($name)->asText());
+            /** @var Command $command */
+            $command = $this->getApplication()->get($name);
+            $output->page($command->asText());
         } else {
             $namespaces = [];
 
