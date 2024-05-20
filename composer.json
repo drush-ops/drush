@@ -33,7 +33,7 @@
     "php": ">=8.2",
     "ext-dom": "*",
     "composer-runtime-api": "^2.2",
-    "chi-teck/drupal-code-generator": "^3.5 || 4.x-dev",
+    "chi-teck/drupal-code-generator": "^3.6 || 4.x-dev",
     "composer/semver": "^1.4 || ^3",
     "consolidation/annotated-command": "^4.9.2",
     "consolidation/config": "^2.1.2 || ^3",
