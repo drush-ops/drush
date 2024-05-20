@@ -3,7 +3,7 @@
 
 namespace Drupal\{{ machine_name }}\Drush\Commands;
 
-{% sort %}
+{% apply sort_namespaces %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 use Drush\Commands\AutowireTrait;
 {{ di.use(services) }}
   {% endif %}
-{% endsort %}
+{% endapply %}
 
 /**
  * A Drush commandfile.
