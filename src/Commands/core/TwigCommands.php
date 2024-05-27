@@ -74,12 +74,17 @@ final class TwigCommands extends DrushCommands
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
             $mainCls = $this->getTwig()->getTemplateClass($relative);
-            $key = $this->getTwig()->getCache()->generateKey($relative, $mainCls);
-            if (!$phpstorage->exists($key)) {
-                $unused[$key] = [
-                    'template' => $relative,
-                    'compiled' => $key,
-                ];
+            $cache = $this->getTwig()->getCache();
+            if ($cache) {
+                $key = $cache->generateKey($relative, $mainCls);
+                if (!$phpstorage->exists($key)) {
+                    $unused[$key] = [
+                        'template' => $relative,
+                        'compiled' => $key,
+                    ];
+                }
+            } else {
+                throw new \Exception('There was a problem, please ensure your twig cache is enabled.');
             }
         }
         $this->logger()->notice(dt('Found !count unused', ['!count' => count($unused)]));
