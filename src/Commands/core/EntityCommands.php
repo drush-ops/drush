@@ -37,13 +37,15 @@ final class EntityCommands extends DrushCommands
     #[CLI\Option(name: 'bundle', description: 'Restrict deletion to the specified bundle. Ignored when ids is specified.')]
     #[CLI\Option(name: 'exclude', description: 'Exclude certain entities from deletion. Ignored when ids is specified.')]
     #[CLI\Option(name: 'chunks', description: 'Specify how many entities will be deleted in the same step.')]
+    #[CLI\Option(name: 'limit', description: 'Limit on the number of entities to delete.')]
     #[CLI\Usage(name: 'drush entity:delete node --bundle=article', description: 'Delete all article entities.')]
     #[CLI\Usage(name: 'drush entity:delete shortcut', description: 'Delete all shortcut entities.')]
     #[CLI\Usage(name: 'drush entity:delete node 22,24', description: 'Delete nodes 22 and 24.')]
     #[CLI\Usage(name: 'drush entity:delete user', description: 'Delete all users except uid=1.')]
     #[CLI\Usage(name: 'drush entity:delete node --exclude=9,14,81', description: 'Delete all nodes except node 9, 14 and 81.')]
     #[CLI\Usage(name: 'drush entity:delete node --chunks=5', description: 'Delete all node entities in groups of 5.')]
-    public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50]): void
+    #[CLI\Usage(name: 'drush entity:delete node --limit=500', description: 'Delete 500 node entities.')]
+    public function delete(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50, 'limit' => null]): void
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
@@ -148,7 +150,7 @@ final class EntityCommands extends DrushCommands
         if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
-        } elseif ($options['bundle'] || $options['exclude']) {
+        } elseif ($options['bundle'] || $options['exclude'] || $options['limit']) {
             if ($exclude = StringUtils::csvToArray((string) $options['exclude'])) {
                 $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
                 $query = $query->condition($idKey, $exclude, 'NOT IN');
@@ -156,6 +158,9 @@ final class EntityCommands extends DrushCommands
             if ($bundle = $options['bundle']) {
                 $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
                 $query = $query->condition($bundleKey, $bundle);
+            }
+            if ($limit = $options['limit']) {
+                $query->range(0, $limit);
             }
         }
         return $query;
