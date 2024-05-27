@@ -661,7 +661,7 @@ class MigrateRunnerCommands extends DrushCommands implements ConfigAwareInterfac
         foreach ($source->fields() as $machineName => $description) {
             $table[] = [
                 'machine_name' => $machineName,
-                'description' => strip_tags($description),
+                'description' => strip_tags((string) $description),
             ];
         }
         return new RowsOfFields($table);
