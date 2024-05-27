@@ -5237,6 +5237,7 @@
 <li><code>drush entity:delete user</code>. Delete all users except uid=1.</li>
 <li><code>drush entity:delete node --exclude=9,14,81</code>. Delete all nodes except node 9, 14 and 81.</li>
 <li><code>drush entity:delete node --chunks=5</code>. Delete all node entities in groups of 5.</li>
+<li><code>drush entity:delete node --limit=500</code>. Delete 500 node entities.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -5248,6 +5249,7 @@
 <li><strong> --bundle=BUNDLE</strong>. Restrict deletion to the specified bundle. Ignored when ids is specified.</li>
 <li><strong> --exclude=EXCLUDE</strong>. Exclude certain entities from deletion. Ignored when ids is specified.</li>
 <li><strong> --chunks[=CHUNKS]</strong>. Specify how many entities will be deleted in the same step. [default: <em>50</em>]</li>
+<li><strong> --limit[=LIMIT]</strong>. Limit on the number of entities to delete.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
