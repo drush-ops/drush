@@ -443,7 +443,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_delete">delete</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+                    <a href="#method_delete">delete</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;limit&#039; =&gt; null])
         
                                             <p><p>Delete content entities.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -1226,7 +1226,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <h3 id="method_delete">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L34">at line 34</a></div>
         <code>                    void
-    <strong>delete</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
+    <strong>delete</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;limit&#039; =&gt; null])
         </code>
     </h3>
     <div class="details">    
@@ -1276,7 +1276,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L79">at line 79</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L81">at line 81</a></div>
         <code>                    void
     <strong>doDelete</strong>(string $entity_type, array $ids)
         </code>
@@ -1340,7 +1340,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L89">at line 89</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L91">at line 91</a></div>
         <code>                    void
     <strong>loadSave</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50])
         </code>
@@ -1392,7 +1392,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L130">at line 130</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L132">at line 132</a></div>
         <code>                    void
     <strong>doSave</strong>(string $entity_type, array $ids)
         </code>
@@ -1456,7 +1456,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQuery">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L144">at line 144</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L146">at line 146</a></div>
         <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
     <strong>getQuery</strong>(string $entity_type, string|null $ids, array $options)
         </code>
