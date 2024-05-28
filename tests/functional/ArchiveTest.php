@@ -132,7 +132,14 @@ class ArchiveTest extends CommandUnishTestCase
         symlink($linktarget, $linkdestination);
 
         // Overwrite the existing archive with "--destination" and "--override".
-        $this->drush('archive:dump');
+        $this->drush(
+            'archive:dump',
+            [],
+            array_merge($this->archiveDumpOptions, [
+                'destination' => $this->archivePath,
+                'overwrite' => null,
+            ])
+        );
     }
 
     public function SKIPtestArchiveRestoreCommand(): void
