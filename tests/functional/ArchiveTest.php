@@ -123,7 +123,8 @@ class ArchiveTest extends CommandUnishTestCase
         );
     }
 
-    public function testArchiveDumpSymlinkSwapCommand(): void {
+    public function testArchiveDumpSymlinkSwapCommand(): void
+    {
         $linktarget      = Path::join($this->getSandbox(), 'symlinktest.txt');
         $linkdestination = Path::join($this->archivePath, 'web/symlinkdest.txt');
 
