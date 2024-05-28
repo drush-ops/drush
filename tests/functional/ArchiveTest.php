@@ -125,13 +125,17 @@ class ArchiveTest extends CommandUnishTestCase
 
     public function testArchiveDumpSymlinkSwapCommand(): void
     {
+        // Sites that contain symlinks to files outside the project root cause
+        // critical errors. To test for this, we manually create a symlink
+        // and then run archive:dump. If it completes at all, the symlink fix
+        // from Issue #5991 is working.
         $linktarget      = Path::join("/tmp", 'symlinktest.txt');
         $linkdestination = Path::join($this->getSandbox(), 'symlinkdest.txt');
 
         file_put_contents($linktarget, "This is a symlink target file.");
         symlink($linktarget, $linkdestination);
 
-        // Overwrite the existing archive with "--destination" and "--override".
+        // Overwrite the existing archive with "--destination" and "--overwrite".
         $this->drush(
             'archive:dump',
             [],
