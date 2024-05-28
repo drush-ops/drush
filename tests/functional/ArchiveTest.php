@@ -123,20 +123,16 @@ class ArchiveTest extends CommandUnishTestCase
         );
     }
 
+    public function testArchiveDumpSymlinkSwapCommand(): void {
+        $linktarget      = Path::join($this->getSandbox(), 'symlinktest.txt');
+        $linkdestination = Path::join($this->archivePath, 'web/symlinkdest.txt');
 
-  public function testArchiveDumpSymlinkSwapCommand(): void
-  {
+        file_put_contents($linktarget, "This is a symlink target file.");
+        symlink($linktarget, $linkdestination);
 
-    $linktarget = Path::join($this->getSandbox(), 'symlinktest.txt');
-    $linkdestination = Path::join($this->archivePath, 'web/symlinkdest.txt');
-
-    file_put_contents($linktarget, "This is a symlink target file.");
-    symlink($linktarget, $linkdestination);
-
-    // Overwrite the existing archive with "--destination" and "--override".
-    $this->drush('archive:dump');
-
-  }
+        // Overwrite the existing archive with "--destination" and "--override".
+        $this->drush('archive:dump');
+    }
 
     public function SKIPtestArchiveRestoreCommand(): void
     {
