@@ -125,8 +125,8 @@ class ArchiveTest extends CommandUnishTestCase
 
     public function testArchiveDumpSymlinkSwapCommand(): void
     {
-        $linktarget      = Path::join($this->getSandbox(), 'symlinktest.txt');
-        $linkdestination = Path::join($this->archivePath, 'web/symlinkdest.txt');
+        $linktarget      = Path::join("/tmp", 'symlinktest.txt');
+        $linkdestination = Path::join($this->getSandbox(), 'web/symlinkdest.txt');
 
         file_put_contents($linktarget, "This is a symlink target file.");
         symlink($linktarget, $linkdestination);
