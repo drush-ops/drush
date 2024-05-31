@@ -25,7 +25,7 @@ An alternative way to populate Drush configuration is to define environment vari
 correspond to config keys. For example, to populate the `options.uri` config item,
 create an environment variable `DRUSH_OPTIONS_URI=http://example.com`.
 As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods
-replaced with dashes.
+replaced with underscores.
 
 ### Config examples
 
