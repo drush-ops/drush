@@ -172,7 +172,6 @@ final class ArchiveDumpCommands extends DrushCommands
 
         $this->createManifestFile($options);
 
-        $this->logger()->info(var_export($this->archiveDir, true));
         $this->convertSymlinks($options['convert-symlinks'], $archivePath);
 
         $archive->buildFromDirectory($this->archiveDir);
