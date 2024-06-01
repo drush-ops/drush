@@ -596,11 +596,11 @@ final class ArchiveDumpCommands extends DrushCommands
     }
 
     /**
-     * Converts symlinks to full content for an archive.
+     * Converts symlinks to the linked files/folders for an archive.
      *
-     * @param $convert_symlinks
-     *  Whether to convert symlinks.
-     * @param $archivePath
+     * @param bool $convert_symlinks
+     *  Whether to convert all symlinks.
+     * @param string $archivePath
      *   The file path of the archive.
      *
      * @return void
