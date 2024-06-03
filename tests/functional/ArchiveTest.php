@@ -145,8 +145,8 @@ class ArchiveTest extends CommandUnishTestCase
             ])
         );
 
-      unlink($linkdestination);
-      unlink($linktarget);
+        unlink($linkdestination);
+        unlink($linktarget);
     }
 
     public function SKIPtestArchiveRestoreCommand(): void
