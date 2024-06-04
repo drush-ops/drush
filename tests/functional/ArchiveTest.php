@@ -123,24 +123,23 @@ class ArchiveTest extends CommandUnishTestCase
       // critical errors. To test for this, we manually create a symlink
       // and then run archive:dump. If it completes at all, the symlink fix
       // from Issue #5991 is working.
-      $linktarget      = Path::join($this->getSandbox(), '../symlinktest.txt');
-      $linkdestination = Path::join($this->getSandbox(), 'symlinkdest.txt');
+        $linktarget      = Path::join($this->getSandbox(), '../symlinktest.txt');
+        $linkdestination = Path::join($this->getSandbox(), 'symlinkdest.txt');
 
-      file_put_contents($linktarget, "This is a symlink target file.");
-      symlink($linktarget, $linkdestination);
+        file_put_contents($linktarget, "This is a symlink target file.");
+        symlink($linktarget, $linkdestination);
 
       // Overwrite the existing archive with "--destination" and "--overwrite".
-      $this->drush(
-        'archive:dump',
-        [],
-        array_merge($this->archiveDumpOptions, [
-          'destination' => $this->archivePath,
-          'overwrite' => null,
-        ])
-      );
+        $this->drush(
+            'archive:dump',
+            [],
+            array_merge($this->archiveDumpOptions, [
+            'destination' => $this->archivePath,
+            'overwrite' => null,
+            ])
+        );
 
-      unlink($linkdestination);
-      unlink($linktarget);
+        unlink($linkdestination);
+        unlink($linktarget);
     }
-
 }

@@ -268,9 +268,9 @@ final class ArchiveDumpCommands extends DrushCommands
         foreach ($iterator as $file) {
             if (
                 $file->isLink() && ($convert_symlinks === true || strpos(
-                                                                      $file->getPathName(),
-                                                                      $archivePath
-                                                                  ) == 0)
+                    $file->getPathName(),
+                    $archivePath
+                ) == 0)
             ) {
                 $target = readlink($file->getPathname());
 
@@ -280,9 +280,9 @@ final class ArchiveDumpCommands extends DrushCommands
                     file_put_contents($file->getPathname(), $content);
                 } elseif (
                     is_dir($target) && ($convert_symlinks === true || strpos(
-                                                                          $file->getPathName(),
-                                                                          $archivePath
-                                                                      ) == 0)
+                        $file->getPathName(),
+                        $archivePath
+                    ) == 0)
                 ) {
                     $path = $file->getPathname();
                     unlink($path);
