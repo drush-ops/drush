@@ -254,8 +254,8 @@ final class ArchiveDumpCommands extends DrushCommands
      * @return void
      */
     public function convertSymlinks(
-        $convert_symlinks,
-        $archivePath
+        bool $convert_symlinks,
+        string $archivePath
     ): void {
         // If symlinks are disabled, convert symlinks to full content.
         $this->logger()->info(dt('Converting symlinks...'));
