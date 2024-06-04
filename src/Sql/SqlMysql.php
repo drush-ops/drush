@@ -229,7 +229,7 @@ EOT;
 
             // Run mysqldump again and append output if we need some structure only tables.
             if (!empty($structure_tables)) {
-                $exec .= " && mysqldump " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
+                $exec .= " && " . $this->dumpProgram() . " " . $only_db_name . " --no-data $extra " . implode(' ', $structure_tables);
                 $parens = true;
             }
         }
