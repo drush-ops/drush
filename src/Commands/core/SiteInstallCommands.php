@@ -50,7 +50,7 @@ final class SiteInstallCommands extends DrushCommands
      * Install Drupal along with modules/themes/configuration/profile.
      */
     #[CLI\Command(name: self::INSTALL, aliases: ['si', 'sin', 'site-install'])]
-    #[CLI\Argument(name: 'profile', description: 'An install profile name. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
+    #[CLI\Argument(name: 'profile', description: 'An install profile name, or a path to a directory containing a recipe. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
     #[CLI\Option(name: 'db-url', description: 'A Drupal 10 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
@@ -70,12 +70,13 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Usage(name: 'drush si --account-pass=mom', description: 'Re-install with specified uid1 password.')]
     #[CLI\Usage(name: 'drush si --existing-config', description: 'Install based on the yml files stored in the config export/import directory.')]
     #[CLI\Usage(name: 'drush si standard install_configure_form.enable_update_status_emails=NULL', description: 'Disable email notification during install and later. If your server has no mail transfer agent, this gets rid of an error during install.')]
+    #[CLI\Usage(name: 'drush si core/recipes/standard', description: 'Install from a core recipe.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     #[CLI\Kernel(name: Kernels::INSTALLER)]
     public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $profile;
-        $profile = array_shift($additional) ?: '';
+        $recipeOrProfile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ($additional as $arg) {
             list($key, $value) = explode('=', $arg, 2);
@@ -91,8 +92,7 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         $this->serverGlobals($this->bootstrapManager->getUri());
-        $profile = $this->determineProfile($profile, $options);
-
+        list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $options);
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
         // Was giving error during validate() so its here for now.
@@ -106,7 +106,7 @@ final class SiteInstallCommands extends DrushCommands
 
         $settings = [
             'parameters' => [
-                'profile' => $profile,
+                'profile' => $profile ?? '',
                 'langcode' => $options['locale'],
                 'existing_config' => $options['existing-config'],
             ],
@@ -130,6 +130,10 @@ final class SiteInstallCommands extends DrushCommands
             ],
             'config_install_path' => $options['config-dir'],
         ];
+
+        if ($recipe) {
+          $settings['parameters']['recipe'] = $recipe;
+        }
 
         $sql = SqlBase::create($options);
         if ($sql) {
@@ -182,6 +186,32 @@ final class SiteInstallCommands extends DrushCommands
         $this->logger()->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
     }
 
+    protected function determineRecipeOrProfile($recipeOrProfile, $options): array
+    {
+        if ($this->validateRecipe($recipeOrProfile)) {
+            return [$recipeOrProfile, null];
+        }
+
+        return [null, $this->determineProfile($recipeOrProfile, $options)];
+    }
+
+    /**
+     * Validates a user provided recipe.
+     *
+     * @param string $recipe
+     *   The path to the recipe to validate.
+     *
+     * @return bool
+     *   TRUE if the recipe exists, FALSE if not.
+     */
+    protected function validateRecipe(string $recipe): bool {
+        // It is impossible to validate a recipe fully at this point because that
+        // requires a container.
+        if (!is_dir($recipe) || !is_file($recipe . '/recipe.yml')) {
+            return FALSE;
+        }
+        return TRUE;
+    }
 
     protected function determineProfile($profile, $options): string|bool
     {
@@ -280,11 +310,14 @@ final class SiteInstallCommands extends DrushCommands
                 global $install_state;
                 try {
                     // Do some install booting to get basic services available.
-                    $profile = array_shift($commandData->input()->getArgument('profile')) ?: '';
-                    $this->determineProfile($profile, $commandData->input()->getOptions());
+                    $recipeOrProfile = array_shift($commandData->input()->getArgument('profile')) ?: '';
+                    list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $commandData->input()->getOptions());
                     require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
-                    $install_state['parameters']['profile'] = $profile;
+                    $install_state['parameters']['profile'] = $profile ?? '';
+                    if ($recipe) {
+                        $install_state['parameters']['recipe'] = $recipe;
+                    }
                     install_begin_request($this->autoloader, $install_state);
 
                     // Get the installable drivers.
