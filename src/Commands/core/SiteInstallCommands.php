@@ -132,7 +132,7 @@ final class SiteInstallCommands extends DrushCommands
         ];
 
         if ($recipe) {
-          $settings['parameters']['recipe'] = $recipe;
+            $settings['parameters']['recipe'] = $recipe;
         }
 
         $sql = SqlBase::create($options);
@@ -204,13 +204,14 @@ final class SiteInstallCommands extends DrushCommands
      * @return bool
      *   TRUE if the recipe exists, FALSE if not.
      */
-    protected function validateRecipe(string $recipe): bool {
+    protected function validateRecipe(string $recipe): bool
+    {
         // It is impossible to validate a recipe fully at this point because that
         // requires a container.
         if (!is_dir($recipe) || !is_file($recipe . '/recipe.yml')) {
-            return FALSE;
+            return false;
         }
-        return TRUE;
+        return true;
     }
 
     protected function determineProfile($profile, $options): string|bool
