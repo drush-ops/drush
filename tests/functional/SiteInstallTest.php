@@ -62,5 +62,4 @@ class SiteInstallTest extends CommandUnishTestCase
         $roles = $this->getOutputFromJSON();
         $this->assertEquals('Site editor', $roles['content_editor']['label']);
     }
-
 }
