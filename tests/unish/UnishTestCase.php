@@ -678,13 +678,16 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
+            'profile' => 'testing', // or path to recipe directory
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;
         }
-        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), SiteInstallCommands::INSTALL, 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        $recipeOrProfile = $options['profile'];
+        unset($options['profile']);
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), SiteInstallCommands::INSTALL, $recipeOrProfile, 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
         $this->process = $process;
