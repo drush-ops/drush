@@ -41,10 +41,14 @@ class SiteInstallTest extends CommandUnishTestCase
     }
 
     /**
-     * Test functionality of installing a site with a core recipe.
+     * Test functionality of installing a site with a recipe.
      */
     public function testSiteInstallRecipe()
     {
+        if (version_compare(\Drupal::VERSION, '10.3.0') < 0) {
+            $this->markTestSkipped('Recipes require Drupal 10.3.0 or later.');
+        }
+
         // Install Drupal with our test recipe.
         $recipeDir = $this->fixturesDir() . '/recipes/test_recipe';
         $this->installDrupal('dev', true, ['profile' => $recipeDir]);
