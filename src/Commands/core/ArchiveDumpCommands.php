@@ -131,7 +131,7 @@ final class ArchiveDumpCommands extends DrushCommands
             ];
         }
 
-        $this->convertSymlinks($options['convert-symlinks'], $archivePath);
+        $this->convertSymlinks($options['convert-symlinks']);
 
         return $this->createArchiveFile($components, $options);
     }
@@ -248,14 +248,11 @@ final class ArchiveDumpCommands extends DrushCommands
      *
      * @param bool $convert_symlinks
      *  Whether to convert all symlinks.
-     * @param string $archivePath
-     *   The file path of the archive.
      *
      * @return void
      */
     public function convertSymlinks(
         bool $convert_symlinks,
-        string $archivePath
     ): void {
         // If symlinks are disabled, convert symlinks to full content.
         $this->logger()->info(dt('Converting symlinks...'));
@@ -268,9 +265,9 @@ final class ArchiveDumpCommands extends DrushCommands
         foreach ($iterator as $file) {
             if (
                 $file->isLink() && ($convert_symlinks === true || strpos(
-                    $file->getPathName(),
-                    $archivePath
-                ) == 0)
+                    $file->getLinkTarget(),
+                    $this->archiveDir
+                ) !== 0)
             ) {
                 $target = readlink($file->getPathname());
 
@@ -280,9 +277,9 @@ final class ArchiveDumpCommands extends DrushCommands
                     file_put_contents($file->getPathname(), $content);
                 } elseif (
                     is_dir($target) && ($convert_symlinks === true || strpos(
-                        $file->getPathName(),
-                        $archivePath
-                    ) == 0)
+                        $file->getLinkTarget(),
+                        $this->archiveDir
+                    ) !== 0)
                 ) {
                     $path = $file->getPathname();
                     unlink($path);

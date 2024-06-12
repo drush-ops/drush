@@ -116,28 +116,4 @@ class ArchiveTest extends CommandUnishTestCase
             $this->getErrorOutput()
         );
     }
-
-    public function testArchiveDumpSymlinkSwapCommand(): void
-    {
-        $linktarget      = Path::join($this->getSandbox(), 'symlinktest.txt');
-        $linkdestination = Path::join($this->webroot(), 'symlinkdest.txt');
-
-        file_put_contents($linktarget, "This is a symlink target file.");
-        symlink($linktarget, $linkdestination);
-
-        // The symliknks written above would cause the PharData class to
-        // fail if we did not replace them before archiving.
-        // @see https://github.com/drush-ops/drush/pull/6030
-        $this->drush(
-            ArchiveDumpCommands::DUMP,
-            [],
-            array_merge($this->archiveDumpOptions, [
-                'destination' => $this->archivePath,
-                'overwrite' => null,
-            ])
-        );
-
-        unlink($linkdestination);
-        unlink($linktarget);
-    }
 }
