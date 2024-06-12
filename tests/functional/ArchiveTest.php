@@ -119,17 +119,15 @@ class ArchiveTest extends CommandUnishTestCase
 
     public function testArchiveDumpSymlinkSwapCommand(): void
     {
-        // Sites that contain symlinks to files outside the project root cause
-        // critical errors. To test for this, we manually create a symlink
-        // and then run archive:dump. If it completes at all, the symlink fix
-        // from Issue #5991 is working.
         $linktarget      = Path::join($this->getSandbox(), 'symlinktest.txt');
         $linkdestination = Path::join($this->webroot(), 'symlinkdest.txt');
 
         file_put_contents($linktarget, "This is a symlink target file.");
         symlink($linktarget, $linkdestination);
 
-        // We expect this to fail unless the symlink at the webroot is replaced.
+        // The symliknks written above would cause the PharData class to
+        // fail if we did not replace them before archiving.
+        // @see https://github.com/drush-ops/drush/pull/6030
         $this->drush(
             ArchiveDumpCommands::DUMP,
             [],
