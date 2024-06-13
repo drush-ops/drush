@@ -79,7 +79,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
+                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site. Note: this option is deprecated and will be removed. ')
             );
 
 
