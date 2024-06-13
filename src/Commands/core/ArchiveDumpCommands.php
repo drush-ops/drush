@@ -242,7 +242,6 @@ final class ArchiveDumpCommands extends DrushCommands
         );
     }
 
-
     /**
      * Converts symlinks to the linked files/folders for an archive.
      *
@@ -275,12 +274,7 @@ final class ArchiveDumpCommands extends DrushCommands
                     $content = file_get_contents($target);
                     unlink($file->getPathname());
                     file_put_contents($file->getPathname(), $content);
-                } elseif (
-                    is_dir($target) && ($convert_symlinks === true || strpos(
-                        $file->getLinkTarget(),
-                        $this->archiveDir
-                    ) !== 0)
-                ) {
+                } elseif (is_dir($target)) {
                     $path = $file->getPathname();
                     unlink($path);
                     mkdir($path, 0755);
