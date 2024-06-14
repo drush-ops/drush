@@ -5281,7 +5281,7 @@
 <h2 id="none">none<a class="headerlink" href="#none" title="Permanent link">&para;</a></h2>
 <p>Only run Drush <em>preflight</em>, without considering Drupal at all. Any code that operates on the Drush installation, and not specifically any Drupal directory, should bootstrap to this phase. This Attribute and value may also be used on a command <em>class</em> when it wants to load before Drupal bootstrap is started. Commands that ship inside Drupal modules always bootstrap to full, regardless of <em>none</em> value.</p>
 <h2 id="root">root<a class="headerlink" href="#root" title="Permanent link">&para;</a></h2>
-<p>Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.</p>
+<p>Set up and test for a valid Drupal root. The root is usually discovered via the <a href="https://getcomposer.org/doc/07-runtime.md#knowing-the-path-in-which-a-package-is-installed">Composer Runtime API</a>, looking for the path of the__drupal/core__ package. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.</p>
 <h2 id="site">site<a class="headerlink" href="#site" title="Permanent link">&para;</a></h2>
 <p>Set up a Drupal site directory and the correct environment variables to allow Drupal to find the configuration file. If no site is specified with the --uri options, Drush will assume the site is 'default', which mimics Drupal's behaviour.  Note that it is necessary to specify a full URI, e.g. --uri=<a href="http://example.com">http://example.com</a>, in order for certain Drush commands and Drupal modules to behave correctly. See the <a href="../using-drush-configuration/">Drush configuration</a> for more information. Any code that needs to modify or interact with a specific Drupal site's settings.php file should bootstrap to this phase.</p>
 <h2 id="configuration">configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
@@ -5298,7 +5298,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 9, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 14, 2024</span>
       
     
   </small>

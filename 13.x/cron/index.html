@@ -5261,7 +5261,7 @@
 <h2 id="using-quiet">Using --quiet<a class="headerlink" href="#using-quiet" title="Permanent link">&para;</a></h2>
 <p>By default, Drush will print a success message when the run of cron is completed. The --quiet flag will suppress these and other progress messages, again avoiding an unnecessary email message.</p>
 <h2 id="specifying-the-drupal-site-to-run">Specifying the Drupal site to run<a class="headerlink" href="#specifying-the-drupal-site-to-run" title="Permanent link">&para;</a></h2>
-<p>There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses <code>cd [DOCROOT]</code>, but you could also use the --root and --uri flags.</p>
+<p>The Drupal root is derived from which <code>drush</code> you call. The Drupal docroot is usually discovered via the <a href="https://getcomposer.org/doc/07-runtime.md#knowing-the-path-in-which-a-package-is-installed">Composer Runtime API</a>, looking for the path of the__drupal/core__ package. Use the --uri to control which multisite to target within the docroot (if applicable).</p>
 <h2 id="avoiding-maintenance-mode">Avoiding Maintenance mode<a class="headerlink" href="#avoiding-maintenance-mode" title="Permanent link">&para;</a></h2>
 <p>The call to maint:status checks to see if the site is in maintenance mode. If yes, cron will not run and the command returns a failure. It is not safe to run cron while the site is in maintenance. See <a href="https://drupal.slack.com/archives/C45SW3FLM/p1675287662331809">https://drupal.slack.com/archives/C45SW3FLM/p1675287662331809</a>.</p>
 
@@ -5270,7 +5270,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 15, 2023</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 14, 2024</span>
       
     
   </small>
