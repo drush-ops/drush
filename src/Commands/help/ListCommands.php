@@ -62,7 +62,7 @@ class ListCommands extends DrushCommands
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
             $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
             if (!Drush::bootstrapManager()->hasBootstrapped((DrupalBootLevels::ROOT))) {
-                $this->io()->note(dt('Drupal root not found. Pass --root or a @siteAlias in order to see Drupal-specific commands.'));
+                $this->io()->note(dt('Drupal root not found. In order to see Drupal-specific commands, make sure that the `drush` you are calling is a dependency in your site\'s composer.json. The --uri option might also help.'));
             }
             return null;
         } elseif ($options['format'] == 'xml') {
