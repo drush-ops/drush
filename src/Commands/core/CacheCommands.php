@@ -214,7 +214,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             if (!$this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $all_types = $this->getTypes(true);
                 if (array_key_exists($type, $all_types)) {
-                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", ['!type' => $type]));
+                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Make sure that the `drush` you are calling is a dependency of a your site\'s composer.json. The --uri option might also help.", ['!type' => $type]));
                 } else {
                     throw new \Exception(dt("'!type' cache is not a valid cache type. There may be more cache types available if you select a working Drupal site.", ['!type' => $type]));
                 }
