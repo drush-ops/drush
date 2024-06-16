@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>SqlTableSelectionTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php">View source</a>)
+    <strong>SqlTableSelectionTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php">View source</a>)
 </p>
 
         
@@ -175,7 +175,7 @@ for structure only, or have structure and data dumped.</p></p>                </
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getExpandedTableSelection">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L25">at line 25</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L25">at line 25</a></div>
         <code>                    array
     <strong>getExpandedTableSelection</strong>(array $options, array $all_tables)
         </code>
@@ -210,7 +210,7 @@ option-provided lists into a list of actual table names.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>array of tables with each table name in the appropriate
+            <td><p>An array of tables with each table name in the appropriate
 element of the array.</p></td>
         </tr>
     </table>
@@ -224,7 +224,7 @@ element of the array.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_expandAndFilterTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L54">at line 54</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L54">at line 54</a></div>
         <code>                    array
     <strong>expandAndFilterTables</strong>(array $tables, array $db_tables)
         </code>
@@ -261,7 +261,7 @@ that exist in the database.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>array of tables with non-existant tables removed.</p></td>
+            <td><p>An array of tables with non-existent tables removed.</p></td>
         </tr>
     </table>
 
@@ -274,7 +274,7 @@ that exist in the database.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_expandWildcardTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L73">at line 73</a></div>
         <code>                    array
     <strong>expandWildcardTables</strong>(array $tables, array $db_tables)
         </code>
@@ -308,7 +308,7 @@ that exist in the database.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>$tables array with wildcards resolved to real table names.</p></td>
         </tr>
     </table>
 
@@ -321,7 +321,7 @@ that exist in the database.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_filterTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L100">at line 100</a></div>
         <code>                    array
     <strong>filterTables</strong>(array $tables, array $db_tables)
         </code>
@@ -355,7 +355,7 @@ that exist in the database.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>array with only valid table names (i.e. all of which actually exist in
+            <td><p>An array with only valid table names (i.e. all of which actually exist in
 the database).</p></td>
         </tr>
     </table>
@@ -369,7 +369,7 @@ the database).</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTableSelection">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L125">at line 125</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L125">at line 125</a></div>
         <code>                    array
     <strong>getTableSelection</strong>(array $options)
         </code>
@@ -405,7 +405,7 @@ for structure only, or have structure and data dumped.</p></p>                <p
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>array of table names with each table name in the appropriate
+            <td><p>An array of table names with each table name in the appropriate
 element of the array.</p></td>
         </tr>
     </table>
@@ -419,7 +419,7 @@ element of the array.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getRawTableList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Sql/SqlTableSelectionTrait.php#L148">at line 148</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlTableSelectionTrait.php#L148">at line 148</a></div>
         <code>                    array
     <strong>getRawTableList</strong>(string $option_name, array $options)
         </code>
@@ -438,7 +438,8 @@ element of the array.</p></td>
                     <tr>
                 <td>string</td>
                 <td>$option_name</td>
-                <td></td>
+                <td><p>The option name to check: skip-tables, structure-tables
+or tables.  This function will check both <em>-key and </em>-list.</p></td>
             </tr>
                     <tr>
                 <td>array</td>
@@ -453,7 +454,7 @@ element of the array.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>an array of tables based on the first option
+            <td><p>Returns an array of tables based on the first option
 found, or an empty array if there were no matches.</p></td>
         </tr>
     </table>
