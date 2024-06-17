@@ -325,7 +325,7 @@ final class WatchdogCommands extends DrushCommands
                 foreach ($severities as $key => $value) {
                     $levels[] = "$value($key)";
                 }
-                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.";
+                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.\nEither use the default language levels, or use a number.";
                 throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
             $conditions[] = "severity $operator :severity";
