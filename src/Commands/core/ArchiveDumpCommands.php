@@ -263,7 +263,7 @@ final class ArchiveDumpCommands extends DrushCommands
 
         foreach ($iterator as $file) {
             if (
-                $file->isLink() && ($convert_symlinks === true || strpos(
+                $file->isLink() && ($convert_symlinks || strpos(
                     $file->getLinkTarget(),
                     $this->archiveDir
                 ) !== 0)
