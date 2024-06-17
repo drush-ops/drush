@@ -187,6 +187,7 @@ final class PmCommands extends DrushCommands
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: PmCommands::UNINSTALL)]
     public function validateUninstall(CommandData $commandData): void
     {
+        $list = [];
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
