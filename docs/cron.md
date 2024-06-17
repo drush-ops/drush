@@ -45,7 +45,7 @@ By default, Drush will print a success message when the run of cron is completed
 Specifying the Drupal site to run
 ---------------------------------
 
-There are many ways to tell Drush which Drupal site to select for the active command, and any may be used here. The example uses `cd [DOCROOT]`, but you could also use the --root and --uri flags.
+The Drupal root is derived from which `drush` you call. The Drupal docroot is usually discovered via the [Composer Runtime API](https://getcomposer.org/doc/07-runtime.md#knowing-the-path-in-which-a-package-is-installed), looking for the path of the__drupal/core__ package. Use the --uri to control which multisite to target within the docroot (if applicable).
 
 Avoiding Maintenance mode
 ---------------------------------
