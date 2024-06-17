@@ -55,7 +55,7 @@ class ArchiveSymlinkTest extends CommandUnishTestCase
 
     public function testArchiveDumpSymlinkReplaceCommand(): void
     {
-        // The symliknks written in setup would cause the PharData class to
+        // The symlinks written in setup would cause the PharData class to
         // fail if we did not replace them before archiving.
         // @see https://github.com/drush-ops/drush/pull/6030
         $this->drush(
