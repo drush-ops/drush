@@ -248,7 +248,6 @@ final class ArchiveDumpCommands extends DrushCommands
      * @param bool $convert_symlinks
      *  Whether to convert all symlinks.
      *
-     * @return void
      */
     public function convertSymlinks(
         bool $convert_symlinks,
