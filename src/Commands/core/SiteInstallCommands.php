@@ -204,7 +204,7 @@ final class SiteInstallCommands extends DrushCommands
         // not, we'll assume the user was trying to select a recipe that could
         // not be found.
         if (!empty($recipeOrProfile) && !$this->isValidProfileName($recipeOrProfile)) {
-            throw new \Exception(dt('Could not find a recipe.yml file for @recipe', ['@recipe' => $recipeOrProfile]));           
+            throw new \Exception(dt('Could not find a recipe.yml file for @recipe', ['@recipe' => $recipeOrProfile]));
         }
 
         return [null, $this->determineProfile($recipeOrProfile, $options)];
@@ -217,7 +217,8 @@ final class SiteInstallCommands extends DrushCommands
      * valid, we will pass it through to Drupal and let the system tell us
      * if it is not allowed.
      */
-    protected function isValidProfileName(string $profile) {
+    protected function isValidProfileName(string $profile)
+    {
         return preg_match('/^[a-z][a-z0-9_]*$/', $profile);
     }
 
