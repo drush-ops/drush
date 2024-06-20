@@ -19,11 +19,7 @@ class ArchiveTest extends CommandUnishTestCase
     use FSUtils;
 
     protected string $archivePath;
-    protected string $restorePath;
-    protected string $extractPath;
     protected array $archiveDumpOptions;
-    protected array $archiveRestoreOptions;
-    protected array $fixtureDatabaseSettings;
 
     /**
      * @inheritdoc
@@ -39,42 +35,6 @@ class ArchiveTest extends CommandUnishTestCase
         ];
 
         $this->archivePath = Path::join($this->getSandbox(), 'archive.tar.gz');
-        $this->drush(
-            'archive:dump',
-            [],
-            array_merge($this->archiveDumpOptions, [
-                'destination' => $this->archivePath,
-                'overwrite' => null,
-            ])
-        );
-        $actualArchivePath = Path::canonicalize($this->getOutput());
-        $this->assertEquals($this->archivePath, $actualArchivePath);
-
-        $this->restorePath = Path::join($this->getSandbox(), 'restore');
-        $this->removeDir($this->restorePath);
-
-        $this->extractPath = Path::join($this->getSandbox(), 'extract');
-        $this->removeDir($this->extractPath);
-        $archive = new PharData($this->archivePath);
-        $archive->extractTo($this->extractPath);
-
-        $this->drush(
-            'status',
-            [],
-            ['format' => 'json']
-        );
-        $this->fixtureDatabaseSettings = json_decode($this->getOutput(), true);
-        $this->fixtureDatabaseSettings['db-name'] = 'archive_dump_restore_test_' .  mt_rand();
-        $dbUrlParts = explode(':', self::getDbUrl());
-        $this->fixtureDatabaseSettings['db-password'] = substr($dbUrlParts[2], 0, (int)strpos($dbUrlParts[2], '@'));
-        $fixtureDbUrl = self::getDbUrl() . '/' . $this->fixtureDatabaseSettings['db-name'];
-
-        $this->archiveRestoreOptions = [
-            'destination-path' => $this->restorePath,
-            'overwrite' => null,
-            'site-subdir' => 'dev',
-            'db-url' => $fixtureDbUrl,
-        ];
     }
 
     public function testArchiveDumpCommand(): void
