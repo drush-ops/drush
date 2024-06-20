@@ -50,7 +50,7 @@ final class SiteInstallCommands extends DrushCommands
      * Install Drupal along with modules/themes/configuration/profile.
      */
     #[CLI\Command(name: self::INSTALL, aliases: ['si', 'sin', 'site-install'])]
-    #[CLI\Argument(name: 'profile', description: 'An install profile name, or a path to a directory containing a recipe. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
+    #[CLI\Argument(name: 'recipeOrProfile', description: 'An install profile name, or a path to a directory containing a recipe. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. The key is in the form <info>[form name].[parameter name]</info>')]
     #[CLI\Option(name: 'db-url', description: 'A Drupal 10 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
@@ -73,9 +73,9 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Usage(name: 'drush si core/recipes/standard', description: 'Install from the core Standard recipe.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     #[CLI\Kernel(name: Kernels::INSTALLER)]
-    public function install(array $profile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
+    public function install(array $recipeOrProfile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
-        $additional = $profile;
+        $additional = $recipeOrProfile;
         $recipeOrProfile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ($additional as $arg) {
@@ -132,6 +132,9 @@ final class SiteInstallCommands extends DrushCommands
         ];
 
         if ($recipe) {
+            if (version_compare(\Drupal::VERSION, '10.3.0') < 0) {
+                throw new \Exception('Recipes are only supported on Drupal 10.3.0 and later.');
+            }
             $settings['parameters']['recipe'] = $recipe;
         }
 
@@ -195,7 +198,27 @@ final class SiteInstallCommands extends DrushCommands
             return [$recipeOrProfile, null];
         }
 
+        // If $recipeOrProfile is not a recipe, we'll check to see if it is
+        // a profile; however, first we will check and see if the parameter
+        // matches the required naming conventions for a profile. If it does
+        // not, we'll assume the user was trying to select a recipe that could
+        // not be found.
+        if (!empty($recipeOrProfile) && !$this->isValidProfileName($recipeOrProfile)) {
+            throw new \Exception(dt('Could not find a recipe.yml file for @recipe', ['@recipe' => $recipeOrProfile]));           
+        }
+
         return [null, $this->determineProfile($recipeOrProfile, $options)];
+    }
+
+    /**
+     * Determine whether the provided profile name meets naming conventions.
+     *
+     * We do not check for reserved names; if a profile name _might_ be
+     * valid, we will pass it through to Drupal and let the system tell us
+     * if it is not allowed.
+     */
+    protected function isValidProfileName(string $profile) {
+        return preg_match('/^[a-z][a-z0-9_]*$/', $profile);
     }
 
     /**
@@ -314,7 +337,7 @@ final class SiteInstallCommands extends DrushCommands
                 global $install_state;
                 try {
                     // Do some install booting to get basic services available.
-                    $recipeOrProfile = array_shift($commandData->input()->getArgument('profile')) ?: '';
+                    $recipeOrProfile = array_shift($commandData->input()->getArgument('recipeOrProfile')) ?: '';
                     list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $commandData->input()->getOptions());
                     require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
