@@ -79,7 +79,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         $this->getDefinition()
             ->addOption(
-                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site.')
+                new InputOption('--root', '-r', InputOption::VALUE_REQUIRED, 'The Drupal root for this site. Note: this option is deprecated and will be removed. ')
             );
 
 
@@ -225,7 +225,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
             if (!$this->bootstrapManager()->hasBootstrapped(DrupalBootLevels::ROOT)) {
                 // Unable to progress in the bootstrap. Give friendly error message.
-                throw new CommandNotFoundException(dt('Command !command was not found. Pass --root or a @siteAlias in order to run Drupal-specific commands.', ['!command' => $name]));
+                throw new CommandNotFoundException(dt('Command !command was not found. Make sure that the `drush` you are calling is a dependency of a your site\'s composer.json', ['!command' => $name]));
             }
 
             // Try to find it again, now that we bootstrapped as far as possible.
