@@ -475,7 +475,7 @@ final class SiteInstallCommands extends DrushCommands
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            // @phpstan-ignore booleanAnd.alwaysFalse notIdentical.alwaysFalse
+            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
