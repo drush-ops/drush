@@ -26,11 +26,8 @@ interface SanitizePluginInterface
     /**
      * Use #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
      *
-     * @param array $messages An array of messages to show during confirmation.
+     * @param array $messages An array of messages to show during confirmation. Make changes by reference.
      * @param InputInterface $input The effective commandline input for this request.
-     *
-     * @return String[]
-     *   An array of messages.
      */
     public function messages(array &$messages, InputInterface $input);
 }

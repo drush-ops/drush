@@ -30,7 +30,7 @@ use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 
-class MigrateRunnerCommands extends DrushCommands
+final class MigrateRunnerCommands extends DrushCommands
 {
     use AutowireTrait;
 

@@ -131,6 +131,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
         if (!$this->bootstrap) {
             $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         }
+        assert($this->bootstrap instanceof DrupalBoot8);
         return $this->bootstrap;
     }
 
