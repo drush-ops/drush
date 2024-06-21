@@ -38,20 +38,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     use LoggerAwareTrait;
     use ConfigAwareTrait;
 
-    /** @var BootstrapManager */
-    protected $bootstrapManager;
-
-    /** @var SiteAliasManager */
-    protected $aliasManager;
-
-    /** @var RedispatchHook */
-    protected $redispatchHook;
-
-    /** @var TildeExpansionHook */
-    protected $tildeExpansionHook;
-
-    /** @var ServiceManager */
-    protected $serviceManager;
+    protected ?BootstrapManager $bootstrapManager;
+    protected ?SiteAliasManager $aliasManager;
+    protected ?RedispatchHook $redispatchHook;
+    protected ?TildeExpansionHook $tildeExpansionHook;
+    protected ?ServiceManager $serviceManager;
 
     /**
      * Add global options to the Application and their default values to Config.

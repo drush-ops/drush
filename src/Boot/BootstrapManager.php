@@ -17,30 +17,15 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     use LoggerAwareTrait;
     use ConfigAwareTrait;
 
-    /**
-     * @var DrushDrupalFinder
-     */
-    protected $drupalFinder;
-
+    protected ?DrushDrupalFinder $drupalFinder;
     /**
      * @var Boot[]
      */
-    protected $bootstrapCandidates = [];
+    protected array $bootstrapCandidates = [];
+    protected ?Boot $bootstrap;
+    protected ?int $phase;
 
-    /**
-     * @var Boot
-     */
-    protected $bootstrap;
-
-    /**
-     * @var int
-     */
-    protected $phase;
-
-    /**
-     * @return int
-     */
-    public function getPhase()
+    public function getPhase(): int
     {
         if (!$this->hasBootstrap()) {
             return DrupalBootLevels::NONE;
@@ -128,7 +113,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      */
     public function bootstrap(): DrupalBoot8
     {
-        if (!$this->bootstrap) {
+        if (!isset($this->bootstrap)) {
             $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         }
         assert($this->bootstrap instanceof DrupalBoot8);
@@ -175,13 +160,9 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      */
     public function bootstrapPhases(bool $function_names = false): array
     {
-        $result = [];
-
-        if ($bootstrap = $this->bootstrap()) {
-            $result = $bootstrap->bootstrapPhases();
-            if (!$function_names) {
-                $result = array_keys($result);
-            }
+        $result = $this->bootstrap()->bootstrapPhases();
+        if (!$function_names) {
+            $result = array_keys($result);
         }
         return $result;
     }

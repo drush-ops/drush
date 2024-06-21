@@ -75,7 +75,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
             ]));
         }
 
-        /** @var BaseFieldOverride|BaseFieldDefinition $definition */
+        /** @var BaseFieldOverride|BaseFieldDefinition|null $definition */
         $definition = BaseFieldOverride::loadByName($entityType, $bundle, $fieldName)
             ?? $this->getBaseFieldDefinition($entityType, $fieldName);
 
