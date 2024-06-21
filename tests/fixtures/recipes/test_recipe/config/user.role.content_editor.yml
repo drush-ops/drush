@@ -1,0 +1,18 @@
+langcode: en
+status: true
+dependencies: {  }
+id: content_editor
+label: 'Site editor'
+weight: 2
+is_admin: false
+permissions:
+  - 'access administration pages'
+  - 'access content overview'
+  - 'access contextual links'
+  - 'access files overview'
+  - 'access toolbar'
+  - 'delete own files'
+  - 'revert all revisions'
+  - 'view all revisions'
+  - 'view own unpublished content'
+  - 'view the administration theme'

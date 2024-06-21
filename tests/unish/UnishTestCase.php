@@ -7,6 +7,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
+use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
@@ -661,13 +662,16 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
+            'recipeOrProfile' => 'testing', // or path to recipe directory
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
         ];
         if ($level = $this->logLevel()) {
             $options[$level] = true;
         }
-        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), 'site:install', 'testing', 'install_configure_form.enable_update_status_emails=NULL'], $options);
+        $recipeOrProfile = $options['recipeOrProfile'];
+        unset($options['recipeOrProfile']);
+        $process = $this->processManager()->siteProcess($sutAlias, [self::getDrush(), SiteInstallCommands::INSTALL, $recipeOrProfile, 'install_configure_form.enable_update_status_emails=NULL'], $options);
         // Set long timeout because Xdebug slows everything.
         $process->setTimeout(0);
         $this->process = $process;
