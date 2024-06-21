@@ -244,7 +244,7 @@ class Preflight
      */
     public function preflight($argv): array
     {
-        // Fail fast if there is anything in our environmen t that does not check out
+        // Fail fast if there is anything in our environment that does not check out
         $this->verify->verify($this->environment);
 
         // Get the preflight args and begin collecting configuration files.
