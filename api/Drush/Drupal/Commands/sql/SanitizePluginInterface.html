@@ -80,21 +80,26 @@
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>SanitizePluginInterface    
+        <h1>SanitizePluginInterface    <small><span class="label label-danger">deprecated</span></small>
             </h1>
     </div>
 
     
     <p>        interface
-    <strong>SanitizePluginInterface</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php">View source</a>)
+    <strong>SanitizePluginInterface</strong>        implements        <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html"><abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Commands/sql/SanitizePluginInterface.php">View source</a>)
 </p>
 
         
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td>use</td>
+                    <td>\Drush\Commands\sql\sanitize\SanitizePluginInterface instead.</td>
+                </tr>
+                    </p>
     
         
 
-            <div class="description">
-            <p><p>Implement this interface when building a Drush sql-sanitize plugin.</p></p>                    </div>
             
         
     
@@ -110,17 +115,19 @@
                     <a href="#method_sanitize">sanitize</a>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         
                                             <p><p>Run your sanitization logic using standard Drupal APIs.</p></p>                </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_sanitize">
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    string[]
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_messages">messages</a>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         
                                             <p><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]</p></p>                </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_messages">
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a></small></div>
             </div>
             </div>
 
@@ -130,7 +137,8 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_sanitize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L24">at line 24</a></div>
+        <div class="location">in <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_sanitize">
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L24">at line 24</a></div>
         <code>                    
     <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
         </code>
@@ -169,8 +177,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Drupal/Commands/sql/SanitizePluginInterface.php#L35">at line 35</a></div>
-        <code>                    string[]
+        <div class="location">in <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_messages">
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L32">at line 32</a></div>
+        <code>                    
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
     </h3>
@@ -188,7 +197,7 @@
                     <tr>
                 <td>array</td>
                 <td>$messages</td>
-                <td><p>An array of messages to show during confirmation.</p></td>
+                <td><p>An array of messages to show during confirmation. Make changes by reference.</p></td>
             </tr>
                     <tr>
                 <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
@@ -198,15 +207,6 @@
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string[]</td>
-            <td><p>An array of messages.</p></td>
-        </tr>
-    </table>
-
             
             
             
