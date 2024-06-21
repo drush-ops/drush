@@ -50,7 +50,7 @@ final class SiteInstallCommands extends DrushCommands
      * Install Drupal along with modules/themes/configuration/profile.
      */
     #[CLI\Command(name: self::INSTALL, aliases: ['si', 'sin', 'site-install'])]
-    #[CLI\Argument(name: 'recipeOrProfile', description: 'An install profile name, or a path to a directory containing a recipe. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. Use the format <info>[form name].[parameter name]</info>')]
+    #[CLI\Argument(name: 'recipeOrProfile', description: 'An install profile name, or a path to a directory containing a recipe. Relative paths are searched relative to both the Drupal root and the cwd. Defaults to <info>standard</info> unless an install profile is marked as a distribution. Use <info>minimal</info> for a bare minimum installation. Additional info for the install profile may also be provided with additional arguments. Use the format <info>[form name].[parameter name]</info>')]
     #[CLI\Option(name: 'db-url', description: 'A Drupal 10 style database URL. Required for initial install, not re-install. If omitted and required, Drush prompts for this item.')]
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
@@ -194,8 +194,17 @@ final class SiteInstallCommands extends DrushCommands
      */
     protected function determineRecipeOrProfile($recipeOrProfile, $options): array
     {
+        // Check for recipe relative to Drupal root
         if ($this->validateRecipe($recipeOrProfile)) {
             return [$recipeOrProfile, null];
+        }
+
+        // Check for recipe relative to cwd
+        if (!empty($recipeOrProfile) && !Path::isAbsolute($recipeOrProfile)) {
+            $relativeToCwdRecipePath = Path::join($this->getConfig()->cwd(), $recipeOrProfile);
+            if ($this->validateRecipe($relativeToCwdRecipePath)) {
+                return [$relativeToCwdRecipePath, null];
+            }
         }
 
         // If $recipeOrProfile is not a recipe, we'll check to see if it is

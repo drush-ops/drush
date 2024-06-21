@@ -66,7 +66,7 @@ class SiteInstallTest extends CommandUnishTestCase
      */
     public function testSiteInstallRecipesNotSupported()
     {
-        if (version_compare(\Drupal::VERSION, '10.3.0') >= 0) {
+        if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
             $this->markTestSkipped('We can only test the recipes requirement check on versions prior to Drupal 10.3.0.');
         }
 
@@ -85,7 +85,7 @@ class SiteInstallTest extends CommandUnishTestCase
      */
     public function testSiteInstallRecipe()
     {
-        if (version_compare(\Drupal::VERSION, '10.3.0') < 0) {
+        if (!$this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
             $this->markTestSkipped('Recipes require Drupal 10.3.0 or later.');
         }
 
