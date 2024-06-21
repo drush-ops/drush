@@ -469,7 +469,7 @@ final class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalFilesDir(): string
     {
-        return realpath($this->getRelativeDrupalFilesDir());
+        return realpath(Path::join($this->getRoot(), $this->getRelativeDrupalFilesDir()));
     }
 
     /**
