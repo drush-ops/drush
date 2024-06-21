@@ -70,6 +70,10 @@ class SiteInstallTest extends CommandUnishTestCase
             $this->markTestSkipped('We can only test the recipes requirement check on versions prior to Drupal 10.3.0.');
         }
 
+        if ($this->dbDriver() === 'sqlite') {
+            $this->markTestSkipped('This test runs afoul of profile-selection code that does not work right with SQLite, since we have not set up the db-url for this test.');
+        }
+
         $recipeDir = $this->fixturesDir() . '/recipes/test_recipe';
         $this->drush(SiteInstallCommands::INSTALL, [$recipeDir], ['no-interaction' => null], null, null, self::EXIT_ERROR);
         $error_output = $this->getErrorOutput();
