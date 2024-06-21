@@ -70,7 +70,8 @@ class SiteInstallTest extends CommandUnishTestCase
             $this->markTestSkipped('We can only test the recipes requirement check on versions prior to Drupal 10.3.0.');
         }
 
-        $this->drush(SiteInstallCommands::INSTALL, ['core/recipes/standard'], ['no-interaction' => null], null, null, self::EXIT_ERROR);
+        $recipeDir = $this->fixturesDir() . '/recipes/test_recipe';
+        $this->drush(SiteInstallCommands::INSTALL, [$recipeDir], ['no-interaction' => null], null, null, self::EXIT_ERROR);
         $error_output = $this->getErrorOutput();
         $this->assertStringContainsString('Recipes are only supported on Drupal 10.3.0 and later.', $error_output);
     }
