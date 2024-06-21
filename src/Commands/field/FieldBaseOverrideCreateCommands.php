@@ -176,6 +176,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
             ->setRequired($isRequired)
             ->save();
 
+        assert($override instanceof BaseFieldOverride);
         return $override;
     }
 

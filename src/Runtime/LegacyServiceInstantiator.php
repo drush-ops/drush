@@ -218,10 +218,10 @@ class LegacyServiceInstantiator
      *
      * @param array $arg Argument to resolve
      *
-     * @return object
+     * @return mixed
      *   Argument after it has been resolved by DI container
      */
-    protected function resolveArgument($arg)
+    protected function resolveArgument($arg): mixed
     {
         if (!is_string($arg)) {
             return $arg;
@@ -259,7 +259,7 @@ class LegacyServiceInstantiator
      * @param Container $container Drupal DI container
      * @param string $arg Argument to resolve
      *
-     * @return object
+     * @return ?object
      *   Resolved object from DI container
      */
     protected function resolveFromContainer($container, string $arg)
@@ -283,12 +283,12 @@ class LegacyServiceInstantiator
      * those that do not are required.
      *
      *
-     * @return bool, string
+     * @return array{bool, string}
      *   Boolean indicating whether the object is required to be in the container,
      *   and a string with the name of the object to look up (passed input with
      *   any leading ? removed).
      */
-    protected function isRequired(string $arg)
+    protected function isRequired(string $arg): array
     {
         if ($arg[0] === '?') {
             return [false, substr($arg, 1)];
