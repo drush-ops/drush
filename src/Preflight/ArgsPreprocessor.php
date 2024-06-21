@@ -51,7 +51,7 @@ class ArgsPreprocessor
         $appName = array_shift($argv);
         $storage->addArg($appName);
 
-        if ($this->remapper) {
+        if (isset($this->remapper)) {
             $argv = $this->remapper->remap($argv);
         }
 
