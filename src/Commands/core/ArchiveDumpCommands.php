@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -346,6 +347,17 @@ final class ArchiveDumpCommands extends DrushCommands
     }
 
     /**
+     * Return the relative path to the site's docroot.
+     */
+    private function getRelativeRoot(): string
+    {
+        if (!$this->isWebRootSite()) {
+            return '';
+        }
+        return Path::makeRelative($this->getRoot(), $this->getComposerRoot());
+    }
+
+    /**
      * Creates "code" archive component and returns the absolute path.
      *
      * @param array $options
@@ -451,19 +463,28 @@ final class ArchiveDumpCommands extends DrushCommands
     }
 
     /**
-     * Returns the path to Drupal files directory.
-     *
+     * Returns the full path to Drupal files directory.
      *
      * @throws \Exception
      */
     private function getDrupalFilesDir(): string
+    {
+        return realpath($this->getRelativeDrupalFilesDir());
+    }
+
+    /**
+     * Returns the relative path to Drupal files directory.
+     *
+     * @throws \Exception
+     */
+    private function getRelativeDrupalFilesDir(): string
     {
         if (isset($this->drupalFilesDir)) {
             return $this->drupalFilesDir;
         }
 
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
+        $drupalFilesPath = Path::join($this->getRelativeRoot(), PublicStream::basePath());
         if (!$drupalFilesPath) {
             throw new Exception(dt('Path to Drupal files is empty.'));
         }
@@ -579,7 +600,7 @@ final class ArchiveDumpCommands extends DrushCommands
             '#^' . $this->getDocrootRegexpPrefix() . 'sites/.+/settings\..+\.php$#',
         ];
 
-        $drupalFilesPath = $this->getDrupalFilesDir();
+        $drupalFilesPath = $this->getRelativeDrupalFilesDir();
         $drupalFilesPathRelative = Path::makeRelative($drupalFilesPath, $this->getComposerRoot());
         $excludes[] = '#^' . $drupalFilesPathRelative . '$#';
 
