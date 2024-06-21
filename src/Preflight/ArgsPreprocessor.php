@@ -17,10 +17,8 @@ use Consolidation\SiteAlias\SiteSpecParser;
  */
 class ArgsPreprocessor
 {
-    /** @var SiteSpecParser */
-    protected $specParser;
-    /** @var ArgsRemapper */
-    protected $remapper;
+    protected ?SiteSpecParser $specParser;
+    protected ?ArgsRemapper $remapper;
 
     /**
      * ArgsPreprocessor constructor

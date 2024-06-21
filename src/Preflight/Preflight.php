@@ -209,6 +209,7 @@ class Preflight
             7 => 'v6',  // Drupal 11
         ];
 
+        // @phpstan-ignore empty.offset
         if (empty($compatibilityMap[$symfonyMajorVersion])) {
             throw new RuntimeException("Fatal error: Drush does not work with Symfony $symfonyMajorVersion. (In theory, Composer should not allow you to get this far.)");
         }
