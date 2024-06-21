@@ -65,10 +65,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         parent::__construct();
     }
 
-    /**
-     * @return StorageInterface
-     */
-    public function getConfigStorageExport()
+    public function getConfigStorageExport(): StorageManagerInterface|StorageCacheInterface
     {
         if (isset($this->configStorageExport)) {
             return $this->configStorageExport;

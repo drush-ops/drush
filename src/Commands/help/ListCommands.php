@@ -178,7 +178,7 @@ class ListCommands extends DrushCommands
     /**
      * @param Command[] $all
      *
-     * @return Command[]
+     * @return array<string, array<Command>>
      */
     public static function categorize(array $all, string $separator = ':'): array
     {

@@ -15,11 +15,11 @@ trait ConfigAwareTrait
      * DrushConfig as return type. Helps with IDE completion.
      *
      * @see https://stackoverflow.com/a/37687295.
-     *
-     * @return DrushConfig
      */
-    public function getConfig()
+    public function getConfig(): DrushConfig
     {
-        return $this->parentGetConfig();
+        $return = $this->parentGetConfig();
+        assert($return instanceof DrushConfig, 'Expected DrushConfig, got ' . get_class($return) . '.');
+        return $return;
     }
 }

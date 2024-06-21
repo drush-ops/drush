@@ -10,7 +10,7 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputInterface;
 
-class FieldEntityReferenceHooks extends DrushCommands
+final class FieldEntityReferenceHooks extends DrushCommands
 {
     use AutowireTrait;
     use EntityTypeBundleValidationTrait;

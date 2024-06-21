@@ -498,9 +498,11 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $entityType = $this->input->getArgument('entityType');
         $bundle = $this->input->getArgument('bundle');
 
-        return $this->entityTypeManager
+        $return = $this->entityTypeManager
             ->getStorage(sprintf('entity_%s_display', $context))
             ->load(sprintf('%s.%s.default', $entityType, $bundle));
+        assert($return instanceof EntityDisplayInterface || $return === null);
+        return $return;
     }
 
     protected function logResult(FieldConfigInterface $field): void

@@ -287,7 +287,9 @@ class Drush
      */
     public static function drush(SiteAliasInterface $siteAlias, string $command, array $args = [], array $options = [], array $options_double_dash = []): SiteProcess
     {
-        return self::processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
+        $return = self::processManager()->drush($siteAlias, $command, $args, $options, $options_double_dash);
+        assert($return instanceof SiteProcess);
+        return $return;
     }
 
     /**
