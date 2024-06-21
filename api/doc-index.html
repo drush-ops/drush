@@ -801,7 +801,9 @@ may contain csv strings, into an array of items.</p></dd>        </dl><h2 id="le
 <abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
                     <dd><p>Delete all items in a specific queue.</p></dd><dt><a href="Drush/Commands/core/RoleCommands.html#method_delete">
 <abbr title="Drush\Commands\core\RoleCommands">RoleCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RoleCommands.html"><abbr title="Drush\Commands\core\RoleCommands">RoleCommands</abbr></a></em></dt>
-                    <dd><p>Delete a role.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineProfile">
+                    <dd><p>Delete a role.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineRecipeOrProfile">
+<abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::determineRecipeOrProfile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd><p>Determine if the passed parameter is a recipe directory, or a profile name.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineProfile">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::determineProfile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method_delete">
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
@@ -1668,7 +1670,9 @@ by a label, and the label may be an @alias or a site specification.</p></dd>    
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>::injectAliasPathParameterOptions</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_install">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
-                    <dd><p>Install Drupal along with modules/themes/configuration/profile.</p></dd><dt><a href="Drush/Commands/core/TopicCommands.html#method_interact">
+                    <dd><p>Install Drupal along with modules/themes/configuration/profile.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_isValidProfileName">
+<abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::isValidProfileName</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd><p>Determine whether the provided profile name meets naming conventions.</p></dd><dt><a href="Drush/Commands/core/TopicCommands.html#method_interact">
 <abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TopicCommands.html"><abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UserCommands.html#method_information">
 <abbr title="Drush\Commands\core\UserCommands">UserCommands</abbr>::information</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UserCommands.html"><abbr title="Drush\Commands\core\UserCommands">UserCommands</abbr></a></em></dt>
@@ -2781,7 +2785,9 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
 <abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::validateMigrationId</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
                     <dd><p>Validates a migration ID is valid.</p></dd><dt><a href="Drush/Commands/core/RsyncCommands.html#method_validate">
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
-                    <dd><p>Validate that passed aliases are valid.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_validate">
+                    <dd><p>Validate that passed aliases are valid.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_validateRecipe">
+<abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::validateRecipe</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd><p>Validates a user provided recipe.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_validate">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_validateConfigDir">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::validateConfigDir</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
