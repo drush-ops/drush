@@ -17,10 +17,8 @@ use Consolidation\SiteAlias\SiteSpecParser;
  */
 class ArgsPreprocessor
 {
-    /** @var SiteSpecParser */
-    protected $specParser;
-    /** @var ArgsRemapper */
-    protected $remapper;
+    protected ?SiteSpecParser $specParser;
+    protected ?ArgsRemapper $remapper;
 
     /**
      * ArgsPreprocessor constructor
@@ -53,7 +51,7 @@ class ArgsPreprocessor
         $appName = array_shift($argv);
         $storage->addArg($appName);
 
-        if ($this->remapper) {
+        if (isset($this->remapper)) {
             $argv = $this->remapper->remap($argv);
         }
 

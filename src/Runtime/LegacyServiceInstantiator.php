@@ -216,7 +216,7 @@ class LegacyServiceInstantiator
      * Look up one argument in the appropriate container, or
      * return it as-is.
      *
-     * @param array $arg Argument to resolve
+     * @param $arg Argument to resolve
      *
      * @return mixed
      *   Argument after it has been resolved by DI container

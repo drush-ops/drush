@@ -257,7 +257,7 @@ final class FieldDeleteCommands extends DrushCommands
         $bundles = $this->entityTypeBundleInfo->getBundleInfo($fieldConfig->getTargetEntityTypeId());
         $bundleLabel = $bundles[$fieldConfig->getTargetBundle()]['label'];
 
-        if ($fieldStorage && !$fieldStorage->isLocked()) {
+        if (!$fieldStorage->isLocked()) {
             $fieldConfig->delete();
 
             // If there are no bundles left for this field storage, it will be

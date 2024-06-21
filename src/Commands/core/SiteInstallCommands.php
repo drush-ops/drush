@@ -161,13 +161,13 @@ final class SiteInstallCommands extends DrushCommands
         // @todo Get Drupal to not call that function when on the CLI.
         try {
             drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
-        } catch (InstallerException $e) {
-            throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]), $e->getCode(), $e);
             }
             throw $e;
+        } catch (InstallerException $e) {
+            throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         }
 
         if (empty($options['account-pass'])) {
@@ -475,6 +475,7 @@ final class SiteInstallCommands extends DrushCommands
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
+            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }

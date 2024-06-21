@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drush\Psysh\Caster;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Field\FieldItemInterface;
-use Drupal\Core\Config\Entity\ConfigEntityInterface;
-use Drupal\Core\Config\ConfigBase;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Render\MarkupInterface;
+use Drupal\Core\Config\ConfigBase;
+use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldItemInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use Drush\Psysh\Caster;
 use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drush\Psysh\Shell;
@@ -111,6 +111,7 @@ final class CliCommands extends DrushCommands
         // command in preflight still, but the subscriber instances are already
         // created from before. Call terminate() regardless, this is a no-op for all
         // DrupalBoot classes except DrupalBoot8.
+        // @phpstan-ignore if.alwaysTrue
         if ($bootstrap = Drush::bootstrap()) {
             $bootstrap->terminate();
         }

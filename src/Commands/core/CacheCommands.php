@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -54,7 +53,6 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $cssOptimizer,
         private CachedDiscoveryClearerInterface $pluginCacheClearer,
         private BootstrapManager $bootstrapManager,
-        private ClassLoader $autoloader,
         private AssetQueryStringInterface $assetQueryString
     ) {
         parent::__construct();
