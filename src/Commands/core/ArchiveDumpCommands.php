@@ -469,7 +469,11 @@ final class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalFilesDir(): string
     {
-        return realpath(Path::join($this->getRoot(), $this->getRelativeDrupalFilesDir()));
+        $filesDir = Path::join($this->getRoot(), $this->getRelativeDrupalFilesDir());
+        if (!file_exists($filesDir)) {
+            throw new \Exception(dt('Drupal files directory does not exist.'));
+        }
+        return realpath($filesDir);
     }
 
     /**
@@ -484,7 +488,7 @@ final class ArchiveDumpCommands extends DrushCommands
         }
 
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = Path::join($this->getRelativeRoot(), PublicStream::basePath());
+        $drupalFilesPath = PublicStream::basePath();
         if (!$drupalFilesPath) {
             throw new Exception(dt('Path to Drupal files is empty.'));
         }
