@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal;
+use Drupal\Core\StreamWrapper\PublicStream;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
@@ -384,6 +385,10 @@ final class ArchiveDumpCommands extends DrushCommands
         $process->mustRun();
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
+        // Remove path projects ('source' is empty for path projects)
+        $installedPackages = array_filter($installedPackages, function ($dependency) {
+            return !empty($dependency['source']);
+        });
         $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
             fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
@@ -467,7 +472,7 @@ final class ArchiveDumpCommands extends DrushCommands
         }
 
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = Drupal::service('file_system')->realpath('public://');
+        $drupalFilesPath = Path::join($this->getRoot(), PublicStream::basePath());
         if (!$drupalFilesPath) {
             throw new Exception(dt('Path to Drupal files is empty.'));
         }
