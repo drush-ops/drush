@@ -462,26 +462,12 @@ final class ArchiveDumpCommands extends DrushCommands
      */
     private function getDrupalFilesDir(): string
     {
-        $filesDir = Path::join($this->getRoot(), $this->getRelativeDrupalFilesDir());
-        if (!file_exists($filesDir)) {
-            throw new \Exception(dt('Drupal files directory does not exist.'));
-        }
-        return realpath($filesDir);
-    }
-
-    /**
-     * Returns the relative path to Drupal files directory.
-     *
-     * @throws \Exception
-     */
-    private function getRelativeDrupalFilesDir(): string
-    {
         if (isset($this->drupalFilesDir)) {
             return $this->drupalFilesDir;
         }
 
         Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL);
-        $drupalFilesPath = PublicStream::basePath();
+        $drupalFilesPath = Path::join($this->getRoot(), PublicStream::basePath());
         if (!$drupalFilesPath) {
             throw new Exception(dt('Path to Drupal files is empty.'));
         }
@@ -597,7 +583,7 @@ final class ArchiveDumpCommands extends DrushCommands
             '#^' . $this->getDocrootRegexpPrefix() . 'sites/.+/settings\..+\.php$#',
         ];
 
-        $drupalFilesPath = $this->getRelativeDrupalFilesDir();
+        $drupalFilesPath = $this->getDrupalFilesDir();
         $drupalFilesPathRelative = Path::makeRelative($drupalFilesPath, $this->getComposerRoot());
         $excludes[] = '#^' . $drupalFilesPathRelative . '$#';
 
