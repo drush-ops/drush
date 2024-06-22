@@ -347,17 +347,6 @@ final class ArchiveDumpCommands extends DrushCommands
     }
 
     /**
-     * Return the relative path to the site's docroot.
-     */
-    private function getRelativeRoot(): string
-    {
-        if (!$this->isWebRootSite()) {
-            return '';
-        }
-        return Path::makeRelative($this->getRoot(), $this->getComposerRoot());
-    }
-
-    /**
      * Creates "code" archive component and returns the absolute path.
      *
      * @param array $options
