@@ -85,8 +85,8 @@
     </div>
 
     
-    <p>        class
-    <strong>FsUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php">View source</a>)
+    <p>final         class
+    <strong>FsUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php">View source</a>)
 </p>
 
         
@@ -105,14 +105,14 @@
                     static&nbsp;string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getBackupDir">getBackupDir</a>(string $subdir = null)
+                    <a href="#method_getBackupDir">getBackupDir</a>(string|null $subdir = null)
         
-                                            <p><p>Decide where our backup directory should go</p></p>                </div>
+                                            <p><p>Return path to the backup directory.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<abbr title="Drush\Utils\A">A</abbr>
+                    static&nbsp;
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getBackupDirParent">getBackupDirParent</a>()
@@ -209,9 +209,9 @@ directory could be created at that path.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getBackupDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L26">at line 26</a></div>
         <code>        static            string
-    <strong>getBackupDir</strong>(string $subdir = null)
+    <strong>getBackupDir</strong>(string|null $subdir = null)
         </code>
     </h3>
     <div class="details">    
@@ -219,14 +219,14 @@ directory could be created at that path.</p></p>                </div>
             
 
         <div class="method-description">
-                            <p><p>Decide where our backup directory should go</p></p>                        
+                            <p><p>Return path to the backup directory.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>string</td>
+                <td>string|null</td>
                 <td>$subdir</td>
                 <td><p>The name of the desired subdirectory(s) under drush-backups.
 Usually a database name.</p></td>
@@ -239,7 +239,7 @@ Usually a database name.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
-            <td><p>path to the backup directory.</p></td>
+            <td></td>
         </tr>
     </table>
 
@@ -261,8 +261,8 @@ Usually a database name.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getBackupDirParent">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L61">at line 61</a></div>
-        <code>        static            <abbr title="Drush\Utils\A">A</abbr>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L51">at line 51</a></div>
+        <code>        static            
     <strong>getBackupDirParent</strong>()
         </code>
     </h3>
@@ -275,25 +275,7 @@ Usually a database name.</p></td>
         </div>
         <div class="tags">
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drush\Utils\A">A</abbr></td>
-            <td><p>path to the backup directory parent</p></td>
-        </tr>
-    </table>
-
             
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
                     </div>
@@ -302,7 +284,7 @@ Usually a database name.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_isUsableDirectory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L88">at line 88</a></div>
         <code>        static            bool|string
     <strong>isUsableDirectory</strong>(string|null $dir)
         </code>
@@ -345,7 +327,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_tmpDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L129">at line 129</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L119">at line 119</a></div>
         <code>        static            string
     <strong>tmpDir</strong>(string $subdir = null)
         </code>
@@ -396,7 +378,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_registerForDeletion">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L146">at line 146</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L136">at line 136</a></div>
         <code>        static            
     <strong>registerForDeletion</strong>(string $dir)
         </code>
@@ -429,7 +411,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cleanup">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L159">at line 159</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L149">at line 149</a></div>
         <code>        static            
     <strong>cleanup</strong>()
         </code>
@@ -452,7 +434,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_prepareBackupDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L184">at line 184</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L174">at line 174</a></div>
         <code>        static            string
     <strong>prepareBackupDir</strong>(string $subdir = null)
         </code>
@@ -503,7 +485,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_realpath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L203">at line 203</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L193">at line 193</a></div>
         <code>        static            string
     <strong>realpath</strong>(string $path)
         </code>
@@ -546,7 +528,7 @@ return the original path even if it doesn't exist.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isTarball">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L217">at line 217</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L206">at line 206</a></div>
         <code>        static            string|bool
     <strong>isTarball</strong>(string $path)
         </code>
@@ -588,7 +570,7 @@ return the original path even if it doesn't exist.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMimeContentType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Utils/FsUtils.php#L246">at line 246</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.0.0-beta5/src/Utils/FsUtils.php#L234">at line 234</a></div>
         <code>        static            string|bool|null
     <strong>getMimeContentType</strong>(string $path)
         </code>
