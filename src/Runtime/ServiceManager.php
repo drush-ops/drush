@@ -332,7 +332,11 @@ class ServiceManager
         // n.b. we cannot simply use 'isInstantiable' here because
         // the constructor is typically protected when using a static create method
         $bootstrapCommandClasses = array_filter($bootstrapCommandClasses, function ($class) {
-            $reflection = new \ReflectionClass($class);
+            try {
+                $reflection = new \ReflectionClass($class);
+            } catch (\Throwable $e) {
+                return false;
+            }
             return !$reflection->isAbstract();
         });
 
