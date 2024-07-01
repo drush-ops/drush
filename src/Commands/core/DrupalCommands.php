@@ -101,7 +101,7 @@ final class DrupalCommands extends DrushCommands
         foreach ($requirements as $key => $info) {
             if (is_numeric($key)) {
                 unset($requirements[$key]);
-                $new_key = strtolower(str_replace(' ', '_', $info['title']));
+                $new_key = strtolower(str_replace(' ', '_', (string) $info['title']));
                 $requirements[$new_key] = $info;
             }
         }
