@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Update\SkippedUpdate;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -187,7 +188,16 @@ final class UpdateDBCommands extends DrushCommands
         \Drupal::moduleHandler()->loadInclude($module, 'install');
 
         $ret = [];
-        if (function_exists($function)) {
+        $update_hook_registry = \Drupal::service('update.update_hook_registry');
+        $skipped_update = NULL;
+        if (method_exists($update_hook_registry, 'getSkippedUpdate')) {
+            $skipped_update = \Drupal::service('update.update_hook_registry')->getSkippedUpdate($module, $number);
+        }
+        if ($skipped_update && $skipped_update instanceof SkippedUpdate) {
+            $ret['results']['query'] = $skipped_update->toMessage();
+            $ret['results']['success'] = TRUE;
+            $context['sandbox']['#finished'] = TRUE;
+        } elseif (function_exists($function)) {
             try {
                 if ($context['log']) {
                     Database::startLog($function);
