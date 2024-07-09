@@ -165,7 +165,8 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
      *   - the table name;
      *   - the column name.
      */
-    protected function getFieldTableDetails(string $entity_type_id, string $field_name): array {
+    protected function getFieldTableDetails(string $entity_type_id, string $field_name): array
+    {
         $storage = $this->entityTypeManager->getStorage($entity_type_id);
         if (!$storage instanceof SqlEntityStorageInterface) {
             $context = ['!entity_type_id' => $entity_type_id];
