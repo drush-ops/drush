@@ -8,7 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
-use Drupal\Core\Update\SkippedUpdate;
+use Drupal\Core\Update\EquivalentUpdate;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -189,12 +189,12 @@ final class UpdateDBCommands extends DrushCommands
 
         $ret = [];
         $update_hook_registry = \Drupal::service('update.update_hook_registry');
-        $skipped_update = NULL;
-        if (method_exists($update_hook_registry, 'getSkippedUpdate')) {
-            $skipped_update = \Drupal::service('update.update_hook_registry')->getSkippedUpdate($module, $number);
+        $equivalent_update = NULL;
+        if (method_exists($update_hook_registry, 'getEquivalentUpdate')) {
+            $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
         }
-        if ($skipped_update && $skipped_update instanceof SkippedUpdate) {
-            $ret['results']['query'] = $skipped_update->toMessage();
+        if ($equivalent_update && $equivalent_update instanceof EquivalentUpdate) {
+            $ret['results']['query'] = $equivalent_update->toSkipMessage();
             $ret['results']['success'] = TRUE;
             $context['sandbox']['#finished'] = TRUE;
         } elseif (function_exists($function)) {
