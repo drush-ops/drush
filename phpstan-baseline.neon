@@ -44,3 +44,8 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/Symfony/BootstrapCompilerPass.php
+
+		-
+			message: "#^Method Drush\\\\Commands\\\\core\\\\DrupalDependenciesCommands\\:\\:create\\(\\) should return static\\(Drush\\\\Commands\\\\core\\\\DrupalDependenciesCommands\\) but returns Drush\\\\Commands\\\\core\\\\DrupalDependenciesCommands\\.$#"
+			count: 1
+			path: src/Commands/AutowireTrait.php
