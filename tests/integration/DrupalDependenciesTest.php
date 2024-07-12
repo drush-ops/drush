@@ -1,9 +1,8 @@
 <?php
 
-namespace Unish;
+declare(strict_types=1);
 
-use Drush\TestTraits\DrushTestTrait;
-use PHPUnit\Framework\TestCase;
+namespace Unish;
 
 /**
  * @coversDefaultClass \Drush\Commands\core\DrupalDependenciesCommands

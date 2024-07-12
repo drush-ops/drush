@@ -12,16 +12,24 @@ use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Extension\Dependency;
 use Drupal\Core\Extension\Extension;
+use Drupal\Core\Extension\ModuleExtensionList;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Drush commands revealing Drupal dependencies.
  */
-class DrupalDependenciesCommands extends DrushCommands
+final class DrupalDependenciesCommands extends DrushCommands
 {
+    use AutowireTrait {
+        create as traitCreate;
+    }
+
     public const WHY_MODULE = 'why:module';
     public const WHY_CONFIG = 'why:config';
 
@@ -34,6 +42,24 @@ class DrupalDependenciesCommands extends DrushCommands
       'config-module' => [],
       'config-config' => [],
     ];
+
+    public function __construct(
+        #[Autowire(param: 'container.modules')]
+        private readonly array $installedModules,
+        private readonly ModuleExtensionList $moduleExtensionList,
+    ) {
+        parent::__construct();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function create(ContainerInterface $container): self
+    {
+        // Wrap the AutowireTrait method, to pass the Symfony container instead
+        // of League container so that we can benefit from container params.
+        return static::traitCreate($container);
+    }
 
     #[CLI\Command(name: self::WHY_MODULE, aliases: ['wm'])]
     #[CLI\Help(description: 'List all objects (modules, configurations) depending on a given module')]
@@ -114,19 +140,18 @@ class DrupalDependenciesCommands extends DrushCommands
             throw new \InvalidArgumentException("Cannot use --dependent-type=config together with --no-only-installed");
         }
 
-        $installedModules = \Drupal::getContainer()->getParameter('container.modules');
         $module = $commandData->input()->getArgument('module');
         if ($type === 'module') {
             $this->dependencies['module-module'] = array_map(function (Extension $extension): array {
                 return array_map(function (string $dependencyString) {
                     return Dependency::createFromString($dependencyString)->getName();
                 }, $extension->info['dependencies']);
-            }, \Drupal::service('extension.list.module')->getList());
+            }, $this->moduleExtensionList->getList());
 
             if (!$notOnlyInstalled) {
                 $this->dependencies['module-module'] = array_intersect_key(
                     $this->dependencies['module-module'],
-                    $installedModules
+                    $this->installedModules
                 );
             }
             if (!isset($this->dependencies['module-module'][$module])) {
@@ -134,7 +159,7 @@ class DrupalDependenciesCommands extends DrushCommands
                     '@module' => $module,
                 ]));
             }
-        } elseif (!isset($installedModules[$module])) {
+        } elseif (!isset($this->installedModules[$module])) {
             throw new \InvalidArgumentException(dt('Invalid @module module', [
                 '@module' => $module,
             ]));
