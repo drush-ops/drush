@@ -61,7 +61,6 @@
     "drupal/book": "^1.0",
     "drupal/forum": "^1.0",
     "drupal/statistics": "^1.0",
-    "drupal/tracker": "^1.0",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^1.2",
