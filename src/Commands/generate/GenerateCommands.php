@@ -8,7 +8,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Commands\help\ListCommands;
-use Psr\Container\ContainerInterface as DrushContainer;
+use League\Container\DefinitionContainerInterface as DrushContainer;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -21,6 +21,7 @@ final class GenerateCommands extends DrushCommands
     protected function __construct(
         private readonly DrushContainer $drush_container,
     ) {
+        parent::__construct();
     }
 
     public static function create(DrushContainer $container): self

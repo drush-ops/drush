@@ -23,7 +23,7 @@ use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
-use League\Container\Container as DrushContainer;
+use League\Container\DefinitionContainerInterface as DrushContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -350,12 +350,8 @@ class ServiceManager
             $commandHandler = null;
 
             try {
-                $hasStaticCreateFactory = $this->hasStaticCreateFactory($class);
-                if ($hasStaticCreateFactory && $container instanceof DrupalContainer) {
-                    $commandHandler = $class::create($container, $drushContainer);
-                } elseif ($hasStaticCreateFactory && $drushContainer instanceof DrushContainer) {
-                    // Class is compatible with the container with delegate.
-                    $commandHandler = $class::create($drushContainer);
+                if ($staticCreateFactoryArguments = $this->getStaticCreateFactoryArguments($class, $drushContainer, $container)) {
+                    $commandHandler = $class::create(...$staticCreateFactoryArguments);
                 } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
                     $commandHandler = $class::createEarly($drushContainer);
                 } else {
@@ -372,6 +368,47 @@ class ServiceManager
         }
 
         return $commandHandlers;
+    }
+
+    protected function getStaticCreateFactoryArguments(string $class, DrushContainer $drushContainer, ?DrupalContainer $drupalContainer = null): ?array
+    {
+        if (!method_exists($class, 'create')) {
+            return null;
+        }
+
+        $reflection = new \ReflectionMethod($class, 'create');
+        if (!$reflection->isStatic()) {
+            return null;
+        }
+
+        $params = $reflection->getParameters();
+
+        $args = [];
+        $type = ltrim((string) $params[0]->getType(), '?');
+        // The factory create() method explicitly expects a Drupal container as 1st argument.
+        if ($drupalContainer && is_a($type, DrupalContainer::class, true)) {
+            $args[] = $drupalContainer;
+        }
+        // The factory create() method explicitly expects a Drush container as 1st argument.
+        elseif (is_a($type, DrushContainer::class, true)) {
+            // Don't add a 2nd argument. If the Drupal container has been initialized, it's already a delegate.
+            return [$drushContainer];
+        }
+        // The factory create() method expects a container of any type as st argument and the Drupal container has been
+        // initialized. Pass it as 1st argument.
+        elseif ($drupalContainer && is_a($type, ContainerInterface::class, true)) {
+            $args[] = $drupalContainer;
+        }
+
+        // Add Drush container as 2nd argument if the method expects one.
+        if (isset($params[1])) {
+            $type = ltrim((string) $params[1]->getType(), '?');
+            if (is_a($type, ContainerInterface::class, true)) {
+                $args[] = $drushContainer;
+            }
+        }
+
+        return $args;
     }
 
     /**
