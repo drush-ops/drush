@@ -385,18 +385,16 @@ class ServiceManager
 
         $args = [];
         $type = ltrim((string) $params[0]->getType(), '?');
-        // The factory create() method explicitly expects a Drupal container as 1st argument.
         if ($drupalContainer && is_a($type, DrupalContainer::class, true)) {
+            // The factory create() method explicitly expects a Drupal container as 1st argument.
             $args[] = $drupalContainer;
-        }
-        // The factory create() method explicitly expects a Drush container as 1st argument.
-        elseif (is_a($type, DrushContainer::class, true)) {
-            // Don't add a 2nd argument. If the Drupal container has been initialized, it's already a delegate.
+        } elseif (is_a($type, DrushContainer::class, true)) {
+            // The factory create() method explicitly expects a Drush container as 1st argument. Don't add a 2nd
+            // argument. If the Drupal container has been initialized, it's already a delegate.
             return [$drushContainer];
-        }
-        // The factory create() method expects a container of any type as st argument and the Drupal container has been
-        // initialized. Pass it as 1st argument.
-        elseif ($drupalContainer && is_a($type, ContainerInterface::class, true)) {
+        } elseif ($drupalContainer && is_a($type, ContainerInterface::class, true)) {
+            // The factory create() method expects a container of any type as st argument and the Drupal container has
+            // been initialized. Pass it as 1st argument.
             $args[] = $drupalContainer;
         }
 
