@@ -23,6 +23,7 @@ use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
+use League\Container\Container;
 use League\Container\DefinitionContainerInterface as DrushContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -343,6 +344,7 @@ class ServiceManager
 
         // Prevent duplicate calls to delegate() by checking for state.
         if ($container && !$drushContainer->has('state')) {
+            assert($drushContainer instanceof Container);
             // Combine the two containers.
             $drushContainer->delegate($container);
         }
