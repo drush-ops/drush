@@ -24,6 +24,7 @@ use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
 use League\Container\Container as DrushContainer;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
@@ -349,11 +350,12 @@ class ServiceManager
             $commandHandler = null;
 
             try {
-                if ($this->hasStaticCreateFactory($class) && $this->supportsCompoundContainer($class, $drushContainer)) {
-                    // Hurray, this class is compatible with the container with delegate.
-                    $commandHandler = $class::create($drushContainer);
-                } elseif ($container && $this->hasStaticCreateFactory($class)) {
+                $hasStaticCreateFactory = $this->hasStaticCreateFactory($class);
+                if ($hasStaticCreateFactory && $container instanceof DrupalContainer) {
                     $commandHandler = $class::create($container, $drushContainer);
+                } elseif ($hasStaticCreateFactory && $drushContainer instanceof DrushContainer) {
+                    // Class is compatible with the container with delegate.
+                    $commandHandler = $class::create($drushContainer);
                 } elseif (!$container && $this->hasStaticCreateEarlyFactory($class)) {
                     $commandHandler = $class::createEarly($drushContainer);
                 } else {
@@ -373,21 +375,20 @@ class ServiceManager
     }
 
     /**
-     * Determine if the first parameter of the create method supports our container with delegate.
-     */
-    protected function supportsCompoundContainer($class, $drush_container): bool
-    {
-        $reflection = new \ReflectionMethod($class, 'create');
-        $hint = (string)$reflection->getParameters()[0]->getType();
-        return is_a($drush_container, $hint);
-    }
-
-    /**
      * Check to see if the provided class has a static `create` method.
      */
     protected function hasStaticCreateFactory(string $class): bool
     {
-        return static::hasStaticMethod($class, 'create');
+        if (!$hasStaticCreateFactory = static::hasStaticMethod($class, 'create')) {
+            return false;
+        }
+        $reflection = new \ReflectionMethod($class, 'create');
+        // Check first two param typings.
+        foreach (array_slice($reflection->getParameters(), 0, 2) as $param) {
+            $typing = ltrim((string) $param->getType(), '?');
+            $hasStaticCreateFactory = $hasStaticCreateFactory && is_a($typing, ContainerInterface::class, true);
+        }
+        return $hasStaticCreateFactory;
     }
 
     /**
