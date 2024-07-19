@@ -20,6 +20,7 @@ final class EntityCommands extends DrushCommands
 
     const DELETE = 'entity:delete';
     const SAVE = 'entity:save';
+    const COUNT = 'entity:count';
 
     public function __construct(protected EntityTypeManagerInterface $entityTypeManager)
     {
@@ -139,6 +140,21 @@ final class EntityCommands extends DrushCommands
     }
 
     /**
+     * Gets entities count.
+     */
+    #[CLI\Command(name: self::COUNT, aliases: ['ecount', 'entity-count'])]
+    #[CLI\Argument(name: 'entity_type', description: 'An entity machine name.')]
+    #[CLI\Option(name: 'bundle', description: 'Restrict deletion to the specified bundle. Ignored when ids is specified.')]
+    #[CLI\Usage(name: 'drush entity:count node --bundle=article', description: 'Count of article node entities.')]
+    #[CLI\Usage(name: 'drush entity:count shortcut', description: 'Count of all shortcut entities.')]
+    public function count(string $entity_type, array $options = ['bundle' => self::REQ])
+    {
+        $query = $this->getQuery($entity_type, null, $options);
+        $result = $query->count()->execute();
+        $this->logger()->success((string) $result);
+    }
+
+    /**
      * @param string|null $ids
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
@@ -150,7 +166,7 @@ final class EntityCommands extends DrushCommands
         if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
-        } elseif ($options['bundle'] || $options['exclude'] || $options['limit']) {
+        } elseif (isset($options['bundle']) || isset($options['exclude']) || isset($options['limit'])) {
             if ($exclude = StringUtils::csvToArray((string) $options['exclude'])) {
                 $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
                 $query = $query->condition($idKey, $exclude, 'NOT IN');
