@@ -53,7 +53,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Frequency (in items) at which progress messages should be emitted.
      */
-    protected ?string $feedback;
+    protected ?int $feedback;
 
     /**
      * Show timestamp in progress message.
@@ -136,7 +136,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         $this->output = $output;
         $this->limit = $options['limit'];
-        $this->feedback = $options['feedback'];
+        $this->feedback = $options['feedback'] ? intval($options['feedback']) : null;
         $this->showTimestamp = $options['timestamp'];
         $this->showTotal = $options['total'];
         // Deleting the missing source rows is not compatible with options that
