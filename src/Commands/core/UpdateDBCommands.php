@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Update\EquivalentUpdate;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -187,7 +188,16 @@ final class UpdateDBCommands extends DrushCommands
         \Drupal::moduleHandler()->loadInclude($module, 'install');
 
         $ret = [];
-        if (function_exists($function)) {
+        $update_hook_registry = \Drupal::service('update.update_hook_registry');
+        $equivalent_update = null;
+        if (method_exists($update_hook_registry, 'getEquivalentUpdate')) {
+            $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
+        }
+        if ($equivalent_update && $equivalent_update instanceof EquivalentUpdate) {
+            $ret['results']['query'] = $equivalent_update->toSkipMessage();
+            $ret['results']['success'] = true;
+            $context['sandbox']['#finished'] = true;
+        } elseif (function_exists($function)) {
             try {
                 if ($context['log']) {
                     Database::startLog($function);
