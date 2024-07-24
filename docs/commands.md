@@ -56,7 +56,7 @@ The following are both valid ways to declare a command:
     ```
 
 - A commandfile that will only be used on PHP8+ should [use PHP Attributes](https://github.com/drush-ops/drush/pull/4821) instead of Annotations.
-- [See Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html). Custom code can supply additional Attribute classes, which may then be used by any command.
+- [See Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html). Custom code can supply additional Attribute classes, which may then be added to any command. For example see [InteractConfigName](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/InteractConfigName.php) which is used by [ConfigCommands](https://github.com/drush-ops/drush/blob/8b77c9abe6639de42a198c7e69565f09dcf5f22d/src/Commands/config/ConfigCommands.php#L98).
 
 ## Altering Command Info
 Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering _command info alterers_. Alterers are classes that are able to intercept and manipulate an existing command annotation.
