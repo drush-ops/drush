@@ -443,6 +443,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
         }
     }
 
+    #[Deprecated('Use CLI/InteractConfigName Attribute instead')]
     #[CLI\Hook(type: HookManager::INTERACT, selector: self::INTERACT_CONFIG_NAME)]
     public function interactConfigName($input, $output): void
     {
