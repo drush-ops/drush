@@ -22,6 +22,10 @@ Below are the 3 types of update functions run by this command, in order. Choose 
 | [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Allowed | Runs *before* config is imported. |
 | [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/drush.api.php) | Allowed | Runs *after* config is imported. | 
 
+Note that not having reliable access to the Drupal APIs means that
+`hook_update_N()` should not be used for entity changes of any sorts, unexpected
+issues may well arise, including corruption of data or configuration.
+
 ## Configuration
 
 If you need to customize this command, you should use Drush configuration for the 
