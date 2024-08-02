@@ -26,7 +26,7 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $formatterManager = new FormatterManager();
 
-        $output->writeln($data['description']);
+        $output->writeln((string)$data['description']);
         if (array_key_exists('help', $data) && $data['help'] != $data['description']) {
             $output->writeln('');
             $output->writeln($data['help']);
