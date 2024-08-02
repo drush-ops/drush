@@ -45,13 +45,13 @@ jobs:
         run: ./drush --uri=dev st
       - name: Drush mk:docs
         run: composer mk:docs
-      - name: Mike config
-        run: |
-          mike alias 13.x latest
-      # No longer needed.
-      # mike set-default latest
+        #      - name: Mike alias
+        #        run: mike alias 13.x latest
+        #      - name: Mike set-default
+        #        run: mike set-default latest
+      # See https://github.com/jimporter/mike?tab=readme-ov-file#building-your-docs
       - name: Mike deploy
-        run: mike deploy --push ${GITHUB_REF_NAME}
+        run: mike deploy --update-aliases --push ${GITHUB_REF_NAME} latest
       # Build Doctum to gh-pages/api in the gh-pages branch.
       - name: Checkout gh-pages branch
         uses: actions/checkout@v2
