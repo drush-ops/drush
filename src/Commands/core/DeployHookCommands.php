@@ -59,7 +59,7 @@ final class DeployHookCommands extends DrushCommands
                 $this->root = $root;
                 $this->sitePath = $site_path;
                 $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
-                $this->keyValue = $key_value_factory->get('post_update');
+                $this->keyValue = $key_value_factory->get('deploy_hook');
                 $this->updateType = 'deploy';
             }
         };
