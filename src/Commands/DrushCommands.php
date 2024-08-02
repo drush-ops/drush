@@ -13,7 +13,6 @@ use Drush\Attributes as CLI;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Log\DrushLoggerManager;
 use Drush\SiteAlias\ProcessManager;
 use Drush\Style\DrushStyle;
 use GuzzleHttp\HandlerStack;
@@ -21,6 +20,7 @@ use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Robo\Common\IO;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\IOAwareInterface;
@@ -71,9 +71,9 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     /**
      * Returns a logger object.
      */
-    public function logger(): ?DrushLoggerManager
+    public function logger(): ?LoggerInterface
     {
-        assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager);
+        assert(is_null($this->logger) || $this->logger instanceof LoggerInterface);
         return $this->logger;
     }
 
