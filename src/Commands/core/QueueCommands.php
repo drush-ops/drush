@@ -74,6 +74,8 @@ final class QueueCommands extends DrushCommands
             $queue->garbageCollection();
         }
 
+        $this->io()->progressStart($items_limit ?: $queue->numberOfItems());
+
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
                 // @phpstan-ignore-next-line
@@ -82,6 +84,7 @@ final class QueueCommands extends DrushCommands
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;
+                $this->io()->progressAdvance();
             } catch (RequeueException) {
                 // The worker requested the task to be immediately requeued.
                 $queue->releaseItem($item);
