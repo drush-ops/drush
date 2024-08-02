@@ -2,7 +2,9 @@
   {
     "version": "13.x",
     "title": "13.x",
-    "aliases": []
+    "aliases": [
+      "latest"
+    ]
   },
   {
     "version": "13.0.0-beta5",
@@ -93,7 +95,6 @@
     "version": "12.x",
     "title": "12.x",
     "aliases": [
-      "latest",
       "dev"
     ]
   },
