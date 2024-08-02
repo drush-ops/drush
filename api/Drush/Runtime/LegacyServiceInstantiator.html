@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>LegacyServiceInstantiator</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php">View source</a>)
+    <strong>LegacyServiceInstantiator</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php">View source</a>)
 </p>
 
         
@@ -197,7 +197,7 @@ service objects can be retrieved via this method.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    object
+                    object|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_create">create</a>(string $class, array $arguments, array $calls)
@@ -238,7 +238,7 @@ do not map to one of our containers are returned unchanged.</p></p>             
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    object
+                    mixed
                 </div>
                 <div class="col-md-8">
                     <a href="#method_resolveArgument">resolveArgument</a>($arg)
@@ -249,7 +249,7 @@ return it as-is.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Runtime\?object">?object</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_resolveFromContainer">resolveFromContainer</a>(<abbr title="League\Container\Container">Container</abbr> $container, string $arg)
@@ -260,7 +260,7 @@ not found, unless the service name begins with <code>?</code> (e.g.</p></p>     
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_isRequired">isRequired</a>(string $arg)
@@ -274,7 +274,7 @@ those that do not are required.</p></p>                </div>
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_atLeastOneValue">atLeastOneValue</a>($args)
+                    <a href="#method_atLeastOneValue">atLeastOneValue</a>(array $args)
         
                                             <p><p>Helper function to determine whether or not any of the arguments
 resolved. <code>set</code> methods with non-required DI container references
@@ -289,7 +289,7 @@ are not called at all if the optional references are not in the container.</p></
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L35">at line 35</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L29">at line 29</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -328,7 +328,7 @@ are not called at all if the optional references are not in the container.</p></
             </div>
                     <div class="method-item">
                     <h3 id="method_loadServiceFiles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L40">at line 40</a></div>
         <code>                    
     <strong>loadServiceFiles</strong>(array $serviceFiles)
         </code>
@@ -363,7 +363,7 @@ by type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isValidServiceData">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L71">at line 71</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L65">at line 65</a></div>
         <code>            protected        bool
     <strong>isValidServiceData</strong>(string $serviceFile, array $serviceFileData)
         </code>
@@ -410,7 +410,7 @@ by type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_allServicesHaveClassElement">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L99">at line 99</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L88">at line 88</a></div>
         <code>            protected        bool
     <strong>allServicesHaveClassElement</strong>(string $serviceFile, array $services)
         </code>
@@ -457,7 +457,7 @@ by type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L119">at line 119</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L108">at line 108</a></div>
         <code>                    
     <strong>instantiateServices</strong>(array $services)
         </code>
@@ -478,7 +478,7 @@ method.</p></p>
                     <tr>
                 <td>array</td>
                 <td>$services</td>
-                <td></td>
+                <td><p>List of drush services</p></td>
             </tr>
             </table>
 
@@ -492,7 +492,7 @@ method.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_taggedServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L157">at line 157</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L150">at line 150</a></div>
         <code>                    object[]
     <strong>taggedServices</strong>(string $tagName)
         </code>
@@ -535,8 +535,8 @@ service objects can be retrieved via this method.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L172">at line 172</a></div>
-        <code>                    object
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L165">at line 165</a></div>
+        <code>                    object|null
     <strong>create</strong>(string $class, array $arguments, array $calls)
         </code>
     </h3>
@@ -564,7 +564,7 @@ service objects can be retrieved via this method.</p></p>
                     <tr>
                 <td>array</td>
                 <td>$calls</td>
-                <td></td>
+                <td><p>Method names and arguments to call after object is instantiated</p></td>
             </tr>
             </table>
 
@@ -573,8 +573,8 @@ service objects can be retrieved via this method.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>object</td>
-            <td><p>Instantiated command handler from the service file</p></td>
+            <td>object|null</td>
+            <td><p>Instantiated command handler from the service file or empty result</p></td>
         </tr>
     </table>
 
@@ -587,7 +587,7 @@ service objects can be retrieved via this method.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_instantiateObject">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L190">at line 190</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L186">at line 186</a></div>
         <code>                    
     <strong>instantiateObject</strong>(string $class, array $arguments)
         </code>
@@ -627,7 +627,7 @@ with an <code>@</code>.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_call">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L204">at line 204</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L204">at line 204</a></div>
         <code>                    
     <strong>call</strong>(object $object, string $method, array $arguments)
         </code>
@@ -670,7 +670,7 @@ with an <code>@</code>.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_resolveArguments">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L221">at line 221</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L221">at line 221</a></div>
         <code>            protected        array
     <strong>resolveArguments</strong>(array $arguments)
         </code>
@@ -713,8 +713,8 @@ do not map to one of our containers are returned unchanged.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_resolveArgument">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L235">at line 235</a></div>
-        <code>            protected        object
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L235">at line 235</a></div>
+        <code>            protected        mixed
     <strong>resolveArgument</strong>($arg)
         </code>
     </h3>
@@ -733,7 +733,7 @@ return it as-is.</p></p>
                     <tr>
                 <td></td>
                 <td>$arg</td>
-                <td></td>
+                <td><p>Argument to resolve</p></td>
             </tr>
             </table>
 
@@ -742,7 +742,7 @@ return it as-is.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>object</td>
+            <td>mixed</td>
             <td><p>Argument after it has been resolved by DI container</p></td>
         </tr>
     </table>
@@ -756,8 +756,8 @@ return it as-is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_resolveFromContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L275">at line 275</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L276">at line 276</a></div>
+        <code>            protected        <abbr title="Drush\Runtime\?object">?object</abbr>
     <strong>resolveFromContainer</strong>(<abbr title="League\Container\Container">Container</abbr> $container, string $arg)
         </code>
     </h3>
@@ -786,6 +786,15 @@ not found, unless the service name begins with <code>?</code> (e.g.</p></p>     
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Runtime\?object">?object</abbr></td>
+            <td><p>Resolved object from DI container</p></td>
+        </tr>
+    </table>
+
             
             
             
@@ -795,8 +804,8 @@ not found, unless the service name begins with <code>?</code> (e.g.</p></p>     
             </div>
                     <div class="method-item">
                     <h3 id="method_isRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L302">at line 302</a></div>
-        <code>            protected        
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L302">at line 302</a></div>
+        <code>            protected        array
     <strong>isRequired</strong>(string $arg)
         </code>
     </h3>
@@ -820,6 +829,15 @@ those that do not are required.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -829,9 +847,9 @@ those that do not are required.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_atLeastOneValue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceInstantiator.php#L321">at line 321</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceInstantiator.php#L321">at line 321</a></div>
         <code>            protected        bool
-    <strong>atLeastOneValue</strong>($args)
+    <strong>atLeastOneValue</strong>(array $args)
         </code>
     </h3>
     <div class="details">    
@@ -848,9 +866,9 @@ are not called at all if the optional references are not in the container.</p></
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$args</td>
-                <td></td>
+                <td><p>Names of references</p></td>
             </tr>
             </table>
 
