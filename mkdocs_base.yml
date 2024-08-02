@@ -40,6 +40,7 @@ plugins:
 extra:
   version:
     provider: mike
+    alias: true
   social:
     - icon: fontawesome/brands/twitter
       link: https://twitter.com/drushcli
