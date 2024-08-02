@@ -5290,7 +5290,7 @@
 </div>
 <ul>
 <li>A commandfile that will only be used on PHP8+ should <a href="https://github.com/drush-ops/drush/pull/4821">use PHP Attributes</a> instead of Annotations.</li>
-<li><a href="https://www.drush.org/api/Drush/Attributes.html">See Attributes provided by Drush core</a>. Custom code can supply additional Attribute classes, which may then be used by any command.</li>
+<li><a href="https://www.drush.org/api/Drush/Attributes.html">See Attributes provided by Drush core</a>. Custom code can supply additional Attribute classes, which may then be added to any command. For example see <a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/InteractConfigName.php">InteractConfigName</a> which is used by <a href="https://github.com/drush-ops/drush/blob/8b77c9abe6639de42a198c7e69565f09dcf5f22d/src/Commands/config/ConfigCommands.php#L98">ConfigCommands</a>.</li>
 </ul>
 <h2 id="altering-command-info">Altering Command Info<a class="headerlink" href="#altering-command-info" title="Permanent link">&para;</a></h2>
 <p>Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering <em>command info alterers</em>. Alterers are classes that are able to intercept and manipulate an existing command annotation.</p>
@@ -5387,7 +5387,7 @@ With this configuration in place, global commands may be placed as described in 
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">March 29, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 2, 2024</span>
       
     
   </small>
