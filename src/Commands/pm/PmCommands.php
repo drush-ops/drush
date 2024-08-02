@@ -75,13 +75,13 @@ final class PmCommands extends DrushCommands
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if ($todo === []) {
-            $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
+            $this->logger()->notice(dt('Already installed: !list', ['!list' => implode(', ', $modules)]));
             return;
         } elseif (Drush::simulate()) {
-            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
             return;
         } elseif (array_values($todo) !== $modules) {
-            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -93,7 +93,7 @@ final class PmCommands extends DrushCommands
         if (batch_get()) {
             drush_backend_batch_process();
         }
-        $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
+        $this->logger()->success(dt('Successfully installed: !list', $todo_str));
     }
 
     /**
