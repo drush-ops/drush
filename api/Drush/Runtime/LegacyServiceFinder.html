@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>LegacyServiceFinder</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php">View source</a>)
+    <strong>LegacyServiceFinder</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php">View source</a>)
 </p>
 
         
@@ -163,35 +163,32 @@ for this version of Drush.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    string[]
+                    <abbr title="Drush\Runtime\string|null">string|null</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_findModuleDrushServiceProvider">findModuleDrushServiceProvider</a>(string $module, string $dir)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>List of discovered drush.service.yml files</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    string
+                    
                 </div>
                 <div class="col-md-8">
                     <a href="#method_findDefaultServicesFile">findDefaultServicesFile</a>(string $module, string $dir)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
+                                            <p><p>Gets one discovered drush.service.yml file</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    array
+                    <abbr title="Drush\Runtime\array|false">array|false</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_findModuleDrushServiceProviderFromComposer">findModuleDrushServiceProviderFromComposer</a>(string $dir)
         
-                                            <p><p>In composer.json, the Drush version constraints will appear
-in the 'extra' section like so:</p></p>                </div>
+                                            <p><p>Get Drush services section from module's composer.json file</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -233,7 +230,7 @@ in the 'extra' section like so:</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L23">at line 23</a></div>
         <code>                    
     <strong>__construct</strong>($moduleHandler, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
         </code>
@@ -272,7 +269,7 @@ in the 'extra' section like so:</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_getDrushServiceFiles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L36">at line 36</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L33">at line 33</a></div>
         <code>                    array
     <strong>getDrushServiceFiles</strong>()
         </code>
@@ -304,7 +301,7 @@ in the 'extra' section like so:</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_discoverDrushServiceProviders">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L44">at line 44</a></div>
         <code>            protected        
     <strong>discoverDrushServiceProviders</strong>()
         </code>
@@ -327,7 +324,7 @@ in the 'extra' section like so:</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_addModuleDrushServiceProvider">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L66">at line 66</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L61">at line 61</a></div>
         <code>            protected        
     <strong>addModuleDrushServiceProvider</strong>(string $module, string $filename)
         </code>
@@ -366,8 +363,8 @@ for this version of Drush.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findModuleDrushServiceProvider">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L79">at line 79</a></div>
-        <code>            protected        string[]
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L73">at line 73</a></div>
+        <code>            protected        <abbr title="Drush\Runtime\string|null">string|null</abbr>
     <strong>findModuleDrushServiceProvider</strong>(string $module, string $dir)
         </code>
     </h3>
@@ -376,8 +373,7 @@ for this version of Drush.</p></p>
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
+                            <p><p>List of discovered drush.service.yml files</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -400,8 +396,8 @@ for this version of Drush.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>string[]</td>
-            <td><p>List of discovered drush.service.yml files</p></td>
+            <td><abbr title="Drush\Runtime\string|null">string|null</abbr></td>
+            <td></td>
         </tr>
     </table>
 
@@ -414,8 +410,8 @@ for this version of Drush.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findDefaultServicesFile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L95">at line 95</a></div>
-        <code>            protected        string
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L88">at line 88</a></div>
+        <code>            protected        
     <strong>findDefaultServicesFile</strong>(string $module, string $dir)
         </code>
     </h3>
@@ -424,8 +420,7 @@ for this version of Drush.</p></p>
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
+                            <p><p>Gets one discovered drush.service.yml file</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -444,15 +439,6 @@ for this version of Drush.</p></p>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td><p>One discovered drush.service.yml file</p></td>
-        </tr>
-    </table>
-
             
             
             
@@ -462,8 +448,8 @@ for this version of Drush.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findModuleDrushServiceProviderFromComposer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L125">at line 125</a></div>
-        <code>            protected        array
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L117">at line 117</a></div>
+        <code>            protected        <abbr title="Drush\Runtime\array|false">array|false</abbr>
     <strong>findModuleDrushServiceProviderFromComposer</strong>(string $dir)
         </code>
     </h3>
@@ -472,8 +458,9 @@ for this version of Drush.</p></p>
             
 
         <div class="method-description">
-                            <p><p>In composer.json, the Drush version constraints will appear
-in the 'extra' section like so:</p></p>                <p><p>&quot;extra&quot;: {
+                            <p><p>Get Drush services section from module's composer.json file</p></p>                <p><p>In composer.json, the Drush version constraints will appear
+in the 'extra' section like so:</p>
+<p>&quot;extra&quot;: {
 &quot;drush&quot;: {
 &quot;services&quot;: {
 &quot;drush.services.yml&quot;: &quot;^9&quot;
@@ -500,8 +487,8 @@ is used.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>array</td>
-            <td><p>Drush services section from module's composer.json file</p></td>
+            <td><abbr title="Drush\Runtime\array|false">array|false</abbr></td>
+            <td></td>
         </tr>
     </table>
 
@@ -514,7 +501,7 @@ is used.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_findAppropriateServicesFile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L151">at line 151</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L143">at line 143</a></div>
         <code>            protected        string
     <strong>findAppropriateServicesFile</strong>(string $module, array $services, string $dir)
         </code>
@@ -567,7 +554,7 @@ is used.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addDrushServiceProvider">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L172">at line 172</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L164">at line 164</a></div>
         <code>            protected        
     <strong>addDrushServiceProvider</strong>(string $serviceProviderName, string $serviceYmlPath = &#039;&#039;)
         </code>
@@ -605,7 +592,7 @@ is used.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleFileNames">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/Runtime/LegacyServiceFinder.php#L189">at line 189</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/LegacyServiceFinder.php#L181">at line 181</a></div>
         <code>            protected        string[]
     <strong>getModuleFileNames</strong>()
         </code>
