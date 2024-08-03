@@ -73,7 +73,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     public function logger(): ?DrushLoggerManager
     {
-        assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager);
+        assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager, 'Instead of using replacing Drush\'s logger, use $this->add() on DrushLoggerManager to add a custom logger. See https://github.com/drush-ops/drush/pull/5022');
         return $this->logger;
     }
 
