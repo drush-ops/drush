@@ -5242,7 +5242,7 @@
 <p>Drupal cron tasks are often set up to be run via a wget/curl call to cron.php; this same task can also be accomplished via the <a href="../commands/core_cron/">cron command</a>, which circumvents the need to provide a web server interface to cron.</p>
 <h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <p>If you just want to get started quickly, here is a crontab entry that will run cron once every hour at ten minutes after the hour:</p>
-<div class="highlight"><pre><span></span><code>10 * * * * cd [DOCROOT] &amp;&amp; /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 ../vendor/bin/drush --uri=your.drupalsite.org --quiet maint:status &amp;&amp; /vendor/bin/drush --uri=your.drupalsite.org --quiet cron
+<div class="highlight"><pre><span></span><code>10 * * * * cd [DOCROOT] &amp;&amp; /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 ../vendor/bin/drush --uri=your.drupalsite.org --quiet maint:status &amp;&amp; /usr/bin/env PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin COLUMNS=72 ../vendor/bin/drush --uri=your.drupalsite.org --quiet cron
 </code></pre></div>
 <p>You should set up crontab to run your cron tasks as the same user that runs the web server; for example, if you run your web server as the user www-data:</p>
 <div class="highlight"><pre><span></span><code>sudo crontab -u www-data -e
@@ -5270,7 +5270,7 @@
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">June 14, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 6, 2024</span>
       
     
   </small>
@@ -5285,7 +5285,7 @@
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:cermakm@gmail.com'>Marji Cermak</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:vaibhavsagar@gmail.com'>Vaibhav Sagar</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:cermakm@gmail.com'>Marji Cermak</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:niels@sicse.dev'>Niels Sluijs</a>, <a href='mailto:vaibhavsagar@gmail.com'>Vaibhav Sagar</a></span>
             </small>
         </div>
     
