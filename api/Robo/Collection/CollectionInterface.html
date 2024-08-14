@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Collection\CollectionInterface | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Robo_Collection_CollectionInterface" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Robo.html">Robo</a></li><li class="backslash">\</li><li><a href="../../Robo/Collection.html">Collection</a></li><li class="backslash">\</li><li>CollectionInterface</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>CollectionInterface    
+            </h1>
+    </div>
+
+    
+    <p>        interface
+    <strong>CollectionInterface</strong>        implements        <a href="../../Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        UNNAMEDTASK
+                                    </td>
+                <td class="last">
+                    <p><em><p>Unnamed tasks are assigned an arbitrary numeric index
+in the task list. Any numeric value may be used, but the
+UNNAMEDTASK constant is recommended for clarity.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setParentCollection">setParentCollection</a>(<a href="../../Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a> $parentCollection)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Collection/NestedCollectionInterface.html#method_setParentCollection">
+<abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_add">add</a>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $name = self::UNNAMEDTASK)
+        
+                                            <p><p>Add a task or a list of tasks to our task collection.  Each task
+will run via its 'run()' method once (and if) all of the tasks
+added before it complete successfully.  If the task also implements
+RollbackInterface, then it will be rolled back via its 'rollback()'
+method ONLY if its 'run()' method completes successfully, and some
+task added after it fails.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addCode">addCode</a>(callable $code, int|string $name = self::UNNAMEDTASK)
+        
+                                            <p><p>Add arbitrary code to execute as a task.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addIterable">addIterable</a>(<a href="../../Robo/Collection/CollectionInterface.html"><abbr title="Robo\Collection\CollectionInterface">CollectionInterface</abbr></a>|array $iterable, callable $code)
+        
+                                            <p><p>Add arbitrary code that will be called once for every item in the
+provided array or iterable object.  If the function result of the
+provided callback is a TaskInterface or Collection, then it will be
+executed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_rollback">rollback</a>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $rollbackTask)
+        
+                                            <p><p>Add a rollback task to our task collection.  A rollback task
+will execute ONLY if all of the tasks added before it complete
+successfully, AND some task added after it fails.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_rollbackCode">rollbackCode</a>(callable $rollbackTask)
+        
+                                            <p><p>Add arbitrary code to execute as a rollback.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_completion">completion</a>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $completionTask)
+        
+                                            <p><p>Add a completion task to our task collection.  A completion task
+will execute EITHER after all tasks succeed, OR immediatley after
+any task fails.  Completion tasks never cause errors to be returned
+from Collection::run(), even if they fail.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_completionCode">completionCode</a>(callable $completionTask)
+        
+                                            <p><p>Add arbitrary code to execute as a completion.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_before">before</a>(string $name, callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $nameOfTaskToAdd = self::UNNAMEDTASK)
+        
+                                            <p><p>Add a task before an existing named task.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_after">after</a>(string $name, callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $nameOfTaskToAdd = self::UNNAMEDTASK)
+        
+                                            <p><p>Add a task after an existing named task.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_progressMessage">progressMessage</a>(string $text, array $context = [], <abbr title="Psr\Log\LogLevel">LogLevel</abbr>|string $level = LogLevel::NOTICE)
+        
+                                            <p><p>Print a progress message after Collection::run() has executed
+all of the tasks that were added prior to the point when this
+method was called. If one of the previous tasks fail, then this
+message will not be printed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_setParentCollection">
+        <div class="location">in <a href="../../Robo/Collection/NestedCollectionInterface.html#method_setParentCollection">
+<abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/NestedCollectionInterface.php#L12">at line 12</a></div>
+        <code>                    $this
+    <strong>setParentCollection</strong>(<a href="../../Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a> $parentCollection)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a></td>
+                <td>$parentCollection</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_add">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L35">at line 35</a></div>
+        <code>                    $this
+    <strong>add</strong>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $name = self::UNNAMEDTASK)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a task or a list of tasks to our task collection.  Each task
+will run via its 'run()' method once (and if) all of the tasks
+added before it complete successfully.  If the task also implements
+RollbackInterface, then it will be rolled back via its 'rollback()'
+method ONLY if its 'run()' method completes successfully, and some
+task added after it fails.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td>$task</td>
+                <td><p>The task to add to our collection.</p></td>
+            </tr>
+                    <tr>
+                <td>int|string</td>
+                <td>$name</td>
+                <td><p>An optional name for the task -- missing or UNNAMEDTASK for unnamed tasks.
+Names are used for positioning before and after tasks.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addCode">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L48">at line 48</a></div>
+        <code>                    $this
+    <strong>addCode</strong>(callable $code, int|string $name = self::UNNAMEDTASK)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add arbitrary code to execute as a task.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>callable</td>
+                <td>$code</td>
+                <td><p>Code to execute as a task</p></td>
+            </tr>
+                    <tr>
+                <td>int|string</td>
+                <td>$name</td>
+                <td><p>An optional name for the task -- missing or UNNAMEDTASK for unnamed tasks.
+Names are used for positioning before and after tasks.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addIterable">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L63">at line 63</a></div>
+        <code>                    $this
+    <strong>addIterable</strong>(<a href="../../Robo/Collection/CollectionInterface.html"><abbr title="Robo\Collection\CollectionInterface">CollectionInterface</abbr></a>|array $iterable, callable $code)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add arbitrary code that will be called once for every item in the
+provided array or iterable object.  If the function result of the
+provided callback is a TaskInterface or Collection, then it will be
+executed.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Collection/CollectionInterface.html"><abbr title="Robo\Collection\CollectionInterface">CollectionInterface</abbr></a>|array</td>
+                <td>$iterable</td>
+                <td><p>A collection of things to iterate.</p></td>
+            </tr>
+                    <tr>
+                <td>callable</td>
+                <td>$code</td>
+                <td><p>A callback function to call for each item in the collection.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rollback">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L77">at line 77</a></div>
+        <code>                    $this
+    <strong>rollback</strong>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $rollbackTask)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a rollback task to our task collection.  A rollback task
+will execute ONLY if all of the tasks added before it complete
+successfully, AND some task added after it fails.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td>$rollbackTask</td>
+                <td><p>The rollback task to add.  Note that the 'run()' method of the
+task executes, not its 'rollback()' method.  To use the 'rollback()'
+method, add the task via 'Collection::add()' instead.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_rollbackCode">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L87">at line 87</a></div>
+        <code>                    $this
+    <strong>rollbackCode</strong>(callable $rollbackTask)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add arbitrary code to execute as a rollback.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>callable</td>
+                <td>$rollbackTask</td>
+                <td><p>Code to execute during rollback processing.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_completion">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L101">at line 101</a></div>
+        <code>                    $this
+    <strong>completion</strong>(<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $completionTask)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a completion task to our task collection.  A completion task
+will execute EITHER after all tasks succeed, OR immediatley after
+any task fails.  Completion tasks never cause errors to be returned
+from Collection::run(), even if they fail.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td>$completionTask</td>
+                <td><p>The completion task to add.  Note that the 'run()' method of the
+task executes, just as if the task was added normally.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_completionCode">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L111">at line 111</a></div>
+        <code>                    $this
+    <strong>completionCode</strong>(callable $completionTask)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add arbitrary code to execute as a completion.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>callable</td>
+                <td>$completionTask</td>
+                <td><p>Code to execute after collection completes</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_before">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L126">at line 126</a></div>
+        <code>                    $this
+    <strong>before</strong>(string $name, callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $nameOfTaskToAdd = self::UNNAMEDTASK)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a task before an existing named task.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the task to insert before.  The named task MUST exist.</p></td>
+            </tr>
+                    <tr>
+                <td>callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td>$task</td>
+                <td><p>The task to add.</p></td>
+            </tr>
+                    <tr>
+                <td>int|string</td>
+                <td>$nameOfTaskToAdd</td>
+                <td><p>The name of the task to add. If not provided, will be associated
+with the named task it was added before.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_after">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L141">at line 141</a></div>
+        <code>                    $this
+    <strong>after</strong>(string $name, callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int|string $nameOfTaskToAdd = self::UNNAMEDTASK)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a task after an existing named task.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the task to insert before.  The named task MUST exist.</p></td>
+            </tr>
+                    <tr>
+                <td>callable|<a href="../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td>$task</td>
+                <td><p>The task to add.</p></td>
+            </tr>
+                    <tr>
+                <td>int|string</td>
+                <td>$nameOfTaskToAdd</td>
+                <td><p>The name of the task to add. If not provided, will be associated
+with the named task it was added after.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_progressMessage">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Collection/CollectionInterface.php#L159">at line 159</a></div>
+        <code>                    $this
+    <strong>progressMessage</strong>(string $text, array $context = [], <abbr title="Psr\Log\LogLevel">LogLevel</abbr>|string $level = LogLevel::NOTICE)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Print a progress message after Collection::run() has executed
+all of the tasks that were added prior to the point when this
+method was called. If one of the previous tasks fail, then this
+message will not be printed.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$text</td>
+                <td><p>Message to print.</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$context</td>
+                <td><p>Extra context data for use by the logger. Note
+that the data from the collection state is merged with the provided context.</p></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Psr\Log\LogLevel">LogLevel</abbr>|string</td>
+                <td>$level</td>
+                <td><p>The log level to print the information at. Default is NOTICE.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

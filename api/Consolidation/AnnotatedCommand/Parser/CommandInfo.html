@@ -1,0 +1,3078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\AnnotatedCommand\Parser\CommandInfo | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_AnnotatedCommand_Parser_CommandInfo" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/AnnotatedCommand.html">AnnotatedCommand</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/AnnotatedCommand/Parser.html">Parser</a></li><li class="backslash">\</li><li>CommandInfo</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>CommandInfo    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>CommandInfo</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Given a class and method name, parse the annotations in the
+DocBlock comment, and provide accessor methods for all of
+the elements that are needed to create a Symfony Console Command.</p></p>            <p><p>Note that the name of this class is now somewhat of a misnomer,
+as we now use it to hold annotation data for hooks as well as commands.
+It would probably be better to rename this to MethodInfo at some point.</p></p>        </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        SERIALIZATION_SCHEMA_VERSION
+                                    </td>
+                <td class="last">
+                    <p><em><p>Serialization schema version. Incremented every time the serialization schema changes.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_reflection">
+                                        protected                                        <a target="_blank" rel="noopener" href="https://www.php.net/ReflectionMethod">ReflectionMethod</a>
+                                                                                
+                                    </td>
+                <td>$reflection</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_docBlockIsParsed">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$docBlockIsParsed</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_parsingInProgress">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$parsingInProgress</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_name">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$name</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_description">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$description</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_help">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$help</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_options">
+                                        protected                                        <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+                                                                                
+                                    </td>
+                <td>$options</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_arguments">
+                                        protected                                        <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+                                                                                
+                                    </td>
+                <td>$arguments</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_exampleUsage">
+                                        protected                                        array
+                                                                                
+                                    </td>
+                <td>$exampleUsage</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_otherAnnotations">
+                                        protected                                        <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a>
+                                                                                
+                                    </td>
+                <td>$otherAnnotations</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_aliases">
+                                        protected                                        array
+                                                                                
+                                    </td>
+                <td>$aliases</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_inputOptions">
+                                        protected                                        <abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]
+                                                                                
+                                    </td>
+                <td>$inputOptions</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_methodName">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$methodName</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_returnType">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$returnType</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_injectedClasses">
+                                        protected                                        string[]
+                                                                                
+                                    </td>
+                <td>$injectedClasses</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_parameterMap">
+                                        protected                                        bool[]
+                                                                                
+                                    </td>
+                <td>$parameterMap</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_simpleOptionParametersAllowed">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$simpleOptionParametersAllowed</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(string|mixed $classNameOrInstance, string $methodName, array $cache = [])
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Create a new CommandInfo class for a particular method of a class.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>($classNameOrInstance, $methodName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_deserialize">deserialize</a>($cache)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_cachedFileIsModified">cachedFileIsModified</a>($cache)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_constructFromClassAndMethod">constructFromClassAndMethod</a>($classNameOrInstance, $methodName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getMethodName">getMethodName</a>()
+        
+                                            <p><p>Recover the method name provided to the constructor.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getName">getName</a>()
+        
+                                            <p><p>Return the primary name for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setName">setName</a>(string $name)
+        
+                                            <p><p>Set the primary name for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_valid">valid</a>()
+        
+                                            <p><p>Return whether or not this method represents a valid command
+or hook.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_invalidate">invalidate</a>()
+        
+                                            <p><p>If higher-level code decides that this CommandInfo is not interesting
+or useful (if it is not a command method or a hook method), then
+we will mark it as invalid to prevent it from being created as a command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getParameterMap">getParameterMap</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getReturnType">getReturnType</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getInjectedClasses">getInjectedClasses</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setInjectedClasses">setInjectedClasses</a>($injectedClasses)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setReturnType">setReturnType</a>($returnType)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRawAnnotations">getRawAnnotations</a>()
+        
+                                            <p><p>Get any annotations included in the docblock comment for the
+implementation method of this command that are not already
+handled by the primary methods of this class.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_replaceRawAnnotations">replaceRawAnnotations</a>($annotationData)
+        
+                                            <p><p>Replace the annotation data.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAnnotations">getAnnotations</a>()
+        
+                                            <p><p>Get any annotations included in the docblock comment,
+also including default values such as @command.  We add
+in the default @command annotation late, and only in a
+copy of the annotation data because we use the existance
+of a @command to indicate that this CommandInfo is
+a command, and not a hook or anything else.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAnnotationList">getAnnotationList</a>(string $name)
+        
+                                            <p><p>Return a specific named annotation for this command as a list.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAnnotation">getAnnotation</a>(string $name)
+        
+                                            <p><p>Return a specific named annotation for this command as a string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasAnnotation">hasAnnotation</a>(string $annotation)
+        
+                                            <p><p>Check to see if the specified annotation exists for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addAnnotation">addAnnotation</a>($name, $content)
+        
+                                            <p><p>Save any tag that we do not explicitly recognize in the
+'otherAnnotations' map.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_removeAnnotation">removeAnnotation</a>($name)
+        
+                                            <p><p>Remove an annotation that was previoudly set.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getDescription">getDescription</a>()
+        
+                                            <p><p>Get the synopsis of the command (~first line).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setDescription">setDescription</a>(string $description)
+        
+                                            <p><p>Set the command description.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasHelp">hasHelp</a>()
+        
+                                            <p><p>Determine if help was provided for this command info</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHelp">getHelp</a>()
+        
+                                            <p><p>Get the help text of the command (the description)</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setHelp">setHelp</a>(string $help)
+        
+                                            <p><p>Set the help text for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAliases">getAliases</a>()
+        
+                                            <p><p>Return the list of aliases for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setAliases">setAliases</a>(string|string[] $aliases)
+        
+                                            <p><p>Set aliases that can be used in place of the command's primary name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHidden">getHidden</a>()
+        
+                                            <p><p>Get hidden status for the command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setHidden">setHidden</a>(bool $hidden)
+        
+                                            <p><p>Set hidden status. List command omits hidden commands.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getExampleUsages">getExampleUsages</a>()
+        
+                                            <p><p>Return the examples for this command. This is @usage instead of</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setExampleUsage">setExampleUsage</a>(string $usage, string $description)
+        
+                                            <p><p>Add an example usage for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_replaceExampleUsages">replaceExampleUsages</a>($usages)
+        
+                                            <p><p>Overwrite all example usages</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getTopics">getTopics</a>()
+        
+                                            <p><p>Return the topics for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\AnnotatedCommand\Parser\ReflectionParameter">ReflectionParameter</abbr>[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getParameters">getParameters</a>()
+        
+                                            <p><p>Return the list of refleaction parameters.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_arguments">arguments</a>()
+        
+                                            <p><p>Descriptions of commandline arguements for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_options">options</a>()
+        
+                                            <p><p>Descriptions of commandline options for this command.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_inputOptions">inputOptions</a>()
+        
+                                            <p><p>Get the inputOptions for the options associated with this CommandInfo
+object, e.g. via @option annotations, or from
+$options = ['someoption' =&gt; 'defaultvalue'] in the command method
+parameter list.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addImplicitNoOptions">addImplicitNoOptions</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createInputOptions">createInputOptions</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findMatchingOption">findMatchingOption</a>(string $optionName)
+        
+                                            <p><p>An option might have a name such as 'silent|s'. In this
+instance, we will allow the @option or @default tag to
+reference the option only by name (e.g. 'silent' or 's'
+instead of 'silent|s').</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addArgumentDescription">addArgumentDescription</a>($name, $description, $suggestedValues = [])
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOption">addOption</a>($name, $description, $suggestedValues = [], $defaultValue = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOptionDescription">addOptionDescription</a>($name, $description, $suggestedValues = [], $defaultValue = null)
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOptionOrArgumentDescription">addOptionOrArgumentDescription</a>(<a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a> $set, $variableName, $description, $suggestedValues = [], $defaultFromParameter = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_splitOutDefault">splitOutDefault</a>($description)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findOptionAmongAlternatives">findOptionAmongAlternatives</a>(string $optionName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findExistingOption">findExistingOption</a>(string $optionName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_determineAgumentClassifications">determineAgumentClassifications</a>()
+        
+                                            <p><p>Examine the parameters of the method for this command, and
+build a list of commandline arguments for them.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addParameterToResult">addParameterToResult</a>($result, $param)
+        
+                                            <p><p>Examine the provided parameter, and determine whether it
+is a parameter that will be filled in with a positional
+commandline argument.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_determineOptionsFromParameters">determineOptionsFromParameters</a>()
+        
+                                            <p><p>Examine the parameters of the method for this command, and determine
+the disposition of the options from them.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_lastParameterIsOptionsArray">lastParameterIsOptionsArray</a>()
+        
+                                            <p><p>Determine if the last argument contains $options.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isAssoc">isAssoc</a>(array $arr)
+        
+                                            <p><p>Helper; determine if an array is associative or not. An array
+is not associative if its keys are numeric, and numbered sequentially
+from zero. All other arrays are considered to be associative.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertName">convertName</a>(string $camel)
+        
+                                            <p><p>Convert from a method name to the corresponding command name. A
+method 'fooBar' will become 'foo:bar', and 'fooBarBazBoz' will
+become 'foo:bar-baz-boz'.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertArgumentName">convertArgumentName</a>($camel)
+        
+                                            <p><p>Convert an argument name from snake_case or camelCase
+to a hyphenated-string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_camelToSnake">camelToSnake</a>($camel, $splitter = &#039;_&#039;)
+        
+                                            <p><p>Convert a camelCase string to a snake_case string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_requireConsistentState">requireConsistentState</a>()
+        
+                                            <p><p>Guard against invalid usage of CommandInfo during parsing.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_parseDocBlock">parseDocBlock</a>()
+        
+                                            <p><p>Parse the docBlock comment for this command, and set the
+fields of this class with the data thereby obtained.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertListToCommaSeparated">convertListToCommaSeparated</a>($text)
+        
+                                            <p><p>Given a list that might be 'a b c' or 'a, b, c' or 'a,b,c',
+convert the data into the last of these forms.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L123">at line 123</a></div>
+        <code>                    
+    <strong>__construct</strong>(string|mixed $classNameOrInstance, string $methodName, array $cache = [])
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td>Use</td>
+                    <td>CommandInfo::create() or CommandInfo::deserialize()
+instead. In the future, this constructor will be protected.</td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a new CommandInfo class for a particular method of a class.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|mixed</td>
+                <td>$classNameOrInstance</td>
+                <td><p>The name of a class, or an
+instance of it, or an array of cached data.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$methodName</td>
+                <td><p>The name of the method to get info about.</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$cache</td>
+                <td><p>Cached data</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L141">at line 141</a></div>
+        <code>        static            
+    <strong>create</strong>($classNameOrInstance, $methodName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$classNameOrInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$methodName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_deserialize">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L146">at line 146</a></div>
+        <code>        static            
+    <strong>deserialize</strong>($cache)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$cache</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_cachedFileIsModified">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L152">at line 152</a></div>
+        <code>                    
+    <strong>cachedFileIsModified</strong>($cache)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$cache</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_constructFromClassAndMethod">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L158">at line 158</a></div>
+        <code>            protected        
+    <strong>constructFromClassAndMethod</strong>($classNameOrInstance, $methodName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$classNameOrInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$methodName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getMethodName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L183">at line 183</a></div>
+        <code>                    string
+    <strong>getMethodName</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Recover the method name provided to the constructor.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L193">at line 193</a></div>
+        <code>                    string
+    <strong>getName</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the primary name for this command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L204">at line 204</a></div>
+        <code>                    
+    <strong>setName</strong>(string $name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the primary name for this command.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_valid">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L214">at line 214</a></div>
+        <code>                    
+    <strong>valid</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return whether or not this method represents a valid command
+or hook.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_invalidate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L227">at line 227</a></div>
+        <code>                    
+    <strong>invalidate</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>If higher-level code decides that this CommandInfo is not interesting
+or useful (if it is not a command method or a hook method), then
+we will mark it as invalid to prevent it from being created as a command.</p></p>                <p><p>We still cache a placeholder record for invalid methods, so that we
+do not need to re-parse the method again later simply to determine that
+it is invalid.</p></p>        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getParameterMap">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L232">at line 232</a></div>
+        <code>                    
+    <strong>getParameterMap</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getReturnType">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L237">at line 237</a></div>
+        <code>                    
+    <strong>getReturnType</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getInjectedClasses">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L243">at line 243</a></div>
+        <code>                    
+    <strong>getInjectedClasses</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setInjectedClasses">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L249">at line 249</a></div>
+        <code>                    
+    <strong>setInjectedClasses</strong>($injectedClasses)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$injectedClasses</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setReturnType">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L255">at line 255</a></div>
+        <code>                    
+    <strong>setReturnType</strong>($returnType)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$returnType</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRawAnnotations">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L268">at line 268</a></div>
+        <code>                    <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a>
+    <strong>getRawAnnotations</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get any annotations included in the docblock comment for the
+implementation method of this command that are not already
+handled by the primary methods of this class.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_replaceRawAnnotations">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L277">at line 277</a></div>
+        <code>                    
+    <strong>replaceRawAnnotations</strong>($annotationData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Replace the annotation data.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$annotationData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAnnotations">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L293">at line 293</a></div>
+        <code>                    <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a>
+    <strong>getAnnotations</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get any annotations included in the docblock comment,
+also including default values such as @command.  We add
+in the default @command annotation late, and only in a
+copy of the annotation data because we use the existance
+of a @command to indicate that this CommandInfo is
+a command, and not a hook or anything else.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAnnotationList">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L315">at line 315</a></div>
+        <code>                    array|null
+    <strong>getAnnotationList</strong>(string $name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return a specific named annotation for this command as a list.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the annotation.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAnnotation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L331">at line 331</a></div>
+        <code>                    string|null
+    <strong>getAnnotation</strong>(string $name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return a specific named annotation for this command as a string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the annotation.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasAnnotation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L346">at line 346</a></div>
+        <code>                    bool
+    <strong>hasAnnotation</strong>(string $annotation)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check to see if the specified annotation exists for this command.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$annotation</td>
+                <td><p>The name of the annotation.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addAnnotation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L356">at line 356</a></div>
+        <code>                    
+    <strong>addAnnotation</strong>($name, $content)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Save any tag that we do not explicitly recognize in the
+'otherAnnotations' map.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$content</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_removeAnnotation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L369">at line 369</a></div>
+        <code>                    
+    <strong>removeAnnotation</strong>($name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Remove an annotation that was previoudly set.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L379">at line 379</a></div>
+        <code>                    string
+    <strong>getDescription</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the synopsis of the command (~first line).</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L390">at line 390</a></div>
+        <code>                    
+    <strong>setDescription</strong>(string $description)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the command description.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$description</td>
+                <td><p>The description to set.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasHelp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L399">at line 399</a></div>
+        <code>                    
+    <strong>hasHelp</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if help was provided for this command info</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHelp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L407">at line 407</a></div>
+        <code>                    
+    <strong>getHelp</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the help text of the command (the description)</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setHelp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L417">at line 417</a></div>
+        <code>                    
+    <strong>setHelp</strong>(string $help)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the help text for this command.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$help</td>
+                <td><p>The help text.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAliases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L427">at line 427</a></div>
+        <code>                    string[]
+    <strong>getAliases</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the list of aliases for this command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setAliases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L438">at line 438</a></div>
+        <code>                    
+    <strong>setAliases</strong>(string|string[] $aliases)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set aliases that can be used in place of the command's primary name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|string[]</td>
+                <td>$aliases</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHidden">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L451">at line 451</a></div>
+        <code>                    bool
+    <strong>getHidden</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get hidden status for the command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setHidden">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L462">at line 462</a></div>
+        <code>                    
+    <strong>setHidden</strong>(bool $hidden)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set hidden status. List command omits hidden commands.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$hidden</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getExampleUsages">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L475">at line 475</a></div>
+        <code>                    string[]
+    <strong>getExampleUsages</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the examples for this command. This is @usage instead of</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                            <h4>Examples</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><pre class="examples">because the later is defined by the phpdoc standard to
+be example method calls.</pre></td>
+            </tr>
+            </table>
+
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setExampleUsage">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L488">at line 488</a></div>
+        <code>                    
+    <strong>setExampleUsage</strong>(string $usage, string $description)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add an example usage for this command.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$usage</td>
+                <td><p>An example of the command, including the command
+name and all of its example arguments and options.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$description</td>
+                <td><p>An explanation of what the example does.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_replaceExampleUsages">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L497">at line 497</a></div>
+        <code>                    
+    <strong>replaceExampleUsages</strong>($usages)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Overwrite all example usages</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$usages</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getTopics">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L508">at line 508</a></div>
+        <code>                    string[]
+    <strong>getTopics</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the topics for this command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getParameters">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L522">at line 522</a></div>
+        <code>                    <abbr title="Consolidation\AnnotatedCommand\Parser\ReflectionParameter">ReflectionParameter</abbr>[]
+    <strong>getParameters</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the list of refleaction parameters.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\AnnotatedCommand\Parser\ReflectionParameter">ReflectionParameter</abbr>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_arguments">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L532">at line 532</a></div>
+        <code>                    <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+    <strong>arguments</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Descriptions of commandline arguements for this command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_options">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L542">at line 542</a></div>
+        <code>                    <a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a>
+    <strong>options</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Descriptions of commandline options for this command.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_inputOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L555">at line 555</a></div>
+        <code>                    <abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]
+    <strong>inputOptions</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the inputOptions for the options associated with this CommandInfo
+object, e.g. via @option annotations, or from
+$options = ['someoption' =&gt; 'defaultvalue'] in the command method
+parameter list.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addImplicitNoOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L563">at line 563</a></div>
+        <code>            protected        
+    <strong>addImplicitNoOptions</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createInputOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L577">at line 577</a></div>
+        <code>            protected        
+    <strong>createInputOptions</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findMatchingOption">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L633">at line 633</a></div>
+        <code>                    string
+    <strong>findMatchingOption</strong>(string $optionName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>An option might have a name such as 'silent|s'. In this
+instance, we will allow the @option or @default tag to
+reference the option only by name (e.g. 'silent' or 's'
+instead of 'silent|s').</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$optionName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addArgumentDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L646">at line 646</a></div>
+        <code>                    
+    <strong>addArgumentDescription</strong>($name, $description, $suggestedValues = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$suggestedValues</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOption">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L651">at line 651</a></div>
+        <code>                    
+    <strong>addOption</strong>($name, $description, $suggestedValues = [], $defaultValue = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$suggestedValues</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$defaultValue</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOptionDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L659">at line 659</a></div>
+        <code>                    
+    <strong>addOptionDescription</strong>($name, $description, $suggestedValues = [], $defaultValue = null)
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td>Use</td>
+                    <td>addOption() instead.</td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$suggestedValues</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$defaultValue</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOptionOrArgumentDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L672">at line 672</a></div>
+        <code>            protected        
+    <strong>addOptionOrArgumentDescription</strong>(<a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a> $set, $variableName, $description, $suggestedValues = [], $defaultFromParameter = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a></td>
+                <td>$set</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$variableName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$suggestedValues</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$defaultFromParameter</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_splitOutDefault">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L687">at line 687</a></div>
+        <code>            protected        
+    <strong>splitOutDefault</strong>($description)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findOptionAmongAlternatives">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L700">at line 700</a></div>
+        <code>            protected        string
+    <strong>findOptionAmongAlternatives</strong>(string $optionName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$optionName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findExistingOption">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L720">at line 720</a></div>
+        <code>            protected        string|null
+    <strong>findExistingOption</strong>(string $optionName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$optionName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determineAgumentClassifications">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L741">at line 741</a></div>
+        <code>            protected        array
+    <strong>determineAgumentClassifications</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Examine the parameters of the method for this command, and
+build a list of commandline arguments for them.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addParameterToResult">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L766">at line 766</a></div>
+        <code>            protected        
+    <strong>addParameterToResult</strong>($result, $param)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Examine the provided parameter, and determine whether it
+is a parameter that will be filled in with a positional
+commandline argument.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$result</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$param</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determineOptionsFromParameters">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L790">at line 790</a></div>
+        <code>            protected        array
+    <strong>determineOptionsFromParameters</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Examine the parameters of the method for this command, and determine
+the disposition of the options from them.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_lastParameterIsOptionsArray">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L815">at line 815</a></div>
+        <code>            protected        
+    <strong>lastParameterIsOptionsArray</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if the last argument contains $options.</p></p>                <p><p>Two forms indicate options:</p>
+<ul>
+<li>$options = []</li>
+<li>$options = ['flag' =&gt; 'default-value']</li>
+</ul>
+<p>Any other form, including <code>array $foo</code>, is not options.</p></p>        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isAssoc">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L836">at line 836</a></div>
+        <code>            protected        bool
+    <strong>isAssoc</strong>(array $arr)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Helper; determine if an array is associative or not. An array
+is not associative if its keys are numeric, and numbered sequentially
+from zero. All other arrays are considered to be associative.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$arr</td>
+                <td><p>The array</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L852">at line 852</a></div>
+        <code>            protected        string
+    <strong>convertName</strong>(string $camel)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert from a method name to the corresponding command name. A
+method 'fooBar' will become 'foo:bar', and 'fooBarBazBoz' will
+become 'foo:bar-baz-boz'.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$camel</td>
+                <td><p>method name.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertArgumentName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L862">at line 862</a></div>
+        <code>            protected        
+    <strong>convertArgumentName</strong>($camel)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert an argument name from snake_case or camelCase
+to a hyphenated-string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$camel</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_camelToSnake">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L871">at line 871</a></div>
+        <code>            protected        
+    <strong>camelToSnake</strong>($camel, $splitter = &#039;_&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert a camelCase string to a snake_case string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$camel</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$splitter</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_requireConsistentState">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L880">at line 880</a></div>
+        <code>            protected        
+    <strong>requireConsistentState</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Guard against invalid usage of CommandInfo during parsing.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_parseDocBlock">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L891">at line 891</a></div>
+        <code>            protected        
+    <strong>parseDocBlock</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Parse the docBlock comment for this command, and set the
+fields of this class with the data thereby obtained.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertListToCommaSeparated">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/CommandInfo.php#L916">at line 916</a></div>
+        <code>        static    protected        
+    <strong>convertListToCommaSeparated</strong>($text)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Given a list that might be 'a b c' or 'a, b, c' or 'a,b,c',
+convert the data into the last of these forms.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$text</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

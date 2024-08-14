@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Common\ExecTrait | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Robo_Common_ExecTrait" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">trait</span></li>
+                        <li><a href="../../Robo.html">Robo</a></li><li class="backslash">\</li><li><a href="../../Robo/Common.html">Common</a></li><li class="backslash">\</li><li>ExecTrait</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>ExecTrait    
+            </h1>
+    </div>
+
+    
+    <p>        trait
+    <strong>ExecTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Class ExecTrait</p></p>                    </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_background">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$background</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_timeout">
+                                        protected                                        null|int
+                                                                                
+                                    </td>
+                <td>$timeout</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_idleTimeout">
+                                        protected                                        null|int
+                                                                                
+                                    </td>
+                <td>$idleTimeout</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_env">
+                                        protected                                        null|array
+                                                                                
+                                    </td>
+                <td>$env</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_process">
+                                        protected                                        <abbr title="Symfony\Component\Process\Process">Process</abbr>
+                                                                                
+                                    </td>
+                <td>$process</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_input">
+                                        protected                                        resource|string
+                                                                                
+                                    </td>
+                <td>$input</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_interactive">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$interactive</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_isPrinted">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$isPrinted</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_isMetadataPrinted">
+                                        protected                                        bool
+                                                                                
+                                    </td>
+                <td>$isMetadataPrinted</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_workingDirectory">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$workingDirectory</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getCommandDescription">getCommandDescription</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_startTimer">startTimer</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_stopTimer">stopTimer</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    null|float
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getExecutionTime">getExecutionTime</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hideTaskProgress">hideTaskProgress</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_showTaskProgress">showTaskProgress</a>(bool $inProgress)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_printTaskInfo">printTaskInfo</a>(string $text, null|array $context = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_verbosityMeetsThreshold">verbosityMeetsThreshold</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_writeMessage">writeMessage</a>(string $message)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_detectInteractive">detectInteractive</a>()
+        
+                                            <p><p>Sets $this-&gt;interactive() based on posix_isatty().</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_background">background</a>(bool $arg = true)
+        
+                                            <p><p>Executes command in background mode (asynchronously)</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_timeout">timeout</a>(int $timeout)
+        
+                                            <p><p>Stop command if it runs longer then $timeout in seconds</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_idleTimeout">idleTimeout</a>(int $timeout)
+        
+                                            <p><p>Stops command if it does not output something for a while</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_env">env</a>(string|array $env, bool|string $value = null)
+        
+                                            <p><p>Set a single environment variable, or multiple.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_envVars">envVars</a>(array $env)
+        
+                                            <p><p>Sets the environment variables for the command</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setProcessInput">setProcessInput</a>(resource|string $input)
+        
+                                            <p><p>Pass an input to the process. Can be resource created with fopen() or string</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setInput">setInput</a>(resource|string $input)
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Pass an input to the process. Can be resource created with fopen() or string</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_interactive">interactive</a>(bool $interactive = true)
+        
+                                            <p><p>Attach tty to process for interactive input</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getPrinted">getPrinted</a>()
+        
+                                            <p><p>Is command printing its output to screen</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_dir">dir</a>(string $dir)
+        
+                                            <p><p>Changes working directory of command</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_silent">silent</a>(bool $arg)
+        
+                                            <p><p>Shortcut for setting isPrinted() and isMetadataPrinted() to false.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_printed">printed</a>(bool $arg)
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Should command output be printed</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_printOutput">printOutput</a>(bool $arg)
+        
+                                            <p><p>Should command output be printed</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_printMetadata">printMetadata</a>(bool $arg)
+        
+                                            <p><p>Should command metadata be printed. I,e., command and timer.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Robo/ResultData.html"><abbr title="Robo\ResultData">ResultData</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_execute">execute</a>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process, callable $output_callback = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_stop">stop</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_printAction">printAction</a>(array $context = [])
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_formatCommandDisplay">formatCommandDisplay</a>(string $command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getResultData">getResultData</a>()
+        
+                                            <p><p>Gets the data array to be passed to Result().</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_getCommandDescription">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L67">at line 67</a></div>
+        <code>    abstract                string
+    <strong>getCommandDescription</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_startTimer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L73">at line 73</a></div>
+        <code>    abstract        protected        
+    <strong>startTimer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/ProgressIndicatorAwareTrait.html"><abbr title="Robo\Common\ProgressIndicatorAwareTrait">ProgressIndicatorAwareTrait</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/Timer.html"><abbr title="Robo\Common\Timer">Timer</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_stopTimer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L79">at line 79</a></div>
+        <code>    abstract        protected        
+    <strong>stopTimer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/ProgressIndicatorAwareTrait.html"><abbr title="Robo\Common\ProgressIndicatorAwareTrait">ProgressIndicatorAwareTrait</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/Timer.html"><abbr title="Robo\Common\Timer">Timer</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getExecutionTime">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L87">at line 87</a></div>
+        <code>    abstract        protected        null|float
+    <strong>getExecutionTime</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|float</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/ProgressIndicatorAwareTrait.html"><abbr title="Robo\Common\ProgressIndicatorAwareTrait">ProgressIndicatorAwareTrait</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/Timer.html"><abbr title="Robo\Common\Timer">Timer</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hideTaskProgress">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L94">at line 94</a></div>
+        <code>    abstract        protected        bool
+    <strong>hideTaskProgress</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/TaskIO.html"><abbr title="Robo\Common\TaskIO">TaskIO</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_showTaskProgress">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L101">at line 101</a></div>
+        <code>    abstract        protected        
+    <strong>showTaskProgress</strong>(bool $inProgress)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$inProgress</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/TaskIO.html"><abbr title="Robo\Common\TaskIO">TaskIO</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printTaskInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L109">at line 109</a></div>
+        <code>    abstract        protected        
+    <strong>printTaskInfo</strong>(string $text, null|array $context = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$text</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|array</td>
+                <td>$context</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/TaskIO.html"><abbr title="Robo\Common\TaskIO">TaskIO</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_verbosityMeetsThreshold">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L116">at line 116</a></div>
+        <code>    abstract                bool
+    <strong>verbosityMeetsThreshold</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/VerbosityThresholdTrait.html"><abbr title="Robo\Common\VerbosityThresholdTrait">VerbosityThresholdTrait</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_writeMessage">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L123">at line 123</a></div>
+        <code>    abstract                
+    <strong>writeMessage</strong>(string $message)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../Robo/Common/VerbosityThresholdTrait.html"><abbr title="Robo\Common\VerbosityThresholdTrait">VerbosityThresholdTrait</abbr></a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_detectInteractive">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L130">at line 130</a></div>
+        <code>                    $this
+    <strong>detectInteractive</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Sets $this-&gt;interactive() based on posix_isatty().</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_background">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L150">at line 150</a></div>
+        <code>                    $this
+    <strong>background</strong>(bool $arg = true)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Executes command in background mode (asynchronously)</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_timeout">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L163">at line 163</a></div>
+        <code>                    $this
+    <strong>timeout</strong>(int $timeout)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Stop command if it runs longer then $timeout in seconds</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int</td>
+                <td>$timeout</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_idleTimeout">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L176">at line 176</a></div>
+        <code>                    $this
+    <strong>idleTimeout</strong>(int $timeout)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Stops command if it does not output something for a while</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int</td>
+                <td>$timeout</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_env">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L190">at line 190</a></div>
+        <code>                    $this
+    <strong>env</strong>(string|array $env, bool|string $value = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set a single environment variable, or multiple.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|array</td>
+                <td>$env</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool|string</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_envVars">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L205">at line 205</a></div>
+        <code>                    $this
+    <strong>envVars</strong>(array $env)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Sets the environment variables for the command</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$env</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setProcessInput">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L218">at line 218</a></div>
+        <code>                    $this
+    <strong>setProcessInput</strong>(resource|string $input)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Pass an input to the process. Can be resource created with fopen() or string</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>resource|string</td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setInput">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L235">at line 235</a></div>
+        <code>                    $this
+    <strong>setInput</strong>(resource|string $input)
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Pass an input to the process. Can be resource created with fopen() or string</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>resource|string</td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_interactive">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L249">at line 249</a></div>
+        <code>                    $this
+    <strong>interactive</strong>(bool $interactive = true)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Attach tty to process for interactive input</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$interactive</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getPrinted">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L261">at line 261</a></div>
+        <code>                    bool
+    <strong>getPrinted</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Is command printing its output to screen</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dir">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L273">at line 273</a></div>
+        <code>                    $this
+    <strong>dir</strong>(string $dir)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Changes working directory of command</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$dir</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_silent">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L286">at line 286</a></div>
+        <code>                    $this
+    <strong>silent</strong>(bool $arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Shortcut for setting isPrinted() and isMetadataPrinted() to false.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printed">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L304">at line 304</a></div>
+        <code>                    $this
+    <strong>printed</strong>(bool $arg)
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Should command output be printed</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printOutput">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L317">at line 317</a></div>
+        <code>                    $this
+    <strong>printOutput</strong>(bool $arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Should command output be printed</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printMetadata">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L332">at line 332</a></div>
+        <code>                    $this
+    <strong>printMetadata</strong>(bool $arg)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Should command metadata be printed. I,e., command and timer.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_execute">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L346">at line 346</a></div>
+        <code>            protected        <a href="../../Robo/ResultData.html"><abbr title="Robo\ResultData">ResultData</abbr></a>
+    <strong>execute</strong>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process, callable $output_callback = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
+                <td>$process</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable</td>
+                <td>$output_callback</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Robo/ResultData.html"><abbr title="Robo\ResultData">ResultData</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_stop">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L417">at line 417</a></div>
+        <code>            protected        
+    <strong>stop</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_printAction">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L431">at line 431</a></div>
+        <code>            protected        
+    <strong>printAction</strong>(array $context = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$context</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_formatCommandDisplay">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L448">at line 448</a></div>
+        <code>            protected        string
+    <strong>formatCommandDisplay</strong>(string $command)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getResultData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ExecTrait.php#L462">at line 462</a></div>
+        <code>            protected        array
+    <strong>getResultData</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Gets the data array to be passed to Result().</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>The data array passed to Result().</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

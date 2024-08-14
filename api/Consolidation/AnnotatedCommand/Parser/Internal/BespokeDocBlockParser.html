@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\AnnotatedCommand\Parser\Internal\BespokeDocBlockParser | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../../fonts/doctum-font.css">
+        <script src="../../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../../doctum.js"></script>
+        <script async defer src="../../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_AnnotatedCommand_Parser_Internal_BespokeDocBlockParser" data-root-path="../../../../" data-search-index-url="../../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../../classes.html">Classes</a></li>
+                    <li><a href="../../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../../traits.html">Traits</a></li>
+                    <li><a href="../../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/AnnotatedCommand.html">AnnotatedCommand</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/AnnotatedCommand/Parser.html">Parser</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/AnnotatedCommand/Parser/Internal.html">Internal</a></li><li class="backslash">\</li><li>BespokeDocBlockParser</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>BespokeDocBlockParser    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>BespokeDocBlockParser</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Given a class and method name, parse the annotations in the
+DocBlock comment, and provide accessor methods for all of
+the elements that are needed to create an annotated Command.</p></p>                    </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_fqcnCache">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$fqcnCache</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_commandInfo">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$commandInfo</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_reflection">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$reflection</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_optionParamName">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$optionParamName</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_tagProcessors">
+                                        protected                                        array
+                                                                                
+                                    </td>
+                <td>$tagProcessors</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<a href="../../../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, <a target="_blank" rel="noopener" href="https://www.php.net/ReflectionMethod">ReflectionMethod</a> $reflection, $fqcnCache = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_parse">parse</a>()
+        
+                                            <p><p>Parse the docBlock comment for this command, and set the
+fields of this class with the data thereby obtained.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processGenericTag">processGenericTag</a>($tag)
+        
+                                            <p><p>Save any tag that we do not explicitly recognize in the
+'otherAnnotations' map.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processCommandTag">processCommandTag</a>($tag)
+        
+                                            <p><p>Set the name of the command from a @command or @name annotation.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processAlternateDescriptionTag">processAlternateDescriptionTag</a>($tag)
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>The @description and @desc annotations may be used in
+place of the synopsis (which we call 'description').</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processParamTag">processParamTag</a>($tag)
+        
+                                            <p><p>Store the data from a @param annotation in our argument descriptions.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_ignoredParamType">ignoredParamType</a>($paramType)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processArgumentTag">processArgumentTag</a>($tag)
+        
+                                            <p><p>Store the data from a @arg annotation in our argument descriptions.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processOptionTag">processOptionTag</a>($tag)
+        
+                                            <p><p>Store the data from an @option annotation in our option descriptions.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOptionOrArgumentTag">addOptionOrArgumentTag</a>($tag, <a href="../../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a> $set, $name, $description)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_splitOutDefault">splitOutDefault</a>($description)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processDefaultTag">processDefaultTag</a>($tag)
+        
+                                            <p><p>Store the data from a @default annotation in our argument or option store,
+as appropriate.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processUsageTag">processUsageTag</a>($tag)
+        
+                                            <p><p>Store the data from a @usage annotation in our example usage list.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processAliases">processAliases</a>($tag)
+        
+                                            <p><p>Process the comma-separated list of aliases</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processReturnTag">processReturnTag</a>($tag)
+        
+                                            <p><p>Store the data from a @return annotation in our argument descriptions.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_findFullyQualifiedClass">findFullyQualifiedClass</a>($className)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processDescriptionAndHelp">processDescriptionAndHelp</a>($lines)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_nextLineIsNotEmpty">nextLineIsNotEmpty</a>($lines)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processAllTags">processAllTags</a>($tags)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_lastParameterName">lastParameterName</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_optionParamName">optionParamName</a>()
+        
+                                            <p><p>Return the name of the last parameter if it holds the options.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_interpretDefaultValue">interpretDefaultValue</a>($defaultValue)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertListToCommaSeparated">convertListToCommaSeparated</a>($text)
+        
+                                            <p><p>Given a list that might be 'a b c' or 'a, b, c' or 'a,b,c',
+convert the data into the last of these forms.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_removeLineBreaks">removeLineBreaks</a>($text)
+        
+                                            <p><p>Take a multiline description and convert it into a single
+long unbroken line.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L36">at line 36</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, <a target="_blank" rel="noopener" href="https://www.php.net/ReflectionMethod">ReflectionMethod</a> $reflection, $fqcnCache = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/ReflectionMethod">ReflectionMethod</a></td>
+                <td>$reflection</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$fqcnCache</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_parse">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L47">at line 47</a></div>
+        <code>                    
+    <strong>parse</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Parse the docBlock comment for this command, and set the
+fields of this class with the data thereby obtained.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processGenericTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L57">at line 57</a></div>
+        <code>            protected        
+    <strong>processGenericTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Save any tag that we do not explicitly recognize in the
+'otherAnnotations' map.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processCommandTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L65">at line 65</a></div>
+        <code>            protected        
+    <strong>processCommandTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the name of the command from a @command or @name annotation.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processAlternateDescriptionTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L84">at line 84</a></div>
+        <code>            protected        
+    <strong>processAlternateDescriptionTag</strong>($tag)
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>The @description and @desc annotations may be used in
+place of the synopsis (which we call 'description').</p></p>                <p><p>This is discouraged.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processParamTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L92">at line 92</a></div>
+        <code>            protected        
+    <strong>processParamTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from a @param annotation in our argument descriptions.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_ignoredParamType">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L102">at line 102</a></div>
+        <code>            protected        
+    <strong>ignoredParamType</strong>($paramType)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$paramType</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processArgumentTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L117">at line 117</a></div>
+        <code>            protected        
+    <strong>processArgumentTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from a @arg annotation in our argument descriptions.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processOptionTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L131">at line 131</a></div>
+        <code>            protected        
+    <strong>processOptionTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from an @option annotation in our option descriptions.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOptionOrArgumentTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L140">at line 140</a></div>
+        <code>            protected        
+    <strong>addOptionOrArgumentTag</strong>($tag, <a href="../../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a> $set, $name, $description)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/AnnotatedCommand/Parser/DefaultsWithDescriptions.html"><abbr title="Consolidation\AnnotatedCommand\Parser\DefaultsWithDescriptions">DefaultsWithDescriptions</abbr></a></td>
+                <td>$set</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_splitOutDefault">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L152">at line 152</a></div>
+        <code>            protected        
+    <strong>splitOutDefault</strong>($description)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$description</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processDefaultTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L165">at line 165</a></div>
+        <code>            protected        
+    <strong>processDefaultTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from a @default annotation in our argument or option store,
+as appropriate.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processUsageTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L185">at line 185</a></div>
+        <code>            protected        
+    <strong>processUsageTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from a @usage annotation in our example usage list.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processAliases">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L199">at line 199</a></div>
+        <code>            protected        
+    <strong>processAliases</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Process the comma-separated list of aliases</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processReturnTag">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L207">at line 207</a></div>
+        <code>            protected        
+    <strong>processReturnTag</strong>($tag)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Store the data from a @return annotation in our argument descriptions.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tag</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_findFullyQualifiedClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L220">at line 220</a></div>
+        <code>            protected        
+    <strong>findFullyQualifiedClass</strong>($className)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$className</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processDescriptionAndHelp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L256">at line 256</a></div>
+        <code>            protected        
+    <strong>processDescriptionAndHelp</strong>($lines)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$lines</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_nextLineIsNotEmpty">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L280">at line 280</a></div>
+        <code>            protected        
+    <strong>nextLineIsNotEmpty</strong>($lines)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$lines</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processAllTags">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L285">at line 285</a></div>
+        <code>            protected        
+    <strong>processAllTags</strong>($tags)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$tags</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_lastParameterName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L297">at line 297</a></div>
+        <code>            protected        
+    <strong>lastParameterName</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_optionParamName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L310">at line 310</a></div>
+        <code>                    
+    <strong>optionParamName</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the name of the last parameter if it holds the options.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_interpretDefaultValue">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L326">at line 326</a></div>
+        <code>            protected        
+    <strong>interpretDefaultValue</strong>($defaultValue)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$defaultValue</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertListToCommaSeparated">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L347">at line 347</a></div>
+        <code>        static    protected        
+    <strong>convertListToCommaSeparated</strong>($text)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Given a list that might be 'a b c' or 'a, b, c' or 'a,b,c',
+convert the data into the last of these forms.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$text</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_removeLineBreaks">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Parser/Internal/BespokeDocBlockParser.php#L356">at line 356</a></div>
+        <code>        static    protected        
+    <strong>removeLineBreaks</strong>($text)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Take a multiline description and convert it into a single
+long unbroken line.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$text</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

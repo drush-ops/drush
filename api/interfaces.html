@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Interfaces | Drush API %version%</title>
+    <title>Interfaces | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -78,6 +78,344 @@
 
     
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Cache/SimpleCacheInterface.html"><abbr title="Consolidation\AnnotatedCommand\Cache\SimpleCacheInterface">SimpleCacheInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Documentation interface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/CommandCreationListenerInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandCreationListenerInterface">CommandCreationListenerInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Command cration listeners can be added to the annotation
+command factory.  These will be notified whenever a new
+commandfile is provided to the factory.  This is useful for
+initializing new commandfile objects.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/CommandInfoAltererInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandInfoAltererInterface">CommandInfoAltererInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Events/CustomEventAwareInterface.html"><abbr title="Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface">CustomEventAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/ExitCodeInterface.html"><abbr title="Consolidation\AnnotatedCommand\ExitCodeInterface">ExitCodeInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>If an annotated command method encounters an error, then it
+should either throw an exception, or return a result object
+that implements ExitCodeInterface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Help/HelpDocumentAlter.html"><abbr title="Consolidation\AnnotatedCommand\Help\HelpDocumentAlter">HelpDocumentAlter</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/AlterResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\AlterResultInterface">AlterResultInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Alter the result of a command after it has been processed.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/ExtractOutputInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ExtractOutputInterface">ExtractOutputInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Extract Output hooks are used to select the particular
+data elements of the result that should be printed as
+the command output -- perhaps after being formatted.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Non-interactively (e.g. via configuration files) apply configuration values to the Input object.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/InteractorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InteractorInterface">InteractorInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Interactively supply values for missing required arguments for
+the current command.  Note that this hook is not called if
+the --no-interaction flag is set.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/OptionHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\OptionHookInterface">OptionHookInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Add options to a command.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>A result processor takes a result object, processes it, and
+returns another result object.  For example, if a result object
+represents a 'task', then a task-runner hook could run the
+task and return the result from that execution.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/StatusDeterminerInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\StatusDeterminerInterface">StatusDeterminerInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Validate the arguments for the current command.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Input/StdinAwareInterface.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>StdinAwareInterface should be implemented by classes that read from
+standard input. This class contains facilities to redirect stdin to
+instead read from a file, e.g. in response to an option or argument
+value.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Options/AutomaticOptionsProviderInterface.html"><abbr title="Consolidation\AnnotatedCommand\Options\AutomaticOptionsProviderInterface">AutomaticOptionsProviderInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Option providers can add options to commands based on the annotations
+present in a command.  For example, a command that specifies @fields
+will automatically be given --format and --fields options.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Options/PrepareFormatter.html"><abbr title="Consolidation\AnnotatedCommand\Options\PrepareFormatter">PrepareFormatter</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/OutputDataInterface.html"><abbr title="Consolidation\AnnotatedCommand\OutputDataInterface">OutputDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>If an annotated command method returns an object that
+implements OutputDataInterface, then the getOutputData()
+method is used to fetch the output to print from the
+result object.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/Output/OutputAwareInterface.html"><abbr title="Consolidation\AnnotatedCommand\Output\OutputAwareInterface">OutputAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/ParameterInjector.html"><abbr title="Consolidation\AnnotatedCommand\ParameterInjector">ParameterInjector</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Provide an object for the specified interface or class name.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/State.html"><abbr title="Consolidation\AnnotatedCommand\State">State</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/State/SavableState.html"><abbr title="Consolidation\AnnotatedCommand\State\SavableState">SavableState</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/AnnotatedCommand/State/State.html"><abbr title="Consolidation\AnnotatedCommand\State\State">State</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Formatters/FormatterAwareInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareInterface">FormatterAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Formatters/HumanReadableFormat.html"><abbr title="Consolidation\OutputFormatters\Formatters\HumanReadableFormat">HumanReadableFormat</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Marker interface that indicates that a cell data renderer
+(Consolidation\OutputFormatters\SturcturedData\RenderCellInterface)
+may test for to determine whether it is allowable to add
+human-readable formatting into the cell data
+(Consolidation\OutputFormatters\SturcturedData\NumericCallRenderer).</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Formatters/MetadataFormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\MetadataFormatterInterface">MetadataFormatterInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Formatters/RenderDataInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\RenderDataInterface">RenderDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Options/OverrideOptionsInterface.html"><abbr title="Consolidation\OutputFormatters\Options\OverrideOptionsInterface">OverrideOptionsInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/ConversionInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\ConversionInterface">ConversionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/ListDataInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\ListDataInterface">ListDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/MetadataHolderInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataHolderInterface">MetadataHolderInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/MetadataInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataInterface">MetadataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/OriginalDataInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\OriginalDataInterface">OriginalDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/RenderCellCollectionInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RenderCellCollectionInterface">RenderCellCollectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/RenderCellInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RenderCellInterface">RenderCellInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/RestructureInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RestructureInterface">RestructureInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/TableDataInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\TableDataInterface">TableDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/UnstructuredInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\UnstructuredInterface">UnstructuredInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>UnstructuredInterface is a marker interface that indicates that the
+data type is unstructured, and has no default conversion to a string.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/Xml/DomDataInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\Xml\DomDataInterface">DomDataInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/StructuredData/Xml/XmlSchemaInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\Xml\XmlSchemaInterface">XmlSchemaInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>When using arrays, we could represent XML data in a number of
+different ways.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Transformations/OverrideRestructureInterface.html"><abbr title="Consolidation\OutputFormatters\Transformations\OverrideRestructureInterface">OverrideRestructureInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Transformations/SimplifyToArrayInterface.html"><abbr title="Consolidation\OutputFormatters\Transformations\SimplifyToArrayInterface">SimplifyToArrayInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Transformations/StringTransformationInterface.html"><abbr title="Consolidation\OutputFormatters\Transformations\StringTransformationInterface">StringTransformationInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Validate/ValidDataTypesInterface.html"><abbr title="Consolidation\OutputFormatters\Validate\ValidDataTypesInterface">ValidDataTypesInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Formatters may implement ValidDataTypesInterface in order to indicate
+exactly which formats they support.  The validDataTypes method can be
+called to retrieve a list of data types useful in providing hints in
+exception messages about which data types can be used with the formatter.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/OutputFormatters/Validate/ValidationInterface.html"><abbr title="Consolidation\OutputFormatters\Validate\ValidationInterface">ValidationInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Formatters may implement ValidationInterface in order to indicate
+whether a particular data structure is supported.  Any formatter that does
+not implement ValidationInterface is assumed to only operate on arrays,
+or data types that implement SimplifyToArrayInterface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/SiteAlias/DataFileLoaderInterface.html"><abbr title="Consolidation\SiteAlias\DataFileLoaderInterface">DataFileLoaderInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>An alias record is a configuration record containing well-known items.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Inflection interface for the site alias manager.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/SiteAlias/SiteAliasManagerInitializationInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInitializationInterface">SiteAliasManagerInitializationInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Site Alias manager methods used to set up the object.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Site Alias manager</p></div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                                             <em><a href="Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a></em>
@@ -128,6 +466,146 @@ handler, the shutdown handler) that may be globally installed.</p></div>
                                             <em><a href="Drush/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Drush\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a></em>
                         </div>
                 <div class="col-md-6"><p>Inflection interface for the site alias manager.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/ClassDiscovery/ClassDiscoveryInterface.html"><abbr title="Robo\ClassDiscovery\ClassDiscoveryInterface">ClassDiscoveryInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Interface ClassDiscoveryInterface</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Collection/CollectionInterface.html"><abbr title="Robo\Collection\CollectionInterface">CollectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Config/GlobalOptionDefaultValuesInterface.html"><abbr title="Robo\Config\GlobalOptionDefaultValuesInterface">GlobalOptionDefaultValuesInterface</abbr></a></em>
+                        <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/CommandInterface.html"><abbr title="Robo\Contract\CommandInterface">CommandInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Task that implements this interface can be injected as a parameter for other task.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/CompletionInterface.html"><abbr title="Robo\Contract\CompletionInterface">CompletionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Any Robo tasks that implements this interface will
+be called when the task collection it is added to
+completes.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/ConfigAwareInterface.html"><abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/IOAwareInterface.html"><abbr title="Robo\Contract\IOAwareInterface">IOAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/InflectionInterface.html"><abbr title="Robo\Contract\InflectionInterface">InflectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/OutputAdapterInterface.html"><abbr title="Robo\Contract\OutputAdapterInterface">OutputAdapterInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Adapt OutputInterface or other output function to the VerbosityThresholdInterface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/OutputAwareInterface.html"><abbr title="Robo\Contract\OutputAwareInterface">OutputAwareInterface</abbr></a></em>
+                        <small><span class="label label-danger">deprecated</span></small></div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/PrintedInterface.html"><abbr title="Robo\Contract\PrintedInterface">PrintedInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>If task prints anything to console</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/ProgressIndicatorAwareInterface.html"><abbr title="Robo\Contract\ProgressIndicatorAwareInterface">ProgressIndicatorAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Any Robo task that uses the Timer trait and
+implements ProgressIndicatorAwareInterface will
+display a progress bar while the timer is running.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/ProgressInterface.html"><abbr title="Robo\Contract\ProgressInterface">ProgressInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Robo tasks that take multiple steps to complete should
+implement this interface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/RollbackInterface.html"><abbr title="Robo\Contract\RollbackInterface">RollbackInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Any Robo tasks that implements this interface will
+be called when the task collection it is added to
+fails, and runs its rollback operation.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/SimulatedInterface.html"><abbr title="Robo\Contract\SimulatedInterface">SimulatedInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Task that implements this interface can be injected as a parameter for other task.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>All Robo tasks should implement this interface.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/VerbosityThresholdInterface.html"><abbr title="Robo\Contract\VerbosityThresholdInterface">VerbosityThresholdInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"><p>Record and determine whether the current verbosity level exceeds the
+desired threshold level to produce output.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/Contract/WrappedTaskInterface.html"><abbr title="Robo\Contract\WrappedTaskInterface">WrappedTaskInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/State/Consumer.html"><abbr title="Robo\State\Consumer">Consumer</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="Robo/State/StateAwareInterface.html"><abbr title="Robo\State\StateAwareInterface">StateAwareInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
             </div>
             </div>
 </div><div id="footer">

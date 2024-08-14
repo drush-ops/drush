@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\OutputFormatters\Transformations\PropertyListTableTransformation | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_OutputFormatters_Transformations_PropertyListTableTransformation" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/OutputFormatters.html">OutputFormatters</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/OutputFormatters/Transformations.html">Transformations</a></li><li class="backslash">\</li><li>PropertyListTableTransformation</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>PropertyListTableTransformation    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>PropertyListTableTransformation</strong>        extends <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html"><abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/PropertyListTableTransformation.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        TABLE_LAYOUT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        LIST_LAYOUT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_headers">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$headers</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#property_headers">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_rowLabels">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$rowLabels</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#property_rowLabels">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_layout">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$layout</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#property_layout">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_originalData">
+                                        protected                                        <a href="../../../Consolidation/OutputFormatters/StructuredData/MetadataHolderInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataHolderInterface">MetadataHolderInterface</abbr></a>
+                                                                                
+                                    </td>
+                <td>$originalData</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#property_originalData">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>($data, $fieldLabels, $rowLabels = [])
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method___construct">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setLayout">setLayout</a>($layout)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_setLayout">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getLayout">getLayout</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getLayout">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isList">isList</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_isList">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_simplifyToString">simplifyToString</a>(<a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_simplifyToString">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_transformRows">transformRows</a>($data, $fieldLabels)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_transformRows">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_transformRow">transformRow</a>($row, $fieldLabels)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_transformRow">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHeaders">getHeaders</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getHeaders">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHeader">getHeader</a>($key)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getHeader">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRowLabels">getRowLabels</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowLabels">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRowLabel">getRowLabel</a>($rowid)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowLabel">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOriginalData">getOriginalData</a>()
+        
+                                            <p><p>Return the original data for this table.  Used by any
+formatter that expects an array.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setOriginalData">setOriginalData</a>(<a href="../../../Consolidation/OutputFormatters/StructuredData/MetadataHolderInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataHolderInterface">MetadataHolderInterface</abbr></a> $data)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_setOriginalData">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getTableData">getTableData</a>(bool $includeRowKey = false)
+        
+                                            <p><p>Convert structured data into a form suitable for use
+by the table formatter.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getTableData">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertTableToList">convertTableToList</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_convertTableToList">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRowDataWithKey">getRowDataWithKey</a>($data)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowDataWithKey">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a></small></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method___construct">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L23">at line 23</a></div>
+        <code>                    
+    <strong>__construct</strong>($data, $fieldLabels, $rowLabels = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$fieldLabels</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$rowLabels</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLayout">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_setLayout">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L32">at line 32</a></div>
+        <code>                    
+    <strong>setLayout</strong>($layout)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$layout</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getLayout">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getLayout">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L37">at line 37</a></div>
+        <code>                    
+    <strong>getLayout</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isList">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_isList">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L42">at line 42</a></div>
+        <code>                    
+    <strong>isList</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_simplifyToString">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_simplifyToString">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L50">at line 50</a></div>
+        <code>                    
+    <strong>simplifyToString</strong>(<a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_transformRows">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_transformRows">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L63">at line 63</a></div>
+        <code>        static    protected        
+    <strong>transformRows</strong>($data, $fieldLabels)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$fieldLabels</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_transformRow">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_transformRow">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L72">at line 72</a></div>
+        <code>        static    protected        
+    <strong>transformRow</strong>($row, $fieldLabels)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$row</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$fieldLabels</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHeaders">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getHeaders">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L81">at line 81</a></div>
+        <code>                    
+    <strong>getHeaders</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHeader">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getHeader">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L86">at line 86</a></div>
+        <code>                    
+    <strong>getHeader</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRowLabels">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowLabels">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L94">at line 94</a></div>
+        <code>                    
+    <strong>getRowLabels</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRowLabel">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowLabel">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L99">at line 99</a></div>
+        <code>                    
+    <strong>getRowLabel</strong>($rowid)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$rowid</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOriginalData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/PropertyListTableTransformation.php#L7">at line 7</a></div>
+        <code>                    
+    <strong>getOriginalData</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the original data for this table.  Used by any
+formatter that expects an array.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setOriginalData">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_setOriginalData">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L115">at line 115</a></div>
+        <code>                    
+    <strong>setOriginalData</strong>(<a href="../../../Consolidation/OutputFormatters/StructuredData/MetadataHolderInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataHolderInterface">MetadataHolderInterface</abbr></a> $data)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/OutputFormatters/StructuredData/MetadataHolderInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\MetadataHolderInterface">MetadataHolderInterface</abbr></a></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getTableData">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getTableData">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L120">at line 120</a></div>
+        <code>                    array
+    <strong>getTableData</strong>(bool $includeRowKey = false)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert structured data into a form suitable for use
+by the table formatter.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$includeRowKey</td>
+                <td><p>Add a field containing the
+key from each row.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertTableToList">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_convertTableToList">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L132">at line 132</a></div>
+        <code>            protected        
+    <strong>convertTableToList</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRowDataWithKey">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Transformations/TableTransformation.html#method_getRowDataWithKey">
+<abbr title="Consolidation\OutputFormatters\Transformations\TableTransformation">TableTransformation</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/TableTransformation.php#L143">at line 143</a></div>
+        <code>            protected        
+    <strong>getRowDataWithKey</strong>($data)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

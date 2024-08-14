@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Robo | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../fonts/doctum-font.css">
+        <script src="../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../doctum.js"></script>
+        <script async defer src="../js/bootstrap.min.js"></script>
+        <script async defer src="../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Robo_Robo" data-root-path="../" data-search-index-url="../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../classes.html">Classes</a></li>
+                    <li><a href="../namespaces.html">Namespaces</a></li>
+                    <li><a href="../interfaces.html">Interfaces</a></li>
+                    <li><a href="../traits.html">Traits</a></li>
+                    <li><a href="../doc-index.html">Index</a></li>
+                    <li><a href="../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../Robo.html">Robo</a></li><li class="backslash">\</li><li>Robo</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>Robo    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>Robo</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Manages the container reference and other static data.  Favor
+using dependency injection wherever possible.  Avoid using
+this class directly, unless setting up a custom DI container.</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        APPLICATION_NAME
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                            private
+                                                                                VERSION
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_container">
+                    static                    protected                                        <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>|null
+                                                                                
+                                    </td>
+                <td>$container</td>
+                <td class="last"><p>The currently active container object, or NULL if not initialized yet.</p></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_run">run</a>(string[] $argv, string $commandClasses, null|string $appName = null, null|string $appVersion = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|string $repository = null)
+        
+                                            <p><p>Entrypoint for standalone Robo-based tools.  See docs/framework.md.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_version">version</a>()
+        
+                                            <p><p>Only provide access to the Robo version via Robo::version() so that
+roave/backward-compatibility-check does not complain about b/c breaks
+when the version number changes.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setContainer">setContainer</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Sets a new global container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_unsetContainer">unsetContainer</a>()
+        
+                                            <p><p>Unsets the global container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getContainer">getContainer</a>()
+        
+                                            <p><p>Returns the currently active global container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasContainer">hasContainer</a>()
+        
+                                            <p><p>Returns TRUE if the container has been initialized, FALSE otherwise.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createConfiguration">createConfiguration</a>(string[] $paths)
+        
+                                            <p><p>Create a config object and load it from the provided paths.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadConfiguration">loadConfiguration</a>(string[] $paths, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null)
+        
+                                            <p><p>Use a simple config loader to load configuration values from specified paths</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createContainer">createContainer</a>(null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        
+                                            <p><p>Create a container for Robo application.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createDefaultContainer">createDefaultContainer</a>(null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Create a container and initiailze it.  If you wish to <em>change</em>
+anything defined in the container, then you should call
+Robo::createContainer() and Robo::finalizeContainer() instead of this function.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_finalizeContainer">finalizeContainer</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Do final initialization to the provided container. Make any necessary
+modifications to the container before calling this method.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="League\Container\Definition\DefinitionInterface">DefinitionInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addShared">addShared</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, string $id, mixed $concrete)
+        
+                                            <p><p>Adds a shared instance to the container. This is to support 3.x and 4.x of league/container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_configureContainer">configureContainer</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Application">Application</abbr> $app, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config, null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        
+                                            <p><p>Initialize a container with all of the default Robo services.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createDefaultApplication">createDefaultApplication</a>(null|string $appName = null, null|string $appVersion = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addInflectors">addInflectors</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Add the Robo League\Container inflectors to the container</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_service">service</a>(string $id)
+        
+                                            <p><p>Retrieves a service from the container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasService">hasService</a>(string $id)
+        
+                                            <p><p>Indicates if a service is defined in the container.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../Robo/Log/ResultPrinter.html"><abbr title="Robo\Log\ResultPrinter">ResultPrinter</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_resultPrinter">resultPrinter</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Return the result printer object.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_config">config</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\Log\Logger">Logger</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_logger">logger</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_application">application</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_output">output</a>()
+        
+                                            <p><p>Return the output object.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_input">input</a>()
+        
+                                            <p><p>Return the input object.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../Robo/Common/ProcessExecutor.html"><abbr title="Robo\Common\ProcessExecutor">ProcessExecutor</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_process">process</a>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_register">register</a>(<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, $handlers)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;null|object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_registerSingle">registerSingle</a>(<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, string|object $handler)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;null|object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_instantiate">instantiate</a>(string|object $handler)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_run">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L50">at line 50</a></div>
+        <code>        static            int
+    <strong>run</strong>(string[] $argv, string $commandClasses, null|string $appName = null, null|string $appVersion = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|string $repository = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Entrypoint for standalone Robo-based tools.  See docs/framework.md.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string[]</td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$commandClasses</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$appName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$appVersion</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$repository</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_version">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L63">at line 63</a></div>
+        <code>        static            
+    <strong>version</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Only provide access to the Robo version via Robo::version() so that
+roave/backward-compatibility-check does not complain about b/c breaks
+when the version number changes.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L74">at line 74</a></div>
+        <code>        static            
+    <strong>setContainer</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Sets a new global container.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>A new container instance to replace the current.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_unsetContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L82">at line 82</a></div>
+        <code>        static            
+    <strong>unsetContainer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Unsets the global container.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L94">at line 94</a></div>
+        <code>        static            <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+    <strong>getContainer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns the currently active global container.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/RuntimeException">RuntimeException</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L107">at line 107</a></div>
+        <code>        static            bool
+    <strong>hasContainer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns TRUE if the container has been initialized, FALSE otherwise.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createConfiguration">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L119">at line 119</a></div>
+        <code>        static            <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+    <strong>createConfiguration</strong>(string[] $paths)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a config object and load it from the provided paths.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string[]</td>
+                <td>$paths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadConfiguration">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L132">at line 132</a></div>
+        <code>        static            
+    <strong>loadConfiguration</strong>(string[] $paths, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Use a simple config loader to load configuration values from specified paths</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string[]</td>
+                <td>$paths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L159">at line 159</a></div>
+        <code>        static            <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+    <strong>createContainer</strong>(null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a container for Robo application.</p></p>                <p><p>After calling this method you may add any additional items you wish
+to manage in your application. After you do that, you must call
+Robo::finalizeContainer($container) to complete container initialization.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$classLoader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createDefaultContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L200">at line 200</a></div>
+        <code>        static            <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr>
+    <strong>createDefaultContainer</strong>(null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td>Use</td>
+                    <td>createContainer instead</td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a container and initiailze it.  If you wish to <em>change</em>
+anything defined in the container, then you should call
+Robo::createContainer() and Robo::finalizeContainer() instead of this function.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$classLoader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_finalizeContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L229">at line 229</a></div>
+        <code>        static            
+    <strong>finalizeContainer</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Do final initialization to the provided container. Make any necessary
+modifications to the container before calling this method.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addShared">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L244">at line 244</a></div>
+        <code>        static            <abbr title="League\Container\Definition\DefinitionInterface">DefinitionInterface</abbr>
+    <strong>addShared</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, string $id, mixed $concrete)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Adds a shared instance to the container. This is to support 3.x and 4.x of league/container.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$id</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$concrete</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="League\Container\Definition\DefinitionInterface">DefinitionInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configureContainer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L271">at line 271</a></div>
+        <code>        static            
+    <strong>configureContainer</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Application">Application</abbr> $app, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config, null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Initialize a container with all of the default Robo services.</p></p>                <p><p>IMPORTANT:  after calling this method, clients MUST call:</p>
+<p>Robo::finalizeContainer($container);</p>
+<p>Any modification to the container should be done prior to fetching
+objects from it.</p>
+<p>It is recommended to use Robo::createContainer() instead.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Application">Application</abbr></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$classLoader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createDefaultApplication">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L381">at line 381</a></div>
+        <code>        static            <a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+    <strong>createDefaultApplication</strong>(null|string $appName = null, null|string $appVersion = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|string</td>
+                <td>$appName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$appVersion</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addInflectors">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L396">at line 396</a></div>
+        <code>        static            
+    <strong>addInflectors</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add the Robo League\Container inflectors to the container</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_service">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L432">at line 432</a></div>
+        <code>        static            mixed
+    <strong>service</strong>(string $id)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Retrieves a service from the container.</p></p>                <p><p>Use this method if the desired service is not one of those with a dedicated
+accessor method below. If it is listed below, those methods are preferred
+as they can return useful type hints.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$id</td>
+                <td><p>The ID of the service to retrieve.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td><p>The specified service.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasService">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L446">at line 446</a></div>
+        <code>        static            bool
+    <strong>hasService</strong>(string $id)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Indicates if a service is defined in the container.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$id</td>
+                <td><p>The ID of the service to check.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td><p>TRUE if the specified service exists, FALSE otherwise.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_resultPrinter">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L459">at line 459</a></div>
+        <code>        static            <a href="../Robo/Log/ResultPrinter.html"><abbr title="Robo\Log\ResultPrinter">ResultPrinter</abbr></a>
+    <strong>resultPrinter</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the result printer object.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../Robo/Log/ResultPrinter.html"><abbr title="Robo\Log\ResultPrinter">ResultPrinter</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_config">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L467">at line 467</a></div>
+        <code>        static            <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+    <strong>config</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_logger">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L475">at line 475</a></div>
+        <code>        static            <abbr title="Consolidation\Log\Logger">Logger</abbr>
+    <strong>logger</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\Log\Logger">Logger</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_application">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L483">at line 483</a></div>
+        <code>        static            <a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+    <strong>application</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_output">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L493">at line 493</a></div>
+        <code>        static            <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>output</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the output object.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_input">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L503">at line 503</a></div>
+        <code>        static            <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>input</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the input object.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_process">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L511">at line 511</a></div>
+        <code>        static            <a href="../Robo/Common/ProcessExecutor.html"><abbr title="Robo\Common\ProcessExecutor">ProcessExecutor</abbr></a>
+    <strong>process</strong>(<abbr title="Symfony\Component\Process\Process">Process</abbr> $process)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
+                <td>$process</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../Robo/Common/ProcessExecutor.html"><abbr title="Robo\Common\ProcessExecutor">ProcessExecutor</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_register">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L522">at line 522</a></div>
+        <code>        static            array
+    <strong>register</strong>(<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, $handlers)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$handlers</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerSingle">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L539">at line 539</a></div>
+        <code>        static    protected        null|object
+    <strong>registerSingle</strong>(<a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, string|object $handler)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|object</td>
+                <td>$handler</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|object</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_instantiate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Robo.php#L568">at line 568</a></div>
+        <code>        static            null|object
+    <strong>instantiate</strong>(string|object $handler)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|object</td>
+                <td>$handler</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|object</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\SiteAlias\SiteAliasWithConfig | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_SiteAlias_SiteAliasWithConfig" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../Consolidation/SiteAlias.html">SiteAlias</a></li><li class="backslash">\</li><li>SiteAliasWithConfig</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>SiteAliasWithConfig    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>SiteAliasWithConfig</strong>        implements        <a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a>, <abbr title="Consolidation\Config\Util\ConfigRuntimeInterface">ConfigRuntimeInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>SiteAliasWithConfig delegates to a site alias, and
+also combines it with two config stores:</p></p>            <p><ul>
+<li>Runtime config (set on commandline): Options that override site alias contents</li>
+<li>Default config (set from config files): Default options</li>
+</ul></p>        </div>
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html"><abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Common implementation of some SiteAlias methods.</p></div>
+            </div>
+            </div>
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_runtimeConfig">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$runtimeConfig</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_siteAlias">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$siteAlias</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_defaultConfig">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$defaultConfig</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasRoot">hasRoot</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_hasRoot">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_root">root</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_root">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_uri">uri</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_uri">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setUri">setUri</a>($uri)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_setUri">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_remoteHostWithUser">remoteHostWithUser</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteHostWithUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_remoteUser">remoteUser</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasRemoteUser">hasRemoteUser</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_hasRemoteUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_remoteHost">remoteHost</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteHost">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRemote">isRemote</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isRemote">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isLocal">isLocal</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isLocal">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isContainer">isContainer</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isContainer">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isNone">isNone</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isNone">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_localRoot">localRoot</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_localRoot">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_os">os</a>()
+        
+                                            <p><p>os returns the OS that this alias record points to. For local alias
+records, PHP_OS will be returned. For remote alias records, the
+value from the <code>os</code> element will be returned. If there is no <code>os</code>
+element, then the default assumption is that the remote system is Linux.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_os">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a> $siteAlias, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $runtimeConfig)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a> $siteAlias, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\SiteAlias\Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $runtimeConfig = null)
+        
+                                            <p><p>combine the provided site alias with configuration.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_determineCorrectRuntimeConfig">determineCorrectRuntimeConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $runtimeConfig)
+        
+                                            <p><p>Determine what object to use for the runtime config. If a specific
+runtime config is given, use that. Otherwise, pull it from the default
+configuration if available.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_runtimeConfig">runtimeConfig</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_name">name</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_has">has</a>($key)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_get">get</a>($key, $defaultFallback = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_set">set</a>($key, $value)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_import">import</a>($data)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_replace">replace</a>($data)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_combine">combine</a>($data)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_export">export</a>()
+        
+                                            <p><p>Export all configuration as a nested array.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasDefault">hasDefault</a>($key)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getDefault">getDefault</a>($key, $defaultFallback = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setDefault">setDefault</a>($key, $value)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_exportConfig">exportConfig</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_changesProhibited">changesProhibited</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_hasRoot">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_hasRoot">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L17">at line 17</a></div>
+        <code>                    
+    <strong>hasRoot</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_root">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_root">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L27">at line 27</a></div>
+        <code>                    
+    <strong>root</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+                            <h4>Exceptions</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_uri">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_uri">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L42">at line 42</a></div>
+        <code>                    
+    <strong>uri</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setUri">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_setUri">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L50">at line 50</a></div>
+        <code>                    
+    <strong>setUri</strong>($uri)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$uri</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_remoteHostWithUser">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteHostWithUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L58">at line 58</a></div>
+        <code>                    
+    <strong>remoteHostWithUser</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_remoteUser">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L70">at line 70</a></div>
+        <code>                    
+    <strong>remoteUser</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasRemoteUser">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_hasRemoteUser">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L78">at line 78</a></div>
+        <code>                    
+    <strong>hasRemoteUser</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_remoteHost">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_remoteHost">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L86">at line 86</a></div>
+        <code>                    
+    <strong>remoteHost</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRemote">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isRemote">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L94">at line 94</a></div>
+        <code>                    
+    <strong>isRemote</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isLocal">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isLocal">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L102">at line 102</a></div>
+        <code>                    
+    <strong>isLocal</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isContainer">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isContainer">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L110">at line 110</a></div>
+        <code>                    
+    <strong>isContainer</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isNone">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_isNone">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L118">at line 118</a></div>
+        <code>                    
+    <strong>isNone</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_localRoot">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_localRoot">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L126">at line 126</a></div>
+        <code>                    
+    <strong>localRoot</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_os">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasTrait.html#method_os">
+<abbr title="Consolidation\SiteAlias\SiteAliasTrait">SiteAliasTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasTrait.php#L147">at line 147</a></div>
+        <code>                    string
+    <strong>os</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>os returns the OS that this alias record points to. For local alias
+records, PHP_OS will be returned. For remote alias records, the
+value from the <code>os</code> element will be returned. If there is no <code>os</code>
+element, then the default assumption is that the remote system is Linux.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td><p>Linux
+WIN<em> (e.g. WINNT)
+CYGWIN
+MINGW</em> (e.g. MINGW32)</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L26">at line 26</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a> $siteAlias, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $runtimeConfig)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$defaultConfig</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$runtimeConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L39">at line 39</a></div>
+        <code>        static            <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>
+    <strong>create</strong>(<a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a> $siteAlias, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\SiteAlias\Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $runtimeConfig = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>combine the provided site alias with configuration.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAliasInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasInterface">SiteAliasInterface</abbr></a></td>
+                <td>$siteAlias</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$defaultConfig</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null</td>
+                <td>$runtimeConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a></td>
+            <td><p>read-only site alias combined with the runtime
+config (overrides the site alias values) and the default config.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determineCorrectRuntimeConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L51">at line 51</a></div>
+        <code>        static    protected        
+    <strong>determineCorrectRuntimeConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $defaultConfig, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $runtimeConfig)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine what object to use for the runtime config. If a specific
+runtime config is given, use that. Otherwise, pull it from the default
+configuration if available.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$defaultConfig</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$runtimeConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_runtimeConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L67">at line 67</a></div>
+        <code>                    
+    <strong>runtimeConfig</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_name">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L75">at line 75</a></div>
+        <code>                    string
+    <strong>name</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_has">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L83">at line 83</a></div>
+        <code>                    
+    <strong>has</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L94">at line 94</a></div>
+        <code>                    
+    <strong>get</strong>($key, $defaultFallback = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$defaultFallback</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_set">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L112">at line 112</a></div>
+        <code>                    
+    <strong>set</strong>($key, $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_import">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L120">at line 120</a></div>
+        <code>                    
+    <strong>import</strong>($data)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_replace">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L128">at line 128</a></div>
+        <code>                    
+    <strong>replace</strong>($data)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_combine">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L136">at line 136</a></div>
+        <code>                    
+    <strong>combine</strong>($data)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_export">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L144">at line 144</a></div>
+        <code>                    
+    <strong>export</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Export all configuration as a nested array.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasDefault">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L152">at line 152</a></div>
+        <code>                    
+    <strong>hasDefault</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDefault">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L160">at line 160</a></div>
+        <code>                    
+    <strong>getDefault</strong>($key, $defaultFallback = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$defaultFallback</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setDefault">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L168">at line 168</a></div>
+        <code>                    
+    <strong>setDefault</strong>($key, $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_exportConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L176">at line 176</a></div>
+        <code>                    
+    <strong>exportConfig</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_changesProhibited">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasWithConfig.php#L181">at line 181</a></div>
+        <code>            protected        
+    <strong>changesProhibited</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\OutputFormatters\Transformations\Wrap\CalculateWidths | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../../fonts/doctum-font.css">
+        <script src="../../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../../doctum.js"></script>
+        <script async defer src="../../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_OutputFormatters_Transformations_Wrap_CalculateWidths" data-root-path="../../../../" data-search-index-url="../../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../../classes.html">Classes</a></li>
+                    <li><a href="../../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../../traits.html">Traits</a></li>
+                    <li><a href="../../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/OutputFormatters.html">OutputFormatters</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/OutputFormatters/Transformations.html">Transformations</a></li><li class="backslash">\</li><li><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap.html">Wrap</a></li><li class="backslash">\</li><li>CalculateWidths</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>CalculateWidths    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>CalculateWidths</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Calculate column widths for table cells.</p></p>            <p><p>Influenced by Drush and webmozart/console.</p></p>        </div>
+            
+        
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculate">calculate</a>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        
+                                            <p><p>Given the total amount of available space, and the width of
+the columns to place, calculate the optimum column widths to use.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculateLongestCell">calculateLongestCell</a>($rows)
+        
+                                            <p><p>Calculate the longest cell data from any row of each of the cells.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculateLongestWord">calculateLongestWord</a>($rows)
+        
+                                            <p><p>Calculate the longest word and longest line in the provided data.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculateColumnWidths">calculateColumnWidths</a>($rows, callable $fn)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getShortColumns">getShortColumns</a>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        
+                                            <p><p>Return all of the columns whose longest line length is less than or
+equal to the average width.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_distributeLongColumns">distributeLongColumns</a>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        
+                                            <p><p>Distribute the remainig space among the columns that were not
+included in the list of &quot;short&quot; columns.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_longestWordLength">longestWordLength</a>(string $str)
+        
+                                            <p><p>Return the length of the longest word in the string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L14">at line 14</a></div>
+        <code>                    
+    <strong>__construct</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L22">at line 22</a></div>
+        <code>                    
+    <strong>calculate</strong>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Given the total amount of available space, and the width of
+the columns to place, calculate the optimum column widths to use.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$availableWidth</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$dataWidths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$minimumWidths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculateLongestCell">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L52">at line 52</a></div>
+        <code>                    
+    <strong>calculateLongestCell</strong>($rows)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Calculate the longest cell data from any row of each of the cells.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$rows</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculateLongestWord">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L65">at line 65</a></div>
+        <code>                    
+    <strong>calculateLongestWord</strong>($rows)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Calculate the longest word and longest line in the provided data.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$rows</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculateColumnWidths">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L75">at line 75</a></div>
+        <code>            protected        
+    <strong>calculateColumnWidths</strong>($rows, callable $fn)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$rows</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable</td>
+                <td>$fn</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getShortColumns">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L97">at line 97</a></div>
+        <code>                    
+    <strong>getShortColumns</strong>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return all of the columns whose longest line length is less than or
+equal to the average width.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$availableWidth</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$dataWidths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$minimumWidths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_distributeLongColumns">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L108">at line 108</a></div>
+        <code>                    
+    <strong>distributeLongColumns</strong>($availableWidth, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $dataWidths, <a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a> $minimumWidths)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Distribute the remainig space among the columns that were not
+included in the list of &quot;short&quot; columns.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$availableWidth</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$dataWidths</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../../Consolidation/OutputFormatters/Transformations/Wrap/ColumnWidths.html"><abbr title="Consolidation\OutputFormatters\Transformations\Wrap\ColumnWidths">ColumnWidths</abbr></a></td>
+                <td>$minimumWidths</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_longestWordLength">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Transformations/Wrap/CalculateWidths.php#L134">at line 134</a></div>
+        <code>        static    protected        int
+    <strong>longestWordLength</strong>(string $str)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the length of the longest word in the string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$str</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

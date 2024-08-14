@@ -1,0 +1,2149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Runtime\Runner | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Robo_Runtime_Runner" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Robo.html">Robo</a></li><li class="backslash">\</li><li><a href="../../Robo/Runtime.html">Runtime</a></li><li class="backslash">\</li><li>Runner</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>Runner    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>Runner</strong>        implements        <abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Robo/Common/IO.html"><abbr title="Robo\Common\IO">IO</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="League\Container\ContainerAwareTrait">ContainerAwareTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Robo/Common/InputAwareTrait.html"><abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Robo/Common/OutputAwareTrait.html"><abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        ROBOCLASS
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ROBOFILE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_input">
+                                        protected                                        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$input</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Robo/Common/InputAwareTrait.html#property_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_output">
+                                        protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$output</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Robo/Common/OutputAwareTrait.html#property_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_io">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$io</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Robo/Common/IO.html#property_io">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_obj">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$obj</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Robo/Common/IO.html#property_obj">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_roboClass">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$roboClass</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_roboFile">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$roboFile</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_dir">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$dir</td>
+                <td class="last"><p>Working dir of Robo.</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_errorConditions">
+                                        protected                                        string[]
+                                                                                
+                                    </td>
+                <td>$errorConditions</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_selfUpdateRepository">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$selfUpdateRepository</td>
+                <td class="last"><p>GitHub Repo for SelfUpdate.</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_configFilename">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$configFilename</td>
+                <td class="last"><p>Filename to load configuration from (set to 'robo.yml' for RoboFiles).</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_envConfigPrefix">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$envConfigPrefix</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_classLoader">
+                                        protected                                        null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>
+                                                                                
+                                    </td>
+                <td>$classLoader</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_relativePluginNamespace">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$relativePluginNamespace</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setInput">setInput</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/InputAwareTrait.html#method_setInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_input">input</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/InputAwareTrait.html#method_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getInput">getInput</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Backwards compatibility.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/InputAwareTrait.html#method_getInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setOutput">setOutput</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/OutputAwareTrait.html#method_setOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_output">output</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/OutputAwareTrait.html#method_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_stderr">stderr</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/OutputAwareTrait.html#method_stderr">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOutput">getOutput</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Backwards compatibility</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/OutputAwareTrait.html#method_getOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_currentState">currentState</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/IO.html#method_currentState">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(null|string $roboClass = null, null|string $roboFile = null)
+        
+                                            <p><p>Class Constructor</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_restore">restore</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/IO.html#method_restore">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_errorCondition">errorCondition</a>(string $msg, string $errorType)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadRoboFile">loadRoboFile</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_execute">execute</a>(array $argv, null|string $appName = null, null|string $appVersion = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAppForTesting">getAppForTesting</a>(string|null $appName = null, string|null $appVersion = null, string|array|null $commandFile = null, <a href="../../Robo/Config/Config.html"><abbr title="Robo\Config\Config">Config</abbr></a>|null $config = null, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>|null $classLoader = null)
+        
+                                            <p><p>Return an initialized application loaded with specified commands and configuration.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getConfigFilePaths">getConfigFilePaths</a>(string $userConfig)
+        
+                                            <p><p>Get a list of locations where config files may be loaded</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_run">run</a>(null|array|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, array[] $commandFiles = [], null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    null|string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getRoboFileCommands">getRoboFileCommands</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_registerCommandClasses">registerCommandClasses</a>(<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, array $commandClasses)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_discoverCommandClasses">discoverCommandClasses</a>(string $relativeNamespace)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    null|object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_registerCommandClass">registerCommandClass</a>(<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr> $commandClass)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    null|object
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_instantiateCommandClass">instantiateCommandClass</a>(string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr> $commandClass)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_installRoboHandlers">installRoboHandlers</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_shebang">shebang</a>(array $args)
+        
+                                            <p><p>Process a shebang script, if one was used to launch this Runner.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isShebangFile">isShebangFile</a>(string $filepath)
+        
+                                            <p><p>Determine if the specified argument is a path to a shebang script.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isShebangLine">isShebangLine</a>(string $line)
+        
+                                            <p><p>Test to see if the provided line is a robo 'shebang' line.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processRoboOptions">processRoboOptions</a>(array $argv)
+        
+                                            <p><p>Check for Robo-specific arguments such as --load-from, process them,
+and remove them from the array.  We have to process --load-from before
+we set up Symfony Console.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool|int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_arraySearchBeginsWith">arraySearchBeginsWith</a>(string $needle, string[] $haystack)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_shutdown">shutdown</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_handleError">handleError</a>()
+        
+                                            <p><p>This is just a proxy error handler that checks the current error_reporting level.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSelfUpdateRepository">getSelfUpdateRepository</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setSelfUpdateRepository">setSelfUpdateRepository</a>($selfUpdateRepository)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setConfigurationFilename">setConfigurationFilename</a>(string $configFilename)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setEnvConfigPrefix">setEnvConfigPrefix</a>(string $envConfigPrefix)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setClassLoader">setClassLoader</a>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setRelativePluginNamespace">setRelativePluginNamespace</a>(string $relativeNamespace)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_setInput">
+        <div class="location">in <a href="../../Robo/Common/InputAwareTrait.html#method_setInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L22">at line 22</a></div>
+        <code>                    $this
+    <strong>setInput</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            \Symfony\Component\Console\Input\InputAwareInterface::setInput()
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_input">
+        <div class="location">in <a href="../../Robo/Common/InputAwareTrait.html#method_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L32">at line 32</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>input</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getInput">
+        <div class="location">in <a href="../../Robo/Common/InputAwareTrait.html#method_getInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L47">at line 47</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>getInput</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Backwards compatibility.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setOutput">
+        <div class="location">in <a href="../../Robo/Common/OutputAwareTrait.html#method_setOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L23">at line 23</a></div>
+        <code>                    $this
+    <strong>setOutput</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            \Robo\Contract\OutputAwareInterface::setOutput()
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_output">
+        <div class="location">in <a href="../../Robo/Common/OutputAwareTrait.html#method_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L33">at line 33</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>output</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_stderr">
+        <div class="location">in <a href="../../Robo/Common/OutputAwareTrait.html#method_stderr">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L44">at line 44</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>stderr</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOutput">
+        <div class="location">in <a href="../../Robo/Common/OutputAwareTrait.html#method_getOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L60">at line 60</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>getOutput</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Backwards compatibility</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_currentState">
+        <div class="location">in <a href="../../Robo/Common/IO.html#method_currentState">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/IO.php#L24">at line 24</a></div>
+        <code>                    
+    <strong>currentState</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L84">at line 84</a></div>
+        <code>                    
+    <strong>__construct</strong>(null|string $roboClass = null, null|string $roboFile = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Class Constructor</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|string</td>
+                <td>$roboClass</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$roboFile</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_restore">
+        <div class="location">in <a href="../../Robo/Common/IO.html#method_restore">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/IO.php#L40">at line 40</a></div>
+        <code>                    
+    <strong>restore</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_errorCondition">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L96">at line 96</a></div>
+        <code>            protected        
+    <strong>errorCondition</strong>(string $msg, string $errorType)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$msg</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$errorType</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadRoboFile">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L106">at line 106</a></div>
+        <code>            protected        bool
+    <strong>loadRoboFile</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_execute">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L150">at line 150</a></div>
+        <code>                    int
+    <strong>execute</strong>(array $argv, null|string $appName = null, null|string $appVersion = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$appName</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|string</td>
+                <td>$appVersion</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAppForTesting">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L185">at line 185</a></div>
+        <code>                    <a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a>
+    <strong>getAppForTesting</strong>(string|null $appName = null, string|null $appVersion = null, string|array|null $commandFile = null, <a href="../../Robo/Config/Config.html"><abbr title="Robo\Config\Config">Config</abbr></a>|null $config = null, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>|null $classLoader = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return an initialized application loaded with specified commands and configuration.</p></p>                <p><p>This should ONLY be used for testing purposes. Works well in conjunction with Symfony's CommandTester.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$appName</td>
+                <td><p>Name of the application.</p></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$appVersion</td>
+                <td><p>Version of the application.</p></td>
+            </tr>
+                    <tr>
+                <td>string|array|null</td>
+                <td>$commandFile</td>
+                <td><p>Name of the specific command file, or array of commands, that should be included with the application.</p></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Robo/Config/Config.html"><abbr title="Robo\Config\Config">Config</abbr></a>|null</td>
+                <td>$config</td>
+                <td><p>Robo configuration to be used with the application.</p></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr>|null</td>
+                <td>$classLoader</td>
+                <td><p>Class loader to use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+            <td><p>Initialized application based on passed configuration and command classes.</p></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="https://symfony.com/doc/current/console.html#testing-commands">https://symfony.com/doc/current/console.html#testing-commands</a>
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <abbr title="Robo\Runtime\CommandTestertTest">CommandTestertTest</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>
+                                            <abbr title="Robo\Runtime\CommandTesterTrait">CommandTesterTrait</abbr>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfigFilePaths">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L206">at line 206</a></div>
+        <code>            protected        string[]
+    <strong>getConfigFilePaths</strong>(string $userConfig)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get a list of locations where config files may be loaded</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$userConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_run">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L231">at line 231</a></div>
+        <code>                    int
+    <strong>run</strong>(null|array|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input = null, null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output = null, null|<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app = null, array[] $commandFiles = [], null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>null|array|<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array[]</td>
+                <td>$commandFiles</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>null|<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$classLoader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getRoboFileCommands">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L305">at line 305</a></div>
+        <code>            protected        null|string
+    <strong>getRoboFileCommands</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerCommandClasses">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L317">at line 317</a></div>
+        <code>                    
+    <strong>registerCommandClasses</strong>(<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, array $commandClasses)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$commandClasses</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_discoverCommandClasses">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L329">at line 329</a></div>
+        <code>            protected        string[]
+    <strong>discoverCommandClasses</strong>(string $relativeNamespace)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$relativeNamespace</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerCommandClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L344">at line 344</a></div>
+        <code>                    null|object
+    <strong>registerCommandClass</strong>(<a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> $app, string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr> $commandClass)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></td>
+                <td>$app</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr></td>
+                <td>$commandClass</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|object</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_instantiateCommandClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L366">at line 366</a></div>
+        <code>            protected        null|object
+    <strong>instantiateCommandClass</strong>(string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr> $commandClass)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|<a href="../../Robo/Contract/BuilderAwareInterface.html"><abbr title="Robo\Contract\BuilderAwareInterface">BuilderAwareInterface</abbr></a>|<abbr title="League\Container\ContainerAwareInterface">ContainerAwareInterface</abbr></td>
+                <td>$commandClass</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>null|object</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_installRoboHandlers">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L400">at line 400</a></div>
+        <code>                    
+    <strong>installRoboHandlers</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_shebang">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L414">at line 414</a></div>
+        <code>            protected        array
+    <strong>shebang</strong>(array $args)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Process a shebang script, if one was used to launch this Runner.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$args</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>$args
+With shebang script removed.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isShebangFile">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L445">at line 445</a></div>
+        <code>            protected        bool
+    <strong>isShebangFile</strong>(string $filepath)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if the specified argument is a path to a shebang script.</p></p>                <p><p>If so, load it.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$filepath</td>
+                <td><p>File to check.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td><p>Returns TRUE if shebang script was processed.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isShebangLine">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L485">at line 485</a></div>
+        <code>            protected        bool
+    <strong>isShebangLine</strong>(string $line)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Test to see if the provided line is a robo 'shebang' line.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$line</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processRoboOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L499">at line 499</a></div>
+        <code>            protected        array
+    <strong>processRoboOptions</strong>(array $argv)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check for Robo-specific arguments such as --load-from, process them,
+and remove them from the array.  We have to process --load-from before
+we set up Symfony Console.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$argv</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_arraySearchBeginsWith">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L546">at line 546</a></div>
+        <code>            protected        bool|int
+    <strong>arraySearchBeginsWith</strong>(string $needle, string[] $haystack)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$needle</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$haystack</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool|int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_shutdown">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L556">at line 556</a></div>
+        <code>                    
+    <strong>shutdown</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_handleError">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L572">at line 572</a></div>
+        <code>                    bool
+    <strong>handleError</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>This is just a proxy error handler that checks the current error_reporting level.</p></p>                <p><p>In case error_reporting is disabled the error is marked as handled, otherwise
+the normal internal error handling resumes.</p></p>        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSelfUpdateRepository">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L583">at line 583</a></div>
+        <code>                    string
+    <strong>getSelfUpdateRepository</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setSelfUpdateRepository">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L593">at line 593</a></div>
+        <code>                    $this
+    <strong>setSelfUpdateRepository</strong>($selfUpdateRepository)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$selfUpdateRepository</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setConfigurationFilename">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L604">at line 604</a></div>
+        <code>                    $this
+    <strong>setConfigurationFilename</strong>(string $configFilename)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$configFilename</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setEnvConfigPrefix">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L615">at line 615</a></div>
+        <code>                    $this
+    <strong>setEnvConfigPrefix</strong>(string $envConfigPrefix)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$envConfigPrefix</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setClassLoader">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L626">at line 626</a></div>
+        <code>                    $this
+    <strong>setClassLoader</strong>(<abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr></td>
+                <td>$classLoader</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setRelativePluginNamespace">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Runtime/Runner.php#L637">at line 637</a></div>
+        <code>                    $this
+    <strong>setRelativePluginNamespace</strong>(string $relativeNamespace)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$relativeNamespace</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

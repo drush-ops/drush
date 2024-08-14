@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\SiteAlias\SiteAliasName | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_SiteAlias_SiteAliasName" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../Consolidation/SiteAlias.html">SiteAlias</a></li><li class="backslash">\</li><li>SiteAliasName</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>SiteAliasName    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>SiteAliasName</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Parse a string that contains a site alias name, and provide convenience
+methods to access the parts.</p></p>            <p><p>When provided by users, aliases must be in one of the following forms:</p>
+<ul>
+<li>
+<p>@sitename.env: List only sitename and environment.</p>
+</li>
+<li>
+<p>@location.sitename.env: List only sitename and environment. Search
+only those paths where the name of the folder holding the alias
+files matches 'location'. Location terms may only be used when both
+the sitename and env are also provided.</p>
+</li>
+<li>
+<p>@env: Look up a named environment in instances where the site root
+is known (e.g. via cwd). In this form, there is an implicit sitename
+'self' which is replaced by the actual site alias name once known.</p>
+</li>
+<li>
+<p>@sitename: Provides only the sitename; uses the 'default' environment,
+or 'dev' if there is no 'default' (or whatever is there if there is
+only one). With this form, the site alias name has no environment
+until the appropriate default environment is looked up. This form
+is checked only after <code>@env</code> returns no matches. This form can NOT
+be filtered with a <code>location.</code> term.</p>
+</li>
+</ul>
+<p>There are also two special aliases that are recognized:</p>
+<ul>
+<li>
+<p>@self: The current bootstrapped site.</p>
+</li>
+<li>
+<p>@none: No alias ('root' and 'uri' unset).</p>
+</li>
+</ul>
+<p>The special alias forms have no environment component.</p>
+<p>When provided to an API, the '@' is optional.</p>
+<p>Note that @sitename and @env are ambiguous. Aliases in this form
+(that are not one of the special aliases) will first be assumed
+to be @env, and may be converted to @sitename later.</p>
+<p>Note that:</p>
+<ul>
+<li>'sitename' and 'env' MUST NOT contain a '.' (unlike previous
+versions of Drush).</li>
+<li>Users SHOULD NOT create any environments that have the same name
+as any site name (and visa-versa).</li>
+<li>All environments in one site record SHOULD be different versions
+of the same site (e.g. dev / test / live).</li>
+</ul></p>        </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        ALIAS_NAME_REGEX
+                                    </td>
+                <td class="last">
+                    <p><em><p>Match the parts of a regex name.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_location">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$location</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_sitename">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$sitename</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_env">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$env</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Consolidation/SiteAlias/SiteAliasName.html"><abbr title="Consolidation\SiteAlias\SiteAliasName">SiteAliasName</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_parse">parse</a>(string $item)
+        
+                                            <p><p>Create a new site alias name</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<abbr title="Consolidation\SiteAlias\type">type</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_locationFromPath">locationFromPath</a>(<abbr title="Consolidation\SiteAlias\type">type</abbr> $path)
+        
+                                            <p><p>The 'location' of an alias file is defined as being the name
+of the immediate parent of the alias file.  e.g. the path
+'$HOME/.drush/sites/isp/mysite.site.yml' would have a location
+of 'isp' and a sitename of 'mysite'. The environments of the site
+are defined by the alias contents.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(string $sitename = null, string $env = null, string $location = null)
+        
+                                            <p><p>Creae a SiteAliasName object from an alias name string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___toString">__toString</a>()
+        
+                                            <p><p>Convert an alias name back to a string.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isAliasName">isAliasName</a>(string $aliasName)
+        
+                                            <p><p>Determine whether or not the provided name is an alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_sitename">sitename</a>()
+        
+                                            <p><p>Return the sitename portion of the alias name. By definition,
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_sitenameWithLocation">sitenameWithLocation</a>()
+        
+                                            <p><p>Return the sitename portion of the alias name. By definition,
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setSitename">setSitename</a>(string $sitename)
+        
+                                            <p><p>Set the sitename portion of the alias name</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasSitename">hasSitename</a>()
+        
+                                            <p><p>In general, all aliases have a sitename. The time when one will not
+is when an environment name <code>@env</code> is used as a shortcut for <code>@self.env</code></p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasEnv">hasEnv</a>()
+        
+                                            <p><p>Return true if this alias name contains an 'env' portion.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setEnv">setEnv</a>($env)
+        
+                                            <p><p>Set the environment portion of the alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_env">env</a>()
+        
+                                            <p><p>Return the 'env' portion of the alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasLocation">hasLocation</a>()
+        
+                                            <p><p>Return true if this alias name contains a 'location' portion</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setLocation">setLocation</a>(string $location)
+        
+                                            <p><p>Set the 'loation' portion of the alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_location">location</a>()
+        
+                                            <p><p>Return the 'location' portion of the alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isSelf">isSelf</a>()
+        
+                                            <p><p>Return true if this alias name is the 'self' alias.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isNone">isNone</a>()
+        
+                                            <p><p>Return true if this alias name is the 'none' alias.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_doParse">doParse</a>(string $aliasName)
+        
+                                            <p><p>Convert the parts of an alias name to its various component parts.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    true
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_processSingleItem">processSingleItem</a>($item)
+        
+                                            <p><p>Process an alias name provided as '@sitename'.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isSpecialAliasName">isSpecialAliasName</a>(string $item)
+        
+                                            <p><p>Determine whether the requested name is a special alias name.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_parse">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L68">at line 68</a></div>
+        <code>        static            <a href="../../Consolidation/SiteAlias/SiteAliasName.html"><abbr title="Consolidation\SiteAlias\SiteAliasName">SiteAliasName</abbr></a>
+    <strong>parse</strong>(string $item)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Create a new site alias name</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$item</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Consolidation/SiteAlias/SiteAliasName.html"><abbr title="Consolidation\SiteAlias\SiteAliasName">SiteAliasName</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_locationFromPath">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L85">at line 85</a></div>
+        <code>        static            <abbr title="Consolidation\SiteAlias\type">type</abbr>
+    <strong>locationFromPath</strong>(<abbr title="Consolidation\SiteAlias\type">type</abbr> $path)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The 'location' of an alias file is defined as being the name
+of the immediate parent of the alias file.  e.g. the path
+'$HOME/.drush/sites/isp/mysite.site.yml' would have a location
+of 'isp' and a sitename of 'mysite'. The environments of the site
+are defined by the alias contents.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\SiteAlias\type">type</abbr></td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\SiteAlias\type">type</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L101">at line 101</a></div>
+        <code>                    
+    <strong>__construct</strong>(string $sitename = null, string $env = null, string $location = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Creae a SiteAliasName object from an alias name string.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$sitename</td>
+                <td><p>The alias name for the site.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$env</td>
+                <td><p>The name for the site's environment.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$location</td>
+                <td><p>The location filter for the site.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___toString">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L113">at line 113</a></div>
+        <code>                    string
+    <strong>__toString</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert an alias name back to a string.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isAliasName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L131">at line 131</a></div>
+        <code>        static            bool
+    <strong>isAliasName</strong>(string $aliasName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine whether or not the provided name is an alias name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_sitename">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L147">at line 147</a></div>
+        <code>                    string
+    <strong>sitename</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the sitename portion of the alias name. By definition,
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_sitenameWithLocation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L162">at line 162</a></div>
+        <code>                    string
+    <strong>sitenameWithLocation</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the sitename portion of the alias name. By definition,
+every alias must have a sitename. If the site name is implicit,
+then 'self' is assumed.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setSitename">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L175">at line 175</a></div>
+        <code>                    
+    <strong>setSitename</strong>(string $sitename)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the sitename portion of the alias name</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$sitename</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasSitename">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L187">at line 187</a></div>
+        <code>                    bool
+    <strong>hasSitename</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>In general, all aliases have a sitename. The time when one will not
+is when an environment name <code>@env</code> is used as a shortcut for <code>@self.env</code></p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasEnv">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L197">at line 197</a></div>
+        <code>                    bool
+    <strong>hasEnv</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return true if this alias name contains an 'env' portion.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setEnv">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L207">at line 207</a></div>
+        <code>                    
+    <strong>setEnv</strong>($env)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the environment portion of the alias name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$env</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_env">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L218">at line 218</a></div>
+        <code>                    string
+    <strong>env</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the 'env' portion of the alias name.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasLocation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L227">at line 227</a></div>
+        <code>                    bool
+    <strong>hasLocation</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return true if this alias name contains a 'location' portion</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setLocation">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L236">at line 236</a></div>
+        <code>                    
+    <strong>setLocation</strong>(string $location)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the 'loation' portion of the alias name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$location</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_location">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L247">at line 247</a></div>
+        <code>                    
+    <strong>location</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the 'location' portion of the alias name.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isSelf">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L257">at line 257</a></div>
+        <code>                    bool
+    <strong>isSelf</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return true if this alias name is the 'self' alias.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isNone">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L265">at line 265</a></div>
+        <code>                    
+    <strong>isNone</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return true if this alias name is the 'none' alias.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_doParse">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L275">at line 275</a></div>
+        <code>            protected        
+    <strong>doParse</strong>(string $aliasName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Convert the parts of an alias name to its various component parts.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$aliasName</td>
+                <td><p>a string representation of an alias name.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_processSingleItem">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L321">at line 321</a></div>
+        <code>            protected        true
+    <strong>processSingleItem</strong>($item)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Process an alias name provided as '@sitename'.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$item</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>true</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isSpecialAliasName">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasName.php#L338">at line 338</a></div>
+        <code>            protected        bool
+    <strong>isSpecialAliasName</strong>(string $item)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine whether the requested name is a special alias name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$item</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

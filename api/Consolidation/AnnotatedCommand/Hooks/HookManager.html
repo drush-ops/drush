@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\AnnotatedCommand\Hooks\HookManager | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_AnnotatedCommand_Hooks_HookManager" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/AnnotatedCommand.html">AnnotatedCommand</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/AnnotatedCommand/Hooks.html">Hooks</a></li><li class="backslash">\</li><li>HookManager</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>HookManager    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>HookManager</strong>        implements        <abbr title="Symfony\Component\EventDispatcher\EventSubscriberInterface">EventSubscriberInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Manage named callback hooks</p></p>                    </div>
+            
+        
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        REPLACE_COMMAND_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_COMMAND_EVENT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        COMMAND_EVENT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_COMMAND_EVENT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_OPTION_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        OPTION_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_OPTION_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_INITIALIZE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        INITIALIZE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_INITIALIZE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_INTERACT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        INTERACT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_INTERACT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_ARGUMENT_VALIDATOR
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ARGUMENT_VALIDATOR
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_ARGUMENT_VALIDATOR
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_COMMAND_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        COMMAND_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_COMMAND_HOOK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_PROCESS_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PROCESS_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_PROCESS_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        PRE_ALTER_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ALTER_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        POST_ALTER_RESULT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        STATUS_DETERMINER
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        EXTRACT_OUTPUT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ON_EVENT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_hooks">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$hooks</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_hookOptions">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$hookOptions</td>
+                <td class="last"><p>var CommandInfo[]</p></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAllHooks">getAllHooks</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_add">add</a>(callable $callback, string $hook, string $name = &#039;*&#039;)
+        
+                                            <p><p>Add a hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_recordHookOptions">recordHookOptions</a>($commandInfo, $name)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getNames">getNames</a>($command, $callback)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getNamesUsingCommands">getNamesUsingCommands</a>($command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getClassNameFromCallback">getClassNameFromCallback</a>($callback)
+        
+                                            <p><p>If a command hook does not specify any particular command
+name that it should be attached to, then it will be applied
+to every command that is defined in the same class as the hook.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addReplaceCommandHook">addReplaceCommandHook</a>(<abbr title="Consolidation\AnnotatedCommand\Hooks\ReplaceCommandHookInterface">ReplaceCommandHookInterface</abbr> $replaceCommandHook, $name)
+        
+                                            <p><p>Add a replace command hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addPreCommandEventDispatcher">addPreCommandEventDispatcher</a>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addCommandEventDispatcher">addCommandEventDispatcher</a>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addPostCommandEventDispatcher">addPostCommandEventDispatcher</a>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addCommandEvent">addCommandEvent</a>(<abbr title="Symfony\Component\EventDispatcher\EventSubscriberInterface">EventSubscriberInterface</abbr> $eventSubscriber)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addInitializeHook">addInitializeHook</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a> $initializeHook, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add an configuration provider hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOptionHook">addOptionHook</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/OptionHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\OptionHookInterface">OptionHookInterface</abbr></a> $interactor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add an option hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addInteractor">addInteractor</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/InteractorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InteractorInterface">InteractorInterface</abbr></a> $interactor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add an interact hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addPreValidator">addPreValidator</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $validator, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a pre-validator hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addValidator">addValidator</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $validator, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a validator hook</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addPreCommandHook">addPreCommandHook</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $preCommand, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a pre-command hook.  This is the same as a validator hook, except
+that it will run after all of the post-validator hooks.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addPostCommandHook">addPostCommandHook</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a> $postCommand, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a post-command hook.  This is the same as a pre-process hook,
+except that it will run before the first pre-process hook.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addResultProcessor">addResultProcessor</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a> $resultProcessor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a result processor.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addAlterResult">addAlterResult</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/AlterResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\AlterResultInterface">AlterResultInterface</abbr></a> $resultAlterer, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a result alterer. After a result is processed
+by a result processor, an alter hook may be used
+to convert the result from one form to another.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addStatusDeterminer">addStatusDeterminer</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/StatusDeterminerInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\StatusDeterminerInterface">StatusDeterminerInterface</abbr></a> $statusDeterminer, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add a status determiner. Usually, a command should return
+an integer on error, or a result object on success (which
+implies a status code of zero). If a result contains the
+status code in some other field, then a status determiner
+can be used to call the appropriate accessor method to
+determine the status code.  This is usually not necessary,
+though; a command that fails may return a CommandError
+object, which contains a status code and a result message
+to display.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addOutputExtractor">addOutputExtractor</a>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ExtractOutputInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ExtractOutputInterface">ExtractOutputInterface</abbr></a> $outputExtractor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        
+                                            <p><p>Add an output extractor. If a command returns an object
+object, by default it is passed directly to the output
+formatter (if in use) for rendering. If the result object
+contains more information than just the data to render, though,
+then an output extractor can be used to call the appopriate
+accessor method of the result object to get the data to
+rendered.  This is usually not necessary, though; it is preferable
+to have complex result objects implement the OutputDataInterface.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHookOptionsForCommand">getHookOptionsForCommand</a>($command)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\AnnotatedCommand\Hooks\CommandInfo">CommandInfo</abbr>[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHookOptions">getHookOptions</a>($names)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    callable[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHooks">getHooks</a>(string|array $names, string[] $hooks, $annotationData = null)
+        
+                                            <p><p>Get a set of hooks with the provided name(s). Include the
+pre- and post- hooks, and also include the global hooks ('*')
+in addition to the named hooks provided.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addWildcardHooksToNames">addWildcardHooksToNames</a>($names, $annotationData = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    callable[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_get">get</a>(string|array $names, string[] $hooks)
+        
+                                            <p><p>Get a set of hooks with the provided name(s).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    callable[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHook">getHook</a>(string $name, string $hook)
+        
+                                            <p><p>Get a single named hook.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_callCommandEventHooks">callCommandEventHooks</a>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        
+                                            <p><p>Call the command event hooks.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSubscribedEvents">getSubscribedEvents</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L59">at line 59</a></div>
+        <code>                    
+    <strong>__construct</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAllHooks">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L63">at line 63</a></div>
+        <code>                    
+    <strong>getAllHooks</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_add">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L76">at line 76</a></div>
+        <code>                    
+    <strong>add</strong>(callable $callback, string $hook, string $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>callable</td>
+                <td>$callback</td>
+                <td><p>The callback function to call</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hook</td>
+                <td><p>The name of the hook to add</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_recordHookOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L85">at line 85</a></div>
+        <code>                    
+    <strong>recordHookOptions</strong>($commandInfo, $name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getNames">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L91">at line 91</a></div>
+        <code>        static            
+    <strong>getNames</strong>($command, $callback)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$callback</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getNamesUsingCommands">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L101">at line 101</a></div>
+        <code>        static    protected        
+    <strong>getNamesUsingCommands</strong>($command)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getClassNameFromCallback">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L116">at line 116</a></div>
+        <code>        static    protected        
+    <strong>getClassNameFromCallback</strong>($callback)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>If a command hook does not specify any particular command
+name that it should be attached to, then it will be applied
+to every command that is defined in the same class as the hook.</p></p>                <p><p>This is controlled by using the namespace + class name of
+the implementing class of the callback hook.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$callback</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addReplaceCommandHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L131">at line 131</a></div>
+        <code>                    
+    <strong>addReplaceCommandHook</strong>(<abbr title="Consolidation\AnnotatedCommand\Hooks\ReplaceCommandHookInterface">ReplaceCommandHookInterface</abbr> $replaceCommandHook, $name)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a replace command hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\ReplaceCommandHookInterface">ReplaceCommandHookInterface</abbr></td>
+                <td>$replaceCommandHook</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPreCommandEventDispatcher">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L137">at line 137</a></div>
+        <code>                    
+    <strong>addPreCommandEventDispatcher</strong>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr></td>
+                <td>$eventDispatcher</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addCommandEventDispatcher">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L143">at line 143</a></div>
+        <code>                    
+    <strong>addCommandEventDispatcher</strong>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr></td>
+                <td>$eventDispatcher</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPostCommandEventDispatcher">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L149">at line 149</a></div>
+        <code>                    
+    <strong>addPostCommandEventDispatcher</strong>(<abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr></td>
+                <td>$eventDispatcher</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$name</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addCommandEvent">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L155">at line 155</a></div>
+        <code>                    
+    <strong>addCommandEvent</strong>(<abbr title="Symfony\Component\EventDispatcher\EventSubscriberInterface">EventSubscriberInterface</abbr> $eventSubscriber)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\EventDispatcher\EventSubscriberInterface">EventSubscriberInterface</abbr></td>
+                <td>$eventSubscriber</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addInitializeHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L170">at line 170</a></div>
+        <code>                    
+    <strong>addInitializeHook</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a> $initializeHook, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add an configuration provider hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a></td>
+                <td>$initializeHook</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOptionHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L183">at line 183</a></div>
+        <code>                    
+    <strong>addOptionHook</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/OptionHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\OptionHookInterface">OptionHookInterface</abbr></a> $interactor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add an option hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/OptionHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\OptionHookInterface">OptionHookInterface</abbr></a></td>
+                <td>$interactor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addInteractor">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L196">at line 196</a></div>
+        <code>                    
+    <strong>addInteractor</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/InteractorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InteractorInterface">InteractorInterface</abbr></a> $interactor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add an interact hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/InteractorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InteractorInterface">InteractorInterface</abbr></a></td>
+                <td>$interactor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPreValidator">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L209">at line 209</a></div>
+        <code>                    
+    <strong>addPreValidator</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $validator, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a pre-validator hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a></td>
+                <td>$validator</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addValidator">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L222">at line 222</a></div>
+        <code>                    
+    <strong>addValidator</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $validator, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a validator hook</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a></td>
+                <td>$validator</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPreCommandHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L236">at line 236</a></div>
+        <code>                    
+    <strong>addPreCommandHook</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a> $preCommand, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a pre-command hook.  This is the same as a validator hook, except
+that it will run after all of the post-validator hooks.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ValidatorInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ValidatorInterface">ValidatorInterface</abbr></a></td>
+                <td>$preCommand</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addPostCommandHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L250">at line 250</a></div>
+        <code>                    
+    <strong>addPostCommandHook</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a> $postCommand, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a post-command hook.  This is the same as a pre-process hook,
+except that it will run before the first pre-process hook.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a></td>
+                <td>$postCommand</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addResultProcessor">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L263">at line 263</a></div>
+        <code>                    
+    <strong>addResultProcessor</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a> $resultProcessor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a result processor.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ProcessResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ProcessResultInterface">ProcessResultInterface</abbr></a></td>
+                <td>$resultProcessor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addAlterResult">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L278">at line 278</a></div>
+        <code>                    
+    <strong>addAlterResult</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/AlterResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\AlterResultInterface">AlterResultInterface</abbr></a> $resultAlterer, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a result alterer. After a result is processed
+by a result processor, an alter hook may be used
+to convert the result from one form to another.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/AlterResultInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\AlterResultInterface">AlterResultInterface</abbr></a></td>
+                <td>$resultAlterer</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addStatusDeterminer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L300">at line 300</a></div>
+        <code>                    
+    <strong>addStatusDeterminer</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/StatusDeterminerInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\StatusDeterminerInterface">StatusDeterminerInterface</abbr></a> $statusDeterminer, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a status determiner. Usually, a command should return
+an integer on error, or a result object on success (which
+implies a status code of zero). If a result contains the
+status code in some other field, then a status determiner
+can be used to call the appropriate accessor method to
+determine the status code.  This is usually not necessary,
+though; a command that fails may return a CommandError
+object, which contains a status code and a result message
+to display.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/StatusDeterminerInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\StatusDeterminerInterface">StatusDeterminerInterface</abbr></a></td>
+                <td>$statusDeterminer</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../../Consolidation/AnnotatedCommand/CommandError.html#method_getExitCode">
+<abbr title="Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>::getExitCode</a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addOutputExtractor">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L321">at line 321</a></div>
+        <code>                    
+    <strong>addOutputExtractor</strong>(<a href="../../../Consolidation/AnnotatedCommand/Hooks/ExtractOutputInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ExtractOutputInterface">ExtractOutputInterface</abbr></a> $outputExtractor, <abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr> $name = &#039;*&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add an output extractor. If a command returns an object
+object, by default it is passed directly to the output
+formatter (if in use) for rendering. If the result object
+contains more information than just the data to render, though,
+then an output extractor can be used to call the appopriate
+accessor method of the result object to get the data to
+rendered.  This is usually not necessary, though; it is preferable
+to have complex result objects implement the OutputDataInterface.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/Hooks/ExtractOutputInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\ExtractOutputInterface">ExtractOutputInterface</abbr></a></td>
+                <td>$outputExtractor</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\AnnotatedCommand\Hooks\type">type</abbr></td>
+                <td>$name</td>
+                <td><p>The name of the command to hook
+('*' for all)</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="../../../Consolidation/AnnotatedCommand/OutputDataInterface.html#method_getOutputData">
+<abbr title="Consolidation\AnnotatedCommand\OutputDataInterface">OutputDataInterface</abbr>::getOutputData</a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHookOptionsForCommand">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L327">at line 327</a></div>
+        <code>                    
+    <strong>getHookOptionsForCommand</strong>($command)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHookOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L336">at line 336</a></div>
+        <code>                    <abbr title="Consolidation\AnnotatedCommand\Hooks\CommandInfo">CommandInfo</abbr>[]
+    <strong>getHookOptions</strong>($names)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\AnnotatedCommand\Hooks\CommandInfo">CommandInfo</abbr>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHooks">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L357">at line 357</a></div>
+        <code>                    callable[]
+    <strong>getHooks</strong>(string|array $names, string[] $hooks, $annotationData = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get a set of hooks with the provided name(s). Include the
+pre- and post- hooks, and also include the global hooks ('*')
+in addition to the named hooks provided.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|array</td>
+                <td>$names</td>
+                <td><p>The name of the function being hooked.</p></td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$hooks</td>
+                <td><p>A list of hooks (e.g. [HookManager::ALTER_RESULT])</p></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$annotationData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>callable[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addWildcardHooksToNames">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L362">at line 362</a></div>
+        <code>            protected        
+    <strong>addWildcardHooksToNames</strong>($names, $annotationData = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$names</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$annotationData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_get">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L382">at line 382</a></div>
+        <code>                    callable[]
+    <strong>get</strong>(string|array $names, string[] $hooks)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get a set of hooks with the provided name(s).</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|array</td>
+                <td>$names</td>
+                <td><p>The name of the function being hooked.</p></td>
+            </tr>
+                    <tr>
+                <td>string[]</td>
+                <td>$hooks</td>
+                <td><p>The list of hook names (e.g. [HookManager::ALTER_RESULT])</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>callable[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L401">at line 401</a></div>
+        <code>                    callable[]
+    <strong>getHook</strong>(string $name, string $hook)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get a single named hook.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$name</td>
+                <td><p>The name of the hooked method</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hook</td>
+                <td><p>The specific hook name (e.g. alter)</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>callable[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_callCommandEventHooks">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L419">at line 419</a></div>
+        <code>                    
+    <strong>callCommandEventHooks</strong>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Call the command event hooks.</p></p>                <p><p>TODO: This should be moved to CommandEventHookDispatcher, which
+should become the class that implements EventSubscriberInterface.
+This change would break all clients, though, so postpone until next
+major release.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSubscribedEvents">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/Hooks/HookManager.php#L430">at line 430</a></div>
+        <code>        static            
+    <strong>getSubscribedEvents</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

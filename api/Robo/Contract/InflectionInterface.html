@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Contract\InflectionInterface | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Robo_Contract_InflectionInterface" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">interface</span></li>
+                        <li><a href="../../Robo.html">Robo</a></li><li class="backslash">\</li><li><a href="../../Robo/Contract.html">Contract</a></li><li class="backslash">\</li><li>InflectionInterface</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>InflectionInterface    
+            </h1>
+    </div>
+
+    
+    <p>        interface
+    <strong>InflectionInterface</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Contract/InflectionInterface.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+        
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_inflect">inflect</a>(<a href="../../Robo/Contract/InflectionInterface.html"><abbr title="Robo\Contract\InflectionInterface">InflectionInterface</abbr></a> $parent)
+        
+                                            <p><p>Based on league/container inflection: <a href="https://container.thephpleague.com/4.x/inflectors/">https://container.thephpleague.com/4.x/inflectors/</a></p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_injectDependencies">injectDependencies</a>(mixed $child)
+        
+                                            <p><p>Take all dependencies availble to this task and inject any that are
+needed into the provided task.  The general pattern is that, for every
+FooAwareInterface that this class implements, it should test to see
+if the child also implements the same interface, and if so, should call
+$child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_inflect">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Contract/InflectionInterface.php#L31">at line 31</a></div>
+        <code>                    
+    <strong>inflect</strong>(<a href="../../Robo/Contract/InflectionInterface.html"><abbr title="Robo\Contract\InflectionInterface">InflectionInterface</abbr></a> $parent)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Based on league/container inflection: <a href="https://container.thephpleague.com/4.x/inflectors/">https://container.thephpleague.com/4.x/inflectors/</a></p></p>                <p><p>This allows us to run:</p>
+<p>(new SomeTask($args))
+-&gt;inflect($this)
+-&gt;initializer()
+-&gt;...</p>
+<p>Instead of:</p>
+<p>(new SomeTask($args))
+-&gt;setLogger($this-&gt;logger)
+-&gt;initializer()
+-&gt;...</p>
+<p>The reason <code>inflect</code> is better than the more explicit alternative is
+that subclasses of BaseTask that implement a new FooAwareInterface
+can override injectDependencies() as explained below, and add more
+dependencies that can be injected as needed.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Robo/Contract/InflectionInterface.html"><abbr title="Robo\Contract\InflectionInterface">InflectionInterface</abbr></a></td>
+                <td>$parent</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_injectDependencies">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Contract/InflectionInterface.php#L51">at line 51</a></div>
+        <code>                    
+    <strong>injectDependencies</strong>(mixed $child)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Take all dependencies availble to this task and inject any that are
+needed into the provided task.  The general pattern is that, for every
+FooAwareInterface that this class implements, it should test to see
+if the child also implements the same interface, and if so, should call
+$child-&gt;setFoo($this-&gt;foo).</p></p>                <p><p>The benefits of this are pretty large. Any time an object that implements
+InflectionInterface is created, just call <code>$child-&gt;inflect($this)</code>, and
+any available optional dependencies will be hooked up via setter injection.</p>
+<p>The required dependencies of an object should be provided via constructor
+injection, not inflection.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>mixed</td>
+                <td>$child</td>
+                <td><p>An object with one or more *AwareInterfaces implemented.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            <a href="https://mwop.net/blog/2016-04-26-on-locators.html">https://mwop.net/blog/2016-04-26-on-locators.html</a>
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Robo\Collection | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../fonts/doctum-font.css">
+        <script src="../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../doctum.js"></script>
+        <script async defer src="../js/bootstrap.min.js"></script>
+        <script async defer src="../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="namespace" data-name="namespace:Robo_Collection" data-root-path="../" data-search-index-url="../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../classes.html">Classes</a></li>
+                    <li><a href="../namespaces.html">Namespaces</a></li>
+                    <li><a href="../interfaces.html">Interfaces</a></li>
+                    <li><a href="../traits.html">Traits</a></li>
+                    <li><a href="../doc-index.html">Index</a></li>
+                    <li><a href="../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                <div class="namespace-breadcrumbs">
+        <ol class="breadcrumb">
+            <li><span class="label label-default">Namespace</span></li>
+                    <li><a href="../Robo.html">Robo</a></li><li class="backslash">\</li><li><a href="../Robo/Collection.html">Collection</a></li><li class="backslash">\</li>
+        </ol>
+    </div>
+            <div id="page-content">
+    <div class="page-header">
+        <h1>Robo\Collection</h1>
+    </div>
+
+    
+            <h2>Classes</h2>
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/CallableTask.html"><abbr title="Robo\Collection\CallableTask">CallableTask</abbr></a>    </div>
+                <div class="col-md-6"><p>Creates a task wrapper that converts any Callable into an
+object that can be used directly with a task collection.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/Collection.html"><abbr title="Robo\Collection\Collection">Collection</abbr></a>    </div>
+                <div class="col-md-6"><p>Group tasks into a collection that run together. Supports
+rollback operations for handling error conditions.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/CollectionBuilder.html"><abbr title="Robo\Collection\CollectionBuilder">CollectionBuilder</abbr></a>    </div>
+                <div class="col-md-6"><p>Creates a collection, and adds tasks to it.  The collection builder
+offers a streamlined chained-initialization mechanism for easily
+creating task groups.  Facilities for creating working and temporary
+directories are also provided.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/CollectionProcessHook.html"><abbr title="Robo\Collection\CollectionProcessHook">CollectionProcessHook</abbr></a>    </div>
+                <div class="col-md-6"><p>The collection process hook is added to the annotation command
+hook manager in Runner::configureContainer(). This hook will be
+called every time a command runs.  If the command result is a
+\Robo\Contract\TaskInterface (in particular, \Robo\Collection\Collection),
+then we run the collection, and return the result.  We ignore results
+of any other type.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/CompletionWrapper.html"><abbr title="Robo\Collection\CompletionWrapper">CompletionWrapper</abbr></a>    </div>
+                <div class="col-md-6"><p>Creates a task wrapper that will manage rollback and collection
+management to a task when it runs.  Tasks are automatically
+wrapped in a CompletionWrapper when added to a task collection.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/Element.html"><abbr title="Robo\Collection\Element">Element</abbr></a>    </div>
+                <div class="col-md-6"><p>One element in a collection.  Each element consists of a task
+all of its before tasks, and all of its after tasks.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/TaskForEach.html"><abbr title="Robo\Collection\TaskForEach">TaskForEach</abbr></a>    </div>
+                <div class="col-md-6"><p>Creates a task wrapper that converts any Callable into an
+object that will execute the callback once for each item in the
+provided collection.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/Tasks.html"><abbr title="Robo\Collection\Tasks">Tasks</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../Robo/Collection/Temporary.html"><abbr title="Robo\Collection\Temporary">Temporary</abbr></a>    </div>
+                <div class="col-md-6"><p>The temporary collection keeps track of the global collection of
+temporary cleanup tasks in instances where temporary-generating
+tasks are executed directly via their run() method, rather than
+as part of a collection.</p></div>
+            </div>
+            </div>
+            <h2>Interfaces</h2>
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="../Robo/Collection/CollectionInterface.html"><abbr title="Robo\Collection\CollectionInterface">CollectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                                            <em><a href="../Robo/Collection/NestedCollectionInterface.html"><abbr title="Robo\Collection\NestedCollectionInterface">NestedCollectionInterface</abbr></a></em>
+                        </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

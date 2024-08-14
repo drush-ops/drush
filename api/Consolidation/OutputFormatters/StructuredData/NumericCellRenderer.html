@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\OutputFormatters\StructuredData\NumericCellRenderer | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_OutputFormatters_StructuredData_NumericCellRenderer" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/OutputFormatters.html">OutputFormatters</a></li><li class="backslash">\</li><li><a href="../../../Consolidation/OutputFormatters/StructuredData.html">StructuredData</a></li><li class="backslash">\</li><li>NumericCellRenderer</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>NumericCellRenderer    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>NumericCellRenderer</strong>        implements        <a href="../../../Consolidation/OutputFormatters/StructuredData/RenderCellInterface.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RenderCellInterface">RenderCellInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareInterface">FormatterAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Create a formatter to add commas to numeric data.</p></p>            <p><p>Example:</p>
+<hr />
+<pre><code>Value</code></pre>
+<hr />
+<pre><code> 2,384</code></pre>
+<p>143,894
+23
+98,538</p>
+<p>This formatter may also be re-used for other purposes where right-justified
+data is desired by simply making a subclass. See method comments below.</p>
+<p>Usage:</p>
+<pre><code>return (new RowsOfFields($data))-&gt;addRenderer(
+     new NumericCellRenderer($data, ['value'])
+);</code></pre></p>        </div>
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_formatter">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$formatter</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#property_formatter">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_data">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$data</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_renderedColumns">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$renderedColumns</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_widths">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$widths</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setFormatter">setFormatter</a>(<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a> $formatter)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_setFormatter">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getFormatter">getFormatter</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_getFormatter">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isHumanReadable">isHumanReadable</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_isHumanReadable">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>($data, $renderedColumns)
+        
+                                            <p><p>NumericCellRenderer constructor</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderCell">renderCell</a>(string $key, mixed $cellData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options, array $rowData)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_justifyCellData">justifyCellData</a>($key, $cellData = &quot;&quot;)
+        
+                                            <p><p>Right-justify the cell data.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRenderedFormat">isRenderedFormat</a>(<a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+        
+                                            <p><p>Determine if this format is to be formatted.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRenderedColumn">isRenderedColumn</a>($key)
+        
+                                            <p><p>Determine if this is a column that should be formatted.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRenderedData">isRenderedData</a>($cellData)
+        
+                                            <p><p>Ignore cell data that should not be formatted.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_formatCellData">formatCellData</a>($cellData)
+        
+                                            <p><p>Format the cell data.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_convertCellDataToString">convertCellDataToString</a>($cellData)
+        
+                                            <p><p>This formatter only works with columns whose columns are strings.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_columnWidth">columnWidth</a>($key)
+        
+                                            <p><p>Get the cached column width for the provided key.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_calculateColumnWidth">calculateColumnWidth</a>($key)
+        
+                                            <p><p>Using the cached table data, calculate the largest width
+for the data in the table for use when right-justifying.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_setFormatter">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_setFormatter">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/FormatterAwareTrait.php#L9">at line 9</a></div>
+        <code>                    
+    <strong>setFormatter</strong>(<a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a> $formatter)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a></td>
+                <td>$formatter</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getFormatter">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_getFormatter">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/FormatterAwareTrait.php#L14">at line 14</a></div>
+        <code>                    
+    <strong>getFormatter</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isHumanReadable">
+        <div class="location">in <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterAwareTrait.html#method_isHumanReadable">
+<abbr title="Consolidation\OutputFormatters\Formatters\FormatterAwareTrait">FormatterAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/FormatterAwareTrait.php#L19">at line 19</a></div>
+        <code>                    
+    <strong>isHumanReadable</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L43">at line 43</a></div>
+        <code>                    
+    <strong>__construct</strong>($data, $renderedColumns)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>NumericCellRenderer constructor</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$renderedColumns</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderCell">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L52">at line 52</a></div>
+        <code>                    mixed
+    <strong>renderCell</strong>(string $key, mixed $cellData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options, array $rowData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td><p>Identifier of the cell being rendered</p></td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$cellData</td>
+                <td><p>The data to render</p></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
+                <td>$options</td>
+                <td><p>The formatting options</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$rowData</td>
+                <td><p>The rest of the row data</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_justifyCellData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L66">at line 66</a></div>
+        <code>            protected        
+    <strong>justifyCellData</strong>($key, $cellData = &quot;&quot;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Right-justify the cell data.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$cellData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRenderedFormat">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L74">at line 74</a></div>
+        <code>            protected        
+    <strong>isRenderedFormat</strong>(<a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if this format is to be formatted.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRenderedColumn">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L82">at line 82</a></div>
+        <code>            protected        
+    <strong>isRenderedColumn</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if this is a column that should be formatted.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRenderedData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L90">at line 90</a></div>
+        <code>            protected        
+    <strong>isRenderedData</strong>($cellData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Ignore cell data that should not be formatted.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$cellData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_formatCellData">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L98">at line 98</a></div>
+        <code>            protected        
+    <strong>formatCellData</strong>($cellData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Format the cell data.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$cellData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_convertCellDataToString">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L108">at line 108</a></div>
+        <code>            protected        
+    <strong>convertCellDataToString</strong>($cellData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>This formatter only works with columns whose columns are strings.</p></p>                <p><p>To use this formatter for another purpose, override this method
+to ensure that the cell data is a string before it is formatted.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$cellData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_columnWidth">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L116">at line 116</a></div>
+        <code>            protected        
+    <strong>columnWidth</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the cached column width for the provided key.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_calculateColumnWidth">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/StructuredData/NumericCellRenderer.php#L128">at line 128</a></div>
+        <code>            protected        
+    <strong>calculateColumnWidth</strong>($key)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Using the cached table data, calculate the largest width
+for the data in the table for use when right-justifying.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>

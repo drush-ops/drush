@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Consolidation\AnnotatedCommand\AnnotatedCommandFactory | Drush API 13</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Consolidation_AnnotatedCommand_AnnotatedCommandFactory" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Consolidation.html">Consolidation</a></li><li class="backslash">\</li><li><a href="../../Consolidation/AnnotatedCommand.html">AnnotatedCommand</a></li><li class="backslash">\</li><li>AnnotatedCommandFactory</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>AnnotatedCommandFactory    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>AnnotatedCommandFactory</strong>        implements        <a href="../../Consolidation/AnnotatedCommand/Options/AutomaticOptionsProviderInterface.html"><abbr title="Consolidation\AnnotatedCommand\Options\AutomaticOptionsProviderInterface">AutomaticOptionsProviderInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>The AnnotatedCommandFactory creates commands for your application.</p></p>            <p><p>Use with a Dependency Injection Container and the CommandFactory.
+Alternately, use the CommandFileDiscovery to find commandfiles, and
+then use AnnotatedCommandFactory::createCommandsFromClass() to create
+commands.  See the README for more information.</p></p>        </div>
+            
+        
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_ignoreCommandsInTraits">
+                    static                    protected                                        
+                                                                                
+                                    </td>
+                <td>$ignoreCommandsInTraits</td>
+                <td class="last"><p>var bool</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_ignoreCommandsInParentClasses">
+                    static                    protected                                        
+                                                                                
+                                    </td>
+                <td>$ignoreCommandsInParentClasses</td>
+                <td class="last"><p>var bool</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_commandProcessor">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$commandProcessor</td>
+                <td class="last"><p>var CommandProcessor</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_listeners">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$listeners</td>
+                <td class="last"><p>var CommandCreationListenerInterface[]</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_automaticOptionsProviderList">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$automaticOptionsProviderList</td>
+                <td class="last"><p>var AutomaticOptionsProvider[]</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_includeAllPublicMethods">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$includeAllPublicMethods</td>
+                <td class="last"><p>var boolean</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_commandInfoAlterers">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$commandInfoAlterers</td>
+                <td class="last"><p>var CommandInfoAltererInterface</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_dataStore">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$dataStore</td>
+                <td class="last"><p>var SimpleCacheInterface</p></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_ignoredCommandsRegexps">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$ignoredCommandsRegexps</td>
+                <td class="last"><p>var string[]</p></td>
+                <td></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setIgnoreCommandsInTraits">setIgnoreCommandsInTraits</a>(bool $skipTraitFiles)
+        
+                                            <p><p>Typically, traits should not contain commands; however, some
+applications make use of this feature to package commands in
+libraries, so we must allow command files in traits to maintain
+backwards compatibility. Call this method to skip the parsing
+of trait files for a performance boost.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setIgnoreCommandsInParentClasses">setIgnoreCommandsInParentClasses</a>(bool $ignoreCommandsInParentClasses)
+        
+                                            <p><p>Typically, commands should not be inherited from parent classes;
+however, some applications make use of this feature to package
+commands in libraries, so we must allow command files in traits
+to maintain backwards compatibility. Call this method to skip the
+parsing of trait files for a performance boost.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setCommandProcessor">setCommandProcessor</a>(<a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a> $commandProcessor)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_commandProcessor">commandProcessor</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setIncludeAllPublicMethods">setIncludeAllPublicMethods</a>($includeAllPublicMethods)
+        
+                                            <p><p>Set the 'include all public methods flag'. If true (the default), then
+every public method of each commandFile will be used to create commands.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getIncludeAllPublicMethods">getIncludeAllPublicMethods</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Consolidation/AnnotatedCommand/Hooks/HookManager.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\HookManager">HookManager</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hookManager">hookManager</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addListener">addListener</a>(<a href="../../Consolidation/AnnotatedCommand/CommandCreationListenerInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandCreationListenerInterface">CommandCreationListenerInterface</abbr></a> $listener)
+        
+                                            <p><p>Add a listener that is notified immediately before the command
+factory creates commands from a commandFile instance.  This
+listener can use this opportunity to do more setup for the commandFile,
+and so on.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addListernerCallback">addListernerCallback</a>(callable $listener)
+        
+                                            <p><p>Add a listener that's just a simple 'callable'.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addIgnoredCommandsRegexp">addIgnoredCommandsRegexp</a>(string $regex)
+        
+                                            <p><p>Add a regular expresion used to match methods names
+that will not be part of the final set of commands.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_notify">notify</a>(object $commandFileInstance)
+        
+                                            <p><p>Call all command creation listeners</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addAutomaticOptionProvider">addAutomaticOptionProvider</a>(<a href="../../Consolidation/AnnotatedCommand/Options/AutomaticOptionsProviderInterface.html"><abbr title="Consolidation\AnnotatedCommand\Options\AutomaticOptionsProviderInterface">AutomaticOptionsProviderInterface</abbr></a> $optionsProvider)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addCommandInfoAlterer">addCommandInfoAlterer</a>(<a href="../../Consolidation/AnnotatedCommand/CommandInfoAltererInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandInfoAltererInterface">CommandInfoAltererInterface</abbr></a> $alterer)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createCommandsFromClass">createCommandsFromClass</a>($commandFileInstance, $includeAllPublicMethods = null)
+        
+                                            <p><p>n.b. This registers all hooks from the commandfile instance as a side-effect.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getCommandInfoListFromClass">getCommandInfoListFromClass</a>($commandFileInstance)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_storeCommandInfoListInCache">storeCommandInfoListInCache</a>($commandFileInstance, $commandInfoList)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getCommandInfoListFromCache">getCommandInfoListFromCache</a>(mixed $commandFileInstance)
+        
+                                            <p><p>Get the command info list from the cache</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasDataStore">hasDataStore</a>()
+        
+                                            <p><p>Check to see if this factory has a cache datastore.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\AnnotatedCommand\type">type</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setDataStore">setDataStore</a>(mixed $dataStore)
+        
+                                            <p><p>Set a cache datastore for this factory. Any object with 'set' and
+'get' methods is acceptable. The key is the classname being cached,
+and the value is a nested associative array of strings.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getDataStore">getDataStore</a>()
+        
+                                            <p><p>Get the data store attached to this factory.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createCommandInfoListFromClass">createCommandInfoListFromClass</a>($commandFileInstance, $cachedCommandInfoList)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createCommandInfo">createCommandInfo</a>($commandFileInstance, $commandMethodName)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createCommandsFromClassInfo">createCommandsFromClassInfo</a>($commandInfoList, $commandFileInstance, $includeAllPublicMethods = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createSelectedCommandsFromClassInfo">createSelectedCommandsFromClassInfo</a>($commandInfoList, $commandFileInstance, callable $commandSelector)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isMethodRecognizedAsCommand">isMethodRecognizedAsCommand</a>($commandInfo, $includeAllPublicMethods)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isMethodRecognizedAsHook">isMethodRecognizedAsHook</a>($commandInfo)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_filterCommandInfoList">filterCommandInfoList</a>($commandInfoList, callable $commandSelector)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isCommandOrHookMethod">isCommandOrHookMethod</a>($commandInfo, $includeAllPublicMethods)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isHookMethod">isHookMethod</a>($commandInfo)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isCommandMethod">isCommandMethod</a>($commandInfo, $includeAllPublicMethods)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_registerCommandHooksFromClassInfo">registerCommandHooksFromClassInfo</a>($commandInfoList, $commandFileInstance)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_registerCommandHook">registerCommandHook</a>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, object $commandFileInstance)
+        
+                                            <p><p>Register a command hook given the CommandInfo for a method.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getNthWord">getNthWord</a>($string, $n, $default = &#039;&#039;, $delimiter = &#039; &#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_createCommand">createCommand</a>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, $commandFileInstance)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_alterCommandInfo">alterCommandInfo</a>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, $commandFileInstance)
+        
+                                            <p><p>Give plugins an opportunity to update the commandInfo</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\AnnotatedCommand\InputOption">InputOption</abbr>[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_callAutomaticOptionsProviders">callAutomaticOptionsProviders</a>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+        
+                                            <p><p>Get the options that are implied by annotations, e.g.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_automaticOptions">automaticOptions</a>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+        
+                                            <p><p>Get the options that are implied by annotations, e.g.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_setIgnoreCommandsInTraits">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L66">at line 66</a></div>
+        <code>        static            
+    <strong>setIgnoreCommandsInTraits</strong>(bool $skipTraitFiles)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Typically, traits should not contain commands; however, some
+applications make use of this feature to package commands in
+libraries, so we must allow command files in traits to maintain
+backwards compatibility. Call this method to skip the parsing
+of trait files for a performance boost.</p></p>                <p><p>In future versions, this property be removed, and commands will
+not be parsed from traits. Use Robo plugins as the preferred method
+of distributing shared commands.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$skipTraitFiles</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setIgnoreCommandsInParentClasses">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L82">at line 82</a></div>
+        <code>        static            
+    <strong>setIgnoreCommandsInParentClasses</strong>(bool $ignoreCommandsInParentClasses)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Typically, commands should not be inherited from parent classes;
+however, some applications make use of this feature to package
+commands in libraries, so we must allow command files in traits
+to maintain backwards compatibility. Call this method to skip the
+parsing of trait files for a performance boost.</p></p>                <p><p>In future versions, this property be removed, and commands will
+not be parsed from traits. Use Robo plugins as the preferred method
+of distributing shared commands.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$ignoreCommandsInParentClasses</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L87">at line 87</a></div>
+        <code>                    
+    <strong>__construct</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setCommandProcessor">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L94">at line 94</a></div>
+        <code>                    
+    <strong>setCommandProcessor</strong>(<a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a> $commandProcessor)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a></td>
+                <td>$commandProcessor</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_commandProcessor">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L103">at line 103</a></div>
+        <code>                    <a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a>
+    <strong>commandProcessor</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Consolidation/AnnotatedCommand/CommandProcessor.html"><abbr title="Consolidation\AnnotatedCommand\CommandProcessor">CommandProcessor</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setIncludeAllPublicMethods">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L114">at line 114</a></div>
+        <code>                    
+    <strong>setIncludeAllPublicMethods</strong>($includeAllPublicMethods)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the 'include all public methods flag'. If true (the default), then
+every public method of each commandFile will be used to create commands.</p></p>                <p><p>If it is false, then only those public methods annotated with @command
+or @name (deprecated) will be used to create commands.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getIncludeAllPublicMethods">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L120">at line 120</a></div>
+        <code>                    
+    <strong>getIncludeAllPublicMethods</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hookManager">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L128">at line 128</a></div>
+        <code>                    <a href="../../Consolidation/AnnotatedCommand/Hooks/HookManager.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\HookManager">HookManager</abbr></a>
+    <strong>hookManager</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Consolidation/AnnotatedCommand/Hooks/HookManager.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\HookManager">HookManager</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addListener">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L141">at line 141</a></div>
+        <code>                    
+    <strong>addListener</strong>(<a href="../../Consolidation/AnnotatedCommand/CommandCreationListenerInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandCreationListenerInterface">CommandCreationListenerInterface</abbr></a> $listener)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a listener that is notified immediately before the command
+factory creates commands from a commandFile instance.  This
+listener can use this opportunity to do more setup for the commandFile,
+and so on.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/CommandCreationListenerInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandCreationListenerInterface">CommandCreationListenerInterface</abbr></a></td>
+                <td>$listener</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addListernerCallback">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L151">at line 151</a></div>
+        <code>                    
+    <strong>addListernerCallback</strong>(callable $listener)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a listener that's just a simple 'callable'.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>callable</td>
+                <td>$listener</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addIgnoredCommandsRegexp">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L163">at line 163</a></div>
+        <code>                    
+    <strong>addIgnoredCommandsRegexp</strong>(string $regex)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Add a regular expresion used to match methods names
+that will not be part of the final set of commands.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$regex</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_notify">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L174">at line 174</a></div>
+        <code>            protected        
+    <strong>notify</strong>(object $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Call all command creation listeners</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>object</td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addAutomaticOptionProvider">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L181">at line 181</a></div>
+        <code>                    
+    <strong>addAutomaticOptionProvider</strong>(<a href="../../Consolidation/AnnotatedCommand/Options/AutomaticOptionsProviderInterface.html"><abbr title="Consolidation\AnnotatedCommand\Options\AutomaticOptionsProviderInterface">AutomaticOptionsProviderInterface</abbr></a> $optionsProvider)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Options/AutomaticOptionsProviderInterface.html"><abbr title="Consolidation\AnnotatedCommand\Options\AutomaticOptionsProviderInterface">AutomaticOptionsProviderInterface</abbr></a></td>
+                <td>$optionsProvider</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addCommandInfoAlterer">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L186">at line 186</a></div>
+        <code>                    
+    <strong>addCommandInfoAlterer</strong>(<a href="../../Consolidation/AnnotatedCommand/CommandInfoAltererInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandInfoAltererInterface">CommandInfoAltererInterface</abbr></a> $alterer)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/CommandInfoAltererInterface.html"><abbr title="Consolidation\AnnotatedCommand\CommandInfoAltererInterface">CommandInfoAltererInterface</abbr></a></td>
+                <td>$alterer</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createCommandsFromClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L194">at line 194</a></div>
+        <code>                    
+    <strong>createCommandsFromClass</strong>($commandFileInstance, $includeAllPublicMethods = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>n.b. This registers all hooks from the commandfile instance as a side-effect.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCommandInfoListFromClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L206">at line 206</a></div>
+        <code>                    
+    <strong>getCommandInfoListFromClass</strong>($commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_storeCommandInfoListInCache">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L217">at line 217</a></div>
+        <code>            protected        
+    <strong>storeCommandInfoListInCache</strong>($commandFileInstance, $commandInfoList)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandInfoList</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getCommandInfoListFromCache">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L237">at line 237</a></div>
+        <code>            protected        array
+    <strong>getCommandInfoListFromCache</strong>(mixed $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the command info list from the cache</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>mixed</td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasDataStore">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L262">at line 262</a></div>
+        <code>                    bool
+    <strong>hasDataStore</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Check to see if this factory has a cache datastore.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setDataStore">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L280">at line 280</a></div>
+        <code>                    <abbr title="Consolidation\AnnotatedCommand\type">type</abbr>
+    <strong>setDataStore</strong>(mixed $dataStore)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set a cache datastore for this factory. Any object with 'set' and
+'get' methods is acceptable. The key is the classname being cached,
+and the value is a nested associative array of strings.</p></p>                <p><p>TODO: Typehint this to SimpleCacheInterface</p>
+<p>This is not done currently to allow clients to use a generic cache
+store that does not itself depend on the annotated-command library.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>mixed</td>
+                <td>$dataStore</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\AnnotatedCommand\type">type</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getDataStore">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L292">at line 292</a></div>
+        <code>                    
+    <strong>getDataStore</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the data store attached to this factory.</p></p>                        
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createCommandInfoListFromClass">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L297">at line 297</a></div>
+        <code>            protected        
+    <strong>createCommandInfoListFromClass</strong>($commandFileInstance, $cachedCommandInfoList)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$cachedCommandInfoList</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createCommandInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L336">at line 336</a></div>
+        <code>                    
+    <strong>createCommandInfo</strong>($commandFileInstance, $commandMethodName)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandMethodName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createCommandsFromClassInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L343">at line 343</a></div>
+        <code>                    
+    <strong>createCommandsFromClassInfo</strong>($commandInfoList, $commandFileInstance, $includeAllPublicMethods = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfoList</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createSelectedCommandsFromClassInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L358">at line 358</a></div>
+        <code>                    
+    <strong>createSelectedCommandsFromClassInfo</strong>($commandInfoList, $commandFileInstance, callable $commandSelector)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfoList</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable</td>
+                <td>$commandSelector</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isMethodRecognizedAsCommand">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L369">at line 369</a></div>
+        <code>            protected        
+    <strong>isMethodRecognizedAsCommand</strong>($commandInfo, $includeAllPublicMethods)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isMethodRecognizedAsHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L404">at line 404</a></div>
+        <code>            protected        
+    <strong>isMethodRecognizedAsHook</strong>($commandInfo)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_filterCommandInfoList">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L409">at line 409</a></div>
+        <code>            protected        
+    <strong>filterCommandInfoList</strong>($commandInfoList, callable $commandSelector)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfoList</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable</td>
+                <td>$commandSelector</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isCommandOrHookMethod">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L414">at line 414</a></div>
+        <code>        static            
+    <strong>isCommandOrHookMethod</strong>($commandInfo, $includeAllPublicMethods)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isHookMethod">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L420">at line 420</a></div>
+        <code>        static            
+    <strong>isHookMethod</strong>($commandInfo)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isCommandMethod">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L426">at line 426</a></div>
+        <code>        static            
+    <strong>isCommandMethod</strong>($commandInfo, $includeAllPublicMethods)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$includeAllPublicMethods</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerCommandHooksFromClassInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L454">at line 454</a></div>
+        <code>                    
+    <strong>registerCommandHooksFromClassInfo</strong>($commandInfoList, $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$commandInfoList</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_registerCommandHook">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L483">at line 483</a></div>
+        <code>                    
+    <strong>registerCommandHook</strong>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, object $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Register a command hook given the CommandInfo for a method.</p></p>                <p><p>The hook format is:</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td><p>Information about the command hook method.</p></td>
+            </tr>
+                    <tr>
+                <td>object</td>
+                <td>$commandFileInstance</td>
+                <td><p>An instance of the CommandFile class.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getNthWord">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L505">at line 505</a></div>
+        <code>            protected        
+    <strong>getNthWord</strong>($string, $n, $default = &#039;&#039;, $delimiter = &#039; &#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$string</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$n</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$delimiter</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_createCommand">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L514">at line 514</a></div>
+        <code>                    
+    <strong>createCommand</strong>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_alterCommandInfo">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L538">at line 538</a></div>
+        <code>                    
+    <strong>alterCommandInfo</strong>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo, $commandFileInstance)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Give plugins an opportunity to update the commandInfo</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$commandFileInstance</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_callAutomaticOptionsProviders">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L551">at line 551</a></div>
+        <code>                    <abbr title="Consolidation\AnnotatedCommand\InputOption">InputOption</abbr>[]
+    <strong>callAutomaticOptionsProviders</strong>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the options that are implied by annotations, e.g.</p></p>                <p><p>@fields implies
+that there should be a --fields and a --format option.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Consolidation\AnnotatedCommand\InputOption">InputOption</abbr>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_automaticOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/annotated-command/src/AnnotatedCommandFactory.php#L566">at line 566</a></div>
+        <code>                    <abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]
+    <strong>automaticOptions</strong>(<a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Get the options that are implied by annotations, e.g.</p></p>                <p><p>@fields implies
+that there should be a --fields and a --format option.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
+                <td>$commandInfo</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr>[]</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
