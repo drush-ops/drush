@@ -31,6 +31,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      * Several working commandfiles may be found at https://github.com/drush-ops/drush/tree/13.x/src/Commands/sql/sanitize
      */
     #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
+    #[CLI\OptionsetSql]
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
     #[CLI\Usage(name: 'drush sql:sanitize --allowlist-fields=field_biography,field_phone_number', description: 'Sanitizes database but exempts two user fields from modification.')]
     #[CLI\Topics(topics: [DocsCommands::HOOKS])]
