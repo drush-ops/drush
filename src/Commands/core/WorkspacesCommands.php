@@ -38,6 +38,7 @@ final class WorkspacesCommands extends DrushCommands {
   #[CLI\Command(name: 'workspaces:publish')]
   #[CLI\Argument(name: 'id', description: 'The workspace to publish.')]
   #[CLI\Usage(name: 'workspaces:publish stage', description: 'Publish the stage workspace')]
+  #[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
   public function commandName($id) {
 
     $workspace = $this->entityTypeManager->getStorage('workspace')->load($id);
