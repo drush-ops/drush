@@ -8,6 +8,7 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
@@ -156,10 +157,12 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $entities = $storage->loadMultiple($ids);
         foreach ($entities as $entity) {
-            if ($action === 'publish') {
-                $entity->setPublished(true);
-            } elseif ($action === 'unpublish') {
-                $entity->setPublished(false);
+            if (is_a($entity, EntityPublishedInterface::class)) {
+                if ($action === 'publish') {
+                    $entity->setPublished();
+                } elseif ($action === 'unpublish') {
+                    $entity->setUnpublished();
+                }
             }
             $entity->save();
         }
