@@ -91,7 +91,9 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     }
 
     /**
-     * Re-save entities, and publish/unpublish as specified.
+     * Re-save entities, and publish/unpublish is specified.
+     *
+     * If passing in a file with an ID in each line, append a comma to each row.
      */
     #[CLI\Command(name: self::SAVE, aliases: ['esav', 'entity-save'])]
     #[CLI\Argument(name: 'entity_type', description: 'An entity machine name.')]
