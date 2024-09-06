@@ -5232,9 +5232,9 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush entity:save node --bundle=article</code>. Re-save all article entities.</li>
-<li><code>drush entity:save shortcut</code>. Re-save all shortcut entities.</li>
+<li><code>drush entity:save shortcut --unpublish</code>. Re-save all shortcut entities, and unpublish them all.</li>
 <li><code>drush entity:save node 22,24</code>. Re-save nodes 22 and 24.</li>
-<li><code>echo 22,24 | drush entity:save node -</code>. Re-save nodes 22 and 24. Ids are passed via Stdin.</li>
+<li><code>cat /path/to/ids.csv | drush entity:save node -</code>. Re-save the nodes whose Ids are listed in ids.csv.</li>
 <li><code>drush entity:save node --exclude=9,14,81</code>. Re-save all nodes except node 9, 14 and 81.</li>
 <li><code>drush entity:save user</code>. Re-save all users.</li>
 <li><code>drush entity:save node --chunks=5</code>. Re-save all node entities in steps of 5.</li>
