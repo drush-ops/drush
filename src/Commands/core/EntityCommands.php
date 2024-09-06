@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -163,6 +164,9 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 } elseif ($action === 'unpublish') {
                     $entity->setUnpublished();
                 }
+            }
+            if (is_a($entity, RevisionLogInterface::class)) {
+                $entity->setRevisionLogMessage(dt('Re-saved by Drush entity:save. Action is !action.', ['!action' => $action ?? 'none']));
             }
             $entity->save();
         }
