@@ -8,7 +8,6 @@ use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
-use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityStorageException;
@@ -31,7 +30,6 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected ?ModerationInformationInterface $moderationInformation
     ) {
         parent::__construct();
     }
@@ -184,9 +182,12 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
             }
 
             if ($state) {
-                if (!$this->moderationInformation->isModeratedEntity($entity)) {
+                // AutowireTrait does not support optional params so can't use DI.
+                $moderationInformation = \Drupal::service('content_moderation.moderation_information');
+                if (!$moderationInformation->isModeratedEntity($entity)) {
                     throw new \InvalidArgumentException(dt('!bundle !id does not support content moderation.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
                 }
+                // This line satisfies the bully that is phpstan.
                 assert($entity instanceof ContentEntityInterface);
                 $entity->set('moderation_state', $state);
             }
