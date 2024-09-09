@@ -31,7 +31,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected ModerationInformationInterface $moderationInformation
+        protected ?ModerationInformationInterface $moderationInformation
     ) {
         parent::__construct();
     }
