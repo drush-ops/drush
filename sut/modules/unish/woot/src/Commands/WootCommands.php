@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Drupal\woot\Commands;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drush\Drush;
+use Drupal\woot\WootManager;
 
 /**
  * Commandfiles must be listed in a module's drush.services.yml file.
  */
 class WootCommands
 {
-    public function __construct(protected string $appRoot) {}
+    public function __construct(protected string $appRoot, protected WootManager $wootManager) {}
 
     /**
      * Woot mightily.
@@ -91,5 +93,19 @@ class WootCommands
      */
     public function wootAltered()
     {
+    }
+
+    /**
+     * Command to demonstrate phpunit message retrieval problem.
+     * @see https://github.com/drush-ops/drush/issues/5572
+     *
+     * @command woot:messages
+     * @aliases woot-messages
+     */
+    public function wootMessages()
+    {
+        \Drupal::messenger()->addMessage('Message 1 - direct from command using Drupal::messenger()');
+        Drush::logger()->notice('Message 2 - direct from command using logger()->notice()');
+        $this->wootManager->woof();
     }
 }
