@@ -529,7 +529,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time, <abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr> $currentUser)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -740,7 +740,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_loadSave">loadSave</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false])
+                    <a href="#method_loadSave">loadSave</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false, &#039;state&#039; =&gt; self::REQ])
         
                                             <p><p>Re-save entities, and publish/unpublish is specified.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -750,7 +750,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_doSave">doSave</a>(string $entity_type, array $ids, string|null $action)
+                    <a href="#method_doSave">doSave</a>(string $entity_type, array $ids, string|null $action, string|null $state)
         
                                             <p><p>Actual save method.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -1506,9 +1506,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L34">at line 34</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time, <abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr> $currentUser)
         </code>
     </h3>
     <div class="details">    
@@ -1526,6 +1526,16 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
                 <td>$entityTypeManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr></td>
+                <td>$time</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr></td>
+                <td>$currentUser</td>
                 <td></td>
             </tr>
             </table>
@@ -2124,7 +2134,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L39">at line 39</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L47">at line 47</a></div>
         <code>                    void
     <strong>delete</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;limit&#039; =&gt; null])
         </code>
@@ -2176,7 +2186,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L86">at line 86</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L94">at line 94</a></div>
         <code>                    void
     <strong>doDelete</strong>(string $entity_type, array $ids)
         </code>
@@ -2240,9 +2250,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L106">at line 106</a></div>
         <code>                    void
-    <strong>loadSave</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false])
+    <strong>loadSave</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false, &#039;state&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">    
@@ -2292,9 +2302,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L158">at line 158</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L179">at line 179</a></div>
         <code>                    void
-    <strong>doSave</strong>(string $entity_type, array $ids, string|null $action)
+    <strong>doSave</strong>(string $entity_type, array $ids, string|null $action, string|null $state)
         </code>
     </h3>
     <div class="details">    
@@ -2321,6 +2331,11 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <tr>
                 <td>string|null</td>
                 <td>$action</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$state</td>
                 <td></td>
             </tr>
             </table>
@@ -2361,7 +2376,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQuery">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L182">at line 182</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/EntityCommands.php#L231">at line 231</a></div>
         <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
     <strong>getQuery</strong>(string $entity_type, string|null $ids, array $options)
         </code>
