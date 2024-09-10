@@ -5233,7 +5233,7 @@
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush entity:save node --bundle=article</code>. Re-save all article entities.</li>
-<li><code>drush entity:save shortcut --unpublish</code>. Re-save all shortcut entities, and unpublish them all.</li>
+<li><code>drush entity:save shortcut --unpublish --state=draft</code>. Unpublish and transition all shortcut entities.</li>
 <li><code>drush entity:save node 22,24</code>. Re-save nodes 22 and 24.</li>
 <li><code>cat /path/to/ids.csv | drush entity:save node -</code>. Re-save the nodes whose Ids are listed in ids.csv.</li>
 <li><code>drush entity:save node --exclude=9,14,81</code>. Re-save all nodes except node 9, 14 and 81.</li>
@@ -5250,8 +5250,9 @@
 <li><strong> --bundle=BUNDLE</strong>. Restrict to the specified bundle. Ignored when ids is specified.</li>
 <li><strong> --exclude=EXCLUDE</strong>. Exclude certain entities. Ignored when ids is specified.</li>
 <li><strong> --chunks[=CHUNKS]</strong>. Define how many entities will be loaded in the same step. [default: <em>50</em>]</li>
-<li><strong> --publish</strong>. Publish entities as they are saved.</li>
+<li><strong> --publish</strong>. Publish entities as they are saved. </li>
 <li><strong> --unpublish</strong>. Unpublish entities as they are saved.</li>
+<li><strong> --state=STATE</strong>. Transition entities to the specified Content Moderation state. Do not pass --publish or --unpublish since the transition state determines handles publishing.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
