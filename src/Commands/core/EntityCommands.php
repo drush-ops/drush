@@ -10,6 +10,7 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -185,7 +186,6 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
                 $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
                 $entity = $storage->createRevision($entity, true);
-                // $entity->setChangedTime($this->time->getRequestTime());
             }
             if ($state) {
                 // AutowireTrait does not support optional params so can't use DI.
@@ -193,6 +193,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 if (!$moderationInformation->isModeratedEntity($entity)) {
                     throw new \InvalidArgumentException(dt('!bundle !id does not support content moderation.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
                 }
+
                 // This line satisfies the bully that is phpstan.
                 assert($entity instanceof ContentEntityInterface);
                 $entity->set('moderation_state', $state);
@@ -214,6 +215,9 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 $entity->setRevisionLogMessage('Re-saved by Drush entity:save. ' . $message);
                 $entity->setRevisionCreationTime($this->time->getRequestTime());
                 $entity->setRevisionUserId($this->currentUser->id());
+            }
+            if (is_a($entity, EntityChangedInterface::class)) {
+                $entity->setChangedTime($this->time->getRequestTime());
             }
             $entity->save();
         }
