@@ -185,9 +185,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
                 $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
                 $entity = $storage->createRevision($entity, true);
-                $entity->setRevisionCreationTime($this->time->getRequestTime());
-                $entity->setChangedTime($this->time->getRequestTime());
-                $entity->setRevisionUserId($this->currentUser->id());
+                // $entity->setChangedTime($this->time->getRequestTime());
             }
             if ($state) {
                 // AutowireTrait does not support optional params so can't use DI.
@@ -214,6 +212,8 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
             }
             if (is_a($entity, RevisionLogInterface::class)) {
                 $entity->setRevisionLogMessage('Re-saved by Drush entity:save. ' . $message);
+                $entity->setRevisionCreationTime($this->time->getRequestTime());
+                $entity->setRevisionUserId($this->currentUser->id());
             }
             $entity->save();
         }
