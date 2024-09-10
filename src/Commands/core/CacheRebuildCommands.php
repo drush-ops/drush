@@ -22,7 +22,7 @@ final class CacheRebuildCommands extends DrushCommands
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,
-        private readonly ClassLoader $autoloader
+        private ClassLoader $autoloader
     ) {
         parent::__construct();
     }
