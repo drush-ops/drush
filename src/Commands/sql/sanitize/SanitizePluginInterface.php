@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\sql\sanitize;
 
 use Consolidation\AnnotatedCommand\CommandData;
-use Drush\Drupal\Commands\sql\Exit;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
