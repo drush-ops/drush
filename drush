@@ -1,4 +1,11 @@
-#!/usr/bin/env php
-<?php
+#!/usr/bin/env sh
 
-require __DIR__ . '/drush.php';
+# @see https://stackoverflow.com/questions/4774054
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+
+if [ "$DRUSH_ALLOW_XDEBUG" != 1 ]
+then
+  export XDEBUG_MODE=off
+fi
+
+php "${SCRIPTPATH}/drush.php" "$@"
