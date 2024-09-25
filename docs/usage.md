@@ -32,3 +32,12 @@ $ drush sql:sync --structure-tables-key=custom @live @self
 ```
 
 See [Site aliases](site-aliases.md) for more information.
+
+Xdebug
+------------
+
+Drush disables xdebug by default. This improves performance substantially. You may override this feature by setting an environment variable.
+
+```
+DRUSH_ALLOW_XDEBUG=1 drush [command]
+```
