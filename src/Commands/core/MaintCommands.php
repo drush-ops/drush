@@ -62,7 +62,7 @@ final class MaintCommands extends DrushCommands
      * exit code distinguishes from a failure to complete.
      */
     #[CLI\Command(name: self::STATUS, aliases: ['mstatus'])]
-    #[CLI\Usage(name: 'drush maint:status && drush cron', description: 'Only run cron when Drupal is not in maintenance mode.')]
+    #[CLI\Usage(name: 'drush maint:status &amp;&amp; drush cron', description: 'Only run cron when Drupal is not in maintenance mode.')]
     #[CLI\Version(version: '11.5')]
     public function status(): int
     {
