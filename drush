@@ -1,11 +1,16 @@
 #!/usr/bin/env sh
 
-# @see https://stackoverflow.com/questions/4774054
-SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+if [ -z "$COMPOSER_RUNTIME_BIN_DIR" ]; then
+  # @see https://stackoverflow.com/questions/4774054
+  SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+  DRUSH_PHP="$SCRIPTPATH/drush.php"
+else
+  DRUSH_PHP="$COMPOSER_RUNTIME_BIN_DIR/drush.php"
+fi
 
 if [ "$DRUSH_ALLOW_XDEBUG" != 1 ]
 then
   export XDEBUG_MODE=off
 fi
 
-php "${SCRIPTPATH}/drush.php" "$@"
+php "${DRUSH_PHP}" "$@"
