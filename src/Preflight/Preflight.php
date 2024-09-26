@@ -256,7 +256,7 @@ class Preflight
         $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG, false));
 
         // Give hint if a developer might be trying to debug Drush
-        if (extension_loaded('xdebug') || empty(ini_get('xdebug.mode'))) {
+        if (extension_loaded('xdebug')) {
             $this->logger()->log(strtr('If you are trying to perform step debugging of Drush, see !url', ['!url' => 'https://www.drush.org/latest/usage/#xdebug']));
         }
 

@@ -27,4 +27,4 @@ web_environment:
 #  - UNISH_DB_URL=pgsql://db:db@db:5432?module=pgsql
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
   - EDITOR=nano
-  - DRUSH_ALLOW_XDEBUG=0
+  - DRUSH_ALLOW_XDEBUG=1

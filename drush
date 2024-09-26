@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 if [ -z "$COMPOSER_RUNTIME_BIN_DIR" ]; then
+  # This branch is for the development of Drush itself.
   # @see https://stackoverflow.com/questions/4774054
   SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
   DRUSH_PHP="$SCRIPTPATH/drush.php"
