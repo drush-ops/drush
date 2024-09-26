@@ -36,8 +36,7 @@ See [Site aliases](site-aliases.md) for more information.
 Xdebug
 ------------
 
-Drush disables xdebug by default. This improves performance substantially. You may override this feature by setting an environment variable.
+Drush disables Xdebug by default. This improves performance substantially, because developers are often debugging something other than Drush and they still need to clear caches, import config, etc. There are two equivalent ways to override Drush's disabling of Xdebug:
 
-```
-DRUSH_ALLOW_XDEBUG=1 drush [command]
-```
+- Set an environment variable: `DRUSH_ALLOW_XDEBUG=1 drush [command]`
+- Call `vendor/bin/drush.php` instead of `vendor/bin/drush`.
