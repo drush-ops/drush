@@ -142,7 +142,7 @@ jobs:
               - equal: [ lowest, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:11.0.x-dev --no-update
+            - run: composer -n require --dev drupal/core-recommended:11.0.x-dev drupal/book:^1.0 drupal/forum:^1.0 drupal/statistics:^1.0 --no-update
             - run: composer -n update
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
