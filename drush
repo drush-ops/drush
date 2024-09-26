@@ -13,4 +13,4 @@ then
   export XDEBUG_MODE=off
 fi
 
-php "${DRUSH_PHP}" "$@"
+"$DRUSH_PHP" "$@"
