@@ -5,8 +5,6 @@ parameters:
         - phpstan-bootstrap.php
     paths:
         - src
-    drupal:
-        drupal_root: %currentWorkingDirectory%/sut
     universalObjectCratesClasses:
         # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
         - Drupal\Core\Extension\Extension
