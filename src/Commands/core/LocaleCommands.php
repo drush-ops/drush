@@ -485,6 +485,7 @@ final class LocaleCommands extends DrushCommands
         }
 
         $reader_item = $reader->readItem();
+        // @phpstan-ignore-next-line
         if (empty($reader_item)) {
             return false;
         }
