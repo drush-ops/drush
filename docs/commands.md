@@ -151,3 +151,11 @@ With this configuration in place, global commands may be placed as described in 
         1. The directory above `Commands` must be one of:
             1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
             1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
+
+Xdebug
+------------
+
+Drush disables Xdebug by default. This improves performance substantially, because developers are often debugging something other than Drush and they still need to clear caches, import config, etc. There are two equivalent ways to override Drush's disabling of Xdebug:
+
+- Pass the `--xdebug` global option.
+- Set an environment variable: `DRUSH_ALLOW_XDEBUG=1 drush [command]`
