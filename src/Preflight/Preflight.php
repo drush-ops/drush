@@ -257,7 +257,7 @@ class Preflight
 
         // Give hint if a developer might be trying to debug Drush.
         if (extension_loaded('xdebug')) {
-            $this->logger()->log(strtr('If you are trying to perform step debugging of Drush, see !url', ['!url' => 'https://www.drush.org/latest/usage/#xdebug']));
+            $this->logger()->log(strtr('Drush disables Xdebug by default. To override this, see !url', ['!url' => 'https://www.drush.org/latest/commands/#xdebug']));
         }
 
         // Do legacy initialization (load static includes, define old constants, etc.)
