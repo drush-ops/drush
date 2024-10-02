@@ -255,6 +255,11 @@ class Preflight
         // Now that we know the value, set debug flag.
         $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG, false));
 
+        // Give hint if a developer might be trying to debug Drush.
+        if (extension_loaded('xdebug')) {
+            $this->logger()->log(strtr('Drush disables Xdebug by default. To override this, see !url', ['!url' => 'https://www.drush.org/latest/commands/#xdebug']));
+        }
+
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();
 
