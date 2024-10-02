@@ -718,6 +718,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#xdebug" class="md-nav__link">
+    Xdebug
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -5381,13 +5388,19 @@ With this configuration in place, global commands may be placed as described in 
 </li>
 </ol>
 </div>
+<h2 id="xdebug">Xdebug<a class="headerlink" href="#xdebug" title="Permanent link">&para;</a></h2>
+<p>Drush disables Xdebug by default. This improves performance substantially, because developers are often debugging something other than Drush and they still need to clear caches, import config, etc. There are two equivalent ways to override Drush's disabling of Xdebug:</p>
+<ul>
+<li>Pass the <code>--xdebug</code> global option.</li>
+<li>Set an environment variable: <code>DRUSH_ALLOW_XDEBUG=1 drush [command]</code></li>
+</ul>
 
   <hr>
 <div class="md-source-file">
   <small>
     
       Last update:
-      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">August 2, 2024</span>
+      <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">October 2, 2024</span>
       
     
   </small>
@@ -5402,7 +5415,7 @@ With this configuration in place, global commands may be placed as described in 
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:gabor@hojtsy.hu'>Gábor Hojtsy</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:clau.cristea@gmail.com'>Claudiu Cristea</a>, <a href='mailto:florian@webflo.org'>Florian Weber</a>, <a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:gabor@hojtsy.hu'>Gábor Hojtsy</a>, <a href='mailto:neclimdul@gmail.com'>James Gilliland</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:1451472+ptmkenny@users.noreply.github.com'>ptmkenny</a></span>
             </small>
         </div>
     

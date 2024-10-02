@@ -5222,7 +5222,7 @@
 to use shell autocompletion (currently, bash, fish, zsh completion are supported).</p>
 <h2 id="static-installation"><comment>Static installation<a class="headerlink" href="#static-installation" title="Permanent link">&para;</a></h2>
 <p>Dump the script to a global completion file and restart your shell:</p>
-<div class="highlight"><pre><span></span><code>*%command.full_name%  | sudo tee /etc/bash_completion.d/drush
+<div class="highlight"><pre><span></span><code>*%command.full_name%  | sudo tee /etc/bash_completion.d/drush.php
 </code></pre></div>
 <p>Or dump the script to a local file and source it:</p>
 <div class="highlight"><pre><span></span><code>*%command.full_name%  &gt; completion.sh
@@ -5235,7 +5235,7 @@ to use shell autocompletion (currently, bash, fish, zsh completion are supported
 </code></pre></div>
 <h2 id="dynamic-installation"><comment>Dynamic installation<a class="headerlink" href="#dynamic-installation" title="Permanent link">&para;</a></h2>
 <p>Add this to the end of your shell configuration file (e.g. *"~/.bashrc"):</p>
-<div class="highlight"><pre><span></span><code>*eval &quot;$(/home/runner/work/drush/drush/drush completion )&quot;
+<div class="highlight"><pre><span></span><code>*eval &quot;$(/home/runner/work/drush/drush/drush.php completion )&quot;
 </code></pre></div>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
