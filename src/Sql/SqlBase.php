@@ -119,23 +119,30 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
-        // Handle custom database drivers.
-        if (!in_array($driver, ['mysql', 'pgsql', 'sqlite'])) {
-            $driver_class = $db_spec['namespace'] . '\\Connection';
-            $connection = (new \ReflectionClass($driver_class))->newInstanceWithoutConstructor();
-            // This will only work if the method is basically static, as most
-            // will be...but we can't truly instantiate the Connection class
-            // here without also calling with a "real" PDO connection.
-            $driver = $connection->databaseType();
-        }
+        // Drush ships drivers for core database types, and modules/libraries
+        // may define additional Drush DB drivers in this namespace.
         $class_name = !empty($driver) ? 'Drush\Sql\Sql' . ucfirst($driver) : null;
-        if ($class_name && class_exists($class_name)) {
+        try {
+            if (!$class_name || !class_exists($class_name)) {
+                // Handle custom database drivers which extend a defined driver.
+                $driver_class = $db_spec['namespace'] . '\\Connection';
+                $connection = (new \ReflectionClass($driver_class))->newInstanceWithoutConstructor();
+                // This will only work if the method is basically static, as most
+                // will be...but we can't truly instantiate the Connection class
+                // here without also calling with a "real" PDO connection.
+                $class_name = 'Drush\Sql\Sql' . ucfirst($connection->databaseType());
+            }
+            if (!$class_name) {
+                throw new \InvalidArgumentException();
+            }
             $instance = method_exists($class_name, 'make') ? $class_name::make($db_spec, $options) : new $class_name($db_spec, $options);
-            // Inject config
-            $instance->setConfig(Drush::config());
-            return $instance;
         }
-        return null;
+        catch (\Throwable) {
+            return null;
+        }
+        // Inject config
+        $instance->setConfig(Drush::config());
+        return $instance;
     }
 
     /*
