@@ -114,7 +114,7 @@ class Project {
    * @see \Drupal\update\UpdateFetcher::buildFetchUrl()
    */
   public static function buildFetchUrl(array $request) {
-    $status_url = isset($request['status url']) ? $request['status url'] : ReleaseInfo::DEFAULT_URL;
+    $status_url = isset($request['status url']) ? $request['status url'] : drush_get_option('source', ReleaseInfo::DEFAULT_URL);
     $drupal_version = $request['drupal_version'];
     if (drush_drupal_major_version() >= 8) {
       $drupal_version = 'current';

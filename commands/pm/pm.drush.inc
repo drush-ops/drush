@@ -361,6 +361,8 @@ function pm_drush_command() {
       'projects' => 'Optional. A list of installed projects to update.',
     ),
     'options' => array(
+      // source is passed along to pm-updatestatus command.
+      'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
       'check-updatedb' => 'Check to see if an updatedb is needed after updating the code. Default is on; use --check-updatedb=0 to disable.',
