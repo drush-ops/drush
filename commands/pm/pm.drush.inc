@@ -336,6 +336,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       'pipe' => 'Return a list of the projects with any extensions enabled that need updating, one project per line.',
+      'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'engines' => array(
