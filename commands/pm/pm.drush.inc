@@ -336,6 +336,7 @@ function pm_drush_command() {
     ),
     'options' => array(
       'pipe' => 'Return a list of the projects with any extensions enabled that need updating, one project per line.',
+      'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
     ) + $update_options,
     'sub-options' => $update_suboptions,
     'engines' => array(
@@ -361,6 +362,8 @@ function pm_drush_command() {
       'projects' => 'Optional. A list of installed projects to update.',
     ),
     'options' => array(
+      // source is passed along to pm-updatestatus command.
+      'source' => 'The base URL which provides project release history in XML. Defaults to http://updates.drupal.org/release-history.',
       'notes' => 'Show release notes for each project to be updated.',
       'no-core' => 'Only update modules and skip the core update.',
       'check-updatedb' => 'Check to see if an updatedb is needed after updating the code. Default is on; use --check-updatedb=0 to disable.',
