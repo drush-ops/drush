@@ -126,14 +126,14 @@ abstract class SqlBase implements ConfigAwareInterface
             if (!$class_name || !class_exists($class_name)) {
                 // Handle custom database drivers which extend a defined driver.
                 $driver_class = $db_spec['namespace'] . '\\Connection';
+                if (!class_exists($driver_class)) {
+                    throw new \InvalidArgumentException();
+                }
                 $connection = (new \ReflectionClass($driver_class))->newInstanceWithoutConstructor();
                 // This will only work if the method is basically static, as most
                 // will be...but we can't truly instantiate the Connection class
                 // here without also calling with a "real" PDO connection.
                 $class_name = 'Drush\Sql\Sql' . ucfirst($connection->databaseType());
-            }
-            if (!$class_name) {
-                throw new \InvalidArgumentException();
             }
             $instance = method_exists($class_name, 'make') ? $class_name::make($db_spec, $options) : new $class_name($db_spec, $options);
         } catch (\Throwable) {
