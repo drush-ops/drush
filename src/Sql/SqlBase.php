@@ -136,8 +136,7 @@ abstract class SqlBase implements ConfigAwareInterface
                 throw new \InvalidArgumentException();
             }
             $instance = method_exists($class_name, 'make') ? $class_name::make($db_spec, $options) : new $class_name($db_spec, $options);
-        }
-        catch (\Throwable) {
+        } catch (\Throwable) {
             return null;
         }
         // Inject config
