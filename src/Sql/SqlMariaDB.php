@@ -10,6 +10,14 @@ class SqlMariaDB extends SqlMysql
 {
     use ExecTrait;
 
+    public function command(): string
+    {
+        if (self::programExists('mariadb')) {
+            return 'mariadb';
+        }
+        return parent::command();
+    }
+
     public function dumpProgram(): string
     {
         if (self::programExists('mariadb-dump')) {
