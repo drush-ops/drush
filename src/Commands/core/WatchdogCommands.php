@@ -373,7 +373,9 @@ final class WatchdogCommands extends DrushCommands
         if (is_string($variables)) {
             $variables = unserialize($variables);
         }
+        $has_hidden_backtrace = false;
         if (is_array($variables)) {
+            $has_hidden_backtrace = !empty($variables['@backtrace_string']) && !str_contains($result->message, '@backtrace_string');
             $result->message = strtr($result->message, $variables);
         }
         unset($result->variables);
@@ -389,6 +391,10 @@ final class WatchdogCommands extends DrushCommands
                 unset($result->referer);
             }
             $message_length = PHP_INT_MAX;
+
+            if ($has_hidden_backtrace) {
+                $result->backtrace = $variables['@backtrace_string'];
+            }
         }
         $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length);
 
