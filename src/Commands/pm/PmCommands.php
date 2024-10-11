@@ -105,9 +105,9 @@ final class PmCommands extends DrushCommands
             }, $links);
 
             if ($links === []) {
-                $this->logger()->success(dt('Module %name has been enabled.', ['%name' => $moduleName]));
+                $this->logger()->success(dt('Module %name has been installed.', ['%name' => $moduleName]));
             } else {
-                $this->logger()->success(dt('Module %name has been enabled. (%links)', ['%name' => $moduleName, '%links' => implode(' - ', $links)]));
+                $this->logger()->success(dt('Module %name has been installed. (%links)', ['%name' => $moduleName, '%links' => implode(' - ', $links)]));
             }
         }
     }
@@ -399,7 +399,7 @@ final class PmCommands extends DrushCommands
             $links[] = Link::fromTextAndUrl(dt('Help'), Url::fromRoute('help.page', ['name' => $module->getName()]));
         }
 
-        // Generate link for module's permission, if the user has access to it.
+        // Generate link for module's permissions page.
         if ($module->status && \Drupal::service('user.permissions')->moduleProvidesPermissions($module->getName())) {
             $links[] = Link::fromTextAndUrl(dt('Permissions'), Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
         }
