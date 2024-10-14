@@ -11,6 +11,7 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Config\ConfigAwareTrait;
+use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\ServiceManager;
 use Drush\Runtime\TildeExpansionHook;
@@ -309,6 +310,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
 
+        $this->addListeners($commandfileSearchpath);
+
         // Directly add the yaml-cli commands.
         $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
@@ -327,6 +330,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Note that Robo::register can accept either Annotated Command
         // command handlers or Symfony Console Command objects.
         Robo::register($this, $commandInstances);
+
+        // Dispatch our custom event. It also fires later in \Drush\Boot\DrupalBoot8::bootstrapDrupalFull.
+        Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent($this), ConsoleDefinitionsEvent::class);
     }
 
     /**
@@ -337,5 +343,13 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderThrowable($e, $output);
+    }
+
+    // Discover event listeners, and add those that do not require bootstrap.
+    protected function addListeners($commandfileSearchpath): void
+    {
+        $listenerClasses = $this->serviceManager->discoverListeners($commandfileSearchpath, '\Drush');
+        $listenerClasses = $this->serviceManager->filterListeners($listenerClasses);
+        $this->serviceManager->addListeners($listenerClasses, Drush::getContainer());
     }
 }
