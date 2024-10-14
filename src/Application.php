@@ -352,4 +352,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $listenerClasses = $this->serviceManager->filterListeners($listenerClasses);
         $this->serviceManager->addListeners($listenerClasses, Drush::getContainer());
     }
+
+    // Remove a command. Initially used by WootDefinitionListener and its test.
+    public function remove(string $id): void
+    {
+        $rf = new \ReflectionProperty(\Symfony\Component\Console\Application::class, 'commands');
+        $rf->setAccessible(true);
+        $commands = $rf->getValue($this);
+        unset($commands[$id]);
+        $rf->setValue($this, $commands);
+    }
 }
