@@ -6,11 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\DrupalKernelInterface;
-use Drupal\Core\Extension\ModuleExtensionList;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
-use Drupal\Core\State\StateInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
@@ -44,10 +40,6 @@ final class TwigUnusedCommand extends Command
         protected readonly FormatterManager $formatterManager,
         protected readonly BootstrapManager $bootstrapManager,
         protected readonly TwigEnvironment $twig,
-        protected readonly ModuleHandlerInterface $moduleHandler,
-        private readonly ModuleExtensionList $extensionList,
-        private readonly StateInterface $state,
-        private readonly DrupalKernelInterface $kernel,
         private readonly LoggerInterface $logger
     ) {
         parent::__construct();

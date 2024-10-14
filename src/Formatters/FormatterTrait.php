@@ -13,7 +13,13 @@ trait FormatterTrait
     {
         $formatterOptions = new FormatterOptions($this->getConfigurationData(), []);
         $reflection = new \ReflectionMethod($this, 'doExecute');
-        $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $reflection->getReturnType()->getName());
+        $returnType = $reflection->getReturnType();
+        if ($returnType instanceof \ReflectionNamedType) {
+            $dataType = $returnType->getName();
+        } else {
+            throw new \Exception($reflection->getDeclaringClass() . '::doExecute method must specify a return type.');
+        }
+        $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $dataType);
         foreach ($inputOptions as $inputOption) {
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
             $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
@@ -26,7 +32,7 @@ trait FormatterTrait
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $configurationData = $this->getConfigurationData($this);
+        $configurationData = $this->getConfigurationData();
         $formatterOptions = new FormatterOptions($configurationData, $input->getOptions());
         $formatterOptions->setInput($input);
         $data = $this->doExecute($input, $output);

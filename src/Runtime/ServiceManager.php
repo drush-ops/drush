@@ -432,7 +432,12 @@ class ServiceManager
                 $priority = $attributeInstance->priority ?? 0;
                 $reflectionMethod = $reflectionObject->getMethod($method);
                 $reflectionParameters = $reflectionMethod->getParameters();
-                $eventName = $reflectionParameters[0]->getType()->getName();
+                $paramType = $reflectionParameters[0]->getType();
+                if ($paramType instanceof \ReflectionNamedType) {
+                    $eventName = $paramType->getName();
+                } else {
+                    throw new \Exception('Event listener method must have a single parameter with a type hint.');
+                }
                 if ($eventName == ConsoleCommandEvent::class) {
                     $eventName = ConsoleEvents::COMMAND;
                 }
