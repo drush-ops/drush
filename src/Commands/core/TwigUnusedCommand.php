@@ -29,6 +29,7 @@ use Symfony\Component\Finder\Finder;
 )]
 #[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
 #[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
+#[CLI\FilterDefaultField(field: 'template')]
 final class TwigUnusedCommand extends Command
 {
     use AutowireTrait;
