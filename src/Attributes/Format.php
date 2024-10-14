@@ -7,10 +7,11 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 use JetBrains\PhpStorm\ExpectedValues;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Format
+class Format implements FormatterConfigurationItemProviderInterface
 {
     /**
      * @param ?string $listDelimiter
@@ -30,5 +31,14 @@ class Format
         $instance = $attribute->newInstance();
         $commandInfo->addAnnotation(FormatterOptions::LIST_DELIMITER, $instance->listDelimiter);
         $commandInfo->addAnnotation(FormatterOptions::TABLE_STYLE, $instance->tableStyle);
+    }
+
+    public function getConfigurationItem(\ReflectionAttribute $attribute): array
+    {
+        $instance = $attribute->newInstance();
+        return [
+            FormatterOptions::LIST_DELIMITER => $instance->listDelimiter,
+            FormatterOptions::TABLE_STYLE => $instance->tableStyle
+        ];
     }
 }

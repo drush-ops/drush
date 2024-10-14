@@ -3,6 +3,7 @@
 namespace Drush\Attributes;
 
 use Attribute;
+use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
@@ -23,5 +24,11 @@ class FilterDefaultField implements FormatterConfigurationItemProviderInterface
     {
         $args = $attribute->getArguments();
         return [self::KEY => $args['field']];
+    }
+
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    {
+        $args = $attribute->getArguments();
+        $commandInfo->addAnnotation('filter-default-field', $args['field']);
     }
 }
