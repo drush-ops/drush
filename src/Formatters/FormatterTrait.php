@@ -3,8 +3,10 @@
 namespace Drush\Formatters;
 
 use Consolidation\OutputFormatters\Options\FormatterOptions;
+use Drush\Attributes\FilterDefaultField;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 trait FormatterTrait
@@ -24,6 +26,13 @@ trait FormatterTrait
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
             $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
             $this->addOption($inputOption->getName(), $inputOption->getShortcut(), $mode, $inputOption->getDescription(), $inputOption->getDefault(), $suggestedValues);
+        }
+
+        $reflection = new \ReflectionObject($this);
+        $attributes = $reflection->getAttributes(FilterDefaultField::class);
+        if (!empty($attributes)) {
+            $instance = $attributes[0]->newInstance();
+            $this->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter output based on provided expression. Default field: ' . $instance->field);
         }
     }
 
