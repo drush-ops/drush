@@ -299,7 +299,7 @@ class ServiceManager
             ->ignoreNamespacePart('contrib', 'Listeners')
             ->ignoreNamespacePart('custom', 'Listeners')
             ->ignoreNamespacePart('src')
-            ->setSearchLocations(['EventListener'])
+            ->setSearchLocations(['Listeners'])
             ->setSearchPattern('#.*(Listener)s?.php$#');
         $baseNamespace = ltrim($baseNamespace, '\\');
         $listenerClasses = $discovery->discover($directoryList, $baseNamespace);

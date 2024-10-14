@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\EventListener;
+namespace Drush\Listeners;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes\ValidateModulesEnabled;
@@ -23,7 +23,7 @@ class ValidateModulesEnabledListener
     }
 
     /**
-     *  This subscriber affects commands which put #[ValidateModulesEnabled] on the class.
+     *  This subscriber affects commands which put #[ValidateModulesEnabled] on the *class*.
      *  Method usages are enforced by Annotated Command still.
      */
     public function __invoke(ConsoleCommandEvent $event): void

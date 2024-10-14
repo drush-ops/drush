@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drupal\woot\Drush\EventListener;
+namespace Drupal\woot\Drush\Listeners;
 
 use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;

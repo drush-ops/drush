@@ -25,5 +25,4 @@ class DefaultFields implements FormatterConfigurationItemProviderInterface
         $args = $attribute->getArguments();
         return [self::KEY => $args['fields']];
     }
-
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\pm\PmCommands;
-use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -27,7 +26,7 @@ class CommandInfoAlterTest extends CommandUnishTestCase
         $this->assertStringContainsString('woot-new-alias', $this->getOutput());
 
         // Check the debug messages.
-        $this->assertStringContainsString('[debug] Commands are potentially altered in Drupal\woot\Drush\CommandInfoAlterers\WootCommandInfoAlterer.', $this->getErrorOutput());
+        $this->assertStringContainsString('[debug] Commands are potentially altered in Drupal\woot\Drush\Listeners.', $this->getErrorOutput());
         $this->assertStringContainsString("[debug] Module 'woot' changed the alias of 'woot:altered' command into 'woot-new-alias' in Drupal\woot\Drush\CommandInfoAlterers\WootCommandInfoAlterer::alterCommandInfo().", $this->getErrorOutput());
 
         // Try to run the command with the initial alias.

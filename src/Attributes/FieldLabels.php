@@ -8,7 +8,6 @@ use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class FieldLabels implements FormatterConfigurationItemProviderInterface
 {
-
     const KEY = 'field-labels';
 
     /**

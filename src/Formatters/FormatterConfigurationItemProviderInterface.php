@@ -2,10 +2,9 @@
 
 namespace Drush\Formatters;
 
-interface FormatterConfigurationItemProviderInterface {
-
+interface FormatterConfigurationItemProviderInterface
+{
     const KEY = '';
 
     public function getConfigurationItem(\ReflectionAttribute $attribute): array;
-
 }
