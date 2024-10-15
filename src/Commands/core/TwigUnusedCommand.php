@@ -35,7 +35,7 @@ final class TwigUnusedCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    const UNUSED = 'twig:unused';
+    public const UNUSED = 'twig:unused';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
@@ -68,7 +68,7 @@ final class TwigUnusedCommand extends Command
             ->name('*.html.twig')
             ->exclude('tests')
             ->in(StringUtils::csvToArray($searchpaths));
-        $this->logger->notice(dt('Found !count templates', ['!count' => count($files)]));
+        $this->logger->notice('Found {count} templates', ['count' => count($files)]);
 
         // Check to see if a compiled equivalent exists in PHPStorage
         foreach ($files as $file) {
@@ -87,7 +87,7 @@ final class TwigUnusedCommand extends Command
                 throw new \Exception('There was a problem, please ensure your twig cache is enabled.');
             }
         }
-        $this->logger->notice(dt('Found !count unused', ['!count' => count($unused)]));
+        $this->logger->notice('Found {count} unused', ['count' => count($unused)]);
         return new RowsOfFields($unused);
     }
 }

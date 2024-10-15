@@ -28,7 +28,7 @@ final class ImageFlushCommand extends Command
 {
     use AutowireTrait;
 
-    const FLUSH = 'image:flush';
+    public const FLUSH = 'image:flush';
 
     public function __construct(
         private readonly LoggerInterface $logger,
@@ -73,7 +73,7 @@ final class ImageFlushCommand extends Command
 
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($input->getArgument('style_names'))) as $style_name => $style) {
             $style->flush();
-            $this->logger->success(dt('Image style !style_name flushed', ['!style_name' => $style_name]));
+            $this->logger->success('Image style {style_name} flushed', ['style_name' => $style_name]);
         }
         return Command::SUCCESS;
     }
