@@ -73,7 +73,7 @@ final class ImageFlushCommand extends Command
 
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($input->getArgument('style_names'))) as $style_name => $style) {
             $style->flush();
-            $this->logger->success('Image style {style_name} flushed', ['style_name' => $style_name]);
+            $this->io->success("Image style $style_name flushed");
         }
         return Command::SUCCESS;
     }
