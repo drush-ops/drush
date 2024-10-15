@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Drupal\image\Entity\ImageStyle;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -16,6 +15,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\StyleInterface;
 
 #[AsCommand(
     name: self::FLUSH,
@@ -31,7 +31,8 @@ final class ImageFlushCommand extends Command
     const FLUSH = 'image:flush';
 
     public function __construct(
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly StyleInterface $io
     ) {
         parent::__construct();
     }
@@ -48,17 +49,14 @@ final class ImageFlushCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        // @todo Inject this or use a trait?
-        $io = new DrushStyle($input, $output);
-
         $styles = array_keys(ImageStyle::loadMultiple());
         $style_names = $input->getArgument('style_names');
 
-        if (empty($style_names)) {
+        if (empty($style_names) && !$input->getOption('all')) {
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
-            $style_names = $io->select(dt("Choose a style to flush"), $choices, 'all', scroll: 20);
+            $style_names = $this->io->select(dt("Choose a style to flush"), $choices, 'all', scroll: 20);
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }

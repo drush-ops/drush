@@ -24,6 +24,7 @@ use Drush\Formatters\DrushFormatterManager;
 use Drush\Formatters\EntityToArraySimplifier;
 use Drush\Log\Logger;
 use Drush\SiteAlias\ProcessManager;
+use Drush\Style\DrushStyle;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
 use League\Container\ContainerInterface;
@@ -31,6 +32,7 @@ use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\StyleInterface;
 
 /**
  * Prepare our Dependency Injection Container
@@ -65,7 +67,7 @@ class DependencyInjection
         $container = new Container();
 
         // With league/container 3.x, first call wins, so add Drush services first.
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output, $input);
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         Robo::configureContainer($container, $application, $config, $input, $output);
@@ -95,13 +97,19 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 3.x
-    protected function addDrushServices(Container $container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
+    protected function addDrushServices(Container $container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output, InputInterface $input): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
         Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')
             ->addMethodCall('setLogOutputStyler', ['logStyler'])
             ->addMethodCall('add', ['drush', new Logger($output)]);
         Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
+
+        Robo::addShared($container, 'io', DrushStyle::class)
+            ->addArguments([$input, $output]);
+        // @todo SymfonyStyle is already registered at https://github.com/drush-ops/drush/blob/2f63ffcef88c57d2d4aef9c8e351beb304254beb/src/Runtime/DependencyInjection.php#L173
+        // so we expect a different type hint for autowire.
+        Robo::addShared($container, StyleInterface::class, 'io');  // For autowiring
 
         Robo::addShared($container, self::LOADER, $loader);
         Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
