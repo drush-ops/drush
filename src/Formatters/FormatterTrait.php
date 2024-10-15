@@ -2,6 +2,8 @@
 
 namespace Drush\Formatters;
 
+use Consolidation\Filter\FilterOutputData;
+use Consolidation\Filter\LogicalOpFactory;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes\FilterDefaultField;
 use Symfony\Component\Console\Command\Command;
@@ -28,6 +30,7 @@ trait FormatterTrait
             $this->addOption($inputOption->getName(), $inputOption->getShortcut(), $mode, $inputOption->getDescription(), $inputOption->getDefault(), $suggestedValues);
         }
 
+        // Add the --filter option if the command has a FilterDefaultField attribute.
         $reflection = new \ReflectionObject($this);
         $attributes = $reflection->getAttributes(FilterDefaultField::class);
         if (!empty($attributes)) {
@@ -45,8 +48,38 @@ trait FormatterTrait
         $formatterOptions = new FormatterOptions($configurationData, $input->getOptions());
         $formatterOptions->setInput($input);
         $data = $this->doExecute($input, $output);
+        $data = $this->alterResult($data, $input);
         $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
         return Command::SUCCESS;
+    }
+
+    protected function alterResult($result, InputInterface $input): mixed
+    {
+        $reflection = new \ReflectionObject($this);
+        $expression = $input->getOption('filter');
+        if (empty($expression)) {
+            return $result;
+        }
+        $attributes = $reflection->getAttributes(FilterDefaultField::class);
+        $instance = $attributes[0]->newInstance();
+        $factory = LogicalOpFactory::get();
+        $op = $factory->evaluate($expression, $instance->field);
+        $filter = new FilterOutputData();
+        return $this->wrapFilteredResult($filter->filter($result, $op), $result);
+    }
+
+    /**
+     * If the source data was wrapped in a marker class such
+     * as RowsOfFields, then re-apply the wrapper.
+     */
+    protected function wrapFilteredResult($data, $source)
+    {
+        if (!$source instanceof \ArrayObject) {
+            return $data;
+        }
+        $sourceClass = get_class($source);
+
+        return new $sourceClass($data);
     }
 
     protected function getPrivatePropValue(mixed $object, $name): mixed
