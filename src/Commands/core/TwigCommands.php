@@ -13,6 +13,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
@@ -22,6 +23,8 @@ final class TwigCommands extends DrushCommands
 
     const COMPILE = 'twig:compile';
     const DEBUG = 'twig:debug';
+    #[Deprecated('Use TwigUnusedCommand::UNUSED instead.')]
+    const UNUSED = 'twig:unused';
 
     public function __construct(
         protected TwigEnvironment $twig,

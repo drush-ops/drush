@@ -8,10 +8,13 @@ use Drupal\image\Entity\ImageStyle;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
+use JetBrains\PhpStorm\Deprecated;
 
 final class ImageCommands extends DrushCommands
 {
     const DERIVE = 'image:derive';
+    #[Deprecated('Use ImageFlushCommand::FLUSH instead.')]
+    const FLUSH = ImageFlushCommand::FLUSH;
 
     /**
      * Create an image derivative.

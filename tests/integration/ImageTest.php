@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\ImageCommands;
+use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\pm\PmCommands;
 
 /**
@@ -35,7 +36,7 @@ class ImageTest extends UnishIntegrationTestCase
         $this->assertFileExists($thumbnail);
 
         // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
-        $this->drush(ImageCommands::FLUSH, [$style_name], ['all' => null]);
+        $this->drush(ImageFlushCommand::FLUSH, [$style_name], ['all' => null]);
         $this->assertFileDoesNotExist($thumbnail);
 
         // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
@@ -44,7 +45,7 @@ class ImageTest extends UnishIntegrationTestCase
         $this->assertFileExists($thumbnail);
         $this->drush(ImageCommands::DERIVE, ['medium', $logo]);
         $this->assertFileExists($medium);
-        $this->drush(ImageCommands::FLUSH, [], ['all' => null]);
+        $this->drush(ImageFlushCommand::FLUSH, [], ['all' => null]);
         $this->assertFileDoesNotExist($thumbnail);
         $this->assertFileDoesNotExist($medium);
     }
