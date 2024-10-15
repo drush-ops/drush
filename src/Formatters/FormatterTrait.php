@@ -48,18 +48,17 @@ trait FormatterTrait
         $formatterOptions = new FormatterOptions($configurationData, $input->getOptions());
         $formatterOptions->setInput($input);
         $data = $this->doExecute($input, $output);
-        $data = $this->alterResult($data, $input);
+        if ($input->hasOption('filter')) {
+            $data = $this->alterResult($data, $input);
+        }
         $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
         return Command::SUCCESS;
     }
 
     protected function alterResult($result, InputInterface $input): mixed
     {
-        $reflection = new \ReflectionObject($this);
         $expression = $input->getOption('filter');
-        if (empty($expression)) {
-            return $result;
-        }
+        $reflection = new \ReflectionObject($this);
         $attributes = $reflection->getAttributes(FilterDefaultField::class);
         $instance = $attributes[0]->newInstance();
         $factory = LogicalOpFactory::get();

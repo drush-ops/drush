@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: self::FLUSH,
+    name: self::NAME,
     description: 'Flush all derived images for a given style.',
     aliases: ['if', 'image-flush']
 )]
@@ -27,7 +27,7 @@ final class ImageFlushCommand extends Command
 {
     use AutowireTrait;
 
-    public const FLUSH = 'image:flush';
+    public const NAME = 'image:flush';
 
     public function __construct(
         private readonly SymfonyStyle $io

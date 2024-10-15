@@ -23,7 +23,7 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 
 #[AsCommand(
-    name: self::UNUSED,
+    name: self::NAME,
     description: 'Find potentially unused Twig templates.',
     aliases: ['twu']
 )]
@@ -35,7 +35,7 @@ final class TwigUnusedCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const UNUSED = 'twig:unused';
+    public const NAME = 'twig:unused';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
