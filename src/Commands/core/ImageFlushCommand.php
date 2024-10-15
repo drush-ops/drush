@@ -8,14 +8,13 @@ use Drupal\image\Entity\ImageStyle;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\StyleInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::FLUSH,
@@ -31,8 +30,7 @@ final class ImageFlushCommand extends Command
     public const FLUSH = 'image:flush';
 
     public function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly StyleInterface $io
+        private readonly SymfonyStyle $io
     ) {
         parent::__construct();
     }

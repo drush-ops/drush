@@ -32,7 +32,7 @@ use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\StyleInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Prepare our Dependency Injection Container
@@ -77,7 +77,7 @@ class DependencyInjection
         Drush::setContainer($container);
 
         // Change service definitions as needed for our application.
-        $this->alterServicesForDrush($container, $application);
+        $this->alterServicesForDrush($container, $application, $input, $output);
 
         // Inject needed services into our application object.
         $this->injectApplicationServices($container, $application);
@@ -104,12 +104,6 @@ class DependencyInjection
             ->addMethodCall('setLogOutputStyler', ['logStyler'])
             ->addMethodCall('add', ['drush', new Logger($output)]);
         Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
-
-        Robo::addShared($container, 'io', DrushStyle::class)
-            ->addArguments([$input, $output]);
-        // @todo SymfonyStyle is already registered at https://github.com/drush-ops/drush/blob/2f63ffcef88c57d2d4aef9c8e351beb304254beb/src/Runtime/DependencyInjection.php#L173
-        // so we expect a different type hint for autowire.
-        Robo::addShared($container, StyleInterface::class, 'io');  // For autowiring
 
         Robo::addShared($container, self::LOADER, $loader);
         Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
@@ -169,10 +163,15 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
-    protected function alterServicesForDrush($container, Application $application): void
+    protected function alterServicesForDrush($container, Application $application, InputInterface $input, OutputInterface $output): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
+        Robo::addShared($container, 'io', DrushStyle::class)
+            ->addArguments([$input, $output]);
+        // @todo Does this alias interfere with the paramInjector above? Could we drop that feature?
+        Robo::addShared($container, SymfonyStyle::class, 'io');  // For autowiring
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
