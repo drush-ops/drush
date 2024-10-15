@@ -15,7 +15,6 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 class OptionsetTableSelectionListener
 {
-
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
@@ -32,6 +31,4 @@ class OptionsetTableSelectionListener
             $command->addOption('tables-list', '', InputOption::VALUE_REQUIRED, 'A comma-separated list of tables to transfer.', []);
         }
     }
-
-
 }

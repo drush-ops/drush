@@ -14,7 +14,6 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 class OptionsetSqlListener
 {
-
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
@@ -29,6 +28,4 @@ class OptionsetSqlListener
             $command->addOption('show-passwords', '', InputOption::VALUE_NONE, 'Show password on the CLI. Useful for debugging.');
         }
     }
-
-
 }
