@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\FormatterManager;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\Template\TwigEnvironment;
@@ -89,5 +90,12 @@ final class TwigUnusedCommand extends Command
         }
         $this->logger->notice('Found {count} unused', ['count' => count($unused)]);
         return new RowsOfFields($unused);
+    }
+
+
+    protected function getFormatterOptions(): FormatterOptions
+    {
+        // @todo WIP
+        return new FormatterOptions($this->getConfigurationData());
     }
 }

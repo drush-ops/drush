@@ -14,7 +14,6 @@ trait FormatterTrait
 {
     public function addFormatterOptions()
     {
-        $formatterOptions = new FormatterOptions($this->getConfigurationData(), []);
         $reflection = new \ReflectionMethod($this, 'doExecute');
         $returnType = $reflection->getReturnType();
         if ($returnType instanceof \ReflectionNamedType) {
@@ -22,7 +21,7 @@ trait FormatterTrait
         } else {
             throw new \Exception($reflection->getDeclaringClass() . '::doExecute method must specify a return type.');
         }
-        $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $dataType);
+        $inputOptions = $this->formatterManager->automaticOptions($this->getFormatterOptions(), $dataType);
         foreach ($inputOptions as $inputOption) {
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
             $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
@@ -43,8 +42,7 @@ trait FormatterTrait
      */
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $configurationData = $this->getConfigurationData();
-        $formatterOptions = new FormatterOptions($configurationData, $input->getOptions());
+        $formatterOptions = $this->getFormatterOptions();
         $formatterOptions->setInput($input);
         $data = $this->doExecute($input, $output);
         if ($input->hasOption('filter')) {
@@ -109,4 +107,9 @@ trait FormatterTrait
      * to help the formatter know what to expect.
      */
     abstract protected function doExecute(InputInterface $input, OutputInterface $output);
+
+    /**
+     * Override this method with the commands's formatter config.
+     */
+    abstract protected function getFormatterOptions(): FormatterOptions;
 }

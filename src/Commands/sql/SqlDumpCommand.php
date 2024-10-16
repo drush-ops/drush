@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\sql;
 
 use Consolidation\OutputFormatters\FormatterManager;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -26,7 +27,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
 #[CLI\OptionsetTableSelection]
-#[CLI\FieldLabels(labels: ['path' => 'Path'])]
 final class SqlDumpCommand extends Command
 {
     use AutowireTrait;
@@ -72,5 +72,11 @@ final class SqlDumpCommand extends Command
             $this->io->success(dt('Database dump saved to !path', ['!path' => $return]));
         }
         return new PropertyList(['path' => $return]);
+    }
+
+    protected function getFormatterOptions(): FormatterOptions
+    {
+        return (new FormatterOptions())
+            ->setFieldLabels(['path' => 'Path']);
     }
 }
