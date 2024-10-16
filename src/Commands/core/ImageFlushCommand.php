@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\image\Entity\ImageStyle;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\Validators;
+use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -15,7 +17,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
@@ -30,11 +31,10 @@ final class ImageFlushCommand extends Command
     public const NAME = 'image:flush';
 
     public function __construct(
-        private readonly SymfonyStyle $io
+        private readonly EntityTypeManagerInterface $entityTypeManager
     ) {
         parent::__construct();
     }
-
     protected function configure(): void
     {
         $this
@@ -47,14 +47,15 @@ final class ImageFlushCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        $styles = array_keys(ImageStyle::loadMultiple());
+        $io = new DrushStyle($input, $output);
+        $styles = array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple());
         $style_names = $input->getArgument('style_names');
 
         if (empty($style_names) && !$input->getOption('all')) {
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
-            $style_names = $this->io->choice(dt("Choose a style to flush"), $choices, 'all');
+            $style_names = $io->choice(dt("Choose a style to flush"), $choices, 'all');
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }
@@ -75,7 +76,8 @@ final class ImageFlushCommand extends Command
 
         foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($input->getArgument('style_names'))) as $style_name => $style) {
             $style->flush();
-            $this->io->success("Image style $style_name flushed");
+            $io = new DrushStyle($input, $output);
+            $io->success("Image style $style_name flushed");
         }
         return static::SUCCESS;
     }

@@ -13,12 +13,12 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\OptionSets;
 use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
+use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
@@ -35,8 +35,7 @@ final class SqlDumpCommand extends Command
     public const NAME = 'sql:dump';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
-        private readonly SymfonyStyle $io
+        protected readonly FormatterManager $formatterManager
     ) {
         parent::__construct();
     }
@@ -69,7 +68,8 @@ final class SqlDumpCommand extends Command
 
         // SqlBase::dump() returns null if 'result-file' option is empty.
         if ($return) {
-            $this->io->success(dt('Database dump saved to !path', ['!path' => $return]));
+            $io = new DrushStyle($input, $output);
+            $io->success(dt('Database dump saved to !path', ['!path' => $return]));
         }
         return new PropertyList(['path' => $return]);
     }

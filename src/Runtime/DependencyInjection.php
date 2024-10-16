@@ -24,7 +24,6 @@ use Drush\Formatters\DrushFormatterManager;
 use Drush\Formatters\EntityToArraySimplifier;
 use Drush\Log\Logger;
 use Drush\SiteAlias\ProcessManager;
-use Drush\Style\DrushStyle;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
 use League\Container\ContainerInterface;
@@ -32,7 +31,6 @@ use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Prepare our Dependency Injection Container
@@ -167,11 +165,6 @@ class DependencyInjection
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
-
-        Robo::addShared($container, 'io', DrushStyle::class)
-            ->addArguments([$input, $output]);
-        // @todo Does this alias interfere with the paramInjector above? Could we drop that feature?
-        Robo::addShared($container, SymfonyStyle::class, 'io');  // For autowiring
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
