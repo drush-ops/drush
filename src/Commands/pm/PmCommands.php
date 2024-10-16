@@ -116,7 +116,7 @@ final class PmCommands extends DrushCommands
             // Note: we can't just call the API ($moduleHandler->loadInclude($module, 'install')),
             // because the API ignores modules that haven't been installed yet. We have
             // to do it the same way the `function drupal_check_module($module)` does.
-            $file = DRUPAL_ROOT . '/' . $this->extensionListModule->getPath($module) . "/$module.install";
+            $file = DRUPAL_ROOT . '/' . $this->getExtensionListModule()->getPath($module) . "/$module.install";
             if (is_file($file)) {
                 require_once $file;
             }
