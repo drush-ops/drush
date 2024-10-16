@@ -74,7 +74,8 @@ final class ImageFlushCommand extends Command
             $input->setArgument('style_names', implode(',', array_keys(ImageStyle::loadMultiple())));
         }
 
-        foreach (ImageStyle::loadMultiple(StringUtils::csvToArray($input->getArgument('style_names'))) as $style_name => $style) {
+        $ids = StringUtils::csvToArray($input->getArgument('style_names'));
+        foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
             $style->flush();
             $io = new DrushStyle($input, $output);
             $io->success("Image style $style_name flushed");
