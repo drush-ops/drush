@@ -73,6 +73,6 @@ final class ImageFlushCommand extends Command
             $style->flush();
             $this->io->success("Image style $style_name flushed");
         }
-        return Command::SUCCESS;
+        return static::SUCCESS;
     }
 }

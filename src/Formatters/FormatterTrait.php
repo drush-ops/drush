@@ -6,7 +6,6 @@ use Consolidation\Filter\FilterOutputData;
 use Consolidation\Filter\LogicalOpFactory;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes\FilterDefaultField;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -52,7 +51,7 @@ trait FormatterTrait
             $data = $this->alterResult($data, $input);
         }
         $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
-        return Command::SUCCESS;
+        return static::SUCCESS;
     }
 
     protected function alterResult($result, InputInterface $input): mixed

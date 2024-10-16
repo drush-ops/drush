@@ -9,6 +9,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
+use Drush\Commands\OptionSets;
 use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -24,7 +25,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     aliases: ['sql-dump']
 )]
 #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
-#[CLI\OptionsetSql]
 #[CLI\OptionsetTableSelection]
 #[CLI\FieldLabels(labels: ['path' => 'Path'])]
 final class SqlDumpCommand extends Command
@@ -56,6 +56,7 @@ final class SqlDumpCommand extends Command
             ->addUsage('sql:dump --extra-dump=--no-data')
             ->setHelp('--create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.');
         $this->addFormatterOptions();
+        OptionSets::sql($this);
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
