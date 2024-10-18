@@ -844,7 +844,7 @@ function _drush_download_file($url, $destination, $overwrite = TRUE) {
 
   $destination_tmp = drush_tempnam('download_file');
   if ($use_wget) {
-    drush_shell_exec("wget -q --timeout=30 -O %s %s", $destination_tmp, $url);
+    drush_shell_exec("wget --auth-no-challenge -q --timeout=30 -O %s %s", $destination_tmp, $url);
   }
   else {
     // Force TLS1+ as per https://github.com/drush-ops/drush/issues/894.
