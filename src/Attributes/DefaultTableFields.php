@@ -7,10 +7,9 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
-class DefaultTableFields implements FormatterConfigurationItemProviderInterface
+class DefaultTableFields
 {
     const KEY = FormatterOptions::DEFAULT_TABLE_FIELDS;
 
@@ -20,12 +19,6 @@ class DefaultTableFields implements FormatterConfigurationItemProviderInterface
      */
     public function __construct(public array $fields)
     {
-    }
-
-    public function getConfigurationItem(\ReflectionAttribute $attribute): array
-    {
-        $args = $attribute->getArguments();
-        return [self::KEY => $args['fields']];
     }
 
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)

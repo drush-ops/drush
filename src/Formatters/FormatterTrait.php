@@ -69,21 +69,4 @@ trait FormatterTrait
         $prop = $rc->getProperty($name);
         return $prop->getValue($object);
     }
-
-    /**
-     * Build the formatter configuration from the command's attributes
-     */
-    protected function getConfigurationData(): array
-    {
-        $configurationData = [];
-        $reflection = new \ReflectionObject($this);
-        $attributes = $reflection->getAttributes();
-        foreach ($attributes as $attribute) {
-            $instance = $attribute->newInstance();
-            if ($instance instanceof FormatterConfigurationItemProviderInterface) {
-                $configurationData = array_merge($configurationData, $instance->getConfigurationItem($attribute));
-            }
-        }
-        return $configurationData;
-    }
 }

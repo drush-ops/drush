@@ -28,8 +28,6 @@ use Symfony\Component\Finder\Finder;
     description: 'Find potentially unused Twig templates.',
     aliases: ['twu']
 )]
-#[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
-#[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
 #[CLI\FilterDefaultField(field: 'template')]
 final class TwigUnusedCommand extends Command
 {
@@ -105,7 +103,8 @@ final class TwigUnusedCommand extends Command
 
     protected function getFormatterOptions(): FormatterOptions
     {
-        // @todo WIP
-        return new FormatterOptions($this->getConfigurationData());
+        return (new FormatterOptions())
+            ->setFieldLabels(['template' => 'Template', 'compiled' => 'Compiled'])
+            ->setTableDefaultFields(['template', 'compiled']);
     }
 }
