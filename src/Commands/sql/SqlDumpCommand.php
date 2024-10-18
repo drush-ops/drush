@@ -44,6 +44,7 @@ final class SqlDumpCommand extends Command
     {
         $this
             ->addOption('result-file', null, InputOption::VALUE_REQUIRED, 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value \'auto\', a date-based filename will be created under ~/drush-backups directory.')
+            // create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.
             ->addOption('create-db', null, InputOption::VALUE_NONE, 'Omit DROP TABLE statements. Used by Postgres and Oracle only.')
             ->addOption('data-only', null, InputOption::VALUE_NONE, 'Dump data without statements to create any of the schema.')
             ->addOption('ordered-dump', null, InputOption::VALUE_NONE, 'Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.')
@@ -52,9 +53,8 @@ final class SqlDumpCommand extends Command
             ->addOption('extra-dump', null, InputOption::VALUE_REQUIRED, 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')
             ->addUsage('sql:dump --result-file=../18.sql')
             ->addUsage('sql:dump --skip-tables-key=common')
-            ->addUsage('sql:dump --extra-dump=--no-data')
-            ->setHelp('--create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.');
-        $this->addFormatterOptions(PropertyList::class);
+            ->addUsage('sql:dump --extra-dump=--no-data');
+        $this->configureFormatter(PropertyList::class);
         OptionSets::sql($this);
     }
 
