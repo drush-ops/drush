@@ -37,8 +37,7 @@ class DrushStyle extends SymfonyStyle
         return confirm($question, $default, $yes, $no, $required, $validate, $hint);
     }
 
-    #[Deprecated('Use select() or multiselect() instead.')]
-    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): mixed
+    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 15, ?\Closure $validate = null, string $hint = '', bool|string $required = true): mixed
     {
         if ($multiSelect) {
             // For backward compat. Deprecated.

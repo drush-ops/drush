@@ -8,7 +8,7 @@ use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class ValidateModulesEnabled extends ValidatorBase implements ValidatorInterface
 {
     /**
