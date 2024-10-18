@@ -39,7 +39,7 @@
     "consolidation/annotated-command": "^4.9.2",
     "consolidation/config": "^2.1.2 || ^3",
     "consolidation/filter-via-dot-access-data": "^2.0.2",
-    "consolidation/output-formatters": "dev-use-command-drush as 4.x-dev",
+    "consolidation/output-formatters": "dev-use-command-directly-of as 4.x-dev",
     "consolidation/robo": "^4.0.6 || ^5",
     "consolidation/site-alias": "^4",
     "consolidation/site-process": "^5.2.0",
@@ -88,7 +88,8 @@
   "config": {
     "allow-plugins": {
       "composer/installers": true,
-      "cweagans/composer-patches": true
+      "cweagans/composer-patches": true,
+      "symfony/runtime": true
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",

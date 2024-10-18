@@ -57,8 +57,7 @@ final class TwigUnusedCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $formatterOptions = $this->getFormatterOptions();
-        $formatterOptions->setInput($input);
+        $formatterOptions = $this->getFormatterOptions()->setInput($input);
         $data = $this->doExecute($input, $output);
         $data = $this->alterResult($data, $input);
         $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
