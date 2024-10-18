@@ -4,23 +4,20 @@ namespace Drush\Formatters;
 
 use Consolidation\Filter\FilterOutputData;
 use Consolidation\Filter\LogicalOpFactory;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes\FilterDefaultField;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 
 trait FormatterTrait
 {
-    public function addFormatterOptions()
+    /**
+     * Adds options to the command definition based on data type. The --format description is dynamic.
+     *
+     * @param string $dataType
+     *   Usually the same as the return type of a doExecute() method.
+     */
+    public function addFormatterOptions(string $dataType): void
     {
-        $reflection = new \ReflectionMethod($this, 'doExecute');
-        $returnType = $reflection->getReturnType();
-        if ($returnType instanceof \ReflectionNamedType) {
-            $dataType = $returnType->getName();
-        } else {
-            throw new \Exception($reflection->getDeclaringClass() . '::doExecute method must specify a return type.');
-        }
         $inputOptions = $this->formatterManager->automaticOptions($this->getFormatterOptions(), $dataType);
         foreach ($inputOptions as $inputOption) {
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
@@ -37,23 +34,11 @@ trait FormatterTrait
         }
     }
 
-    /**
-     * Format the structured data as per user input and the command definition.
-     */
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $formatterOptions = $this->getFormatterOptions();
-        $formatterOptions->setInput($input);
-        $data = $this->doExecute($input, $output);
-        if ($input->hasOption('filter')) {
-            $data = $this->alterResult($data, $input);
-        }
-        $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
-        return static::SUCCESS;
-    }
-
     protected function alterResult($result, InputInterface $input): mixed
     {
+        if (!$input->hasOption('filter') || !$input->getOption('filter')) {
+            return $result;
+        }
         $expression = $input->getOption('filter');
         $reflection = new \ReflectionObject($this);
         $attributes = $reflection->getAttributes(FilterDefaultField::class);
@@ -101,15 +86,4 @@ trait FormatterTrait
         }
         return $configurationData;
     }
-
-    /**
-     * Override this method with the actual command logic. Type hint the return value
-     * to help the formatter know what to expect.
-     */
-    abstract protected function doExecute(InputInterface $input, OutputInterface $output);
-
-    /**
-     * Override this method with the commands's formatter config.
-     */
-    abstract protected function getFormatterOptions(): FormatterOptions;
 }

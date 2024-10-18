@@ -54,7 +54,17 @@ final class TwigUnusedCommand extends Command
             // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050
             ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom')
             ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.');
-        $this->addFormatterOptions();
+        $this->addFormatterOptions(RowsOfFields::class);
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $formatterOptions = $this->getFormatterOptions();
+        $formatterOptions->setInput($input);
+        $data = $this->doExecute($input, $output);
+        $data = $this->alterResult($data, $input);
+        $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
+        return self::SUCCESS;
     }
 
     public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields

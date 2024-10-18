@@ -54,10 +54,19 @@ final class SqlDumpCommand extends Command
             ->addUsage('sql:dump --skip-tables-key=common')
             ->addUsage('sql:dump --extra-dump=--no-data')
             ->setHelp('--create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.');
-        $this->addFormatterOptions();
+        $this->addFormatterOptions(PropertyList::class);
         OptionSets::sql($this);
     }
 
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $formatterOptions = $this->getFormatterOptions();
+        $formatterOptions->setInput($input);
+        $data = $this->doExecute($input, $output);
+        $data = $this->alterResult($data, $input);
+        $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
+        return static::SUCCESS;
+    }
     protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
     {
         $sql = SqlBase::create($input->getOptions());
