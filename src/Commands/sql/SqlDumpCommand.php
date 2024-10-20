@@ -54,7 +54,7 @@ final class SqlDumpCommand extends Command
             ->addUsage('sql:dump --result-file=../18.sql')
             ->addUsage('sql:dump --skip-tables-key=common')
             ->addUsage('sql:dump --extra-dump=--no-data');
-        $this->configureFormatter(PropertyList::class);
+        $this->configureFormatter(PropertyList::class, $this->getFormatterOptions());
         OptionSets::sql($this);
     }
 

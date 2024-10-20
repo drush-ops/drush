@@ -4,6 +4,7 @@ namespace Drush\Formatters;
 
 use Consolidation\Filter\FilterOutputData;
 use Consolidation\Filter\LogicalOpFactory;
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes\FilterDefaultField;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,14 +13,18 @@ use Symfony\Component\Console\Input\InputOption;
 trait FormatterTrait
 {
     /**
-     * Adds options to the command definition based on data type. The --format description is dynamic.
+     * Add to the command definition based on data type.
+     *  - The --format description is dynamic.
+     *  - Add a link in help()
      *
      * @param string $dataType
      *   Usually the same as the return type of a doExecute() method.
+     * @param FormatterOptions $formatterOptions
+     *   The formatter options for this command.
      */
-    public function configureFormatter(string $dataType): void
+    public function configureFormatter(string $dataType, FormatterOptions $formatterOptions): void
     {
-        $inputOptions = $this->formatterManager->automaticOptions($this->getFormatterOptions(), $dataType);
+        $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $dataType);
         foreach ($inputOptions as $inputOption) {
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
             $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
