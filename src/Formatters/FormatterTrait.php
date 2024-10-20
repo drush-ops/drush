@@ -43,6 +43,7 @@ trait FormatterTrait
         }
 
         // Add the --filter option if the command has a FilterDefaultField attribute.
+        // @todo Determine --filter via $formatterOptions instead of FilterDefaultField attribute.
         $reflection = new \ReflectionObject($this);
         $attributes = $reflection->getAttributes(FilterDefaultField::class);
         if (!empty($attributes)) {

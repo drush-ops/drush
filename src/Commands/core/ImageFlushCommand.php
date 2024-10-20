@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\image\Entity\ImageStyle;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\Validators;
@@ -65,14 +64,10 @@ final class ImageFlushCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($names = $input->getArgument('style_names')) {
-            Validators::entityLoad(StringUtils::csvToArray($names), 'image_style');
-        }
-
-        // Needed for non-interactive requests.
         if ($input->getOption('all')) {
-            $input->setArgument('style_names', implode(',', array_keys(ImageStyle::loadMultiple())));
+            $input->setArgument('style_names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
         }
+        Validators::entityLoad(StringUtils::csvToArray($input->getArgument('style_names')), 'image_style');
 
         $ids = StringUtils::csvToArray($input->getArgument('style_names'));
         foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
