@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 class OptionSets
 {
-    public static function sql(Command $command)
+    public static function sql(Command $command): void
     {
         $command->addOption('database', '', InputOption::VALUE_REQUIRED, 'The DB connection key if using multiple connections in settings.php.', 'default');
         $command->addOption('db-url', '', InputOption::VALUE_REQUIRED, 'A Drupal 6 style database URL. For example <info>mysql://root:pass@localhost:port/dbname</info>');
