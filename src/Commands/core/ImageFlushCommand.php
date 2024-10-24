@@ -64,6 +64,8 @@ final class ImageFlushCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $io = new DrushStyle($input, $output);
+
         if ($input->getOption('all')) {
             $input->setArgument('style_names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
         }
@@ -72,7 +74,6 @@ final class ImageFlushCommand extends Command
         $ids = StringUtils::csvToArray($input->getArgument('style_names'));
         foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
             $style->flush();
-            $io = new DrushStyle($input, $output);
             $io->success("Image style $style_name flushed");
         }
         return static::SUCCESS;

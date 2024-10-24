@@ -27,6 +27,7 @@ use Drush\SiteAlias\ProcessManager;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
 use League\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
@@ -165,6 +166,10 @@ class DependencyInjection
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
+        // Alias the dispatcher service that is defined in \Robo\Robo::configureContainer.
+        Robo::addShared($container, EventDispatcherInterface::class, 'eventDispatcher');  // For autowiring
+
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
