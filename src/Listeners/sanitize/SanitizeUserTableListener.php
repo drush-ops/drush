@@ -13,8 +13,8 @@ use Drush\Commands\sql\sanitize\SanitizeCommand;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
 use Drush\Sql\SqlBase;
+use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -34,7 +34,6 @@ final class SanitizeUserTableListener
         protected Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected LoggerInterface $logger,
     ) {
     }
 
@@ -71,6 +70,12 @@ final class SanitizeUserTableListener
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
+        if ($event->getCommand()->getName() !== SanitizeCommand::NAME) {
+            return;
+        }
+        
+        $io = new DrushStyle($event->getInput(), $event->getOutput());
+
         $options = $event->getInput()->getOptions();
         $query = $this->database->update('users_field_data')->condition('uid', 0, '>');
         $messages = [];
@@ -132,7 +137,7 @@ final class SanitizeUserTableListener
             $query->execute();
             $this->entityTypeManager->getStorage('user')->resetCache();
             foreach ($messages as $message) {
-                $this->logger->success($message);
+                $io->success($message);
             }
         }
     }

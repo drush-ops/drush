@@ -65,15 +65,15 @@ final class SanitizeCommand extends Command implements CustomEventAwareInterface
          * In order to present only one prompt, collect all confirmations up front.
          */
         $event = new SanitizeConfirmsEvent($input);
-        $this->eventDispatcher->dispatch($event, SanitizeConfirmsEvent::class);
+        $this->eventDispatcher->dispatch($event);
         $messages = $event->getMessages();
 
         // Also collect from legacy commandfiles.
-        $handlers = $this->getCustomEventHandlers(SanitizeCommands::CONFIRMS);
-        foreach ($handlers as $handler) {
-            $handler($messages, $input);
-        }
-        // @phpstan-ignore if.alwaysFalse
+        // This works but we would need backwars compat forv POST_COMMAND AC hook as well.
+//        $handlers = $this->getCustomEventHandlers(SanitizeCommands::CONFIRMS);
+//        foreach ($handlers as $handler) {
+//            $handler($messages, $input);
+//        }
         if ($messages) {
             $output->writeln(dt('The following operations will be performed:'));
             $io->listing($messages);
