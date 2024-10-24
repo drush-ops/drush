@@ -34,6 +34,7 @@ use Robo\Contract\OutputAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -438,9 +439,11 @@ class ServiceManager
                 } else {
                     throw new \Exception('Event listener method must have a single parameter with a type hint.');
                 }
-                if ($eventName == ConsoleCommandEvent::class) {
-                    $eventName = ConsoleEvents::COMMAND;
-                }
+                $eventName = match ($eventName) {
+                    ConsoleCommandEvent::class => ConsoleEvents::COMMAND,
+                    ConsoleTerminateEvent::class => ConsoleEvents::TERMINATE,
+                    default => $eventName,
+                };
                 Drush::getContainer()->get('eventDispatcher')->addListener($eventName, $instance->$method(...), $priority);
             }
         }
