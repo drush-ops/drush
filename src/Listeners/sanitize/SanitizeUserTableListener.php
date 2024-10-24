@@ -73,7 +73,7 @@ final class SanitizeUserTableListener
         if ($event->getCommand()->getName() !== SanitizeCommand::NAME) {
             return;
         }
-        
+
         $io = new DrushStyle($event->getInput(), $event->getOutput());
 
         $options = $event->getInput()->getOptions();
