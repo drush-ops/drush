@@ -54,16 +54,16 @@ final class SqlDumpCommand extends Command
             ->addUsage('sql:dump --result-file=../18.sql')
             ->addUsage('sql:dump --skip-tables-key=common')
             ->addUsage('sql:dump --extra-dump=--no-data');
-        $this->configureFormatter(PropertyList::class, $this->getFormatterOptions());
+        $formatterOptions = (new FormatterOptions())
+            ->setFieldLabels(['path' => 'Path']);
+        $this->configureFormatter(PropertyList::class, $formatterOptions);
         OptionSets::sql($this);
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $formatterOptions = $this->getFormatterOptions()->setInput($input);
         $data = $this->doExecute($input, $output);
-        $data = $this->alterResult($data, $input);
-        $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
+        $this->writeFormattedOutput($input, $output, $data);
         return static::SUCCESS;
     }
     protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
@@ -80,11 +80,5 @@ final class SqlDumpCommand extends Command
             $io->success(dt('Database dump saved to !path', ['!path' => $return]));
         }
         return new PropertyList(['path' => $return]);
-    }
-
-    protected function getFormatterOptions(): FormatterOptions
-    {
-        return (new FormatterOptions())
-            ->setFieldLabels(['path' => 'Path']);
     }
 }

@@ -52,15 +52,16 @@ final class TwigUnusedCommand extends Command
             // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050
             ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom')
             ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.');
-        $this->configureFormatter(RowsOfFields::class, $this->getFormatterOptions());
+        $formatterOptions = (new FormatterOptions())
+            ->setFieldLabels(['template' => 'Template', 'compiled' => 'Compiled'])
+            ->setTableDefaultFields(['template', 'compiled']);
+        $this->configureFormatter(RowsOfFields::class, $formatterOptions);
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $formatterOptions = $this->getFormatterOptions()->setInput($input);
         $data = $this->doExecute($input, $output);
-        $data = $this->alterResult($data, $input);
-        $this->formatterManager->write($output, $input->getOption('format'), $data, $formatterOptions);
+        $this->writeFormattedOutput($input, $output, $data);
         return self::SUCCESS;
     }
 
@@ -97,13 +98,5 @@ final class TwigUnusedCommand extends Command
         }
         $this->logger->notice('Found {count} unused', ['count' => count($unused)]);
         return new RowsOfFields($unused);
-    }
-
-
-    protected function getFormatterOptions(): FormatterOptions
-    {
-        return (new FormatterOptions())
-            ->setFieldLabels(['template' => 'Template', 'compiled' => 'Compiled'])
-            ->setTableDefaultFields(['template', 'compiled']);
     }
 }

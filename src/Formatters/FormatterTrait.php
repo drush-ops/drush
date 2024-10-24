@@ -9,9 +9,12 @@ use Drush\Attributes\FilterDefaultField;
 use Drush\Drush;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 trait FormatterTrait
 {
+    protected FormatterOptions $formatterOptions;
+
     /**
      * Add to the command definition based on data type.
      *  - The --format description is dynamic.
@@ -24,6 +27,7 @@ trait FormatterTrait
      */
     public function configureFormatter(string $dataType, FormatterOptions $formatterOptions): void
     {
+        $this->setFormatterOptions($formatterOptions);
         $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $dataType);
         foreach ($inputOptions as $inputOption) {
             $mode = $this->getPrivatePropValue($inputOption, 'mode');
@@ -50,6 +54,15 @@ trait FormatterTrait
             $instance = $attributes[0]->newInstance();
             $this->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter output based on provided expression. Default field: ' . $instance->field);
         }
+    }
+
+    /**
+     * Filter, format, and write to the output
+     */
+    protected function writeFormattedOutput(InputInterface $input, OutputInterface $output, $data): void
+    {
+        $data = $this->alterResult($data, $input);
+        $this->formatterManager->write($output, $input->getOption('format'), $data, $this->getFormatterOptions()->setInput($input));
     }
 
     protected function alterResult($result, InputInterface $input): mixed
@@ -79,6 +92,16 @@ trait FormatterTrait
         $sourceClass = get_class($source);
 
         return new $sourceClass($data);
+    }
+
+    public function getFormatterOptions(): FormatterOptions
+    {
+        return $this->formatterOptions;
+    }
+
+    public function setFormatterOptions(FormatterOptions $formatterOptions): void
+    {
+        $this->formatterOptions = $formatterOptions;
     }
 
     protected function getPrivatePropValue(mixed $object, $name): mixed
