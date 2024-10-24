@@ -7,6 +7,7 @@ namespace Drush\Runtime;
 use Composer\Autoload\ClassLoader;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Util\ConfigOverlay;
+use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
@@ -26,6 +27,8 @@ use Drush\SiteAlias\ProcessManager;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
 use League\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -35,6 +38,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DependencyInjection
 {
+    const FORMATTER_MANAGER = 'formatterManager';
     const SITE_ALIAS_MANAGER = 'site.alias.manager';
     const BOOTSTRAP_MANAGER = 'bootstrap.manager';
     const LOADER = 'loader';
@@ -62,7 +66,7 @@ class DependencyInjection
         $container = new Container();
 
         // With league/container 3.x, first call wins, so add Drush services first.
-        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output);
+        $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output, $input);
 
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         Robo::configureContainer($container, $application, $config, $input, $output);
@@ -72,7 +76,7 @@ class DependencyInjection
         Drush::setContainer($container);
 
         // Change service definitions as needed for our application.
-        $this->alterServicesForDrush($container, $application);
+        $this->alterServicesForDrush($container, $application, $input, $output);
 
         // Inject needed services into our application object.
         $this->injectApplicationServices($container, $application);
@@ -92,12 +96,13 @@ class DependencyInjection
     }
 
     // Add Drush Services to league/container 3.x
-    protected function addDrushServices($container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output): void
+    protected function addDrushServices(Container $container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output, InputInterface $input): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
         Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')
-          ->addMethodCall('setLogOutputStyler', ['logStyler'])
-          ->addMethodCall('add', ['drush', new Logger($output)]);
+            ->addMethodCall('setLogOutputStyler', ['logStyler'])
+            ->addMethodCall('add', ['drush', new Logger($output)]);
+        Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
 
         Robo::addShared($container, self::LOADER, $loader);
         Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
@@ -110,10 +115,11 @@ class DependencyInjection
 
         // Override Robo's formatter manager with our own
         // @todo not sure that we'll use this. Maybe remove it.
-        Robo::addShared($container, 'formatterManager', DrushFormatterManager::class)
+        Robo::addShared($container, self::FORMATTER_MANAGER, DrushFormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
             ->addMethodCall('addDefaultSimplifiers', [])
             ->addMethodCall('addSimplifier', [new EntityToArraySimplifier()]);
+        Robo::addShared($container, FormatterManager::class, self::FORMATTER_MANAGER);  // For autowiring
 
         // Add some of our own objects to the container
         Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
@@ -156,10 +162,14 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', ['process.manager']);
     }
 
-    protected function alterServicesForDrush($container, Application $application): void
+    protected function alterServicesForDrush($container, Application $application, InputInterface $input, OutputInterface $output): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+
+        // Alias the dispatcher service that is defined in \Robo\Robo::configureContainer.
+        Robo::addShared($container, EventDispatcherInterface::class, 'eventDispatcher');  // For autowiring
+
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');

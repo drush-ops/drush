@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Drush\Commands\sql\sanitize;
 
 use Consolidation\AnnotatedCommand\CommandData;
+use JetBrains\PhpStorm\Deprecated;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Implement this interface when building a Drush sql-sanitize plugin.
  */
+#[Deprecated(reason: 'Implement an event listener instead.')]
 interface SanitizePluginInterface
 {
     /**

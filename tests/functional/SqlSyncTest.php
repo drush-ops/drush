@@ -7,6 +7,7 @@ namespace Unish;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\sql\sanitize\SanitizeCommand;
 use Drush\Commands\sql\sanitize\SanitizeCommands;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\sql\SqlSyncCommands;
@@ -115,7 +116,7 @@ class SqlSyncTest extends CommandUnishTestCase
             'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush(SqlSyncCommands::SYNC, ['@sut.stage', '@sut.dev'], $sync_options);
-        $this->drush(SanitizeCommands::SANITIZE, [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
+        $this->drush(SanitizeCommand::NAME, [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
 
         // Confirm that the sample user is unchanged on the staging site
         $this->drush(UserCommands::INFORMATION, [$name], $options + ['format' => 'json'], '@sut.stage');

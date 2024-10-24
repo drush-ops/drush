@@ -13,11 +13,10 @@ use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
 use Drush\Drush;
+use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Runtime\LegacyServiceFinder;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\ServiceManager;
-use Psr\Log\LoggerAwareInterface;
-use Psr\Log\LoggerInterface;
 use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -215,12 +214,20 @@ class DrupalBoot8 extends DrupalBoot
         // Directly add the Drupal core bootstrapped commands.
         Drush::getApplication()->addCommands($this->serviceManager->instantiateDrupalCoreBootstrappedCommands());
 
+        $this->addBootstrapListeners();
+
         $this->addDrupalModuleDrushCommands($manager);
+
+        // Dispatch our custom event. It also fires earlier in \Drush\Application::configureAndRegisterCommands.
+        Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent(Drush::getApplication()), ConsoleDefinitionsEvent::class);
 
         // Set a default account to make sure the correct timezone is set
         $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
 
+    /**
+     * Adds module supplied commands, as well as Drush Console commands that require bootstrap.
+     */
     public function addDrupalModuleDrushCommands(BootstrapManager $manager): void
     {
         $application = Drush::getApplication();
@@ -322,5 +329,18 @@ class DrupalBoot8 extends DrupalBoot
     public function bootstrapDrupalSite(BootstrapManager $manager)
     {
         $this->bootstrapDoDrupalSite($manager);
+    }
+
+    // Add the Listeners that require bootstrap.
+    public function addBootstrapListeners(): void
+    {
+        $listenersInThisModule = [];
+        $moduleHandler = \Drupal::moduleHandler();
+        foreach ($moduleHandler->getModuleList() as $moduleId => $extension) {
+            $path = DRUPAL_ROOT . '/' . $extension->getPath() . '/src/Drush';
+            $listenersInThisModule = array_merge($listenersInThisModule, $this->serviceManager->discoverListeners([$path], "\Drupal\\$moduleId\Drush"));
+        }
+        $classes = $this->serviceManager->bootstrapListenerClasses();
+        $this->serviceManager->addListeners(array_merge($listenersInThisModule, $classes), Drush::getContainer(), \Drupal::getContainer());
     }
 }
