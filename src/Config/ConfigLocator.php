@@ -263,7 +263,13 @@ class ConfigLocator
         // Remember that we've seen this location.
         $this->siteRoots[] = $siteRoot;
 
-        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $paths = [
+            dirname($siteRoot) . '/drush',
+            "$siteRoot/drush",
+            "$siteRoot/sites/all/drush",
+        ];
+        $paths = array_filter($paths, is_dir(...));
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, $paths);
         return $this;
     }
 

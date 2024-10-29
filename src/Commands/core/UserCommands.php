@@ -184,7 +184,7 @@ final class UserCommands extends DrushCommands
      * Remove a role from the specified user accounts.
      */
     #[CLI\Command(name: self::ROLE_REMOVE, aliases: ['urrol', 'user-remove-role'])]
-    #[CLI\Argument(name: 'role', description: 'The machine name of the role to add.')]
+    #[CLI\Argument(name: 'role', description: 'The machine name of the role to remove.')]
     #[CLI\Argument(name: 'names', description: 'A comma delimited list of user names.')]
     #[CLI\Option(name: 'uid', description: 'A comma delimited list of user ids to lookup (an alternative to names).')]
     #[CLI\Option(name: 'mail', description: 'A comma delimited list of emails to lookup (an alternative to names).')]

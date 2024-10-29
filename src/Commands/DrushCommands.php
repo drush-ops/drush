@@ -112,7 +112,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Persist commandData for use in primary command callback. Used by 'topic' commands.
+     * Configure Laravel prompts package.
      */
     #[CLI\Hook(type: HookManager::INITIALIZE, target: '*')]
     public function initHook($input, AnnotationData $annotationData)

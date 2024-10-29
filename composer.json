@@ -21,7 +21,8 @@
     "security": "https://github.com/drush-ops/drush/security/advisories"
   },
   "bin": [
-    "drush"
+    "drush",
+    "drush.php"
   ],
   "repositories": {
     "drupal_org": {

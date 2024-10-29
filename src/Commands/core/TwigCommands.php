@@ -36,16 +36,6 @@ final class TwigCommands extends DrushCommands
     ) {
     }
 
-    public function getTwig(): TwigEnvironment
-    {
-        return $this->twig;
-    }
-
-    public function getModuleHandler(): ModuleHandlerInterface
-    {
-        return $this->moduleHandler;
-    }
-
     /**
      * Find potentially unused Twig templates.
      *
@@ -73,8 +63,8 @@ final class TwigCommands extends DrushCommands
         // Check to see if a compiled equivalent exists in PHPStorage
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
-            $mainCls = $this->getTwig()->getTemplateClass($relative);
-            $cache = $this->getTwig()->getCache();
+            $mainCls = $this->twig->getTemplateClass($relative);
+            $cache = $this->twig->getCache();
             if ($cache) {
                 $key = $cache->generateKey($relative, $mainCls);
                 if (!$phpstorage->exists($key)) {
@@ -100,7 +90,7 @@ final class TwigCommands extends DrushCommands
         $searchpaths = [];
         require_once DRUSH_DRUPAL_CORE . "/themes/engines/twig/twig.engine";
         // Scan all enabled modules and themes.
-        $modules = array_keys($this->getModuleHandler()->getModuleList());
+        $modules = array_keys($this->moduleHandler->getModuleList());
         foreach ($modules as $module) {
             $searchpaths[] = $this->extensionList->getPath($module);
         }
@@ -118,7 +108,7 @@ final class TwigCommands extends DrushCommands
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
             // Loading the template ensures the compiled template is cached.
-            $this->getTwig()->load($relative);
+            $this->twig->load($relative);
             $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }
@@ -133,10 +123,6 @@ final class TwigCommands extends DrushCommands
     #[CLI\Version(version: '12.1')]
     public function twigDebug(string $mode): void
     {
-        // @todo Remove this condition once Drush drops support for Drupal 10.0.
-        if (version_compare(\Drupal::VERSION, '10.1.0') < 0) {
-            throw new \Exception('Twig debug command requires Drupal 10.1.0 and above.');
-        }
         $mode = match ($mode) {
             'on' => true,
             'off' => false,

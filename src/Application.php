@@ -88,6 +88,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             ->addOption(
                 new InputOption('--define', '-D', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Define a configuration item value.', [])
             );
+
+        $this->getDefinition()
+            ->addOption(
+                new InputOption('--xdebug', null, InputOption::VALUE_NONE, 'Drush turns off Xdebug to achieve better performance. Pass this option to keep Xdebug enabled.')
+            );
     }
 
     public function bootstrapManager()

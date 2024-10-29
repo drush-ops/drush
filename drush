@@ -1,4 +1,34 @@
-#!/usr/bin/env php
-<?php
+#!/usr/bin/env sh
 
-require __DIR__ . '/drush.php';
+if [ -z "$COMPOSER_RUNTIME_BIN_DIR" ]; then
+  # This branch is for the development of Drush itself.
+  # @see https://stackoverflow.com/questions/4774054
+  SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+  DRUSH_PHP="$SCRIPTPATH/drush.php"
+else
+  DRUSH_PHP="$COMPOSER_RUNTIME_BIN_DIR/drush.php"
+fi
+
+parse_commandline()
+{
+	while test $# -gt 0
+	do
+		_key="$1"
+		case "$_key" in
+			--xdebug)
+				export DRUSH_ALLOW_XDEBUG=1
+				return
+				;;
+		esac
+		shift
+	done
+}
+
+parse_commandline "$@"
+
+if [ "$DRUSH_ALLOW_XDEBUG" != 1 ]
+then
+  export XDEBUG_MODE=off
+fi
+
+exec "$DRUSH_PHP" "$@"
