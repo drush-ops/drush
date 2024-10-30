@@ -16,6 +16,7 @@ use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
+use Drupal\user\PermissionHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -36,7 +37,8 @@ final class PmCommands extends DrushCommands
         protected ModuleInstallerInterface $moduleInstaller,
         protected ModuleHandlerInterface $moduleHandler,
         protected ThemeHandlerInterface $themeHandler,
-        protected ModuleExtensionList $extensionListModule
+        protected ModuleExtensionList $extensionListModule,
+        protected PermissionHandlerInterface $permissionHandler
     ) {
         parent::__construct();
     }
@@ -64,6 +66,11 @@ final class PmCommands extends DrushCommands
     public function getExtensionListModule(): ModuleExtensionList
     {
         return $this->extensionListModule;
+    }
+
+    public function getPermissionHandler(): PermissionHandlerInterface
+    {
+        return $this->permissionHandler;
     }
 
     /**
@@ -400,7 +407,7 @@ final class PmCommands extends DrushCommands
         }
 
         // Generate link for module's permissions page.
-        if ($module->status && \Drupal::service('user.permissions')->moduleProvidesPermissions($module->getName())) {
+        if ($module->status && $this->getPermissionHandler()->moduleProvidesPermissions($module->getName())) {
             $links[] = Link::fromTextAndUrl(dt('Permissions'), Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
         }
 
