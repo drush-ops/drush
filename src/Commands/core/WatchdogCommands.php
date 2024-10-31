@@ -53,6 +53,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Usage(name: 'drush watchdog:show --severity=Notice', description: 'Show a listing of most recent 10 messages with a severity of notice.')]
     #[CLI\Usage(name: 'drush watchdog:show --severity-min=Warning', description: 'Show a listing of most recent 10 messages with a severity of warning or higher.')]
     #[CLI\Usage(name: 'drush watchdog:show --type=php', description: 'Show a listing of most recent 10 messages of type php')]
+    #[CLI\Usage(name: 'drush watchdog:show --filter="type!=locale"', description: 'Exclude rows via the negation operator !')]
     #[CLI\FieldLabels(labels: [
         'wid' => 'ID',
         'type' => 'Type',
