@@ -90,7 +90,7 @@ Such commands are auto-discovered by their class PSR4 namespace and class/file n
   }
   ```
   then the Drush global commands class namespace should be `My\Custom\Library\Drush\Commands` and the class file should be located under the `src/Drush/Commands` directory.
-* The class and file name ends with `*DrushCommands`, e.g. `FooDrushCommands`.
+* The class and file name ends with `*Commands`, e.g. `FooCommands`.
 
 Auto-discovered commandfiles should declare their Drush version compatibility via a `conflict` directive. For example, a Composer-managed site-wide command that works with both Drush 11 and Drush 12 might contain something similar to the following in its composer.json file:
 ```json
