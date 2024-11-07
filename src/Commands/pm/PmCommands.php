@@ -7,6 +7,7 @@ namespace Drush\Commands\pm;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
@@ -407,7 +408,8 @@ final class PmCommands extends DrushCommands
         }
 
         // Generate link for module's permissions page.
-        if ($module->status && $this->getPermissionHandler()->moduleProvidesPermissions($module->getName())) {
+        // Avoid DI for PermissionHandler until we understand better at https://github.com/drush-ops/drush/issues/6154.
+        if ($module->status && Drupal::service(PermissionHandlerInterface::class)->moduleProvidesPermissions($module->getName())) {
             $links[] = Link::fromTextAndUrl(dt('Permissions'), Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
         }
 
