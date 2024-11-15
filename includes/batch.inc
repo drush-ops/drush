@@ -150,6 +150,13 @@ function _drush_backend_batch_process($command = 'batch-process', $args = [], $o
       $process = Drush::drush(Drush::aliasManager()->getSelf(), $command, $args);
       // We already re-spawn when memory is low so no need for timeout.
       $process->setTimeout(null);
+      // In some rare cases, on certain SQLite setups, the database can be
+      // locked for writing at this point. When this happens, the batch process
+      // may fail with a "database is locked" error.
+      // To prevent this, we commit the transaction before running the batch.
+      if (\Drupal::database()->driver() === 'sqlite') {
+        \Drupal::database()->commitAll();
+      }
       // Suppress printing stdout since a JSON array is returned to us here.
       $process->run($process->showRealtime()->hideStdout());
       $result = $process->getOutputAsJson();
