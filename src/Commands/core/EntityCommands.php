@@ -15,6 +15,7 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -211,6 +212,8 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 }
             }
             if ($is_revisionable) {
+                // This line satisfies the bully that is phpstan.
+                assert($entity instanceof RevisionLogInterface);
                 $entity->setRevisionLogMessage('Re-saved by Drush entity:save. ' . $message);
                 $entity->setRevisionCreationTime($this->time->getRequestTime());
                 $entity->setRevisionUserId($this->currentUser->id());
