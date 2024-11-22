@@ -108,6 +108,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'bundle', description: 'Restrict to the specified bundle. Ignored when ids is specified.')]
     #[CLI\Option(name: 'exclude', description: 'Exclude certain entities. Ignored when ids is specified.')]
     #[CLI\Option(name: 'chunks', description: 'Define how many entities will be loaded in the same step.')]
+    #[CLI\Option(name: 'limit', description: 'Limit on the number of entities to save.')]
     #[CLI\Option(name: 'publish', description: 'Publish entities as they are saved. ')]
     #[CLI\Option(name: 'unpublish', description: 'Unpublish entities as they are saved.')]
     #[CLI\Option(name: 'state', description: 'Transition entities to the specified Content Moderation state. Do not pass --publish or --unpublish since the transition state determines handles publishing.')]
@@ -119,7 +120,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush entity:save user', description: 'Re-save all users.')]
     #[CLI\Usage(name: 'drush entity:save node --chunks=5', description: 'Re-save all node entities in steps of 5.')]
     #[CLI\Version(version: '11.0')]
-    public function loadSave(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50, 'publish' => false, 'unpublish' => false, 'state' => self::REQ]): void
+    public function loadSave(string $entity_type, $ids = null, array $options = ['bundle' => self::REQ, 'exclude' => self::REQ, 'chunks' => 50, 'publish' => false, 'unpublish' => false, 'state' => self::REQ, 'limit' => null]): void
     {
         if ($options['publish'] && $options['unpublish']) {
             throw new \InvalidArgumentException(dt('You may not specify both --publish and --unpublish.'));
