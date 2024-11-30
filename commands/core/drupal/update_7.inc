@@ -174,6 +174,7 @@ function update_main_prepare() {
   // Reset the module_implements() cache so that any new hook implementations
   // in updated code are picked up.
   module_implements('', FALSE, TRUE);
+  module_list(TRUE, FALSE, TRUE);
 
   // Set up $language, since the installer components require it.
   drupal_language_initialize();
