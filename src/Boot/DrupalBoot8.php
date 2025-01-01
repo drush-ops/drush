@@ -167,7 +167,7 @@ class DrupalBoot8 extends DrupalBoot
             return false;
         }
         if (!$connection->schema()->tableExists('key_value')) {
-            $this->logger->info('key_value table not found. Database may be empty.');
+	    $this->logger->info('Can connecct to database ' . $connection_options['database'] .' but the table key_value was not found. Database ' . $connection_options['database'] . ' may be empty.');
             return false;
         }
         return true;
