@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\EntityCommands | Drush API 13</title>
+    <title>Drush\Commands\core\DrupalDependenciesCommands | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_EntityCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_core_DrupalDependenciesCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,39 +75,31 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>EntityCommands</li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>DrupalDependenciesCommands</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>EntityCommands    
+        <h1>DrupalDependenciesCommands    
             </h1>
     </div>
 
     
     <p>final         class
-    <strong>EntityCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareInterface.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php">View source</a>)
+    <strong>DrupalDependenciesCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php">View source</a>)
 </p>
 
         
     
         
 
+            <div class="description">
+            <p><p>Drush commands revealing Drupal dependencies.</p></p>                    </div>
             
                 <h2>Traits</h2>
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
-                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
-                    <a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a>    </div>
-                <div class="col-md-6"><p>StdinAwareTrait provides the implementation for StdinAwareInterface.</p></div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
@@ -203,7 +195,7 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        DELETE
+                                                                                                                        WHY_MODULE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -212,7 +204,17 @@
             </tr>
                     <tr>
                 <td>
-                                                                                                                        SAVE
+                                                                                                                        WHY_CONFIG
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                            private
+                                                                                CIRCULAR_REFERENCE
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -294,16 +296,6 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_stdinHandler">
-                                        protected                                        
-                                                                                
-                                    </td>
-                <td>$stdinHandler</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html#property_stdinHandler">
-<abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a></small></td>
             </tr>
             </table>
 
@@ -529,7 +521,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time, <abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr> $currentUser)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, array $installedModules)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -682,47 +674,24 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                    static&nbsp;<a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        
-                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setStdinHandler">setStdinHandler</a>(<a href="../../../Consolidation/AnnotatedCommand/Input/StdinHandler.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinHandler">StdinHandler</abbr></a> $stdin)
+                    <a href="#method_create">create</a>(<abbr title="Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html#method_setStdinHandler">
-<abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a></small></div>
+                <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_stdin">stdin</a>()
+                    <a href="#method_dependentsOfModule">dependentsOfModule</a>(string $module, array $options = [&#039;type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;only-installed&#039; =&gt; true, &#039;format&#039; =&gt; &#039;&#039;])
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html#method_stdin">
-<abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_delete">delete</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;limit&#039; =&gt; null])
-        
-                                            <p><p>Delete content entities.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -730,40 +699,62 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_doDelete">doDelete</a>(string $entity_type, array $ids)
-        
-                                            <p><p>Actual delete method.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_loadSave">loadSave</a>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false, &#039;state&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; null])
-        
-                                            <p><p>Re-save entities, and publish/unpublish is specified.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_doSave">doSave</a>(string $entity_type, array $ids, string|null $action, string|null $state)
-        
-                                            <p><p>Actual save method.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getQuery">getQuery</a>(string $entity_type, string|null $ids, array $options)
+                    <a href="#method_validateDependentsOfModule">validateDependentsOfModule</a>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         
                                             <p class="no-description">No description</p>
                                     </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_dependentsOfConfig">dependentsOfConfig</a>(string $config, array $options = [&#039;format&#039; =&gt; &#039;&#039;])
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_validateDependentsOfConfig">validateDependentsOfConfig</a>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_buildTree">buildTree</a>(string $dependency, array $path = [])
+        
+                                            <p><p>Builds the nested dependency tree.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_buildDependents">buildDependents</a>(array $dependenciesPerDependent)
+        
+                                            <p><p>Build the reverse the relation: dependent -&gt; dependencies.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_scanConfigs">scanConfigs</a>(bool $scanModuleDependencies = true)
+        
+                                            <p><p>Scans all config entities and store their module and config dependencies.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -1506,9 +1497,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L33">at line 33</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L59">at line 59</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time, <abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr> $currentUser)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, array $installedModules)
         </code>
     </h3>
     <div class="details">    
@@ -1524,18 +1515,13 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
-                <td>$entityTypeManager</td>
+                <td><abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr></td>
+                <td>$moduleExtensionList</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr></td>
-                <td>$time</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr></td>
-                <td>$currentUser</td>
+                <td>array</td>
+                <td>$installedModules</td>
                 <td></td>
             </tr>
             </table>
@@ -2031,10 +2017,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_create">
-        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/AutowireTrait.php#L27">at line 27</a></div>
-        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L66">at line 66</a></div>
+        <code>        static            <a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a>
+    <strong>create</strong>(<abbr title="Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
     <div class="details">    
@@ -2042,16 +2027,17 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             
 
         <div class="method-description">
-                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td><abbr title="Drupal\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
                 <td>$container</td>
-                <td><p>The service container this instance should use.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -2060,7 +2046,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td><a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a></td>
             <td></td>
         </tr>
     </table>
@@ -2073,312 +2059,10 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setStdinHandler">
-        <div class="location">in <a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html#method_setStdinHandler">
-<abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/actions/vendor/consolidation/annotated-command/src/Input/StdinAwareTrait.php#L15">at line 15</a></div>
-        <code>                    
-    <strong>setStdinHandler</strong>(<a href="../../../Consolidation/AnnotatedCommand/Input/StdinHandler.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinHandler">StdinHandler</abbr></a> $stdin)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a href="../../../Consolidation/AnnotatedCommand/Input/StdinHandler.html"><abbr title="Consolidation\AnnotatedCommand\Input\StdinHandler">StdinHandler</abbr></a></td>
-                <td>$stdin</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_stdin">
-        <div class="location">in <a href="../../../Consolidation/AnnotatedCommand/Input/StdinAwareTrait.html#method_stdin">
-<abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/actions/vendor/consolidation/annotated-command/src/Input/StdinAwareTrait.php#L23">at line 23</a></div>
-        <code>                    
-    <strong>stdin</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_delete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L46">at line 46</a></div>
-        <code>                    void
-    <strong>delete</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;limit&#039; =&gt; null])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Delete content entities.</p></p>                <p><p>To delete configuration entities, see config:delete command.</p></p>        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entity_type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$ids</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_doDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L93">at line 93</a></div>
-        <code>                    void
-    <strong>doDelete</strong>(string $entity_type, array $ids)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Actual delete method.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entity_type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$ids</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException">InvalidPluginDefinitionException</abbr></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginNotFoundException">PluginNotFoundException</abbr></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Entity\EntityStorageException">EntityStorageException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_loadSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L105">at line 105</a></div>
-        <code>                    void
-    <strong>loadSave</strong>(string $entity_type, $ids = null, array $options = [&#039;bundle&#039; =&gt; self::REQ, &#039;exclude&#039; =&gt; self::REQ, &#039;chunks&#039; =&gt; 50, &#039;publish&#039; =&gt; false, &#039;unpublish&#039; =&gt; false, &#039;state&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; null])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Re-save entities, and publish/unpublish is specified.</p></p>                <p><p>If passing in a file with an ID in each line, append a comma to each row.</p></p>        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entity_type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$ids</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_doSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L179">at line 179</a></div>
-        <code>                    void
-    <strong>doSave</strong>(string $entity_type, array $ids, string|null $action, string|null $state)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Actual save method.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$entity_type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$ids</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string|null</td>
-                <td>$action</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string|null</td>
-                <td>$state</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException">InvalidPluginDefinitionException</abbr></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginNotFoundException">PluginNotFoundException</abbr></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Entity\EntityStorageException">EntityStorageException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getQuery">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/EntityCommands.php#L234">at line 234</a></div>
-        <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
-    <strong>getQuery</strong>(string $entity_type, string|null $ids, array $options)
+                    <h3 id="method_dependentsOfModule">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L74">at line 74</a></div>
+        <code>                    <abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr>
+    <strong>dependentsOfModule</strong>(string $module, array $options = [&#039;type&#039; =&gt; InputOption::VALUE_REQUIRED, &#039;only-installed&#039; =&gt; true, &#039;format&#039; =&gt; &#039;&#039;])
         </code>
     </h3>
     <div class="details">    
@@ -2395,12 +2079,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <table class="table table-condensed">
                     <tr>
                 <td>string</td>
-                <td>$entity_type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>string|null</td>
-                <td>$ids</td>
+                <td>$module</td>
                 <td></td>
             </tr>
                     <tr>
@@ -2415,25 +2094,277 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr></td>
+            <td><abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr></td>
             <td></td>
         </tr>
     </table>
 
             
-                            <h4>Exceptions</h4>
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validateDependentsOfModule">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L136">at line 136</a></div>
+        <code>                    void
+    <strong>validateDependentsOfModule</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException">InvalidPluginDefinitionException</abbr></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginNotFoundException">PluginNotFoundException</abbr></td>
+                <td><a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
+                <td>$commandData</td>
                 <td></td>
             </tr>
             </table>
 
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dependentsOfConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L180">at line 180</a></div>
+        <code>                    <abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr>
+    <strong>dependentsOfConfig</strong>(string $config, array $options = [&#039;format&#039; =&gt; &#039;&#039;])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Commands\core\string|Consolidation\OutputFormatters\StructuredData\UnstructuredData|null">UnstructuredData|null</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validateDependentsOfConfig">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L216">at line 216</a></div>
+        <code>                    void
+    <strong>validateDependentsOfConfig</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
+                <td>$commandData</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_buildTree">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L231">at line 231</a></div>
+        <code>            protected        void
+    <strong>buildTree</strong>(string $dependency, array $path = [])
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Builds the nested dependency tree.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$dependency</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$path</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_buildDependents">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L259">at line 259</a></div>
+        <code>            protected        <a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a>
+    <strong>buildDependents</strong>(array $dependenciesPerDependent)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Build the reverse the relation: dependent -&gt; dependencies.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$dependenciesPerDependent</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_scanConfigs">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/actions/src/Commands/core/DrupalDependenciesCommands.php#L279">at line 279</a></div>
+        <code>            protected        void
+    <strong>scanConfigs</strong>(bool $scanModuleDependencies = true)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Scans all config entities and store their module and config dependencies.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>bool</td>
+                <td>$scanModuleDependencies</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
             
             
                     </div>
