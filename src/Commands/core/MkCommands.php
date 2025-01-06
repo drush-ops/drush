@@ -237,8 +237,8 @@ EOT;
         $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
 
         // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
-        $yaml_nav = str_replace("'!!python/name:materialx.emoji.twemoji'", '!!python/name:materialx.emoji.twemoji', $yaml_nav);
-        $yaml_nav = str_replace("'!!python/name:materialx.emoji.to_svg'", '!!python/name:materialx.emoji.to_svg', $yaml_nav);
+        $yaml_nav = str_replace("'!!python/name:material.extensions.emoji.twemoji'", '!!python/name:material.extensions.emoji.twemoji', $yaml_nav);
+        $yaml_nav = str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml_nav);
 
         file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
     }
