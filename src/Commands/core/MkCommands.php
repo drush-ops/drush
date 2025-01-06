@@ -232,6 +232,7 @@ EOT;
         $base = Yaml::parseFile(Path::join($dest, 'mkdocs_base.yml'));
         $base['nav'][] = ['Commands' => $nav_commands];
         $base['nav'][] = ['Generators' => $nav_generators];
+        $base['nav'][] = ['API' => 'api'];
         $base['plugins'][]['redirects']['redirect_maps'] = $map_commands + $map_generators;
         $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
 
