@@ -39,4 +39,4 @@ Credits
 
 ![Drush Logo](drush_logo-black.png)
 [![PhpStorm Logo](misc/icon_PhpStorm.png)](https://www.jetbrains.com/phpstorm/)
-[![Blackfire.io Logo](../misc/icon_Blackfireio.png)](https://www.blackfire.io)
+[![Blackfire.io Logo](misc/icon_Blackfireio.png)](https://www.blackfire.io)
