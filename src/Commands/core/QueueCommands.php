@@ -10,6 +10,7 @@ use Drupal\Core\Queue\DelayedRequeueException;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 use Drupal\Core\Queue\QueueInterface;
+use Drupal\Core\Queue\QueueWorkerInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
@@ -24,6 +25,7 @@ final class QueueCommands extends DrushCommands
     use AutowireTrait;
 
     const RUN = 'queue:run';
+    const RUN_ALL = 'queue:run-all';
     const LIST = 'queue:list';
     const DELETE = 'queue:delete';
 
@@ -75,41 +77,83 @@ final class QueueCommands extends DrushCommands
         }
 
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
-            try {
-                // @phpstan-ignore-next-line
-                $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id ?? $item->qid]));
-                // @phpstan-ignore-next-line
-                $worker->processItem($item->data);
-                $queue->deleteItem($item);
-                $count++;
-            } catch (RequeueException) {
-                // The worker requested the task to be immediately requeued.
-                $queue->releaseItem($item);
-            } catch (SuspendQueueException $e) {
-                // If the worker indicates there is a problem with the whole queue,
-                // release the item.
-                $queue->releaseItem($item);
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
-            } catch (DelayedRequeueException $e) {
-                // The worker requested the task not be immediately re-queued.
-                // - If the queue doesn't support ::delayItem(), we should leave the
-                // item's current expiry time alone.
-                // - If the queue does support ::delayItem(), we should allow the
-                // queue to update the item's expiry using the requested delay.
-                if ($queue instanceof DelayableQueueInterface) {
-                    // This queue can handle a custom delay; use the duration provided
-                    // by the exception.
-                    $queue->delayItem($item, $e->getDelay());
-                }
-            } catch (\Exception $e) {
-                // In case of any other kind of exception, log it and leave the
-                // item in the queue to be processed again later.
-                $this->logger()->error($e->getMessage());
-            }
+            $this->doRun($queue, $worker, $name, $item, $count);
             $remaining = $end - time();
         }
+
         $elapsed = microtime(true) - $start;
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
+    }
+
+    /**
+     * Run all available queues.
+     */
+    #[CLI\Command(name: self::RUN_ALL, aliases: ['queue-run-all'])]
+    #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
+    #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
+    #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
+    public function runAll($options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
+    {
+        $time_limit = (int) $options['time-limit'];
+        $items_limit = (int) $options['items-limit'];
+        $start = microtime(true);
+        $end = time() + $time_limit;
+        $count = 0;
+        $remaining = $time_limit;
+
+        $queues = $this->getQueues();
+        foreach ($queues as $name => $info) {
+            $queue = $this->getQueue($name);
+            $worker = $this->getWorkerManager()->createInstance($name);
+            $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
+
+            if ($queue instanceof QueueGarbageCollectionInterface) {
+                $queue->garbageCollection();
+            }
+
+            while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
+                $this->doRun($queue, $worker, $name, $item, $count);
+                $remaining = $end - time();
+            }
+        }
+
+        $elapsed = microtime(true) - $start;
+        $this->logger()->success(dt('Processed @count items in @elapsed sec.', ['@count' => $count, '@elapsed' => round($elapsed, 2)]));
+    }
+
+    protected function doRun(QueueInterface $queue, QueueWorkerInterface $worker, string $name, $item, int &$count): void
+    {
+        try {
+            // @phpstan-ignore-next-line
+            $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id ?? $item->qid]));
+            // @phpstan-ignore-next-line
+            $worker->processItem($item->data);
+            $queue->deleteItem($item);
+            $count++;
+        } catch (RequeueException) {
+            // The worker requested the task to be immediately requeued.
+            $queue->releaseItem($item);
+        } catch (SuspendQueueException $e) {
+            // If the worker indicates there is a problem with the whole queue,
+            // release the item.
+            $queue->releaseItem($item);
+            throw new \Exception($e->getMessage(), $e->getCode(), $e);
+        } catch (DelayedRequeueException $e) {
+            // The worker requested the task not be immediately re-queued.
+            // - If the queue doesn't support ::delayItem(), we should leave the
+            // item's current expiry time alone.
+            // - If the queue does support ::delayItem(), we should allow the
+            // queue to update the item's expiry using the requested delay.
+            if ($queue instanceof DelayableQueueInterface) {
+                // This queue can handle a custom delay; use the duration provided
+                // by the exception.
+                $queue->delayItem($item, $e->getDelay());
+            }
+        } catch (\Exception $e) {
+            // In case of any other kind of exception, log it and leave the
+            // item in the queue to be processed again later.
+            $this->logger()->error($e->getMessage());
+        }
     }
 
     /**
