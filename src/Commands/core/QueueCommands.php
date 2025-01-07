@@ -57,9 +57,10 @@ final class QueueCommands extends DrushCommands
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
+    #[CLI\Option(name: 'daemon', description: 'Keep the command running indefinitely, or until one of the chosen limits has been reached.')]
     #[CLI\ValidateQueueName(argumentName: 'name')]
     #[CLI\Complete(method_name_or_callable: 'queueComplete')]
-    public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
+    public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ, 'daemon' => false]): void
     {
         $worker = $this->getWorkerManager()->createInstance($name);
         $info = $this->getWorkerManager()->getDefinition($name);
@@ -76,12 +77,17 @@ final class QueueCommands extends DrushCommands
             $queue->garbageCollection();
         }
 
-        while (!$this->hasReachedLimit($options, $items_count, $time_remaining) && ($item = $queue->claimItem($lease_time))) {
-            if ($this->processItem($queue, $worker, $name, $item)) {
-                $items_count++;
+        do {
+            while (!$this->hasReachedLimit($options, $items_count, $time_remaining) && ($item = $queue->claimItem($lease_time))) {
+                if ($this->processItem($queue, $worker, $name, $item)) {
+                    $items_count++;
+                }
+                $time_remaining = $end - time();
             }
-            $time_remaining = $end - time();
-        }
+            if ($options['daemon']) {
+                sleep(1);
+            }
+        } while ($options['daemon'] && !$this->hasReachedLimit($options, $items_count, $time_remaining));
 
         $elapsed = microtime(true) - $start;
         $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $items_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
@@ -94,7 +100,8 @@ final class QueueCommands extends DrushCommands
     #[CLI\Option(name: 'time-limit', description: 'The maximum number of seconds allowed to run the queue.')]
     #[CLI\Option(name: 'items-limit', description: 'The maximum number of items allowed to run the queue.')]
     #[CLI\Option(name: 'lease-time', description: 'The maximum number of seconds that an item remains claimed.')]
-    public function runAll($options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
+    #[CLI\Option(name: 'daemon', description: 'Keep the command running indefinitely, or until one of the chosen limits has been reached.')]
+    public function runAll($options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ, 'daemon' => false]): void
     {
         $time_limit = (int) $options['time-limit'];
         $start = microtime(true);
@@ -103,7 +110,7 @@ final class QueueCommands extends DrushCommands
         $items_count = 0;
         $queues = $this->getQueues();
 
-        while (!$this->hasReachedLimit($options, $items_count, $time_remaining)) {
+        do {
             foreach ($queues as $name => $info) {
                 $queue = $this->getQueue($name);
                 $worker = $this->getWorkerManager()->createInstance($name);
@@ -115,7 +122,7 @@ final class QueueCommands extends DrushCommands
                     $queue->garbageCollection();
                 }
 
-                while ($item = $queue->claimItem($lease_time)) {
+                while (!$this->hasReachedLimit($options, $items_count, $time_remaining) && $item = $queue->claimItem($lease_time)) {
                     if ($queue_starting) {
                         $this->logger()->notice('Processing queue ' . $name);
                     }
@@ -132,7 +139,10 @@ final class QueueCommands extends DrushCommands
                     $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $queue_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
                 }
             }
-        }
+            if ($options['daemon']) {
+                sleep(1);
+            }
+        } while ($options['daemon'] && !$this->hasReachedLimit($options, $items_count, $time_remaining));
 
         $elapsed = microtime(true) - $start;
         $this->logger()->success(dt('Processed @count items in @elapsed sec.', ['@count' => $items_count, '@elapsed' => round($elapsed, 2)]));
