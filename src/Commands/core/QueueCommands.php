@@ -116,7 +116,8 @@ final class QueueCommands extends DrushCommands
                 $worker = $this->getWorkerManager()->createInstance($name);
                 $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
                 $queue_starting = true;
-                $queue_count = 0;
+                $queue_start = microtime(true);
+                $queue_items_count = 0;
 
                 if ($queue instanceof QueueGarbageCollectionInterface) {
                     $queue->garbageCollection();
@@ -127,16 +128,16 @@ final class QueueCommands extends DrushCommands
                         $this->logger()->notice('Processing queue ' . $name);
                     }
                     if ($this->processItem($queue, $worker, $name, $item)) {
-                        $queue_count++;
+                        $queue_items_count++;
                     }
                     $time_remaining = $end - time();
                     $queue_starting = false;
                 }
 
-                if ($queue_count > 0) {
-                    $items_count += $queue_count;
-                    $elapsed = microtime(true) - $start;
-                    $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $queue_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
+                if ($queue_items_count > 0) {
+                    $items_count += $queue_items_count;
+                    $elapsed = microtime(true) - $queue_start;
+                    $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $queue_items_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
                 }
             }
             if ($options['daemon']) {
