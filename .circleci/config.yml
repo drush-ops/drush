@@ -14,10 +14,10 @@ defaults: &defaults
     PHP_EXTENSIONS_DISABLE: xdebug
     PHP_XDEBUG_MODE: off
 
-requires: &requires
-  requires:
-    - check_mergable
-    - code_style
+#requires: &requires
+#  requires:
+#    - check_mergable
+#    - code_style
 
 post_steps: &poststeps
   post-steps:
@@ -173,7 +173,7 @@ workflows:
 #      - test_80_drupal92_security:
 #          <<: *requires
       - test:
-          <<: *requires
+          #          <<: *requires
           <<: *poststeps
           matrix:
             parameters:
