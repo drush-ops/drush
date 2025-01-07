@@ -2,8 +2,8 @@ name: Build docs site
 
 on:
   push:
-    # zActions is used to build and preview mkdocs changes.
-    branches: [ 11.x, 12.x, 13.x, zActions ]
+    # 0.x is used to build and preview mkdocs changes.
+    branches: [ 11.x, 12.x, 13.x, 0.x ]
     tags: ["11.*", "12.*", "13.*"]
 
 jobs:
