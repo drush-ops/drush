@@ -61,28 +61,30 @@ final class QueueCommands extends DrushCommands
     #[CLI\Complete(method_name_or_callable: 'queueComplete')]
     public function run(string $name, $options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
-        $time_limit = (int) $options['time-limit'];
-        $items_limit = (int) $options['items-limit'];
-        $start = microtime(true);
         $worker = $this->getWorkerManager()->createInstance($name);
         $info = $this->getWorkerManager()->getDefinition($name);
-        $end = time() + $time_limit;
         $queue = $this->getQueue($name);
-        $count = 0;
-        $remaining = $time_limit;
+
+        $time_limit = (int) $options['time-limit'];
+        $start = microtime(true);
+        $end = time() + $time_limit;
+        $time_remaining = $time_limit;
         $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
+        $items_count = 0;
 
         if ($queue instanceof QueueGarbageCollectionInterface) {
             $queue->garbageCollection();
         }
 
-        while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
-            $this->doRun($queue, $worker, $name, $item, $count);
-            $remaining = $end - time();
+        while (!$this->hasReachedLimit($options, $items_count, $time_remaining) && ($item = $queue->claimItem($lease_time))) {
+            if ($this->processItem($queue, $worker, $name, $item)) {
+                $items_count++;
+            }
+            $time_remaining = $end - time();
         }
 
         $elapsed = microtime(true) - $start;
-        $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
+        $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $items_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
     }
 
     /**
@@ -95,33 +97,63 @@ final class QueueCommands extends DrushCommands
     public function runAll($options = ['time-limit' => self::REQ, 'items-limit' => self::REQ, 'lease-time' => self::REQ]): void
     {
         $time_limit = (int) $options['time-limit'];
-        $items_limit = (int) $options['items-limit'];
         $start = microtime(true);
         $end = time() + $time_limit;
-        $count = 0;
-        $remaining = $time_limit;
-
+        $time_remaining = $time_limit;
+        $items_count = 0;
         $queues = $this->getQueues();
-        foreach ($queues as $name => $info) {
-            $queue = $this->getQueue($name);
-            $worker = $this->getWorkerManager()->createInstance($name);
-            $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
 
-            if ($queue instanceof QueueGarbageCollectionInterface) {
-                $queue->garbageCollection();
-            }
+        while (!$this->hasReachedLimit($options, $items_count, $time_remaining)) {
+            foreach ($queues as $name => $info) {
+                $queue = $this->getQueue($name);
+                $worker = $this->getWorkerManager()->createInstance($name);
+                $lease_time = $options['lease-time'] ?? $info['cron']['time'] ?? 30;
+                $queue_starting = true;
+                $queue_count = 0;
 
-            while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
-                $this->doRun($queue, $worker, $name, $item, $count);
-                $remaining = $end - time();
+                if ($queue instanceof QueueGarbageCollectionInterface) {
+                    $queue->garbageCollection();
+                }
+
+                while ($item = $queue->claimItem($lease_time)) {
+                    if ($queue_starting) {
+                        $this->logger()->notice('Processing queue ' . $name);
+                    }
+                    if ($this->processItem($queue, $worker, $name, $item)) {
+                        $queue_count++;
+                    }
+                    $time_remaining = $end - time();
+                    $queue_starting = false;
+                }
+
+                if ($queue_count > 0) {
+                    $items_count += $queue_count;
+                    $elapsed = microtime(true) - $start;
+                    $this->logger()->success(dt('Processed @count items from the @name queue in @elapsed sec.', ['@count' => $queue_count, '@name' => $name, '@elapsed' => round($elapsed, 2)]));
+                }
             }
         }
 
         $elapsed = microtime(true) - $start;
-        $this->logger()->success(dt('Processed @count items in @elapsed sec.', ['@count' => $count, '@elapsed' => round($elapsed, 2)]));
+        $this->logger()->success(dt('Processed @count items in @elapsed sec.', ['@count' => $items_count, '@elapsed' => round($elapsed, 2)]));
     }
 
-    protected function doRun(QueueInterface $queue, QueueWorkerInterface $worker, string $name, $item, int &$count): void
+    protected function hasReachedLimit(array $options, int $items_count, int $time_remaining): bool
+    {
+        $time_limit = (int) $options['time-limit'];
+        $items_limit = (int) $options['items-limit'];
+
+        return ($time_limit && $time_remaining <= 0)
+            || ($items_limit && $items_count >= $items_limit);
+    }
+
+    /**
+     * Process an item from the queue.
+     *
+     * @return bool
+     *   TRUE if the item was processed, FALSE otherwise.
+     */
+    protected function processItem(QueueInterface $queue, QueueWorkerInterface $worker, string $name, object $item): bool
     {
         try {
             // @phpstan-ignore-next-line
@@ -129,7 +161,7 @@ final class QueueCommands extends DrushCommands
             // @phpstan-ignore-next-line
             $worker->processItem($item->data);
             $queue->deleteItem($item);
-            $count++;
+            return true;
         } catch (RequeueException) {
             // The worker requested the task to be immediately requeued.
             $queue->releaseItem($item);
@@ -154,6 +186,8 @@ final class QueueCommands extends DrushCommands
             // item in the queue to be processed again later.
             $this->logger()->error($e->getMessage());
         }
+
+        return false;
     }
 
     /**
