@@ -269,6 +269,7 @@ class ConfigImportCommands extends DrushCommands
                 if ($config_importer->getErrors()) {
                     throw new ConfigException('Errors occurred during import');
                 }
+
                 $this->logger()->success('The configuration was imported successfully.');
             } catch (ConfigException $e) {
                 // Return a negative result for UI purposes. We do not differentiate
