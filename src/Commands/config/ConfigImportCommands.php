@@ -283,12 +283,12 @@ class ConfigImportCommands extends DrushCommands
                 watchdog_exception('config_import', $e);
                 throw new \Exception($message, $e->getCode(), $e);
             } finally {
-              // Importing config might trigger batch operations (such as when installing and uninstalling modules).
-              // @see \Drush\Commands\pm\PmCommands::install()
-              if (batch_get()) {
-                $this->logger()->notice('Running batch operations...');
-                drush_backend_batch_process();
-              }
+                // Importing config might trigger batch operations (such as when installing and uninstalling modules).
+                // @see \Drush\Commands\pm\PmCommands::install()
+                if (batch_get()) {
+                    $this->logger()->notice('Running batch operations...');
+                    drush_backend_batch_process();
+                }
             }
         }
     }
