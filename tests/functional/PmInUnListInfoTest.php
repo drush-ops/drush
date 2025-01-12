@@ -93,5 +93,14 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->drush(PmCommands::UNINSTALL, ['user'], [], null, null, self::EXIT_ERROR);
         $out = $this->getErrorOutput();
         $this->assertStringContainsString('is required', $out);
+
+        // Test a module name with composer namespace.
+        $this->drush(PmCommands::INSTALL, ['drupal/drush_empty_module']);
+        $this->drush(PmCommands::LIST, [], ['status' => 'enabled']);
+        $out = $this->getOutput();
+        $this->assertStringContainsString('drush_empty_module', $out);
+        $this->drush(PmCommands::UNINSTALL, ['drupal/drush_empty_module']);
+        $out = $this->getErrorOutput();
+        $this->assertStringContainsString('Successfully uninstalled', $out);
     }
 }

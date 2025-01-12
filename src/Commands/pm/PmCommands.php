@@ -83,6 +83,7 @@ final class PmCommands extends DrushCommands
     public function install(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
+        $modules = $this->normalizeModuleNames($modules);
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if ($todo === []) {
@@ -129,6 +130,7 @@ final class PmCommands extends DrushCommands
     {
         $modules = $commandData->input()->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
+        $modules = $this->normalizeModuleNames($modules);
         $modules = $this->addInstallDependencies($modules);
         if ($modules === []) {
             return;
@@ -179,7 +181,7 @@ final class PmCommands extends DrushCommands
     public function uninstall(array $modules): void
     {
         $modules = StringUtils::csvToArray($modules);
-
+        $modules = $this->normalizeModuleNames($modules);
         $installed_modules = array_filter($modules, function ($module) {
             return $this->getModuleHandler()->moduleExists($module);
         });
@@ -214,6 +216,7 @@ final class PmCommands extends DrushCommands
         $list = [];
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
+            $modules = $this->normalizeModuleNames($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $reasons) {
                     // @phpstan-ignore foreach.nonIterable
@@ -420,5 +423,25 @@ final class PmCommands extends DrushCommands
         }
 
         return $links;
+    }
+
+    /**
+     * Normalize module names
+     *
+     * In pm:install/pm:unistall, it possible to pass single module names, e.g. "views_ui",
+     * or module names with composer namespaces, e.g. "drupal/views_ui".
+     * Internally, drush only process single word module name, e.g. views_ui.
+     * This method removes the composer namespace part from the module names.
+     *
+     * @param array $modules
+     *   List of module names in format "namespace/module_name" or "module_name"
+     *
+     * @return array|string[]
+     *   List of module names without composer namespace
+     */
+    protected function normalizeModuleNames(array $modules): array
+    {
+        // Split the module names like "drual/views_ui" on slash, and only return the name part, e.g. "views_ui".
+        return array_map(fn($module) => end(explode('/', $module)), $modules);
     }
 }
