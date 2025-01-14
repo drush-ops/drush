@@ -7,6 +7,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
+use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Database\Database;
 use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
@@ -671,6 +672,17 @@ EOT;
         if ($refreshSettings) {
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
+
+        DeprecationHelper::backwardsCompatibleCall(
+            \Drupal::VERSION,
+            '11.1.0',
+            // Make the 'testing' profile available as a regular profile to
+            // avoid discovery of all testing extensions.
+            // @see https://www.drupal.org/node/3490626
+            fn() => @symlink('tests/testing', "$root/core/profiles/testing"),
+            fn() => null,
+        );
+
         $sutAlias = $this->sutAlias($uri);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
@@ -678,7 +690,7 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-            'recipeOrProfile' => 'minimal',
+            'recipeOrProfile' => 'testing',
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
         ];
