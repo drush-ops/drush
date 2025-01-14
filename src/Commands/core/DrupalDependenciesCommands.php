@@ -67,7 +67,7 @@ final class DrupalDependenciesCommands extends DrushCommands
     {
         return new self(
             $container->get('extension.list.module'),
-            $container->getParameter('container.modules')
+            $container->getParameter('container.modules'),
         );
     }
 
