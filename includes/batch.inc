@@ -183,7 +183,7 @@ function _drush_batch_command($id) {
 
   $data = Database::getConnection()->select('batch', 'b')
     ->fields('b', ['batch'])
-    ->condition('bid', $id)
+    ->condition('bid', (int) $id)
     ->execute()
     ->fetchField();
 
