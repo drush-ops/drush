@@ -354,6 +354,7 @@ final class MigrateRunnerCommands extends DrushCommands
             // cached, make sure that system_migrate_prepare_row() is picked-up.
             \Drupal::moduleHandler()->resetImplementations();
         }
+
         foreach ($list as $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
         }

@@ -673,15 +673,10 @@ EOT;
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
 
-        DeprecationHelper::backwardsCompatibleCall(
-            \Drupal::VERSION,
-            '11.1.0',
-            // Make the 'testing' profile available as a regular profile to
-            // avoid discovery of all testing extensions.
-            // @see https://www.drupal.org/node/3490626
-            fn() => @symlink('tests/testing', "$root/core/profiles/testing"),
-            fn() => null,
-        );
+        // Make the 'testing' profile available as a regular profile to avoid
+        //discovery of all testing extensions.
+        // @see https://www.drupal.org/node/3490626
+        @symlink('tests/testing', "$root/core/profiles/testing"),
 
         $sutAlias = $this->sutAlias($uri);
         $options = $optionsFromTest + [
