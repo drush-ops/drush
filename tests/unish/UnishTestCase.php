@@ -671,7 +671,6 @@ EOT;
         if ($refreshSettings) {
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
-        // file_put_contents("$siteDir/settings.php", "\n\n\$settings['extension_discovery_scan_tests'] = TRUE;\n", FILE_APPEND);
         $sutAlias = $this->sutAlias($uri);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
@@ -679,7 +678,7 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-                'recipeOrProfile' => 'minimal', // or path to recipe directory
+            'recipeOrProfile' => 'minimal',
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
         ];
