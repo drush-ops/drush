@@ -676,7 +676,7 @@ EOT;
         // Make the 'testing' profile available as a regular profile to avoid
         //discovery of all testing extensions.
         // @see https://www.drupal.org/node/3490626
-        @symlink('tests/testing', "$root/core/profiles/testing"),
+        @symlink('tests/testing', "$root/core/profiles/testing");
 
         $sutAlias = $this->sutAlias($uri);
         $options = $optionsFromTest + [
