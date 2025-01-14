@@ -37,7 +37,8 @@ class ApplicationFactory
         $application->setAutoExit(false);
 
         $generators = $this->discover();
-        $application->addCommands($generators);
+        // Listen to this event in order to alter generator info.
+        $application->addCommands($application->dispatch(new GeneratorInfoAlter($generators))->generators);
         // Hide default Symfony console commands.
         foreach (['help', 'list', 'completion', '_complete'] as $name) {
             $application->get($name)->setHidden(true);
@@ -90,11 +91,18 @@ class ApplicationFactory
 
     /**
      * Implements hook GeneratorInfoAlter.
+     *
+     * This gets called twice: first for the DCG core generators and then for all Drush+Drupal generators.
      */
     public static function alterGenerators(GeneratorInfoAlter $event): void
     {
-        $event->generators['theme-settings']->setName('theme:settings');
-        $event->generators['plugin-manager']->setName('plugin:manager');
+        // Alter DCG core generator names to match ours.
+        if (isset($event->generators['plugin-manager'])) {
+            $event->generators['plugin-manager']->setName('plugin:manager');
+        }
+        if (isset($event->generators['theme-settings'])) {
+            $event->generators['theme-settings']->setName('theme:settings');
+        }
     }
 
     public function logger(): LoggerInterface

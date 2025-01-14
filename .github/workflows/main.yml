@@ -2,7 +2,8 @@ name: Build docs site
 
 on:
   push:
-    branches: [11.x, 12.x, 13.x]
+    # 0.x is used to build and preview mkdocs changes.
+    branches: [ 11.x, 12.x, 13.x, 0.x ]
     tags: ["11.*", "12.*", "13.*"]
 
 jobs:
@@ -20,14 +21,15 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "Drush Documentation Bot"
-      - name: Set up Python 3.8
+      - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.9'
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install mkdocs==1.4.3 mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
+          # Later versions of mkdocs giving build error remated to a missing import for 'templates'.
+          pip install mkdocs==1.5.3 mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:

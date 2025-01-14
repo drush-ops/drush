@@ -1,0 +1,19 @@
+dependencies:
+  module:
+    - node
+    - taxonomy
+id: node.latin_name
+field_name: latin_name
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  case_sensitive: true
+  is_ascii: false
+module: core
+locked: false
+cardinality: 1
+translatable: false
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

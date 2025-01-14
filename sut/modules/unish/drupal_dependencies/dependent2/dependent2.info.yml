@@ -1,0 +1,8 @@
+name: Dependent 1
+type: module
+description: Dependent 1 module
+core_version_requirement: ^10.2 || ^11
+package: Other
+dependencies:
+  - drupal:node
+  - dependent1:dependent1
