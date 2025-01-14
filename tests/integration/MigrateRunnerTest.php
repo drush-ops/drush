@@ -121,12 +121,14 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
         $this->drush('state:set', ['woot.migrate_runner.trigger_failures', true]);
 
-        // Warm-up the 'migrate_prepare_row' hook implementations cache to test
-        // that system_migrate_prepare_row() is picked-up during import. See
-        // MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW test, later.
-        // @see system_migrate_prepare_row()
-        // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
-        $this->drush('php:eval', ["Drupal::moduleHandler()->invokeAll('migrate_prepare_row');"]);
+        if (version_compare(\Drupal::VERSION, '11.1.0', '<')) {
+            // Warm-up the 'migrate_prepare_row' hook implementations cache to
+            // test that system_migrate_prepare_row() is picked-up during
+            // import. See MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW test, later.
+            // @see system_migrate_prepare_row()
+            // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
+            $this->drush('php:eval', ["Drupal::moduleHandler()->invokeAll('migrate_prepare_row');"]);
+        }
 
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
