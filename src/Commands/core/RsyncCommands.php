@@ -69,14 +69,29 @@ final class RsyncCommands extends DrushCommands
                 throw new UserAbortException();
             }
         }
-
         $rsync_options = $this->rsyncOptions($options);
         $parameters = array_merge([$rsync_options], $extra);
-        $parameters[] = Escape::shellArg($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash());
-        $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
-
-        $ssh_options = $this->getConfig()->get('ssh.options', '');
-        $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
+        $source_alias = $this->sourceEvaluatedPath->getSiteAlias();
+        $target_alias = $this->targetEvaluatedPath->getSiteAlias();
+        $remote_docker_alias = $source_alias->has('docker.host') ? $source_alias : ($target_alias->has('docker.host') ? $target_alias : null);
+        if ($remote_docker_alias) {
+            $docker_host = $remote_docker_alias->get('docker.host', '');
+            $docker_project = $remote_docker_alias->get('docker.project', '');
+            $parameters[] = $source_alias->has('docker.host') ?
+                $source_alias->get('docker.service') . ':' . Escape::shellArg($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash()) :
+                Escape::shellArg($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash());
+            $parameters[] = $target_alias->has('docker.host') ?
+                $target_alias->get('docker.service') . ':' . Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath()) :
+                Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
+            $compose_version = $remote_docker_alias->get('docker.compose.version', '1');
+            $docker_e = $compose_version == '1' ? "docker-compose -H $docker_host  -p $docker_project"  : "docker -H $docker_host compose -p $docker_project";
+            $exec = "rsync -e '$docker_e exec -i'" . ' ' . implode(' ', array_filter($parameters));
+        } else {
+            $ssh_options = $this->getConfig()->get('ssh.options', '');
+            $parameters[] = Escape::shellArg($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash());
+            $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
+            $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
+        }
         $process = $this->processManager()->shell($exec);
         $process->run($process->showRealtime());
 
