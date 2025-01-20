@@ -165,16 +165,6 @@
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a></small></td>
             </tr>
                     <tr>
-                <td class="type" id="property_version">
-                                        protected                                        string
-                                                                                
-                                    </td>
-                <td>$version</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlMysql.html#property_version">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></small></td>
-            </tr>
-                    <tr>
                 <td class="type" id="property_uri">
                                         protected                                        
                                                                                 
@@ -183,6 +173,16 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#property_uri">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_version">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$version</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Sql/SqlMysql.html#property_version">
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></small></td>
             </tr>
             </table>
 
@@ -744,6 +744,41 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_startBrowser">startBrowser</a>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
+        
+                                            <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_startBrowser">
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_programExists">programExists</a>($program)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_programExists">
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getEditor">getEditor</a>(string|null $editor = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_getEditor">
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     static&nbsp;
                 </div>
                 <div class="col-md-8">
@@ -786,41 +821,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                                     </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlMysql.html#method_setVersion">
 <abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    bool
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_startBrowser">startBrowser</a>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
-        
-                                            <p><p>Starts a background browser/tab for the current site or a specified URL.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;bool
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_programExists">programExists</a>($program)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getEditor">getEditor</a>(string|null $editor = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></div>
             </div>
             </div>
 
@@ -1713,7 +1713,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_command">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMariaDB.php#L13">at line 13</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMariaDB.php#L9">at line 9</a></div>
         <code>                    string
     <strong>command</strong>()
         </code>
@@ -1881,7 +1881,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
                     <div class="method-item">
                     <h3 id="method_dumpCmd">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_dumpCmd">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L187">at line 187</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L195">at line 195</a></div>
         <code>                    string
     <strong>dumpCmd</strong>($table_selection)
         </code>
@@ -2125,7 +2125,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_silent">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_silent">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L126">at line 126</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L134">at line 134</a></div>
         <code>                    string|null
     <strong>silent</strong>()
         </code>
@@ -2282,7 +2282,7 @@ True if successful, FALSE if failed.</p></td>
                     <div class="method-item">
                     <h3 id="method_createdbSql">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_createdbSql">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L131">at line 131</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L139">at line 139</a></div>
         <code>                    string
     <strong>createdbSql</strong>(string $dbname, bool $quoted = false)
         </code>
@@ -2410,7 +2410,7 @@ TRUE or FALSE depending on success.</p></p>
                     <div class="method-item">
                     <h3 id="method_dbExists">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_dbExists">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L162">at line 162</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L170">at line 170</a></div>
         <code>                    bool
     <strong>dbExists</strong>()
         </code>
@@ -2444,7 +2444,7 @@ TRUE or FALSE depending on success.</p></p>
                     <div class="method-item">
                     <h3 id="method_creds">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_creds">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L56">at line 56</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L64">at line 64</a></div>
         <code>                    string
     <strong>creds</strong>(bool $hide_password = true)
         </code>
@@ -2521,7 +2521,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_listTables">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_listTables">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L168">at line 168</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L176">at line 176</a></div>
         <code>                    array
     <strong>listTables</strong>()
         </code>
@@ -2554,7 +2554,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_listTablesQuoted">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_listTablesQuoted">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L178">at line 178</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L186">at line 186</a></div>
         <code>                    array
     <strong>listTablesQuoted</strong>()
         </code>
@@ -2825,155 +2825,6 @@ the db url. If the parse fails the array is empty.</p></td>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_make">
-        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_make">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L18">at line 18</a></div>
-        <code>        static            
-    <strong>make</strong>(array $dbSpec, array $options)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>A factory method which creates a mysql or mariadb instance as needed.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>array</td>
-                <td>$dbSpec</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_dumpProgram">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMariaDB.php#L21">at line 21</a></div>
-        <code>                    string
-    <strong>dumpProgram</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getVersion">
-        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_getVersion">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L46">at line 46</a></div>
-        <code>                    string
-    <strong>getVersion</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>The server version.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_setVersion">
-        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_setVersion">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L51">at line 51</a></div>
-        <code>                    void
-    <strong>setVersion</strong>(string $version)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$version</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../Drush/Exec/ExecTrait.html#method_startBrowser">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Exec/ExecTrait.php#L28">at line 28</a></div>
@@ -3111,6 +2962,155 @@ default browser could not be found.</p></td>
                     <table class="table table-condensed">
         <tr>
             <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_make">
+        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_make">
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L22">at line 22</a></div>
+        <code>        static            
+    <strong>make</strong>(array $dbSpec, array $options)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>A factory method which creates a mysql or mariadb instance as needed.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$dbSpec</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_dumpProgram">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMariaDB.php#L14">at line 14</a></div>
+        <code>                    string
+    <strong>dumpProgram</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getVersion">
+        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_getVersion">
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L54">at line 54</a></div>
+        <code>                    string
+    <strong>getVersion</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>The server version.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setVersion">
+        <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_setVersion">
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Sql/SqlMysql.php#L59">at line 59</a></div>
+        <code>                    void
+    <strong>setVersion</strong>(string $version)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$version</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
             <td></td>
         </tr>
     </table>
