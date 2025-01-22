@@ -1,0 +1,11 @@
+name: Dependent 2
+type: module
+description: Dependent 2 module
+core_version_requirement: ^10.2 || ^11
+package: Other
+dependencies:
+  - drupal:node
+  - drupal:history
+  - drupal:taxonomy
+  - drupal:comment
+  - drupal:options

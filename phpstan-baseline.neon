@@ -44,3 +44,9 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/Symfony/BootstrapCompilerPass.php
+
+		-
+			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/Drupal/Migrate/MigrateRunnerHooks.php

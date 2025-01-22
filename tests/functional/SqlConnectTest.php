@@ -28,7 +28,7 @@ class SqlConnectTest extends CommandUnishTestCase
         $shell_options = "-e";
         $db_driver = $this->dbDriver();
         if ($db_driver == 'mysql') {
-            $this->assertMatchesRegularExpression('/^mysql --user=[^\s]+ --password=.* --database=[^\s]+ --host=[^\s]+/', $connectionString);
+            $this->assertMatchesRegularExpression('/^mysql|mariadb --user=[^\s]+ --password=.* --database=[^\s]+ --host=[^\s]+/', $connectionString);
         } elseif ($db_driver == 'sqlite') {
             $this->assertStringContainsString('sqlite3', $connectionString);
             $shell_options = '';

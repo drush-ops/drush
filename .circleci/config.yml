@@ -14,11 +14,6 @@ defaults: &defaults
     PHP_EXTENSIONS_DISABLE: xdebug
     PHP_XDEBUG_MODE: off
 
-requires: &requires
-  requires:
-    - check_mergable
-    - code_style
-
 post_steps: &poststeps
   post-steps:
     - store_test_results:
@@ -142,7 +137,7 @@ jobs:
               - equal: [ lowest, << parameters.release >> ]
           steps:
             - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:11.0.x-dev --no-update
+            - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
             - run: composer -n update
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
@@ -170,10 +165,7 @@ workflows:
       - code_style:
           <<: *poststeps
       - check_mergable
-#      - test_80_drupal92_security:
-#          <<: *requires
       - test:
-          <<: *requires
           <<: *poststeps
           matrix:
             parameters:

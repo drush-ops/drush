@@ -51,6 +51,7 @@ extra:
 # Concerned about surveillance and spam so not enabling disqus for now.
 #  disqus: drush
 markdown_extensions:
+  - attr_list
   - toc:
       permalink: true
   - admonition: {  }
@@ -71,8 +72,8 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
-      emoji_index: '!!python/name:materialx.emoji.twemoji'
-      emoji_generator: '!!python/name:materialx.emoji.to_svg'
+      emoji_index: '!!python/name:material.extensions.emoji.twemoji'
+      emoji_generator: '!!python/name:material.extensions.emoji.to_svg'
 nav:
   - Home: index.md
   - Use:
@@ -81,6 +82,7 @@ nav:
     - Cron: cron.md
     - Drush configuration: using-drush-configuration.md
     - Drupal configuration: config-exporting.md
+    - Drupal dependencies: drupal-dependencies.md
     - Site aliases: site-aliases.md
     - Output Formats, Fields & Filters: output-formats-filters.md
     - Migrate: migrate.md

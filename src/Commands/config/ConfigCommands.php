@@ -16,7 +16,6 @@ use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Config\ImportStorageTransformer;
-use Drupal\Core\Config\StorageCacheInterface;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\StorageManagerInterface;
@@ -33,6 +32,7 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Parser;
 
@@ -57,20 +57,13 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory,
-        protected StorageCacheInterface $configStorage,
+        #[Autowire(service: 'config.storage')]
+        protected StorageInterface $configStorage,
         protected SiteAliasManagerInterface $siteAliasManager,
         protected StorageManagerInterface $configStorageExport,
         protected ImportStorageTransformer $importStorageTransformer,
     ) {
         parent::__construct();
-    }
-
-    public function getConfigStorageExport(): StorageManagerInterface|StorageCacheInterface
-    {
-        if (isset($this->configStorageExport)) {
-            return $this->configStorageExport;
-        }
-        return $this->configStorage;
     }
 
     public function hasImportTransformer(): bool

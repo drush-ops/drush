@@ -1,0 +1,25 @@
+dependencies:
+  config:
+    - field.storage.node.vegetable_type
+    - node.type.vegetable
+    - taxonomy.vocabulary.vegetable_type
+id: node.vegetable.vegetable_type
+field_name: vegetable_type
+entity_type: node
+bundle: vegetable
+label: Vegetable type
+required: true
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  handler: 'default:taxonomy_term'
+  handler_settings:
+    target_bundles:
+      vegetable_type: vegetable_type
+    sort:
+      field: name
+      direction: asc
+    auto_create: false
+    auto_create_bundle: ''
+field_type: entity_reference

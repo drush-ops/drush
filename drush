@@ -16,7 +16,7 @@ parse_commandline()
 		_key="$1"
 		case "$_key" in
 			--xdebug)
-				DRUSH_ALLOW_XDEBUG=1
+				export DRUSH_ALLOW_XDEBUG=1
 				return
 				;;
 		esac
@@ -31,4 +31,4 @@ then
   export XDEBUG_MODE=off
 fi
 
-"$DRUSH_PHP" "$@"
+exec "$DRUSH_PHP" "$@"
