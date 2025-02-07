@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\EntityTypeRepositoryInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -26,9 +24,7 @@ final class CliCommands extends DrushCommands
     const PHP = 'php:cli';
 
     public function __construct(
-        protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeRepositoryInterface $entityTypeRepository,
-        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo
+        protected EntityTypeManagerInterface $entityTypeManager
     ) {
         parent::__construct();
     }
@@ -36,9 +32,7 @@ final class CliCommands extends DrushCommands
     public static function create(ContainerInterface $container): self
     {
         $commandHandler = new static(
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.repository'),
-            $container->get('entity_type.bundle_info'),
+            $container->get('entity_type.manager')
         );
 
         return $commandHandler;
@@ -64,7 +58,6 @@ final class CliCommands extends DrushCommands
     #[CLI\Option(name: 'cwd', description: 'A directory to change to before launching the shell. Default is the project root directory')]
     #[CLI\Topics(topics: [self::DOCS_REPL])]
     #[CLI\Usage(name: '$node = Node::load(1)', description: 'Entity classes are available without their namespace. For example, Node::load(1) works instead of Drupal\Node\entity\Node::load(1).')]
-    #[CLI\Usage(name: '$node = NodeArticle::load(1)', description: 'Entity bundles classes are also available without their namespace. For example, NodeArticle::load(1) works instead of Drupal\node_article\entity\NodeArticle::load(1).')]
     #[CLI\Usage(name: '$paragraph = Paragraph::loadRevision(1)', description: 'Also, a loadRevision static method is made available for easier load of revisions.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function cli(array $options = ['version-history' => false, 'cwd' => self::REQ]): void
@@ -315,36 +308,17 @@ final class CliCommands extends DrushCommands
 
     public function makeEntitiesAvailableWithShortClassNames(): void
     {
-        // The entity type repository stores a map from class name to entity
-        // type id, sneak our short classes in there.
-        $classNameEntityTypeMapReflection = (new \ReflectionObject($this->entityTypeRepository))->getProperty('classNameEntityTypeMap');
-        $classNameEntityTypeMap = $classNameEntityTypeMapReflection->getValue($this->entityTypeRepository);
-        foreach ($this->entityTypeManager->getDefinitions() as $entityTypeId => $definition) {
-            $classNameEntityTypeMap = $this->createShortClassForEntityClass($definition->getClass(), $entityTypeId, $classNameEntityTypeMap);
-            foreach ($this->entityTypeBundleInfo->getAllBundleInfo() as $bundles) {
-                foreach ($bundles as $info) {
-                    if (isset($info['class'])) {
-                        $classNameEntityTypeMap = $this->createShortClassForEntityClass($info['class'], $entityTypeId, $classNameEntityTypeMap);
-                    }
-                }
+        foreach ($this->entityTypeManager->getDefinitions() as $definition) {
+            $class = $definition->getClass();
+            $reflectionClass = new \ReflectionClass($class);
+            $parts = explode('\\', $class);
+            $end = end($parts);
+            // https://github.com/drush-ops/drush/pull/5729 and https://github.com/drush-ops/drush/issues/5730.
+            if ($reflectionClass->isAbstract() || $reflectionClass->isFinal() || class_exists($end)) {
+                continue;
             }
-        }
-        $classNameEntityTypeMapReflection->setValue($this->entityTypeRepository, $classNameEntityTypeMap);
-    }
-
-    public function createShortClassForEntityClass(string $class, string $entityTypeId, array $classNameEntityTypeMap): array
-    {
-        $reflectionClass = new \ReflectionClass($class);
-        $parts = explode('\\', $class);
-        $end = end($parts);
-        // https://github.com/drush-ops/drush/pull/5729, https://github.com/drush-ops/drush/issues/5730
-        // and https://github.com/drush-ops/drush/issues/5899.
-        if ($reflectionClass->isFinal() || $reflectionClass->isAbstract() || class_exists($end)) {
-            return $classNameEntityTypeMap;
-        }
-        $classNameEntityTypeMap[$end] = $entityTypeId;
-        // Make it possible to easily load revisions.
-        eval(sprintf('class %s extends %s {
+            // Make it possible to easily load revisions.
+            eval(sprintf('class %s extends %s {
                 public static function loadRevision($id) {
                     $entity_type_repository = \Drupal::service("entity_type.repository");
                     $entity_type_manager = \Drupal::entityTypeManager();
@@ -352,6 +326,6 @@ final class CliCommands extends DrushCommands
                     return $storage->loadRevision($id);
                 }
             }', $end, $class));
-        return $classNameEntityTypeMap;
+        }
     }
 }
