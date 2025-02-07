@@ -5,7 +5,7 @@ Drush command files obtain references to the resources they need through a techn
 
 !!! tip
 
-    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12+ and removed in Drush 13.
+    Drush 11 and prior required [dependency injection via a drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files). This approach is deprecated in Drush 12+ and removed in Drush 14.
 
 Autowire
 ------------------
