@@ -29,7 +29,7 @@ class LessStrictArgvInput extends ArgvInput
      * @param array|null           $argv       An array of parameters from the CLI (in the argv format)
      * @param InputDefinition|null $definition A InputDefinition instance
      */
-    public function __construct(array $argv = null, InputDefinition $definition = null)
+    public function __construct(?array $argv = null, ?InputDefinition $definition = null)
     {
         // We have to duplicate the implementation of ArgvInput
         // because of liberal use of `private`

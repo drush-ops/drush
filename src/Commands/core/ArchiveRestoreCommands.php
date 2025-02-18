@@ -88,7 +88,7 @@ final class ArchiveRestoreCommands extends DrushCommands implements SiteAliasMan
     #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
     #[CLI\ValidatePhpExtensions(extensions: ['Phar'])]
     public function restore(
-        string $path = null,
+        ?string $path = null,
         ?string $site = null,
         array $options = [
             'destination-path' => null,
