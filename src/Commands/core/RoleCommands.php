@@ -12,6 +12,7 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
@@ -84,7 +85,7 @@ final class RoleCommands extends DrushCommands
         $perms = StringUtils::csvToArray($permissions);
         user_role_grant_permissions($machine_name, $perms);
         $this->logger()->success(dt('Added "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager->getSelf(), CacheRebuildCommands::REBUILD);
+        $this->processManager()->drush($this->siteAliasManager->getSelf(), CacheRebuildCommands::REBUILD, [], Drush::redispatchOptions() + ['strict' => 0]);
     }
 
     /**
@@ -103,7 +104,7 @@ final class RoleCommands extends DrushCommands
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machine_name, $perms);
         $this->logger()->success(dt('Removed "!permissions" to "!role"', ['!permissions' => $permissions, '!role' => $machine_name]));
-        $this->processManager()->drush($this->siteAliasManager->getSelf(), CacheRebuildCommands::REBUILD);
+        $this->processManager()->drush($this->siteAliasManager->getSelf(), CacheRebuildCommands::REBUILD, [], Drush::redispatchOptions() + ['strict' => 0]);
     }
 
     /**
