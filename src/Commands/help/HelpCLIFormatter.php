@@ -139,7 +139,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
         return sprintf(
             '%s%s',
-            $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : ' ',
+            $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : '',
             sprintf('--%s%s', $option['name'], $value)
         );
     }
