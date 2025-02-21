@@ -43,7 +43,9 @@ class Caster
                 });
                 // Collapse single value'd field values.
                 if (count($value[0] ?? []) === 1) {
-                    $value = implode(', ', array_column($value, array_keys($value[0])[0]));
+                    // Filter out non-strings.
+                    $to_implode = array_filter(array_column($value, array_keys($value[0])[0]), fn ($v) => is_string($v));
+                    $value = implode(', ', $to_implode);
                 }
                 $array[$key] = $value;
             }
