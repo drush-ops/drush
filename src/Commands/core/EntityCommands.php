@@ -178,7 +178,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
      */
     public function doSave(string $entity_type, array $ids, ?string $action, ?string $state): void
     {
-        $message = [];
+        $message = '';
         $storage = $this->entityTypeManager->getStorage($entity_type);
         $entities = $storage->loadMultiple($ids);
         $is_revisionable = $this->entityTypeManager->getDefinition($entity_type)->isRevisionable();
