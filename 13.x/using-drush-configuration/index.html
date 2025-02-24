@@ -624,6 +624,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#direnv-for-multiple-code-bases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Direnv for multiple code bases
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#config-examples" class="md-nav__link">
     <span class="md-ellipsis">
       Config examples
@@ -7577,7 +7586,7 @@
 <p>Drush configuration is useful to cut down on typing out lengthy and repetitive command line
 options, and to avoid mistakes.</p>
 <h4 id="directories-and-discovery">Directories and Discovery<a class="headerlink" href="#directories-and-discovery" title="Permanent link">&para;</a></h4>
-<p>drush.yml files are discovered as below, in order of precedence:</p>
+<p><code>drush.yml</code> files are discovered as below, in order of precedence:</p>
 <ol>
 <li>Drupal site folder (e.g. <code>sites/{example.com}/drush.yml</code>).</li>
 <li><code>sites/all/drush</code>, <code>WEBROOT/drush</code>, or <code>PROJECTROOT/drush</code>.</li>
@@ -7595,7 +7604,11 @@ For example see the <code>drush.paths</code> examples below.</p>
 correspond to config keys. For example, to populate the <code>options.uri</code> config item,
 create an environment variable <code>DRUSH_OPTIONS_URI=http://example.com</code>.
 As you can see, variable names should be uppercased, prefixed with <code>DRUSH_</code>, and periods
-replaced with underscores.</p>
+replaced with underscores. Overall, <code>DRUSH_OPTIONS_URI</code> is usually a better approach.</p>
+<p>Note: For <code>uri</code> you need to use a global location or environment variable, not a site-specific
+one, since it's used by Drupal to select which multi-site gets bootstrapped.</p>
+<h4 id="direnv-for-multiple-code-bases">Direnv for multiple code bases<a class="headerlink" href="#direnv-for-multiple-code-bases" title="Permanent link">&para;</a></h4>
+<p>To handle multiple Drupal installations on the same server, <a href="https://direnv.net/">https://direnv.net/</a> can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.</p>
 <h3 id="config-examples">Config examples<a class="headerlink" href="#config-examples" title="Permanent link">&para;</a></h3>
 <h4 id="specify-config-files-to-load">Specify config files to load<a class="headerlink" href="#specify-config-files-to-load" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code>drush:
@@ -7766,7 +7779,7 @@ the Drush major version number in the filename, e.g. <code>drush10.yml</code>.</
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">May 31, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">February 24, 2025</span>
   </span>
 
     
@@ -7785,7 +7798,8 @@ the Drush major version number in the filename, e.g. <code>drush10.yml</code>.</
         <a href="mailto:greg.1.anderson@greenknowe.org">Greg Anderson</a>, 
         <a href="mailto:weitzman@tejasa.com">Moshe Weitzman</a>, 
         <a href="mailto:pieter@frenssen.be">Pieter Frenssen</a>, 
-        <a href="mailto:richardbporter@users.noreply.github.com">Richard B. Porter</a>
+        <a href="mailto:richardbporter@users.noreply.github.com">Richard B. Porter</a>, 
+        <a href="mailto:3491208+gitressa@users.noreply.github.com">gitressa</a>
     </nav>
   </span>
 
@@ -7802,7 +7816,7 @@ the Drush major version number in the filename, e.g. <code>drush10.yml</code>.</
     
         <div class="md-source-date">
             <small>
-                Authors: <span class='git-page-authors git-authors'><a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:pieter@frenssen.be'>Pieter Frenssen</a>, <a href='mailto:richardbporter@users.noreply.github.com'>Richard B. Porter</a></span>
+                Authors: <span class='git-page-authors git-authors'><a href='mailto:greg.1.anderson@greenknowe.org'>Greg Anderson</a>, <a href='mailto:weitzman@tejasa.com'>Moshe Weitzman</a>, <a href='mailto:pieter@frenssen.be'>Pieter Frenssen</a>, <a href='mailto:richardbporter@users.noreply.github.com'>Richard B. Porter</a>, <a href='mailto:3491208+gitressa@users.noreply.github.com'>gitressa</a></span>
             </small>
         </div>
     
