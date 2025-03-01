@@ -5,30 +5,33 @@ namespace Drush\Commands\core;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\workspaces\WorkspaceOperationFactory;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drush\Drush;
 
 final class WorkspacesCommands extends DrushCommands {
+    use AutowireTrait;
+
     const PUBLISH = 'workspaces:publish';
+
+    private ?WorkspaceOperationFactory $workspacesOperationFactory;
 
     /**
    * Constructs a WorkspacesCommands object.
    */
   public function __construct(
-    private readonly WorkspaceOperationFactory $factory,
     private readonly EntityTypeManagerInterface $entityTypeManager,
   ) {
-    parent::__construct();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(ContainerInterface $container) {
-    return new static(
-      $container->get('workspaces.operation_factory'),
-      $container->get('entity_type.manager'),
-    );
+     parent::__construct();
+     /**
+     * Since we use Autowire and our service is in a non-required module, we
+     *     - Get the container ourselves.
+     *     - Our service variable can be null.
+     */
+     $container = Drush::getContainer();
+     if ($container->has('plugin.manager.migration')) {
+         $this->workspacesOperationFactory = $container->get('workspaces.operation_factory');
+     }
   }
 
   /**
