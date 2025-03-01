@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\SiteAlias\SiteAliasManager;
@@ -31,6 +32,7 @@ use League\Container\ContainerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Prepare our Dependency Injection Container
@@ -143,7 +145,7 @@ class DependencyInjection
         // but we will register and configure one for our use.
         // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
         // See Application::commandDiscovery().
-        Robo::addShared($container, 'commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
+        Robo::addShared($container, 'commandDiscovery', CommandFileDiscovery::class)
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
@@ -161,7 +163,7 @@ class DependencyInjection
     protected function alterServicesForDrush($container, Application $application): void
     {
         $paramInjection = $container->get('parameterInjection');
-        $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+        $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
