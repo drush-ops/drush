@@ -2,17 +2,16 @@
 
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Utility\Token;
 use Drupal\workspaces\WorkspaceOperationFactory;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class WorkspacesCommands extends DrushCommands {
+    const PUBLISH = 'workspaces:publish';
 
-  /**
+    /**
    * Constructs a WorkspacesCommands object.
    */
   public function __construct(
@@ -35,7 +34,7 @@ final class WorkspacesCommands extends DrushCommands {
   /**
    * Publish a workspace.
    */
-  #[CLI\Command(name: 'workspaces:publish')]
+  #[CLI\Command(name: self::PUBLISH)]
   #[CLI\Argument(name: 'id', description: 'The workspace to publish.')]
   #[CLI\Usage(name: 'workspaces:publish stage', description: 'Publish the stage workspace')]
   #[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
