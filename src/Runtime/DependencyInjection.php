@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Util\ConfigOverlay;
 use Consolidation\SiteAlias\SiteAliasManager;
@@ -12,7 +13,9 @@ use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drush\Application;
+use Drush\Boot\BootstrapHook;
 use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBoot8;
 use Drush\Cache\CommandCache;
 use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Command\GlobalOptionsEventListener;
@@ -29,6 +32,7 @@ use League\Container\ContainerInterface;
 use Robo\Robo;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Prepare our Dependency Injection Container
@@ -116,38 +120,38 @@ class DependencyInjection
             ->addMethodCall('addSimplifier', [new EntityToArraySimplifier()]);
 
         // Add some of our own objects to the container
-        Robo::addShared($container, 'service.manager', 'Drush\Runtime\ServiceManager')
+        Robo::addShared($container, 'service.manager', ServiceManager::class)
             ->addArgument(self::LOADER)
             ->addArgument('config')
             ->addArgument('logger');
-        Robo::addShared($container, 'bootstrap.drupal8', 'Drush\Boot\DrupalBoot8')
+        Robo::addShared($container, 'bootstrap.drupal8', DrupalBoot8::class)
             ->addArgument('service.manager')
             ->addArgument(self::LOADER);
-        Robo::addShared($container, self::BOOTSTRAP_MANAGER, 'Drush\Boot\BootstrapManager')
+        Robo::addShared($container, self::BOOTSTRAP_MANAGER, BootstrapManager::class)
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
         Robo::addShared($container, BootstrapManager::class, self::BOOTSTRAP_MANAGER); // For autowiring
-        Robo::addShared($container, 'bootstrap.hook', 'Drush\Boot\BootstrapHook')
+        Robo::addShared($container, 'bootstrap.hook', BootstrapHook::class)
           ->addArgument(self::BOOTSTRAP_MANAGER);
-        Robo::addShared($container, 'tildeExpansion.hook', 'Drush\Runtime\TildeExpansionHook');
+        Robo::addShared($container, 'tildeExpansion.hook', TildeExpansionHook::class);
         Robo::addShared($container, 'process.manager', ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
             ->addMethodCall('setConfigRuntime', ['config.runtime'])
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
-        Robo::addShared($container, 'redispatch.hook', 'Drush\Runtime\RedispatchHook')
+        Robo::addShared($container, 'redispatch.hook', RedispatchHook::class)
             ->addArgument('process.manager');
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
         // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
         // See Application::commandDiscovery().
-        Robo::addShared($container, 'commandDiscovery', 'Consolidation\AnnotatedCommand\CommandFileDiscovery')
+        Robo::addShared($container, 'commandDiscovery', CommandFileDiscovery::class)
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
         // Error and Shutdown handlers
-        Robo::addShared($container, 'errorHandler', 'Drush\Runtime\ErrorHandler');
-        Robo::addShared($container, 'shutdownHandler', 'Drush\Runtime\ShutdownHandler');
+        Robo::addShared($container, 'errorHandler', ErrorHandler::class);
+        Robo::addShared($container, 'shutdownHandler', ShutdownHandler::class);
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(SiteAliasManagerAwareInterface::class)
@@ -159,7 +163,7 @@ class DependencyInjection
     protected function alterServicesForDrush($container, Application $application): void
     {
         $paramInjection = $container->get('parameterInjection');
-        $paramInjection->register('Symfony\Component\Console\Style\SymfonyStyle', new DrushStyleInjector());
+        $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
