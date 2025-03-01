@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
-use Custom\Library\Drush\Commands\ExampleAttributesDrushCommands;
+use Custom\Library\Drush\Commands\ExampleAttributesCommands;
 use Symfony\Component\Console\Tester\CommandCompletionTester;
 use Symfony\Component\Filesystem\Path;
 
@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class AttributesTest extends UnishIntegrationTestCase
 {
-    private ExampleAttributesDrushCommands $commandFileInstance;
+    private ExampleAttributesCommands $commandFileInstance;
     private AnnotatedCommandFactory $commandFactory;
 
     public function testAttributes()
@@ -52,7 +52,7 @@ class AttributesTest extends UnishIntegrationTestCase
             $this->markTestSkipped('Symfony Console 6.2+ needed for rest this test.');
         }
 
-        $this->commandFileInstance = new ExampleAttributesDrushCommands();
+        $this->commandFileInstance = new ExampleAttributesCommands();
         $this->commandFactory = new AnnotatedCommandFactory();
         $commandInfo = $this->commandFactory->createCommandInfo($this->commandFileInstance, 'testArithmatic');
         $command = $this->commandFactory->createCommand($commandInfo, $this->commandFileInstance);

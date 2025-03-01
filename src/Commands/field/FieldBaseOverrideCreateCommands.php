@@ -47,9 +47,9 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
     #[CLI\Option(name: 'field-description', description: 'The field description')]
     #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
     #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\Usage(name: 'field:base-field-override-create', description: 'Create a base field override by answering the prompts.')]
-    #[CLI\Usage(name: 'field:base-field-override-create taxonomy_term tag', description: 'Create a base field override and fill in the remaining information through prompts.')]
-    #[CLI\Usage(name: 'field:base-field-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1', description: 'Create a base field override in a completely non-interactive way.')]
+    #[CLI\Usage(name: 'field:base-override-create', description: 'Create a base field override by answering the prompts.')]
+    #[CLI\Usage(name: 'field:base-override-create taxonomy_term tag', description: 'Create a base field override and fill in the remaining information through prompts.')]
+    #[CLI\Usage(name: 'field:base-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1', description: 'Create a base field override in a completely non-interactive way.')]
     #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function baseOverrideCreateField(?string $entityType = null, ?string $bundle = null, array $options = [
@@ -75,7 +75,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
             ]));
         }
 
-        /** @var BaseFieldOverride|BaseFieldDefinition $definition */
+        /** @var BaseFieldOverride|BaseFieldDefinition|null $definition */
         $definition = BaseFieldOverride::loadByName($entityType, $bundle, $fieldName)
             ?? $this->getBaseFieldDefinition($entityType, $fieldName);
 
@@ -151,12 +151,12 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
 
     protected function askFieldLabel(string $default): string
     {
-        return $this->io()->text('Field label', default: $default);
+        return $this->io()->ask('Field label', default: $default);
     }
 
     protected function askFieldDescription(?string $default): ?string
     {
-        return $this->io()->text('Field description', default: $default);
+        return $this->io()->ask('Field description', default: $default);
     }
 
     protected function askRequired(bool $default): bool
@@ -176,6 +176,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
             ->setRequired($isRequired)
             ->save();
 
+        assert($override instanceof BaseFieldOverride);
         return $override;
     }
 

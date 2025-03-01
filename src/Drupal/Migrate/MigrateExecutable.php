@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Migrate;
 
-use Drupal\migrate\MigrateException;
 use Drupal\Component\Utility\Timer;
 use Drupal\migrate\Event\MigrateEvents;
 use Drupal\migrate\Event\MigrateImportEvent;
@@ -22,6 +21,7 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateEvents as MigrateRunnerEvents;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class MigrateExecutable extends MigrateExecutableBase
 {
@@ -53,7 +53,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Frequency (in items) at which progress messages should be emitted.
      */
-    protected ?string $feedback;
+    protected ?int $feedback;
 
     /**
      * Show timestamp in progress message.
@@ -136,7 +136,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         $this->output = $output;
         $this->limit = $options['limit'];
-        $this->feedback = $options['feedback'];
+        $this->feedback = $options['feedback'] ? intval($options['feedback']) : null;
         $this->showTimestamp = $options['timestamp'];
         $this->showTotal = $options['total'];
         // Deleting the missing source rows is not compatible with options that
@@ -164,8 +164,10 @@ class MigrateExecutable extends MigrateExecutableBase
         $this->listeners[MigrateRunnerEvents::DRUSH_MIGRATE_PREPARE_ROW] = [$this, 'onPrepareRow'];
         $this->listeners[MigrateMissingSourceRowsEvent::class] = [$this, 'onMissingSourceRows'];
 
+        $eventDispatcher = $this->getEventDispatcher();
+        assert($eventDispatcher instanceof EventDispatcherInterface);
         foreach ($this->listeners as $event => $listener) {
-            $this->getEventDispatcher()->addListener($event, $listener);
+            $eventDispatcher->addListener($event, $listener);
         }
     }
 
@@ -612,8 +614,10 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function unregisterListeners(): void
     {
+        $eventDispatcher = $this->getEventDispatcher();
+        assert($eventDispatcher instanceof EventDispatcherInterface);
         foreach ($this->listeners as $event => $listener) {
-            $this->getEventDispatcher()->removeListener($event, $listener);
+            $eventDispatcher->removeListener($event, $listener);
         }
     }
 }

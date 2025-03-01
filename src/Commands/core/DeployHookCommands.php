@@ -59,7 +59,7 @@ final class DeployHookCommands extends DrushCommands
                 $this->root = $root;
                 $this->sitePath = $site_path;
                 $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
-                $this->keyValue = $key_value_factory->get('post_update');
+                $this->keyValue = $key_value_factory->get('deploy_hook');
                 $this->updateType = 'deploy';
             }
         };
@@ -111,7 +111,7 @@ final class DeployHookCommands extends DrushCommands
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS);
+        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS, [], Drush::redispatchOptions() + ['strict' => 0]);
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 

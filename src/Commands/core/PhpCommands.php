@@ -58,7 +58,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
 
         if ($script == '-') {
             return eval($this->stdin()->contents());
-        } elseif (file_exists($script)) {
+        } elseif ($script && file_exists($script)) {
             $found = $script;
         } else {
             // Array of paths to search for scripts

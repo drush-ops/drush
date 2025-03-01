@@ -9,6 +9,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Consolidation\SiteProcess\SiteProcess;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
@@ -53,7 +54,7 @@ final class ConfigPullCommands extends DrushCommands
             'yes' => null,
             'format' => 'string',
         ];
-        $this->logger()->notice(dt('Starting to export configuration on :destination.', [':destination' => $destination]));
+        $this->logger()->notice(dt('Starting to export configuration on :source.', [':source' => $source]));
         $process = $this->processManager()->drush($sourceRecord, ConfigExportCommands::EXPORT, [], $export_options + $global_options);
         $process->mustRun();
 
@@ -86,7 +87,7 @@ final class ConfigPullCommands extends DrushCommands
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true, 'debug' => true], $options_double_dash);
+        $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true] + $global_options, $options_double_dash);
         $process->mustRun();
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
@@ -96,6 +97,7 @@ final class ConfigPullCommands extends DrushCommands
     {
         if ($commandData->input()->getOption('safe')) {
             $destinationRecord = $this->siteAliasManager->get($commandData->input()->getArgument('destination'));
+            /** @var SiteProcess $process */
             $process = $this->processManager()->siteProcess($destinationRecord, ['git', 'diff', '--quiet']);
             $process->chdirToSiteRoot();
             $process->run();

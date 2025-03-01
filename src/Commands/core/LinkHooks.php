@@ -87,7 +87,7 @@ final class LinkHooks extends DrushCommands
 
     protected function askLinkType(): int
     {
-        return $this->io()->choice('Allowed link type', [
+        return (int) $this->io()->choice('Allowed link type', [
             LinkItemInterface::LINK_INTERNAL => (string) t('Internal links only'),
             LinkItemInterface::LINK_EXTERNAL => (string) t('External links only'),
             LinkItemInterface::LINK_GENERIC => (string) t('Both internal and external links'),
@@ -96,7 +96,7 @@ final class LinkHooks extends DrushCommands
 
     protected function askAllowLinkText(): int
     {
-        return $this->io()->choice('Allow link text', [
+        return (int) $this->io()->choice('Allow link text', [
             DRUPAL_DISABLED => (string) t('Disabled'),
             DRUPAL_OPTIONAL => (string) t('Optional'),
             DRUPAL_REQUIRED => (string) t('Required'),

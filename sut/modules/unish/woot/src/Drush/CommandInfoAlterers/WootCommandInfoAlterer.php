@@ -6,20 +6,12 @@ namespace Drupal\woot\Drush\CommandInfoAlterers;
 
 use Consolidation\AnnotatedCommand\CommandInfoAltererInterface;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Logger\LoggerChannelInterface;
-use Drush\Commands\AutowireTrait;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 
-class WootCommandInfoAlterer implements CommandInfoAltererInterface
+class WootCommandInfoAlterer implements CommandInfoAltererInterface, LoggerAwareInterface
 {
-    use AutowireTrait;
-
-    protected LoggerChannelInterface $logger;
-
-    public function __construct(LoggerChannelFactoryInterface $loggerFactory)
-    {
-        $this->logger = $loggerFactory->get('drush');
-    }
+    use LoggerAwareTrait;
 
     public function alterCommandInfo(CommandInfo $commandInfo, $commandFileInstance)
     {

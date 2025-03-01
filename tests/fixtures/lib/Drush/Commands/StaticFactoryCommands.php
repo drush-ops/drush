@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
  * in Drush/Commands directory + namespace, relative to some entry in
  * the library's `autoload` section in its composer.json file.
  */
-class StaticFactoryDrushCommands extends DrushCommands
+class StaticFactoryCommands extends DrushCommands
 {
     use AutowireTrait;
 

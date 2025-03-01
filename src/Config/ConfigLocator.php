@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Config;
 
-use Consolidation\Config\ConfigInterface;
-use Robo\Config\Config;
-use Consolidation\Config\Loader\ConfigLoaderInterface;
-use Drush\Config\Loader\YamlConfigLoader;
+use Consolidation\Config\Loader\ConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
+use Drush\Config\Loader\YamlConfigLoader;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -33,12 +31,9 @@ use Symfony\Component\Filesystem\Path;
  */
 class ConfigLocator
 {
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
+    protected DrushConfig $config;
 
-    protected $isLocal;
+    protected bool $isLocal;
 
     protected $sources = false;
 
@@ -105,11 +100,11 @@ class ConfigLocator
         // Add placeholders to establish priority. We add
         // contexts from lowest to highest priority.
         $this->config->addPlaceholder(self::DRUSH_CONTEXT);
+        $this->config->addPlaceholder(self::USER_CONTEXT);
         if (!empty($envPrefix)) {
             $envConfig = new EnvConfig($envPrefix);
             $this->config->addContext(self::ENV_CONTEXT, $envConfig);
         }
-        $this->config->addPlaceholder(self::USER_CONTEXT);
         $this->config->addPlaceholder(self::DRUPAL_CONTEXT);
         $this->config->addPlaceholder(self::SITE_CONTEXT);
         $this->config->addPlaceholder(self::ALIAS_CONTEXT);
@@ -182,7 +177,7 @@ class ConfigLocator
      * Return the configuration object. Create it and load it with
      * all identified configuration if necessary.
      */
-    public function config(): ConfigInterface
+    public function config(): DrushConfig
     {
         return $this->config;
     }
@@ -192,21 +187,19 @@ class ConfigLocator
      * it to the configuration.  The Environment object itself is only
      * available during preflight; the information exported here may be
      * obtained by commands et. al. as needed. @see Environment::exportConfigData()
-     *
-     * @param Environment $environent
      */
     public function addEnvironment(Environment $environment): self
     {
-        $this->config->getContext(self::ENVIRONMENT_CONTEXT)->import($environment->exportConfigData());
+        /** @var DrushConfig $context */
+        $context = $this->config->getContext(self::ENVIRONMENT_CONTEXT);
+        $context->replace($environment->exportConfigData());
         return $this;
     }
 
     /**
      *  Add config paths defined in preflight configuration.
-     *
-     * @param array $paths
      */
-    public function addPreflightConfigFiles($filepaths): self
+    public function addPreflightConfigFiles(array $filepaths): self
     {
         $this->addConfigPaths(self::PREFLIGHT_CONTEXT, (array) $filepaths);
         return $this;
@@ -253,10 +246,8 @@ class ConfigLocator
     /**
      * Add any configuration files found around the Drupal root of the
      * selected site.
-     *
-     * @param Path to the selected Drupal site
      */
-    public function addSitewideConfig($siteRoot): ?self
+    public function addSitewideConfig(string $siteRoot): ?self
     {
         // There might not be a site.
         if (!is_dir($siteRoot)) {
@@ -272,7 +263,13 @@ class ConfigLocator
         // Remember that we've seen this location.
         $this->siteRoots[] = $siteRoot;
 
-        $this->addConfigPaths(self::DRUPAL_CONTEXT, [ dirname($siteRoot) . '/drush', "$siteRoot/drush", "$siteRoot/sites/all/drush" ]);
+        $paths = [
+            dirname($siteRoot) . '/drush',
+            "$siteRoot/drush",
+            "$siteRoot/sites/all/drush",
+        ];
+        $paths = array_filter($paths, is_dir(...));
+        $this->addConfigPaths(self::DRUPAL_CONTEXT, $paths);
         return $this;
     }
 
@@ -324,7 +321,7 @@ class ConfigLocator
     /**
      * Adds $configFiles to the list of config files.
      */
-    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoaderInterface $loader, array $configFiles): void
+    protected function addConfigFiles(ConfigProcessor $processor, ConfigLoader $loader, array $configFiles): void
     {
         foreach ($configFiles as $configFile) {
             $processor->extend($loader->load($configFile));
@@ -503,8 +500,8 @@ class ConfigLocator
      * @param array $candidates
      *   An array filenames that are considered config files.
      *
-     * @return
-     *   An array whose first item is an array of files, and the second item is an
+     * @return array
+     *   The first item is an array of files, and the second item is an
      *   array of dirs.
      */
     protected function findConfigFiles(array $paths, array $candidates): array
@@ -538,7 +535,7 @@ class ConfigLocator
      * @param $siteConfig
      *   The site-specific config file.
      *
-     * @return
+     * @return bool
      *   Whether the config exists and was processed.
      */
     public static function addSiteSpecificConfig(DrushConfig $config, $siteConfig): bool

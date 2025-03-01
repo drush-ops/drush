@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Command;
 
+use Drush\Runtime\RedispatchHook;
+use Drush\Symfony\IndiscriminateInputDefinition;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Drush\Symfony\IndiscriminateInputDefinition;
-use Drush\Runtime\RedispatchHook;
 
 /**
  * Create a placeholder proxy command to represent an unknown command.
@@ -46,7 +46,7 @@ class RemoteCommandProxy extends Command
         $this->ignoreValidationErrors();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->redispatchHook->redispatchIfRemote($input);
         $name = $this->getName();

@@ -17,10 +17,8 @@ use Consolidation\SiteAlias\SiteSpecParser;
  */
 class ArgsPreprocessor
 {
-    /** @var SiteSpecParser */
-    protected $specParser;
-    /** @var ArgsRemapper */
-    protected $remapper;
+    protected ?SiteSpecParser $specParser;
+    protected ?ArgsRemapper $remapper;
 
     /**
      * ArgsPreprocessor constructor
@@ -53,7 +51,7 @@ class ArgsPreprocessor
         $appName = array_shift($argv);
         $storage->addArg($appName);
 
-        if ($this->remapper) {
+        if (isset($this->remapper)) {
             $argv = $this->remapper->remap($argv);
         }
 
@@ -126,7 +124,8 @@ class ArgsPreprocessor
      * @param $optionsTable Table of option names and the name of the
      *   method that should be called to process that option.
      * @param $opt The option string to check
-     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
+     * @return array
+     *   [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function findMethodForOptionWithValues(array $optionsTable, string $opt): array
     {
@@ -156,7 +155,8 @@ class ArgsPreprocessor
      *   '--'.  If $key ends with '=', then the option must have a value.
      *   Otherwise, it cannot be supplied with a value, and always defaults
      *   to 'true'.
-     * @return [$methodName, $optionValue, $acceptsValueFromNextArg]
+     * @return array
+     *   [$methodName, $optionValue, $acceptsValueFromNextArg]
      */
     protected function checkMatchingOption(string $opt, string $keyParam, string $methodName): array
     {

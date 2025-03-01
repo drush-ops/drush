@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Symfony\Component\Filesystem\Filesystem;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Filesystem\Filesystem;
 
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
 final class SiteCommands extends DrushCommands
 {
     use AutowireTrait;

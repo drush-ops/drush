@@ -47,7 +47,7 @@ Only run Drush _preflight_, without considering Drupal at all. Any code that ope
 
 root
 ------------------------------
-Set up and test for a valid Drupal root, either through the --root options, or evaluated based on the current working directory. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.
+Set up and test for a valid Drupal root. The root is usually discovered via the [Composer Runtime API](https://getcomposer.org/doc/07-runtime.md#knowing-the-path-in-which-a-package-is-installed), looking for the path of the__drupal/core__ package. Any code that interacts with an entire Drupal installation, and not a specific site on the Drupal installation should use this bootstrap phase.
 
 site
 ------------------------------

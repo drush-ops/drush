@@ -119,14 +119,29 @@ abstract class SqlBase implements ConfigAwareInterface
     public static function getInstance($db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
-        $class_name = 'Drush\Sql\Sql' . ucfirst($driver);
-        if (class_exists($class_name)) {
+        // Drush ships drivers for core database types, and modules/libraries
+        // may define additional Drush DB drivers in this namespace.
+        $class_name = !empty($driver) ? 'Drush\Sql\Sql' . ucfirst($driver) : null;
+        try {
+            if (!$class_name || !class_exists($class_name)) {
+                // Handle custom database drivers which extend a defined driver.
+                $driver_class = $db_spec['namespace'] . '\\Connection';
+                if (!class_exists($driver_class)) {
+                    throw new \InvalidArgumentException();
+                }
+                $connection = (new \ReflectionClass($driver_class))->newInstanceWithoutConstructor();
+                // This will only work if the method is basically static, as most
+                // will be...but we can't truly instantiate the Connection class
+                // here without also calling with a "real" PDO connection.
+                $class_name = 'Drush\Sql\Sql' . ucfirst($connection->databaseType());
+            }
             $instance = method_exists($class_name, 'make') ? $class_name::make($db_spec, $options) : new $class_name($db_spec, $options);
-            // Inject config
-            $instance->setConfig(Drush::config());
-            return $instance;
+        } catch (\Throwable) {
+            return null;
         }
-        return null;
+        // Inject config
+        $instance->setConfig(Drush::config());
+        return $instance;
     }
 
     /*
@@ -312,7 +327,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @param $result_file
      *   A path to save query results to. Can be drush_bit_bucket() if desired.
      *
-     * @return
+     * @return bool
      *   TRUE on success, FALSE on failure.
      */
     public function alwaysQuery(string $query, $input_file = null, ?string $result_file = ''): bool
@@ -424,13 +439,13 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Build a SQL string for dropping and creating a database.
      *
-     * @param string dbname
+     * @param $dbname
      *   The database name.
-     * @param boolean $quoted
+     * @param $quoted
      *   Quote the database name. Mysql uses backticks to quote which can cause problems
      *   in a Windows shell. Set TRUE if the CREATE is not running on the bash command line.
      */
-    public function createdbSql($dbname, bool $quoted = false): string
+    public function createdbSql(string $dbname, bool $quoted = false): string
     {
         return '';
     }
@@ -506,7 +521,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Extract the name of all existing tables in the given database.
      *
-     * @return
+     * @return array
      *   An array of table names which exist in the current database,
      *   appropriately quoted for the RDMS.
      */
@@ -572,7 +587,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Convert from an old-style database URL to an array of database settings.
      *
-     * @param db_url
+     * @param $db_url
      *   A Drupal 6 db url string to convert, or an array with a 'default' element.
      *   An array of database values containing only the 'default' element of
      *   the db url. If the parse fails the array is empty.

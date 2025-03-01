@@ -21,7 +21,7 @@ trait ExecTrait
      *   Optional URI or site path to open in browser. If omitted, or if a site path
      *   is specified, the current site home page uri will be prepended if the site's
      *   hostname resolves.
-     * @return
+     * @return bool
      *   TRUE if browser was opened. FALSE if browser was disabled by the user or a
      *   default browser could not be found.
      */

@@ -31,6 +31,7 @@ final class DocsCommands extends DrushCommands
     const EXAMPLE_SYNC_VIA_HTTP = 'docs:example-sync-via-http';
     const POLICY = 'docs:policy';
     const DEPLOY = 'docs:deploy';
+    const DRUPAL_DEPENDENCIES = 'docs:drupal-dependencies';
 
     /**
      * README.md
@@ -215,6 +216,17 @@ final class DocsCommands extends DrushCommands
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../docs/deploycommand.md')]
     public function deploy(): void
+    {
+        self::printFileTopic($this->commandData);
+    }
+
+    /**
+     * Inspecting Drupal dependencies.
+     */
+    #[CLI\Command(name: self::DRUPAL_DEPENDENCIES)]
+    #[CLI\Help(hidden: true)]
+    #[CLI\Topics(path: '../../../docs/drupal-dependencies.md')]
+    public function drupalDependencies(): void
     {
         self::printFileTopic($this->commandData);
     }

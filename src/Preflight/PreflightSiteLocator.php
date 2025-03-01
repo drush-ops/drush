@@ -26,10 +26,10 @@ class PreflightSiteLocator
      * If 'false' is returned, that indicates that there was an alias name
      * provided on the commandline that is either missing or invalid.
      *
-     * @param PreflightArgsInterface $preflightArgs An alias name or site specification
+     * @param PreflightArgs $preflightArgs An alias name or site specification
      * @param string $root The default Drupal root (from site:set, --root or cwd)
      */
-    public function findSite(PreflightArgsInterface $preflightArgs, Environment $environment, string $root): SiteAlias|false
+    public function findSite(PreflightArgs $preflightArgs, Environment $environment, string $root): SiteAlias|false
     {
         $self = $this->determineSelf($preflightArgs, $environment, $root);
 
@@ -47,7 +47,7 @@ class PreflightSiteLocator
      * or, if those are invalid, then generate one from
      * the provided root and URI.
      */
-    protected function determineSelf(PreflightArgsInterface $preflightArgs, Environment $environment, $root): SiteAlias|false
+    protected function determineSelf(PreflightArgs $preflightArgs, Environment $environment, $root): SiteAlias|false
     {
         if ($preflightArgs->hasAlias()) {
             $aliasName = $preflightArgs->alias();
@@ -85,7 +85,7 @@ class PreflightSiteLocator
     /**
      * Generate @self from the provided root and URI.
      */
-    protected function buildSelf(PreflightArgsInterface $preflightArgs, ?string $root): SiteAlias
+    protected function buildSelf(PreflightArgs $preflightArgs, ?string $root): SiteAlias
     {
         // If there is no root, then return '@none'
         if (!$root) {

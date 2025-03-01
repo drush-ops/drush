@@ -7,12 +7,17 @@ namespace Drush\Commands\pm;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
+use Drupal\user\PermissionHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -33,7 +38,8 @@ final class PmCommands extends DrushCommands
         protected ModuleInstallerInterface $moduleInstaller,
         protected ModuleHandlerInterface $moduleHandler,
         protected ThemeHandlerInterface $themeHandler,
-        protected ModuleExtensionList $extensionListModule
+        protected ModuleExtensionList $extensionListModule,
+        protected PermissionHandlerInterface $permissionHandler
     ) {
         parent::__construct();
     }
@@ -63,6 +69,11 @@ final class PmCommands extends DrushCommands
         return $this->extensionListModule;
     }
 
+    public function getPermissionHandler(): PermissionHandlerInterface
+    {
+        return $this->permissionHandler;
+    }
+
     /**
      * Enable one or more modules.
      */
@@ -75,13 +86,13 @@ final class PmCommands extends DrushCommands
         $todo = $this->addInstallDependencies($modules);
         $todo_str = ['!list' => implode(', ', $todo)];
         if ($todo === []) {
-            $this->logger()->notice(dt('Already enabled: !list', ['!list' => implode(', ', $modules)]));
+            $this->logger()->notice(dt('Already installed: !list', ['!list' => implode(', ', $modules)]));
             return;
         } elseif (Drush::simulate()) {
-            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
             return;
         } elseif (array_values($todo) !== $modules) {
-            $this->output()->writeln(dt('The following module(s) will be enabled: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
@@ -93,7 +104,20 @@ final class PmCommands extends DrushCommands
         if (batch_get()) {
             drush_backend_batch_process();
         }
-        $this->logger()->success(dt('Successfully enabled: !list', $todo_str));
+
+        $moduleData = $this->getExtensionListModule()->getList();
+        foreach ($todo as $moduleName) {
+            $links = $this->getModuleLinks($moduleData[$moduleName]);
+            $links = array_map(function ($link) {
+                return sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText());
+            }, $links);
+
+            if ($links === []) {
+                $this->logger()->success(dt('Module %name has been installed.', ['%name' => $moduleName]));
+            } else {
+                $this->logger()->success(dt('Module %name has been installed. (%links)', ['%name' => $moduleName, '%links' => implode(' - ', $links)]));
+            }
+        }
     }
 
     /**
@@ -187,13 +211,17 @@ final class PmCommands extends DrushCommands
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: PmCommands::UNINSTALL)]
     public function validateUninstall(CommandData $commandData): void
     {
+        $list = [];
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
-                foreach ($validation_reasons as $module => $reason) {
-                    $reasons[$module] = "$module: " . $reason;
+                foreach ($validation_reasons as $module => $reasons) {
+                    // @phpstan-ignore foreach.nonIterable
+                    foreach ($reasons as $reason) {
+                        $list[] = "$module: " . (string)$reason;
+                    }
                 }
-                throw new \Exception(implode("/n", $reasons));
+                throw new \Exception(implode("/n", $list));
             }
         }
     }
@@ -297,8 +325,8 @@ final class PmCommands extends DrushCommands
      * @param $extension
      *   Object of a single extension info.
      *
-     * @return
-     *   String describing extension status. Values: enabled|disabled.
+     * @return string
+     *   Status. Values: enabled|disabled.
      */
     public function extensionStatus($extension): string
     {
@@ -366,5 +394,31 @@ final class PmCommands extends DrushCommands
             }
         }
         return $module_list;
+    }
+
+    protected function getModuleLinks(Extension $module): array
+    {
+        $links = [];
+
+        // Generate link for module's help page. Assume that if a hook_help()
+        // implementation exists then the module provides an overview page, rather
+        // than checking to see if the page exists, which is costly.
+        if ($this->getModuleHandler()->moduleExists('help') && $module->status && $this->getModuleHandler()->hasImplementations('help', $module->getName())) {
+            $links[] = Link::fromTextAndUrl(dt('Help'), Url::fromRoute('help.page', ['name' => $module->getName()]));
+        }
+
+        // Generate link for module's permissions page.
+        // Avoid DI for PermissionHandler until we understand better at https://github.com/drush-ops/drush/issues/6154.
+        if ($module->status && Drupal::service(PermissionHandlerInterface::class)->moduleProvidesPermissions($module->getName())) {
+            $links[] = Link::fromTextAndUrl(dt('Permissions'), Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
+        }
+
+        // Generate link for module's configuration page, if it has one.
+        if ($module->status && isset($module->info['configure'])) {
+            $route_parameters = $module->info['configure_parameters'] ?? [];
+            $links[] = Link::fromTextAndUrl(dt('Configure'), Url::fromRoute($module->info['configure'], $route_parameters));
+        }
+
+        return $links;
     }
 }

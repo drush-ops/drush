@@ -26,7 +26,7 @@ class HelpCLIFormatter implements FormatterInterface
     {
         $formatterManager = new FormatterManager();
 
-        $output->writeln($data['description']);
+        $output->writeln((string)$data['description']);
         if (array_key_exists('help', $data) && $data['help'] != $data['description']) {
             $output->writeln('');
             $output->writeln($data['help']);
@@ -139,7 +139,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
         return sprintf(
             '%s%s',
-            $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : ' ',
+            $option['shortcut']  ? sprintf('-%s, ', $option['shortcut']) : '',
             sprintf('--%s%s', $option['name'], $value)
         );
     }

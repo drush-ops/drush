@@ -206,8 +206,10 @@ class Preflight
             4 => 'v4',  // Drupal 9
             5 => 'v4',  // Early Drupal 10 (Symfony 5 works with Symfony 4 classes, so we don't keep an extra copy)
             6 => 'v6',  // Drupal 10
+            7 => 'v6',  // Drupal 11
         ];
 
+        // @phpstan-ignore empty.offset
         if (empty($compatibilityMap[$symfonyMajorVersion])) {
             throw new RuntimeException("Fatal error: Drush does not work with Symfony $symfonyMajorVersion. (In theory, Composer should not allow you to get this far.)");
         }
@@ -239,7 +241,7 @@ class Preflight
      * @param $argv
      *   True if the request was successfully redispatched remotely. False if the request should proceed.
      *
-     * @return array{preflightDidRedispatch: bool, exitStatus: int}
+     * @return array{bool, int}
      */
     public function preflight($argv): array
     {
@@ -252,6 +254,11 @@ class Preflight
 
         // Now that we know the value, set debug flag.
         $this->logger()->setDebug($this->preflightArgs->get(PreflightArgs::DEBUG, false));
+
+        // Give hint if a developer might be trying to debug Drush.
+        if (extension_loaded('xdebug')) {
+            $this->logger()->log(strtr('Drush disables Xdebug by default. To override this, see !url', ['!url' => 'https://www.drush.org/latest/commands/#xdebug']));
+        }
 
         // Do legacy initialization (load static includes, define old constants, etc.)
         $this->init();

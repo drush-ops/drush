@@ -1,0 +1,52 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
+			count: 1
+			path: src/Commands/core/MigrateRunnerCommands.php
+
+		-
+			message: "#^Offset '\\#name' on array\\{\\} in isset\\(\\) does not exist\\.$#"
+			count: 1
+			path: src/Commands/core/SiteCommands.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 2
+			path: src/Commands/core/UpdateDBCommands.php
+
+		-
+			message: "#^While loop condition is always true\\.$#"
+			count: 1
+			path: src/Commands/core/WatchdogCommands.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/Commands/core/XhprofCommands.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: src/Preflight/PreflightSiteLocator.php
+
+		-
+			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
+			count: 1
+			path: src/Runtime/LegacyServiceInstantiator.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: src/Symfony/BootstrapCompilerPass.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/Symfony/BootstrapCompilerPass.php
+
+		-
+			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required.$#'
+			identifier: arguments.count
+			count: 1
+			path: src/Drupal/Migrate/MigrateRunnerHooks.php

@@ -16,6 +16,7 @@ use Laravel\Prompts\SuggestPrompt;
 use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
 use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\select;
@@ -50,15 +51,24 @@ class DrushStyle extends SymfonyStyle
     /**
      * Prompt the user for text input.
      */
-    public function text($label, string $placeholder = '', string $default = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
-    {
-        return (new TextPrompt($label, $placeholder, $default, $required, $validate, $hint))->prompt();
+    public function ask(
+        \Stringable|string $question,
+        ?string $default = null,
+        #[Deprecated('Use $validate parameter instead.')]
+        ?callable $validator = null,
+        \Stringable|string $placeholder = '',
+        bool|string $required = false,
+        ?\Closure $validate = null,
+        \Stringable|string $hint = ''
+    ): mixed {
+        assert($validator === null, 'The $validator parameter is non-functional. Use $validate instead.');
+        return (new TextPrompt($question, $placeholder, (string)$default, $required, $validate, $hint))->prompt();
     }
 
     /**
      * Prompt the user for input, hiding the value.
      */
-    public function password(string $label, string $placeholder = '', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): string
+    public function password(\Stringable|string $label, \Stringable|string $placeholder = '', bool|string $required = false, ?\Closure $validate = null, \Stringable|string $hint = ''): string
     {
         return (new PasswordPrompt($label, $placeholder, $required, $validate, $hint))->prompt();
     }
@@ -152,17 +162,17 @@ class DrushStyle extends SymfonyStyle
         return $progress;
     }
 
-    public function warning(string|array $message)
+    public function warning(string|array $message): void
     {
         $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
     }
 
-    public function note(string|array $message)
+    public function note(string|array $message): void
     {
         $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
     }
 
-    public function caution(string|array $message)
+    public function caution(string|array $message): void
     {
         $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
     }

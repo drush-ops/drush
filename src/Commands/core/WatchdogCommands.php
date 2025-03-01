@@ -53,6 +53,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Usage(name: 'drush watchdog:show --severity=Notice', description: 'Show a listing of most recent 10 messages with a severity of notice.')]
     #[CLI\Usage(name: 'drush watchdog:show --severity-min=Warning', description: 'Show a listing of most recent 10 messages with a severity of warning or higher.')]
     #[CLI\Usage(name: 'drush watchdog:show --type=php', description: 'Show a listing of most recent 10 messages of type php')]
+    #[CLI\Usage(name: 'drush watchdog:show --filter="type!=locale"', description: 'Exclude rows via the negation operator !')]
     #[CLI\FieldLabels(labels: [
         'wid' => 'ID',
         'type' => 'Type',
@@ -325,7 +326,7 @@ final class WatchdogCommands extends DrushCommands
                 foreach ($severities as $key => $value) {
                     $levels[] = "$value($key)";
                 }
-                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.";
+                $msg = "Unknown severity level: !severity\nValid severity levels are: !levels.\nEither use the default language levels, or use a number.";
                 throw new \Exception(dt($msg, ['!severity' => $severity, '!levels' => implode(', ', $levels)]));
             }
             $conditions[] = "severity $operator :severity";
@@ -345,13 +346,13 @@ final class WatchdogCommands extends DrushCommands
      * Format a watchdog database row.
      *
      * @param $result
-     *   Array. A database result object.
+     *   A database result object.
      * @param $extended
-     *   Boolean. Return extended message details.
-     * @return
-     *   Array. The result object with some attributes themed.
+     *   Return extended message details.
+     * @return \stdClass
+     *   The result object with some attributes themed.
      */
-    protected function formatResult($result, bool $extended = false)
+    protected function formatResult(\stdClass $result, bool $extended = false): \stdClass
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();

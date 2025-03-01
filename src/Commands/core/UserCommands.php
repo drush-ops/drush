@@ -134,7 +134,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->block();
             $account->save();
-            $this->logger->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger()->success(dt('Blocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -152,7 +152,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->activate();
             $account->save();
-            $this->logger->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
+            $this->logger()->success(dt('Unblocked user(s): !user', ['!user' => $account->getAccountName()]));
         }
     }
 
@@ -173,7 +173,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->addRole($role);
             $account->save();
-            $this->logger->success(dt('Added !role role to !user', [
+            $this->logger()->success(dt('Added !role role to !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
@@ -184,7 +184,7 @@ final class UserCommands extends DrushCommands
      * Remove a role from the specified user accounts.
      */
     #[CLI\Command(name: self::ROLE_REMOVE, aliases: ['urrol', 'user-remove-role'])]
-    #[CLI\Argument(name: 'role', description: 'The machine name of the role to add.')]
+    #[CLI\Argument(name: 'role', description: 'The machine name of the role to remove.')]
     #[CLI\Argument(name: 'names', description: 'A comma delimited list of user names.')]
     #[CLI\Option(name: 'uid', description: 'A comma delimited list of user ids to lookup (an alternative to names).')]
     #[CLI\Option(name: 'mail', description: 'A comma delimited list of emails to lookup (an alternative to names).')]
@@ -197,7 +197,7 @@ final class UserCommands extends DrushCommands
         foreach ($accounts as $id => $account) {
             $account->removeRole($role);
             $account->save();
-            $this->logger->success(dt('Removed !role role from !user', [
+            $this->logger()->success(dt('Removed !role role from !user', [
             '!role' => $role,
             '!user' => $account->getAccountName(),
             ]));
@@ -225,6 +225,7 @@ final class UserCommands extends DrushCommands
             'status' => 1,
         ];
         if (!$this->getConfig()->simulate()) {
+            // @phpstan-ignore if.alwaysTrue
             if ($account = User::create($new_user)) {
                 $account->save();
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));

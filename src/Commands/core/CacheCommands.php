@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
@@ -12,6 +11,7 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\JsCollectionOptimizerLazy;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
@@ -53,7 +53,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
         private $cssOptimizer,
         private CachedDiscoveryClearerInterface $pluginCacheClearer,
         private BootstrapManager $bootstrapManager,
-        private ClassLoader $autoloader
+        private AssetQueryStringInterface $assetQueryString
     ) {
         parent::__construct();
     }
@@ -212,7 +212,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
             if (!$this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $all_types = $this->getTypes(true);
                 if (array_key_exists($type, $all_types)) {
-                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Use the --root and --uri options, or a site @alias, or cd to a directory containing a Drupal settings.php file.", ['!type' => $type]));
+                    throw new \Exception(dt("'!type' cache requires a working Drupal site to operate on. Make sure that the `drush` you are calling is a dependency of a your site\'s composer.json. The --uri option might also help.", ['!type' => $type]));
                 } else {
                     throw new \Exception(dt("'!type' cache is not a valid cache type. There may be more cache types available if you select a working Drupal site.", ['!type' => $type]));
                 }
@@ -287,7 +287,7 @@ final class CacheCommands extends DrushCommands implements CustomEventAwareInter
 
     public function clearCssJs(): void
     {
-        _drupal_flush_css_js();
+        $this->assetQueryString->reset();
         $this->cssOptimizer->deleteAll();
         $this->jsOptimizer->deleteAll();
     }

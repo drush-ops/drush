@@ -43,7 +43,7 @@ class WootStaticFactoryCommands extends DrushCommands
         $siteName = $this->configFactory->get('system.site')->get('name');
         $this->io()->writeln('Woot factorial command with a static factory method in site ' . $siteName);
 
-        foreach (range(1,$count) as $i) {
+        foreach (range(1, $count) as $i) {
             $this->io()->writeln("Woot " . $a);
             $t = $a + $b;
             $a = $b;

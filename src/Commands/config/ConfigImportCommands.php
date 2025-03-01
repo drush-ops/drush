@@ -20,6 +20,7 @@ use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\Lock\LockBackendInterface;
 use Drupal\Core\Site\Settings;
@@ -119,6 +120,11 @@ class ConfigImportCommands extends DrushCommands
         return $this->moduleExtensionList;
     }
 
+    public function getThemeExtensionList(): ThemeExtensionList
+    {
+        return $this->themeExtensionList;
+    }
+
     public function __construct(
         protected ConfigManagerInterface $configManager,
         protected StorageInterface $configStorage,
@@ -130,7 +136,8 @@ class ConfigImportCommands extends DrushCommands
         protected ModuleInstallerInterface $moduleInstaller,
         protected ThemeHandlerInterface $themeHandler,
         protected TranslationInterface $stringTranslation,
-        protected ModuleExtensionList $moduleExtensionList
+        protected ModuleExtensionList $moduleExtensionList,
+        protected ThemeExtensionList $themeExtensionList
     ) {
         parent::__construct();
     }
@@ -149,6 +156,7 @@ class ConfigImportCommands extends DrushCommands
             $container->get('theme_handler'),
             $container->get('string_translation'),
             $container->get('extension.list.module'),
+            $container->get('extension.list.theme')
         );
 
         if ($container->has('config.import_transformer')) {
@@ -240,7 +248,8 @@ class ConfigImportCommands extends DrushCommands
             $this->getModuleInstaller(),
             $this->getThemeHandler(),
             $this->getStringTranslation(),
-            $this->getModuleExtensionList()
+            $this->getModuleExtensionList(),
+            $this->getThemeExtensionList()
         );
         if ($config_importer->alreadyImporting()) {
             $this->logger()->warning('Another request may be synchronizing configuration already.');

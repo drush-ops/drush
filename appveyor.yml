@@ -25,8 +25,8 @@ install:
   - SET PATH=C:\Program Files\MySql\MySQL Server 5.7\bin\;%PATH%
   - choco search php --exact --all-versions -r
   #Install PHP per https://blog.wyrihaximus.net/2016/11/running-php-unit-tests-on-windows-using-appveyor-and-chocolatey/
-  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 8.1.16
-  - cd c:\tools\php81
+  - ps: appveyor-retry cinst --limit-output --ignore-checksums -y php --version 8.2.18
+  - cd c:\tools\php82
   - copy php.ini-production php.ini
 
   # https://github.com/php-coveralls/php-coveralls/pull/223/files
@@ -50,7 +50,7 @@ install:
   - echo extension=php_gd.dll >> php.ini
   - echo extension=php_fileinfo.dll >> php.ini
   - echo memory_limit=256M >> php.ini
-  - SET PATH=C:\tools\php81;%PATH%
+  - SET PATH=C:\tools\php82;%PATH%
   #Install Composer
   - cd %APPVEYOR_BUILD_FOLDER%
   #- appveyor DownloadFile https://getcomposer.org/composer.phar
@@ -64,9 +64,9 @@ install:
 
 test_script:
   - composer info phpunit/phpunit
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration --debug
-  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit --debug
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite functional
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite integration
+  - vendor/bin/phpunit --colors=always --configuration tests --testsuite unit
 
 on_finish:
   # Uncomment this and above line to enable RDP into build machine https://www.appveyor.com/docs/how-to/rdp-to-build-worker/

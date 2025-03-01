@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Backend;
 
-use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\HostPath;
+use Consolidation\SiteAlias\SiteAlias;
+use Drush\Commands\core\StatusCommands;
 use Drush\Drush;
 
 class BackendPathEvaluator
@@ -35,9 +36,8 @@ class BackendPathEvaluator
      * returned.
      *
      * @param HostPath $path The host and path to resolve aliases on.
-     * @return string
      */
-    public function resolve(HostPath $path)
+    public function resolve(HostPath $path): string|false
     {
         if (!$path->hasPathAlias()) {
             return false;
@@ -78,7 +78,7 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $process = Drush::drush($aliasRecord, 'core-status', [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json']);
+        $process = Drush::drush($aliasRecord, StatusCommands::STATUS, [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
         $process->setSimulated(false);
         $process->mustRun();
         $json = $process->getOutputAsJson();

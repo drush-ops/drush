@@ -49,8 +49,9 @@ abstract class BaseBoot implements Boot, LoggerAwareInterface
         return false;
     }
 
-    public function getVersion($root)
+    public function getVersion(string $root)
     {
+        return null;
     }
 
     public function commandDefaults()

@@ -1,0 +1,42 @@
+name: 'Test Recipe'
+description: 'A small subset of the Standard core recipe; contains just enough configuration to allow us to prove that the recipe was installed.'
+type: 'Site'
+install:
+  - image
+  - help
+  - history
+  - config
+  - contextual
+  - menu_link_content
+  - datetime
+  - menu_ui
+  - options
+  - toolbar
+  - field_ui
+  - views_ui
+  - shortcut
+config:
+  import:
+    user:
+      - core.entity_view_mode.user.compact
+      - search.page.user_search
+      - views.view.user_admin_people
+      - views.view.who_s_new
+      - views.view.who_s_online
+  actions:
+    user.role.authenticated:
+      grantPermission: 'delete own files'
+    user.role.content_editor:
+      grantPermissionsForEachNodeType:
+        - 'create %bundle content'
+        - 'delete %bundle revisions'
+        - 'delete own %bundle content'
+        - 'edit own %bundle content'
+    user.role.anonymous:
+      # This recipe assumes all published content should be publicly accessible.
+      grantPermission: 'access content'
+    user.settings:
+      simple_config_update:
+        verify_mail: true
+        register: visitors_admin_approval
+        cancel_method: user_cancel_block

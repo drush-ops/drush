@@ -27,14 +27,14 @@ final class QueueCommands extends DrushCommands
     const LIST = 'queue:list';
     const DELETE = 'queue:delete';
 
-    protected QueueWorkerManagerInterface $workerManager;
+    // Keep track of queue definitions.
+    protected static array $queues;
 
-    protected $queueService;
-
-    public function __construct(QueueWorkerManagerInterface $workerManager, QueueFactory $queueService)
-    {
-        $this->workerManager = $workerManager;
-        $this->queueService = $queueService;
+    public function __construct(
+        protected QueueWorkerManagerInterface $workerManager,
+        protected QueueFactory $queueService
+    ) {
+        parent::__construct();
     }
 
     public function getWorkerManager(): QueueWorkerManagerInterface
@@ -46,13 +46,6 @@ final class QueueCommands extends DrushCommands
     {
         return $this->queueService;
     }
-
-    /**
-     * Keep track of queue definitions.
-     *
-     * @var array
-     */
-    protected static $queues;
 
     /**
      * Run a specific queue by name.
@@ -83,11 +76,13 @@ final class QueueCommands extends DrushCommands
 
         while ((!$time_limit || $remaining > 0) && (!$items_limit || $count < $items_limit) && ($item = $queue->claimItem($lease_time))) {
             try {
+                // @phpstan-ignore-next-line
                 $this->logger()->info(dt('Processing item @id from @name queue.', ['@name' => $name, '@id' => $item->item_id ?? $item->qid]));
+                // @phpstan-ignore-next-line
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;
-            } catch (RequeueException $e) {
+            } catch (RequeueException) {
                 // The worker requested the task to be immediately requeued.
                 $queue->releaseItem($item);
             } catch (SuspendQueueException $e) {

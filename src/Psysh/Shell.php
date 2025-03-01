@@ -5,21 +5,20 @@ declare(strict_types=1);
 namespace Drush\Psysh;
 
 use Psy\Shell as BaseShell;
+use Symfony\Component\Console\Command\Command as BaseCommand;
 use Symfony\Component\Console\Input\StringInput;
 
 class Shell extends BaseShell
 {
     /**
      * Get a command (if one exists) for the current input string.
-     *
-     *
-     * @return null|string
      */
-    protected function getCommand(string $input)
+    protected function getCommand(string $input): ?BaseCommand
     {
         if ($name = $this->getCommandFromInput($input)) {
             return $this->get($name);
         }
+        return null;
     }
 
     /**

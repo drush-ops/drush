@@ -15,6 +15,7 @@ composer_version: ""
 disable_settings_management: true
 webimage_extra_packages:
   - bash-completion
+  - asciinema
 # https://ddev.readthedocs.io/en/latest/users/extend/database-types/
 # When switching DBs, use ddev delete --omit-snapshot
 #database:
@@ -26,3 +27,4 @@ web_environment:
 #  - UNISH_DB_URL=pgsql://db:db@db:5432?module=pgsql
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
   - EDITOR=nano
+  - DRUSH_ALLOW_XDEBUG=1

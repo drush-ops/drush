@@ -6,8 +6,9 @@ namespace Drush\Psysh;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Drush\Drush;
-use Symfony\Component\Console\Command\Command;
 use Psy\Command\Command as BaseCommand;
+use Psy\Output\ShellOutput;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -62,6 +63,8 @@ class DrushCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        assert($output instanceof ShellOutput);
+
         $args = $input->getArguments();
         $first = array_shift($args);
 

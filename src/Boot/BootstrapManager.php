@@ -17,30 +17,15 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     use LoggerAwareTrait;
     use ConfigAwareTrait;
 
-    /**
-     * @var DrushDrupalFinder
-     */
-    protected $drupalFinder;
-
+    protected ?DrushDrupalFinder $drupalFinder;
     /**
      * @var Boot[]
      */
-    protected $bootstrapCandidates = [];
+    protected array $bootstrapCandidates = [];
+    protected ?Boot $bootstrap;
+    protected ?int $phase;
 
-    /**
-     * @var Boot
-     */
-    protected $bootstrap;
-
-    /**
-     * @var int
-     */
-    protected $phase;
-
-    /**
-     * @return int
-     */
-    public function getPhase()
+    public function getPhase(): int
     {
         if (!$this->hasBootstrap()) {
             return DrupalBootLevels::NONE;
@@ -58,7 +43,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Add a bootstrap object to the list of candidates.
      *
-     * @param \Drush\Boot\Boot|Array
+     * @param \Drush\Boot\Boot|array $candidateList
      *   List of boot candidates
      */
     public function add($candidateList): void
@@ -126,18 +111,19 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Crete the bootstrap object if necessary, then return it.
      */
-    public function bootstrap(): Boot
+    public function bootstrap(): DrupalBoot8
     {
-        if (!$this->bootstrap) {
+        if (!isset($this->bootstrap)) {
             $this->bootstrap = $this->bootstrapObjectForRoot($this->getRoot());
         }
+        assert($this->bootstrap instanceof DrupalBoot8);
         return $this->bootstrap;
     }
 
     /**
      * For use in testing
      */
-    public function injectBootstrap(Boot $bootstrap): void
+    public function injectBootstrap(DrupalBoot8 $bootstrap): void
     {
         $bootstrap->setLogger($this->logger());
         $this->bootstrap = $bootstrap;
@@ -174,13 +160,9 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      */
     public function bootstrapPhases(bool $function_names = false): array
     {
-        $result = [];
-
-        if ($bootstrap = $this->bootstrap()) {
-            $result = $bootstrap->bootstrapPhases();
-            if (!$function_names) {
-                $result = array_keys($result);
-            }
+        $result = $this->bootstrap()->bootstrapPhases();
+        if (!$function_names) {
+            $result = array_keys($result);
         }
         return $result;
     }
@@ -382,14 +364,14 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Bootstrap to the highest level possible, without triggering any errors.
      *
-     * @param int $max_phase_index
+     * @param $max_phase_index
      *   (optional) Only attempt bootstrap to the specified level.
      * @param AnnotationData $annotationData
      *   Optional annotation data from the command.
      *
      *   The maximum phase to which we bootstrapped.
      */
-    public function bootstrapMax($max_phase_index = false, ?AnnotationData $annotationData = null): int
+    public function bootstrapMax(bool|int|null $max_phase_index = false, ?AnnotationData $annotationData = null): int
     {
         // Bootstrap as far as we can without throwing an error, but log for
         // debugging purposes.

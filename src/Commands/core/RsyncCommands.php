@@ -140,6 +140,7 @@ final class RsyncCommands extends DrushCommands
         // options into the alias config context so that we pick up
         // things like ssh-options.
         if ($aliasRecord->isRemote()) {
+            assert($aliasConfigContext instanceof \Consolidation\Config\Config);
             $aliasConfigContext->combine($aliasRecord->export());
         }
 

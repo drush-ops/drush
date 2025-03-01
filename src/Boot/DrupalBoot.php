@@ -45,10 +45,6 @@ abstract class DrupalBoot extends BaseBoot
         return false;
     }
 
-    public function getVersion($drupal_root)
-    {
-    }
-
     public function confPath(bool $require_settings = true, bool $reset = false): ?string
     {
         return null;

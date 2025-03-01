@@ -88,5 +88,10 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->drush(PmCommands::UNINSTALL, ['drush_empty_module'], [], null, null, self::EXIT_ERROR);
         $out = $this->getErrorOutput();
         $this->assertStringContainsString('The following module(s) are not installed', $out);
+
+        // Test uninstall of required module, and reason printing
+        $this->drush(PmCommands::UNINSTALL, ['user'], [], null, null, self::EXIT_ERROR);
+        $out = $this->getErrorOutput();
+        $this->assertStringContainsString('is required', $out);
     }
 }

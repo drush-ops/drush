@@ -22,8 +22,8 @@ Is there another way to do the desired action?
 ### System Configuration
 | Q               | A
 | --------------- | ---
-| Drush version?  | 12.x/11.x/10.x/8.x (please be specific, and try latest release)
-| Drupal version? | 10.x/9.x/8.x/7.x
+| Drush version?  | 13.x/12.x/11.x/10.x/8.x (please be specific, and try latest release)
+| Drupal version? | 11.x/10.x/9.x/8.x/7.x
 | PHP version     | 8.x/7.x
 | OS?             | Mac/Linux/Windows
 

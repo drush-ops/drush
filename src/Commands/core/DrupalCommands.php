@@ -48,9 +48,10 @@ final class DrupalCommands extends DrushCommands
 
     /**
      * Run all cron hooks in all active modules for specified site.
+     *
+     * Consider using `drush maint:status && drush core:cron` to avoid cache poisoning during maintenance mode.
      */
     #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
-    #[CLI\Usage(name: 'drush maint:status && drush core:cron', description: 'Run cron unless maintenance mode is enabled')]
     #[CLI\Topics(topics: [DocsCommands::CRON])]
     public function cron(): bool
     {
@@ -94,7 +95,7 @@ final class DrupalCommands extends DrushCommands
         foreach ($requirements as $key => $info) {
             if (is_numeric($key)) {
                 unset($requirements[$key]);
-                $new_key = strtolower(str_replace(' ', '_', $info['title']));
+                $new_key = strtolower(str_replace(' ', '_', (string) $info['title']));
                 $requirements[$new_key] = $info;
             }
         }

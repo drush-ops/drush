@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 
-class ExampleAttributesDrushCommands extends DrushCommands
+class ExampleAttributesCommands extends DrushCommands
 {
     const ARITHMATIC = 'test:arithmatic';
     const ECHO = 'my:echo';
