@@ -87,7 +87,7 @@ final class ConfigPullCommands extends DrushCommands
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true, 'debug' => true], $options_double_dash);
+        $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true] + $global_options, $options_double_dash);
         $process->mustRun();
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }

@@ -111,7 +111,7 @@ final class DeployHookCommands extends DrushCommands
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS);
+        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS, [], Drush::redispatchOptions() + ['strict' => 0]);
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 

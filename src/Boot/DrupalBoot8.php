@@ -12,6 +12,7 @@ use Drupal\Core\Render\HtmlResponse;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drush\Config\ConfigLocator;
 use Drush\Drupal\DrushLoggerServiceProvider;
+use Drush\Drupal\Migrate\MigrateRunnerServiceProvider;
 use Drush\Drush;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Runtime\LegacyServiceFinder;
@@ -182,6 +183,9 @@ class DrupalBoot8 extends DrupalBoot
     {
         // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
         $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
+        // Implement a hook in behalf of 'system' module until #2952291 lands.
+        // @see https://www.drupal.org/project/drupal/issues/2952291
+        $GLOBALS['conf']['container_service_providers'][] = MigrateRunnerServiceProvider::class;
 
         // Default to the standard kernel.
         $kernel = Kernels::DRUPAL;

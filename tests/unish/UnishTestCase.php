@@ -7,6 +7,7 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
+use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Database\Database;
 use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
@@ -671,6 +672,12 @@ EOT;
         if ($refreshSettings) {
             copy("$root/sites/default/default.settings.php", "$siteDir/settings.php");
         }
+
+        // Make the 'testing' profile available as a regular profile to avoid
+        // discovery of all testing extensions.
+        // @see https://www.drupal.org/node/3490626
+        @symlink('tests/testing', "$root/core/profiles/testing");
+
         $sutAlias = $this->sutAlias($uri);
         $options = $optionsFromTest + [
             'root' => $this->webroot(),
@@ -678,7 +685,7 @@ EOT;
             'db-url' => $this->dbUrl($uri),
             'sites-subdir' => $uri,
             'yes' => true,
-            'recipeOrProfile' => 'testing', // or path to recipe directory
+            'recipeOrProfile' => 'testing',
             // quiet suppresses error reporting as well.
             // 'quiet' => true,
         ];

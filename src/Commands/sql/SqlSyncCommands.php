@@ -120,7 +120,7 @@ final class SqlSyncCommands extends DrushCommands
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, StatusCommands::STATUS, [], ['fields' => 'db-name', 'format' => 'json']);
+        $process = $this->processManager()->drush($record, StatusCommands::STATUS, [], ['fields' => 'db-name', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
         $process->setSimulated(false);
         $process->mustRun();
         $data = $process->getOutputAsJson();
@@ -141,7 +141,7 @@ final class SqlSyncCommands extends DrushCommands
         ];
         if (!$options['no-dump']) {
             $this->logger()->notice(dt('Starting to dump database on source.'));
-            $process = $this->processManager()->drush($sourceRecord, SqlCommands::DUMP, [], $dump_options + ['format' => 'json']);
+            $process = $this->processManager()->drush($sourceRecord, SqlCommands::DUMP, [], $dump_options + ['format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
             $process->mustRun();
 
             if ($this->getConfig()->simulate()) {
@@ -177,7 +177,7 @@ final class SqlSyncCommands extends DrushCommands
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = $this->processManager()->drush($targetRecord, StatusCommands::STATUS, [], ['format' => 'string', 'field' => 'drush-temp']);
+            $process = $this->processManager()->drush($targetRecord, StatusCommands::STATUS, [], ['format' => 'string', 'field' => 'drush-temp'] + Drush::redispatchOptions() + ['strict' => 0]);
             $process->setSimulated(false);
             $process->run();
 
@@ -203,7 +203,7 @@ final class SqlSyncCommands extends DrushCommands
                 $runner = $targetRecord;
             }
             $this->logger()->notice(dt('Copying dump file from source to target.'));
-            $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], ['yes' => true], $double_dash_options);
+            $process = $this->processManager()->drush($runner, RsyncCommands::RSYNC, [$sourceRecord->name() . ":$source_dump_path", $targetRecord->name() . ":$target_dump_path"], ['yes' => true] + Drush::redispatchOptions() + ['strict' => 0], $double_dash_options);
             $process->mustRun($process->showRealtime());
         }
         return $target_dump_path;
@@ -223,7 +223,7 @@ final class SqlSyncCommands extends DrushCommands
             'file' => $target_dump_path,
             'file-delete' => true,
         ];
-        $process = $this->processManager()->drush($targetRecord, SqlCommands::QUERY, [], $query_options);
+        $process = $this->processManager()->drush($targetRecord, SqlCommands::QUERY, [], $query_options + Drush::redispatchOptions() + ['strict' => 0]);
         $process->mustRun();
     }
 }

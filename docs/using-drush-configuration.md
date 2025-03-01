@@ -4,7 +4,7 @@ Drush configuration is useful to cut down on typing out lengthy and repetitive c
 options, and to avoid mistakes.
 
 #### Directories and Discovery
-drush.yml files are discovered as below, in order of precedence:
+`drush.yml` files are discovered as below, in order of precedence:
 
 1.  Drupal site folder (e.g. `sites/{example.com}/drush.yml`).
 2.  `sites/all/drush`, `WEBROOT/drush`, or `PROJECTROOT/drush`.
@@ -25,7 +25,14 @@ An alternative way to populate Drush configuration is to define environment vari
 correspond to config keys. For example, to populate the `options.uri` config item,
 create an environment variable `DRUSH_OPTIONS_URI=http://example.com`.
 As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods
-replaced with underscores.
+replaced with underscores. Overall, `DRUSH_OPTIONS_URI` is usually a better approach.
+
+Note: For `uri` you need to use a global location or environment variable, not a site-specific
+one, since it's used by Drupal to select which multi-site gets bootstrapped.
+
+#### Direnv for multiple code bases 
+
+To handle multiple Drupal installations on the same server, https://direnv.net/ can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.
 
 ### Config examples
 
