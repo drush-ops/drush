@@ -28,6 +28,7 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - social
   - mike:
       canonical_version: latest
       alias_type: redirect
