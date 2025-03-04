@@ -14,7 +14,9 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
-    - toc.integrate
+    - navigation.tracking
+    - navigation.path
+    - navigation.top
     - content.action.edit
     - content.action.view
 site_url: https://www.drush.org/latest/
