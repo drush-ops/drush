@@ -280,7 +280,7 @@ final class ViewsCommands extends DrushCommands
     #[CLI\Command(name: self::DISABLE, aliases: ['vdis', 'views-disable'])]
     #[CLI\ValidateEntityLoad(entityType: 'view', argumentName: 'views')]
     #[CLI\Argument(name: 'views', description: 'A comma delimited list of view names.')]
-    #[CLI\Usage(name: 'drush vdis frontpage taxonomy_term', description: 'Disable the frontpage and taxonomy_term views.')]
+    #[CLI\Usage(name: 'drush vdis frontpage,taxonomy_term', description: 'Disable the frontpage and taxonomy_term views.')]
     public function disable(string $views): void
     {
         $view_names = StringUtils::csvToArray($views);
