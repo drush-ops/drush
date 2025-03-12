@@ -12,9 +12,6 @@ parameters:
     excludePaths:
         # Deliberately calls optional external code.
         - src/Psysh/Caster.php
-        # Remove once https://github.com/mglaman/phpstan-drupal/issues/741 is resolved
-        - src/Commands/core/LocaleCommands.php
-        - src/Commands/core/LanguageCommands.php
     ignoreErrors:
         # XHprof
         - '#tideways_xhprof_enable#'
@@ -26,3 +23,6 @@ parameters:
 includes:
     - vendor/mglaman/phpstan-drupal/extension.neon
     - phpstan-baseline.neon
+
+rules:
+    - mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes
