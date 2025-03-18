@@ -17,6 +17,7 @@ theme:
     - navigation.tracking
     - navigation.path
     - navigation.top
+    - toc.integrate
     - content.action.edit
     - content.action.view
 site_url: https://www.drush.org/latest/
