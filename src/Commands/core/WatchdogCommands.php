@@ -47,6 +47,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Option(name: 'severity-min', description: 'Restrict to messages of a given severity level and higher.')]
     #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
     #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Option(name: 'date_format', description: 'Specify a date format for the date console output.')]
     #[CLI\Usage(name: 'drush watchdog:show', description: 'Show a listing of most recent 10 messages.')]
     #[CLI\Usage(name: 'drush watchdog:show "cron run successful"', description: 'Show a listing of most recent 10 messages containing the string <info>cron run successful</info>.')]
     #[CLI\Usage(name: 'drush watchdog:show --count=46', description: 'Show a listing of most recent 46 messages.')]
@@ -70,7 +71,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false, 'date_format' => 'd/M H:i']): ?RowsOfFields
     {
         $where = $this->where((string)$options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = $this->connection->select('watchdog', 'w')
@@ -82,7 +83,7 @@ final class WatchdogCommands extends DrushCommands
         }
         $rsc = $query->execute();
         while ($result = $rsc->fetchObject()) {
-            $row = $this->formatResult($result, $options['extended']);
+            $row = $this->formatResult($result, $options['extended'], $options['date_format']);
             $table[$row->wid] = (array)$row;
         }
         if (empty($table)) {
@@ -349,17 +350,19 @@ final class WatchdogCommands extends DrushCommands
      *   A database result object.
      * @param $extended
      *   Return extended message details.
+     * @param $date_format
+     *    Specific date format for the date console output.
      * @return \stdClass
      *   The result object with some attributes themed.
      */
-    protected function formatResult(\stdClass $result, bool $extended = false): \stdClass
+    protected function formatResult(\stdClass $result, bool $extended = false, string $date_format = 'd/M H:i'): \stdClass
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
         $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
-        $result->date = date('d/M H:i', (int)$result->timestamp);
+        $result->date = date($date_format, (int)$result->timestamp);
         unset($result->timestamp);
 
         // Username.
