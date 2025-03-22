@@ -113,6 +113,12 @@ final class StatusCommands extends DrushCommands
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
             if ($boot_manager->hasBootstrapped(DrupalBootLevels::SITE)) {
                 $status_table['uri'] = $boot_manager->getUri();
+                // attempt to detect a domain name from the path, matches www.example.org or example.net
+                $detected_uri = preg_match('/[a-z]*\.?[a-z]+\.[a-z]+/', dirname(__FILE__), $matches);
+                if ($detected_uri) {
+                  $URI = $matches[0];
+                  $status_table['uri'] = 'https://' . $URI;
+                }
                 try {
                     if ($sql = SqlBase::create($options)) {
                         $db_spec = $sql->getDbSpec();
