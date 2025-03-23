@@ -21,7 +21,14 @@ abstract class DrupalBoot extends BaseBoot
                 return basename($siteDir);
             }
         }
-        return 'default';
+        // attempt to detect a domain name from the path, matches www.example.org or example.net
+        $detected_uri = preg_match('/[a-z]*\.?[a-z]+\.[a-z]+/', dirname(__FILE__), $matches);
+        if ($detected_uri) {
+            $base_url = 'https://' . $matches[0];
+        } else {
+            $base_url = 'default';
+        }
+        return $base_url;        
     }
 
     protected function scanUpForUri($root, $scan)
