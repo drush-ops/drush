@@ -28,7 +28,7 @@ abstract class DrupalBoot extends BaseBoot
         } else {
             $base_url = 'default';
         }
-        return $base_url;        
+        return $base_url;
     }
 
     protected function scanUpForUri($root, $scan)
