@@ -142,7 +142,7 @@ final class ConfigExportCommands extends DrushCommands
                 $this->logger()->notice($preamble . $preview);
             }
 
-            if (!$this->io()->confirm(dt('The .yml files in your export directory (!target) will be deleted and replaced with the active config.', ['!target' => $destination_dir]))) {
+            if (!$this->io()->confirm(dt('The .yml files in your export directory will be deleted and replaced with the active config.'), hint: dt('Target: !target', ['!target' => $destination_dir]))) {
                 throw new UserAbortException();
             }
 
