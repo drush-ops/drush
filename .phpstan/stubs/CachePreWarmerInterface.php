@@ -1,5 +1,6 @@
 <?php
 
+namespace Drupal\Core\PreWarm;
 
 /**
  * Interface for cache prewarmers.

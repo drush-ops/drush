@@ -1,5 +1,7 @@
 <?php
 
+namespace Drupal\Core\PreWarm;
+
 
 // cspell:ignore ABCDEF FCDABE BEDAFC
 
