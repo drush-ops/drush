@@ -207,6 +207,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:dump --skip-tables-key=common', description: 'Skip standard tables. See [Drush configuration](../../using-drush-configuration.md)')]
     #[CLI\Usage(name: 'drush sql:dump --extra-dump=--no-data', description: 'Pass extra option to <info>mysqldump</info> command.')]
     #[CLI\FieldLabels(labels: ['path' => 'Path'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES, DocsCommands::POLICY, DocsCommands::CONFIGURATION])]
     public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null']): PropertyList
     {
         $sql = SqlBase::create($options);
