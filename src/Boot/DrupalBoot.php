@@ -22,7 +22,7 @@ abstract class DrupalBoot extends BaseBoot
             }
         }
         // attempt to detect a domain name from the path, matches www.example.org or example.net
-        $detected_uri = preg_match('/[a-z]*\.?[a-z]+\.[a-z]+/', dirname(__FILE__), $matches);
+        $detected_uri = preg_match('/[a-z]*\.?[a-z]+\.[a-z]+/', $root, $matches);
         if ($detected_uri) {
             $base_url = 'https://' . $matches[0];
         } else {
