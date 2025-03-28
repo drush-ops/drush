@@ -25,8 +25,9 @@ An alternative way to populate Drush configuration is to define environment vari
 correspond to config keys. For example, to populate the `options.uri` config item,
 create an environment variable `DRUSH_OPTIONS_URI=http://example.com`. This instructs Drush to use your domain name instead of `http://default`. As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods replaced with underscores.
 
-Note: For `uri` you need to use a global config location or environment variable, not a site-specific
-one, since it's used by Drupal to select which multi-site gets bootstrapped.
+!!! note
+For `uri` you need to use a global config location, not a site-specific
+one, since it's used by Drupal to select which multi-site gets bootstrapped. Thats why the `DRUSH_OPTIONS_URI` approach is recommended.
 
 #### Direnv for multiple code bases 
 
