@@ -94,8 +94,8 @@ options:
   # Specify the base_url that should be used when generating links.
   uri: 'http://example.com/subdir'
   
-  # Specify your Drupal core base directory (useful if you use symlinks).
-  root: '/home/USER/workspace/drupal'
+  # Load Drush config from a non-standard location
+  config: '/home/USER/workspace/drupal'
   
   # Enable verbose mode.
   verbose: true
