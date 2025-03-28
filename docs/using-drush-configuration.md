@@ -28,9 +28,8 @@ create an environment variable `DRUSH_OPTIONS_URI=http://example.com`. This inst
 !!! note
     For `uri` you need to use a global config location, not a site-specific one, since it's used by Drupal to select which multi-site gets bootstrapped. Thats why the `DRUSH_OPTIONS_URI` approach is recommended.
 
-#### Direnv for multiple code bases 
-
-To handle multiple Drupal installations on the same server, https://direnv.net/ can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.
+!!! tip
+    To handle multiple Drupal installations on the same server, https://direnv.net/ can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.
 
 ### Config examples
 
