@@ -55,6 +55,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the <info>db-su</info> account. Optional.')]
+    #[CLI\Option(name: 'extra', description: 'Add custom options to the SQL connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Option(name: 'account-name', description: 'uid1 name.')]
     #[CLI\Option(name: 'account-pass', description: 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drush.yml.')]
     #[CLI\Option(name: 'account-mail', description: 'uid1 email.')]
@@ -73,7 +74,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Usage(name: 'drush si core/recipes/standard', description: 'Install from the core Standard recipe.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     #[CLI\Kernel(name: Kernels::INSTALLER)]
-    public function install(array $recipeOrProfile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
+    public function install(array $recipeOrProfile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'extra' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $recipeOrProfile;
         $recipeOrProfile = array_shift($additional) ?: '';
