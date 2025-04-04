@@ -624,7 +624,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                 <div class="col-md-8">
                     <a href="#method_initHook">initHook</a>($input, <a href="../../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a> $annotationData)
         
-                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
+                                            <p><p>Configure Laravel prompts package.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_initHook">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
@@ -677,7 +677,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_install">install</a>(array $recipeOrProfile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ, &#039;existing-config&#039; =&gt; false])
+                    <a href="#method_install">install</a>(array $recipeOrProfile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ, &#039;existing-config&#039; =&gt; false])
         
                                             <p><p>Install Drupal along with modules/themes/configuration/profile.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -1922,7 +1922,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             
 
         <div class="method-description">
-                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
+                            <p><p>Configure Laravel prompts package.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -2106,7 +2106,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <h3 id="method_install">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L52">at line 52</a></div>
         <code>                    void
-    <strong>install</strong>(array $recipeOrProfile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ, &#039;existing-config&#039; =&gt; false])
+    <strong>install</strong>(array $recipeOrProfile, $options = [&#039;db-url&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; self::REQ, &#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ, &#039;account-name&#039; =&gt; &#039;admin&#039;, &#039;account-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;site-mail&#039; =&gt; &#039;admin@example.com&#039;, &#039;account-pass&#039; =&gt; self::REQ, &#039;locale&#039; =&gt; &#039;en&#039;, &#039;site-name&#039; =&gt; &#039;Drush Site-Install&#039;, &#039;site-pass&#039; =&gt; self::REQ, &#039;sites-subdir&#039; =&gt; self::REQ, &#039;config-dir&#039; =&gt; self::REQ, &#039;existing-config&#039; =&gt; false])
         </code>
     </h3>
     <div class="details">    
@@ -2151,7 +2151,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_taskCallback">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L187">at line 187</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L188">at line 188</a></div>
         <code>                    void
     <strong>taskCallback</strong>($install_state)
         </code>
@@ -2194,7 +2194,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_determineRecipeOrProfile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L195">at line 195</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L196">at line 196</a></div>
         <code>            protected        array
     <strong>determineRecipeOrProfile</strong>($recipeOrProfile, $options)
         </code>
@@ -2241,7 +2241,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isValidProfileName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L229">at line 229</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L230">at line 230</a></div>
         <code>            protected        
     <strong>isValidProfileName</strong>(string $profile)
         </code>
@@ -2276,7 +2276,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateRecipe">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L243">at line 243</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L244">at line 244</a></div>
         <code>            protected        bool
     <strong>validateRecipe</strong>(string $recipe)
         </code>
@@ -2318,7 +2318,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_determineProfile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L253">at line 253</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L254">at line 254</a></div>
         <code>            protected        <abbr title="Drush\Commands\core\string|bool">string|bool</abbr>
     <strong>determineProfile</strong>($profile, $options)
         </code>
@@ -2366,7 +2366,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasConfigFiles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L306">at line 306</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L307">at line 307</a></div>
         <code>            protected        bool
     <strong>hasConfigFiles</strong>($config)
         </code>
@@ -2408,7 +2408,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L312">at line 312</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L313">at line 313</a></div>
         <code>                    void
     <strong>validate</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
@@ -2451,7 +2451,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_pre">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L434">at line 434</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L435">at line 435</a></div>
         <code>                    void
     <strong>pre</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
@@ -2493,7 +2493,7 @@ if it is not allowed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getSitesSubdirFromUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L530">at line 530</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L531">at line 531</a></div>
         <code>            protected        
     <strong>getSitesSubdirFromUri</strong>($root, $uri)
         </code>
@@ -2532,7 +2532,7 @@ provided uri.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_serverGlobals">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L564">at line 564</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L565">at line 565</a></div>
         <code>                    void
     <strong>serverGlobals</strong>($drupal_base_url)
         </code>
@@ -2585,7 +2585,7 @@ provided uri.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validateConfigDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L604">at line 604</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/SiteInstallCommands.php#L605">at line 605</a></div>
         <code>            protected        void
     <strong>validateConfigDir</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData, $directory)
         </code>

@@ -776,7 +776,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_createDb">createDb</a>($options = [&#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ])
+                    <a href="#method_createDb">createDb</a>($options = [&#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ])
         
                                             <p><p>Create a database.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -786,7 +786,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_drop">drop</a>($options = [])
+                    <a href="#method_drop">drop</a>($options = [&#039;extra&#039; =&gt; self::REQ])
         
                                             <p><p>Drop all tables in a given database.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -2249,7 +2249,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <h3 id="method_createDb">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L81">at line 81</a></div>
         <code>                    void
-    <strong>createDb</strong>($options = [&#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ])
+    <strong>createDb</strong>($options = [&#039;db-su&#039; =&gt; self::REQ, &#039;db-su-pw&#039; =&gt; self::REQ, &#039;extra&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">    
@@ -2289,9 +2289,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_drop">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L107">at line 107</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L108">at line 108</a></div>
         <code>                    void
-    <strong>drop</strong>($options = [])
+    <strong>drop</strong>($options = [&#039;extra&#039; =&gt; self::REQ])
         </code>
     </h3>
     <div class="details">    
@@ -2331,7 +2331,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cli">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L127">at line 127</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L129">at line 129</a></div>
         <code>                    void
     <strong>cli</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, $options = [&#039;extra&#039; =&gt; self::REQ])
         </code>
@@ -2378,7 +2378,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_query">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L150">at line 150</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L152">at line 152</a></div>
         <code>                    bool
     <strong>query</strong>($query = &#039;&#039;, $options = [&#039;result-file&#039; =&gt; null, &#039;file&#039; =&gt; self::REQ, &#039;file-delete&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;db-prefix&#039; =&gt; false])
         </code>
@@ -2425,7 +2425,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_dump">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L195">at line 195</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L197">at line 197</a></div>
         <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/PropertyList.html"><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></a>
     <strong>dump</strong>($options = [&#039;result-file&#039; =&gt; self::REQ, &#039;create-db&#039; =&gt; false, &#039;data-only&#039; =&gt; false, &#039;ordered-dump&#039; =&gt; false, &#039;gzip&#039; =&gt; false, &#039;extra&#039; =&gt; self::REQ, &#039;extra-dump&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;null&#039;])
         </code>
@@ -2467,7 +2467,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L229">at line 229</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/SqlCommands.php#L231">at line 231</a></div>
         <code>                    
     <strong>validate</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
