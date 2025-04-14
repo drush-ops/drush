@@ -25,7 +25,7 @@ class SqlMysql extends SqlBase
         $process = Drush::shell('mysql --version');
         $process->setSimulated(false);
         $process->run();
-        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb')) {
+        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb') && self::programExists('mariadb-dump')) {
             $instance = new SqlMariaDB($dbSpec, $options);
         } else {
             $instance = new self($dbSpec, $options);
