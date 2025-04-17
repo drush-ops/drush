@@ -14,51 +14,64 @@ use Drupal\Core\Config\ConfigFactoryInterface;
  */
 final class CachingAggregationCommands extends DrushCommands
 {
-    const AGGREGATE = 'caching:aggregation';
+    const DEV_MODE = 'dev-mode';
+
+    protected KeyValueFactoryInterface $keyValueFactory;
+    protected ConfigFactoryInterface $configFactory;
 
     public function __construct(
-        private KeyValueFactoryInterface $keyValueFactory,
-        private ConfigFactoryInterface $configFactory
+        KeyValueFactoryInterface $keyValueFactory,
+        ConfigFactoryInterface $configFactory
     ) {
-        parent::__construct();
+        $this->keyValueFactory = $keyValueFactory;
+        $this->configFactory = $configFactory;
+    }
+
+    public static function create($container): self
+    {
+        return new self(
+            $container->get('keyvalue'),
+            $container->get('config.factory')
+        );
     }
 
     /**
-     * Enables or disables CSS/JS aggregation and Twig debugging.
+     * Toggle developer mode.
      *
      * @param string $mode
-     *   Accepts "enable" or "disable".
+     *   Accepts "on" or "off".
      */
-    #[CLI\Command(name: self::AGGREGATE, aliases: ['cag', 'caching-aggregation'])]
-    #[CLI\Argument(name: 'mode', description: '"enable" or "disable"')]
-    #[CLI\Usage(name: 'drush caching-aggregation enable', description: 'Enables CSS/JS aggregation and disables Twig debugging.')]
-    #[CLI\Usage(name: 'drush caching-aggregation disable', description: 'Disables CSS/JS aggregation and enables Twig debugging.')]
-    public function toggleAggregation(string $mode): void
+    #[CLI\Command(name: self::DEV_MODE, aliases: ['dev'])]
+    #[CLI\Argument(name: 'mode', description: '"on" or "off"')]
+    #[CLI\Usage(name: 'drush dev on', description: 'Disables CSS/JS aggregation and enables Twig debugging.')]
+    #[CLI\Usage(name: 'drush dev off', description: 'Enables CSS/JS aggregation and disables Twig debugging.')]
+    public function toggleDevMode(string $mode): void
     {
-        if (!in_array($mode, ['enable', 'disable'])) {
-            $this->logger()->error("Invalid mode. Use 'enable' or 'disable'.");
+        if (!in_array($mode, ['on', 'off'])) {
+            $this->logger()->error("Invalid mode. Use 'on' or 'off'.");
             return;
         }
 
-        $aggregation_mode = $mode === 'enable';
+        $dev_mode = $mode === 'on';
 
         $this->keyValueFactory->get('development_settings')->setMultiple([
-            'disable_rendered_output_cache_bins' => !$aggregation_mode,
-            'twig_debug' => !$aggregation_mode,
-            'twig_cache_disable' => !$aggregation_mode,
+            'disable_rendered_output_cache_bins' => $dev_mode,
+            'twig_debug' => $dev_mode,
+            'twig_cache_disable' => $dev_mode,
         ]);
 
         $this->configFactory->getEditable('system.performance')
-            ->set('css.preprocess', $aggregation_mode)
-            ->set('js.preprocess', $aggregation_mode)
+            ->set('css.preprocess', !$dev_mode)
+            ->set('js.preprocess', !$dev_mode)
             ->save();
 
         drupal_flush_all_caches();
 
         $this->logger()->success(sprintf(
-            'CSS/JS aggregation %s, Twig debugging %s.',
-            $aggregation_mode ? 'enabled' : 'disabled',
-            $aggregation_mode ? 'disabled' : 'enabled'
+            'Developer mode %s: CSS/JS aggregation %s, Twig debugging %s.',
+            $mode === 'on' ? 'enabled' : 'disabled',
+            $dev_mode ? 'disabled' : 'enabled',
+            $dev_mode ? 'enabled' : 'disabled'
         ));
     }
 }
