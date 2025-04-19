@@ -42,7 +42,7 @@ final class ThemeDevCommands extends DrushCommands
      * Clears all Drupal caches to apply changes immediately.
      */
     #[CLI\Command(name: self::DEV, aliases: ['thdev'])]
-    #[CLI\Version("13.6")]
+    #[CLI\Version(version: '13.6')]
     #[CLI\Argument(name: 'mode', description: '"on" or "off"', suggestedValues: ['on', 'off'])]
     #[CLI\Usage(name: 'drush theme:dev on', description: 'Disables CSS/JS aggregation and enables Twig debug settings.')]
     #[CLI\Usage(name: 'drush theme:dev off', description: 'Enables CSS/JS aggregation and disables Twig debug settings.')]
