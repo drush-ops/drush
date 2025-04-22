@@ -63,7 +63,7 @@ final class SshCommands extends DrushCommands implements StdinAwareInterface
         if (!Tty::isTtySupported()) {
             $process->setInput($this->stdin()->getStream());
         } else {
-            $process->setTty($process->setTty($options['tty']));
+            $process->setTty($options['tty']);
         }
         // The transport handles the chdir during processArgs().
         $fallback = $alias->hasRoot() ? $alias->root() : null;
