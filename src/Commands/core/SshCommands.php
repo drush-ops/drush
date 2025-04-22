@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Tty;
@@ -13,9 +15,10 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
-final class SshCommands extends DrushCommands
+final class SshCommands extends DrushCommands implements StdinAwareInterface
 {
     use AutowireTrait;
+    use StdinAwareTrait;
 
     const SSH = 'site:ssh';
 
@@ -56,8 +59,10 @@ final class SshCommands extends DrushCommands
         }
 
         $process = $this->processManager()->siteProcess($alias, $code);
-        if (Tty::isTtySupported()) {
-            $process->setTty($options['tty']);
+        if (!Tty::isTtySupported()) {
+            $process->setInput($this->stdin()->getStream());
+        } else {
+            $process->setTty($process->setTty($options['tty']));
         }
         // The transport handles the chdir during processArgs().
         $fallback = $alias->hasRoot() ? $alias->root() : null;
