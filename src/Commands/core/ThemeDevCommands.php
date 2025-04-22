@@ -4,28 +4,26 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
-use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
+use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\DrushCommands;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 final class ThemeDevCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const DEV = 'theme:dev';
 
     public function __construct(
+        // @todo Can we avoid the autowire attribute here?
+        #[Autowire(service: 'keyvalue')]
         protected KeyValueFactoryInterface $keyValueFactory,
         protected ConfigFactoryInterface $configFactory
     ) {
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        return new self(
-            $container->get('keyvalue'),
-            $container->get('config.factory')
-        );
+        parent::__construct();
     }
 
     /**
@@ -69,7 +67,7 @@ final class ThemeDevCommands extends DrushCommands
 
         $this->logger()->success(sprintf(
             'Developer mode %s: CSS/JS aggregation %s, Twig debug settings %s.',
-            $mode === 'on' ? 'enabled' : 'disabled',
+            $devMode ? 'enabled' : 'disabled',
             $devMode ? 'disabled' : 'enabled',
             $devMode ? 'enabled' : 'disabled'
         ));
