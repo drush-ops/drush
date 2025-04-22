@@ -566,6 +566,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/theme_dev/</loc>
+         <lastmod>2025-04-22</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/theme_install/</loc>
          <lastmod>2025-04-22</lastmod>
          <changefreq>daily</changefreq>
@@ -577,11 +582,6 @@
     </url>
     <url>
          <loc>https://www.drush.org/latest/latest/commands/twig_compile/</loc>
-         <lastmod>2025-04-22</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://www.drush.org/latest/latest/commands/twig_debug/</loc>
          <lastmod>2025-04-22</lastmod>
          <changefreq>daily</changefreq>
     </url>
