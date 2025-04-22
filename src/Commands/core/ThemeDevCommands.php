@@ -46,11 +46,11 @@ final class ThemeDevCommands extends DrushCommands
     #[CLI\Usage(name: 'drush theme:dev off', description: 'Enables CSS/JS aggregation and disables Twig debug settings.')]
     public function toggleDevMode(string $mode): void
     {
-        if (!in_array($mode, ['on', 'off'])) {
-            throw new \InvalidArgumentException("Invalid mode. Use 'on' or 'off'.");
-        }
-
-        $devMode = $mode === 'on';
+        $devMode = match ($mode) {
+            'on' => true,
+            'off' => false,
+            default => throw new \InvalidArgumentException("Invalid mode. Use 'on' or 'off'."),
+        };
 
         $this->keyValueFactory->get('development_settings')->setMultiple([
             'disable_rendered_output_cache_bins' => $devMode,
