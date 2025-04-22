@@ -43,4 +43,13 @@ final class LegacyCommands extends DrushCommands
     public function sec(): void
     {
     }
+
+    /**
+     * twig:debug has been removed. Please use the `theme:dev` command.
+     */
+    #[CLI\Command(name: 'twig:debug', aliases: ['twig-debug'])]
+    #[CLI\Obsolete]
+    public function twigDebug(): void
+    {
+    }
 }
