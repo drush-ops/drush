@@ -7763,13 +7763,18 @@ runs a sequence of commands.</p></dd><dt>$<a href="Robo/Task/StackBasedTask.html
 <abbr title="Drush\Boot\Boot">Boot</abbr>::terminate</a>() &mdash; <em>Method in class <a href="Drush/Boot/Boot.html"><abbr title="Drush\Boot\Boot">Boot</abbr></a></em></dt>
                     <dd><p>This method is called during the shutdown of drush.</p></dd><dt><a href="Drush/Boot/DrupalBoot8.html#method_terminate">
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::terminate</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
-                    <dd><p>This method is called during the shutdown of drush.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_tags">
+                    <dd><p>This method is called during the shutdown of drush.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_twigDebug">
+<abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::twigDebug</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
+                    <dd><p>twig:debug has been removed. Please use the <code>theme:dev</code> command.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_tags">
 <abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::tags</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
                     <dd><p>Invalidate by cache tags.</p></dd><dt>$<a href="Drush/Commands/core/RsyncCommands.html#property_targetEvaluatedPath">
 <abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr>#targetEvaluatedPath</a> &mdash; <em>Property in class <a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_taskCallback">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::taskCallback</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/TopicCommands.html"><abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/ThemeDevCommands.html"><abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/ThemeDevCommands.html#method_toggleDevMode">
+<abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr>::toggleDevMode</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ThemeDevCommands.html"><abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr></a></em></dt>
+                    <dd><p>Toggle Twig development and cache aggregation settings.</p></dd><dt><a href="Drush/Commands/core/TopicCommands.html"><abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TopicCommands.html#method_topic">
 <abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr>::topic</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TopicCommands.html"><abbr title="Drush\Commands\core\TopicCommands">TopicCommands</abbr></a></em></dt>
                     <dd><p>Read detailed documentation on a given topic.</p></dd><dt><a href="Drush/Commands/core/TopicCommands.html#method_topicComplete">
@@ -7777,9 +7782,7 @@ runs a sequence of commands.</p></dd><dt>$<a href="Robo/Task/StackBasedTask.html
                     <dd></dd><dt><a href="Drush/Commands/core/TwigCommands.html"><abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigCommands.html#method_twigCompile">
 <abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr>::twigCompile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigCommands.html"><abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr></a></em></dt>
-                    <dd><p>Compile all Twig template(s).</p></dd><dt><a href="Drush/Commands/core/TwigCommands.html#method_twigDebug">
-<abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr>::twigDebug</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigCommands.html"><abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr></a></em></dt>
-                    <dd><p>Enables Twig debug and disables caching Twig templates.</p></dd><dt><a href="Drush/Commands/core/WatchdogCommands.html#method_tail">
+                    <dd><p>Compile all Twig template(s).</p></dd><dt><a href="Drush/Commands/core/WatchdogCommands.html#method_tail">
 <abbr title="Drush\Commands\core\WatchdogCommands">WatchdogCommands</abbr>::tail</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/WatchdogCommands.html"><abbr title="Drush\Commands\core\WatchdogCommands">WatchdogCommands</abbr></a></em></dt>
                     <dd><p>Tail watchdog messages.</p></dd><dt><a href="Drush/Commands/field/FieldDefinitionCommands.html#method_types">
 <abbr title="Drush\Commands\field\FieldDefinitionCommands">FieldDefinitionCommands</abbr>::types</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldDefinitionCommands.html"><abbr title="Drush\Commands\field\FieldDefinitionCommands">FieldDefinitionCommands</abbr></a></em></dt>
@@ -8871,6 +8874,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method___construct">
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/ThemeDevCommands.html#method___construct">
+<abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ThemeDevCommands.html"><abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigCommands.html#method___construct">
 <abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigCommands.html"><abbr title="Drush\Commands\core\TwigCommands">TwigCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommands.html#method___construct">

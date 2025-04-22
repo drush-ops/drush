@@ -214,15 +214,6 @@
                     <p></p>
                 </td>
             </tr>
-                    <tr>
-                <td>
-                                                                                                                        DEBUG
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
             </table>
 
     
@@ -523,7 +514,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -703,16 +694,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     <a href="#method_twigCompile">twigCompile</a>()
         
                                             <p><p>Compile all Twig template(s).</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_twigDebug">twigDebug</a>(string $mode)
-        
-                                            <p><p>Enables Twig debug and disables caching Twig templates.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -1455,9 +1436,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L30">at line 30</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L27">at line 27</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList, <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Template\TwigEnvironment">TwigEnvironment</abbr> $twig, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionList)
         </code>
     </h3>
     <div class="details">    
@@ -1485,16 +1466,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr></td>
                 <td>$extensionList</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr></td>
-                <td>$state</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr></td>
-                <td>$kernel</td>
                 <td></td>
             </tr>
             </table>
@@ -1578,7 +1549,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_promptUntilValid">
         <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_promptUntilValid">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L148">at line 148</a></div>
+<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L151">at line 151</a></div>
         <code>            protected        mixed
     <strong>promptUntilValid</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $prompt, bool|string $required, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate)
         </code>
@@ -1631,7 +1602,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_restorePrompts">
         <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_restorePrompts">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L179">at line 179</a></div>
+<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L182">at line 182</a></div>
         <code>            protected        void
     <strong>restorePrompts</strong>()
         </code>
@@ -1664,7 +1635,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_runningUnitTests">
         <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_runningUnitTests">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L184">at line 184</a></div>
+<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L187">at line 187</a></div>
         <code>            protected        bool
     <strong>runningUnitTests</strong>()
         </code>
@@ -2033,7 +2004,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_unused">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L45">at line 45</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L40">at line 40</a></div>
         <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
     <strong>unused</strong>($searchpaths)
         </code>
@@ -2076,7 +2047,7 @@ use your Production PHPStorage dir for comparison.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_twigCompile">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L87">at line 87</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L82">at line 82</a></div>
         <code>                    void
     <strong>twigCompile</strong>()
         </code>
@@ -2101,59 +2072,6 @@ use your Production PHPStorage dir for comparison.</p></p>
 
             
             
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_twigDebug">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/TwigCommands.php#L121">at line 121</a></div>
-        <code>                    void
-    <strong>twigDebug</strong>(string $mode)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Enables Twig debug and disables caching Twig templates.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$mode</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                            <h4>See also</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                            \Drupal\system\Form\DevelopmentSettingsForm::submitForm()
-                                    </td>
-                <td></td>
-            </tr>
-            </table>
-
             
                     </div>
     </div>
