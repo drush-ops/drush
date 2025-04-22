@@ -95,8 +95,8 @@ final class CliCommands extends DrushCommands
             // all deprecated in PHP 8.3.
             // @see https://www.php.net/manual/en/function.assert-options.php
             // @see https://www.php.net/manual/en/info.configuration.php
-            assert_options(ASSERT_EXCEPTION, TRUE);
-            assert_options(ASSERT_WARNING, FALSE);
+            assert_options(ASSERT_EXCEPTION, true);
+            assert_options(ASSERT_WARNING, false);
         }
 
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
