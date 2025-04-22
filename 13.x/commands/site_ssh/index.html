@@ -7533,6 +7533,7 @@
 <li><code>drush @prod ssh "ls /tmp"</code>. Run <em>ls /tmp</em> on <em>@prod</em> site.</li>
 <li><code>drush @prod ssh "git pull"</code>. Run <em>git pull</em> on the Drupal root directory on the <em>@prod</em> site.</li>
 <li><code>drush ssh "git pull"</code>. Run <em>git pull</em> on the local Drupal root directory.</li>
+<li><code>echo 'Deny from all' | drush @prod ssh "tee &gt; do-not-expose-dir/.htaccess"</code>. Protect directory <em>do-not-expose-dir</em> from being served by Apache httpd.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
