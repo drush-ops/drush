@@ -40,6 +40,7 @@ final class SshCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush @prod ssh "ls /tmp"', description: 'Run <info>ls /tmp</info> on <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush @prod ssh "git pull"', description: 'Run <info>git pull</info> on the Drupal root directory on the <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush ssh "git pull"', description: 'Run <info>git pull</info> on the local Drupal root directory.')]
+    #[CLI\Usage(name: 'echo \'Deny from all\' | drush @prod ssh "tee >do-not-expose-dir/.htaccess"', description: 'Protect directory <info>do-not-expose-dir</info> from being served by Apache httpd.')]
     #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function ssh(array $code, $options = ['cd' => self::REQ]): void
     {
