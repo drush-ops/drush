@@ -529,7 +529,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
             }
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
-        $process = Drush::process($args);
+        $process = Drush::process($args, "/");
         $process->run();
         return $process->getOutput();
     }
