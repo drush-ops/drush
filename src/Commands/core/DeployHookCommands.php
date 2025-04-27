@@ -287,7 +287,9 @@ final class DeployHookCommands extends DrushCommands
     }
 
   /**
-   * Prints information about pending deploy update hooks.
+   * Prints information about deployed hooks.
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
    */
     #[CLI\Command(name: self::HOOK_LIST)]
     #[CLI\Usage(name: 'drush deploy:hook-list', description: 'Prints information about deployed hooks.')]
