@@ -28,6 +28,8 @@ final class DeployHookCommands extends DrushCommands
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';
     const MARK_COMPLETE = 'deploy:mark-complete';
+    const HOOK_LIST = 'deploy:hook-list';
+    const UPDATE_TYPE = '_deploy_';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager
@@ -282,5 +284,79 @@ final class DeployHookCommands extends DrushCommands
 
         $this->logger()->success(dt('Marked %count pending deploy hooks as complete.', ['%count' => count($pending)]));
         return self::EXIT_SUCCESS;
+    }
+
+  /**
+   * Prints information about pending deploy update hooks.
+   */
+    #[CLI\Command(name: self::HOOK_LIST)]
+    #[CLI\Usage(name: 'drush deploy:hook-list', description: 'Prints information about deployed hooks.')]
+    #[CLI\FieldLabels(labels: [
+    'module'      => 'Module',
+    'hook'        => 'Hook',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['module', 'hook'])]
+    #[CLI\FilterDefaultField(field: 'hook')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function list(): RowsOfFields
+    {
+        $updates = $this->getDeployedHooks();
+        if (empty($updates)) {
+            Drush::logger()->notice("No deployed hooks found.");
+        }
+
+        foreach ($updates as $module => $update_data) {
+            if (!empty($update_data['deployed'])) {
+                foreach ($update_data['deployed'] as $hook => $value) {
+                    $rows[] = [
+                    'module' => $module,
+                    'hook' => $hook,
+                    ];
+                }
+            }
+        }
+        return new RowsOfFields($rows);
+    }
+
+  /**
+   * Retrieves and processes deployed update functions.
+   *
+   * @return array
+   *   An array of updates keyed by extension, with pending hooks.
+   */
+    protected function getDeployedHooks(): array
+    {
+      // Retrieve existing update functions from key-value store.
+        $store = \Drupal::service('keyvalue')->get('deploy_hook');
+        $update_functions = $store->get('existing_updates', []);
+
+      // Early return if no update functions exist.
+        if (empty($update_functions)) {
+            return [];
+        }
+
+        $updates = [];
+        foreach ($update_functions as $function) {
+          // Validate function name format.
+            if (strpos($function, self::UPDATE_TYPE) === false) {
+                $this->logger()->warning("Skipping invalid hook function: {function}", ['function' => $function]);
+                continue;
+            }
+
+          // Split function name into extension and update.
+            [$extension, $update] = explode(self::UPDATE_TYPE, $function);
+            if (empty($extension) || empty($update)) {
+                $this->logger()->warning("Invalid hook function format: {function}", ['function' => $function]);
+                continue;
+            }
+
+          // Store the update data.
+            $updates[$extension]['deployed'][$update] = true;
+            if (!isset($updates[$extension]['start'])) {
+                $updates[$extension]['start'] = $update;
+            }
+        }
+        return $updates;
     }
 }
