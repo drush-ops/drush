@@ -29,6 +29,7 @@ final class DeployHookCommands extends DrushCommands
     const BATCH_PROCESS = 'deploy:batch-process';
     const MARK_COMPLETE = 'deploy:mark-complete';
     const HOOK_LIST = 'deploy:hook-list';
+    const HOOK_UNSET =   'deploy:hook-unset';
     const UPDATE_TYPE = '_deploy_';
 
     public function __construct(
@@ -303,40 +304,7 @@ final class DeployHookCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function list(): RowsOfFields
     {
-        $updates = $this->getDeployedHooks();
-        if (empty($updates)) {
-            Drush::logger()->notice("No deployed hooks found.");
-        }
-
-        foreach ($updates as $module => $update_data) {
-            if (!empty($update_data['deployed'])) {
-                foreach ($update_data['deployed'] as $hook => $value) {
-                    $rows[] = [
-                    'module' => $module,
-                    'hook' => $hook,
-                    ];
-                }
-            }
-        }
-        return new RowsOfFields($rows);
-    }
-
-  /**
-   * Retrieves and processes deployed update functions.
-   *
-   * @return array
-   *   An array of updates keyed by extension, with pending hooks.
-   */
-    protected function getDeployedHooks(): array
-    {
-      // Retrieve existing update functions from key-value store.
-        $store = \Drupal::service('keyvalue')->get('deploy_hook');
-        $update_functions = $store->get('existing_updates', []);
-
-      // Early return if no update functions exist.
-        if (empty($update_functions)) {
-            return [];
-        }
+        $update_functions = $this->getDeployedHooks();
 
         $updates = [];
         foreach ($update_functions as $function) {
@@ -359,6 +327,68 @@ final class DeployHookCommands extends DrushCommands
                 $updates[$extension]['start'] = $update;
             }
         }
-        return $updates;
+
+        foreach ($updates as $module => $update_data) {
+            if (!empty($update_data['deployed'])) {
+                foreach ($update_data['deployed'] as $hook => $value) {
+                    $rows[] = [
+                    'module' => $module,
+                    'hook' => $hook,
+                    ];
+                }
+            }
+        }
+        return new RowsOfFields($rows);
+    }
+
+  /**
+   * Unsets a hook from the deployed hooks list.
+   *
+   * @param string $hook_name The name of the hook to remove (e.g., hook_deploy_NAME)
+   *
+   * @return int Exit code
+   */
+    #[CLI\Command(name: self::HOOK_UNSET)]
+    #[CLI\Argument(name: 'hook_name', description: 'The name of the hook to remove (e.g., hook_deploy_NAME)')]
+    #[CLI\Usage(
+        name: 'drush deploy:hook-unset hook_deploy_NAME',
+        description: 'Removes the specified hook from the deployed hooks list'
+    )]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function unset(string $hook_name): int
+    {
+        $deployed_hooks = $this->getDeployedHooks();
+        // Check if the hook exists.
+        if (!in_array($hook_name, $deployed_hooks, true)) {
+            $this->logger()->warning("Hook {hook} not found in deployed hooks.", [
+              'hook' => $hook_name
+            ]);
+            return self::EXIT_SUCCESS;
+        }
+        // Remove the hook from the list.
+        $update_functions = array_filter($deployed_hooks, function ($function) use ($hook_name) {
+            return $function !== $hook_name;
+        });
+
+        // Update the deployed hook list.
+        \Drupal::service('keyvalue')->get('deploy_hook')->set('existing_updates', $update_functions);
+        $this->logger()->success(dt('Hook !hook_name removed from deployed hooks list.', [
+        '!hook_name' => $hook_name
+        ]));
+        return self::EXIT_SUCCESS;
+    }
+
+  /**
+   * Get all deployed hooks.
+   *
+   * @return mixed
+   */
+    public function getDeployedHooks(): array
+    {
+      // Retrieve existing update functions from key-value store.
+        $store = \Drupal::service('keyvalue')->get('deploy_hook');
+        $update_functions = $store->get('existing_updates', []);
+        return $update_functions;
     }
 }
