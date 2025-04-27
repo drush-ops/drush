@@ -90,8 +90,14 @@ final class CliCommands extends DrushCommands
         // Register the assertion handler so exceptions are thrown instead of
         // errors being triggered. This plays nicer with PsySH. Since we're
         // using exceptions, turn error warnings off.
-        assert_options(ASSERT_EXCEPTION, true);
-        assert_options(ASSERT_WARNING, false);
+        if (version_compare(PHP_VERSION, '8.3', '<')) {
+            // assert_options() and assert.* INI configuration directives are
+            // all deprecated in PHP 8.3.
+            // @see https://www.php.net/manual/en/function.assert-options.php
+            // @see https://www.php.net/manual/en/info.configuration.php
+            assert_options(ASSERT_EXCEPTION, true);
+            assert_options(ASSERT_WARNING, false);
+        }
 
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
