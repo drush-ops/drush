@@ -281,7 +281,7 @@ final class DeployHookCommands extends DrushCommands
         $updates = [];
         foreach ($update_functions as $function) {
           // Validate function name format.
-            if (strpos($function, self::UPDATE_TYPE) === false) {
+            if (!str_contains($function, self::UPDATE_TYPE)) {
                 $this->logger()->warning("Skipping invalid hook function: {function}", ['function' => $function]);
                 continue;
             }
@@ -301,13 +301,11 @@ final class DeployHookCommands extends DrushCommands
         }
         $rows = [];
         foreach ($updates as $module => $update_data) {
-            if (!empty($update_data['deployed'])) {
-                foreach ($update_data['deployed'] as $hook => $value) {
-                    $rows[] = [
-                    'module' => $module,
-                    'hook' => $hook,
-                    ];
-                }
+            foreach ($update_data['deployed'] as $hook => $value) {
+                $rows[] = [
+                'module' => $module,
+                'hook' => $hook,
+                ];
             }
         }
         return new RowsOfFields($rows);
@@ -394,12 +392,12 @@ final class DeployHookCommands extends DrushCommands
   /**
    * Get all deployed hooks.
    *
-   * @return mixed
+   * @return array
    */
     public function getDeployedHooks(): array
     {
         $store = \Drupal::service('keyvalue')->get('deploy_hook');
-        return $store?->get('existing_updates', []);
+        return $store->get('existing_updates', []);
     }
 
   /**
