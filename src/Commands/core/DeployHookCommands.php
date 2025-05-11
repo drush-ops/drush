@@ -327,7 +327,7 @@ final class DeployHookCommands extends DrushCommands
                 $updates[$extension]['start'] = $update;
             }
         }
-
+        $rows = [];
         foreach ($updates as $module => $update_data) {
             if (!empty($update_data['deployed'])) {
                 foreach ($update_data['deployed'] as $hook => $value) {
