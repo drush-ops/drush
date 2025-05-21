@@ -71,7 +71,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
             $this->logger()->success(dt('No matching entities found.'));
         } else {
             $chunks = array_chunk($result, (int)$options['chunks'], true);
-            $progress = $this->io()->progress('Deleting entitites', count($chunks));
+            $progress = $this->io()->progress('Deleting entities', count($chunks));
             $progress->start();
             foreach ($chunks as $chunk) {
                 drush_op([$this, 'doDelete'], $entity_type, $chunk);
