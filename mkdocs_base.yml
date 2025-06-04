@@ -14,6 +14,9 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.tracking
+    - navigation.path
+    - navigation.top
     - toc.integrate
     - content.action.edit
     - content.action.view
@@ -26,6 +29,7 @@ extra_css:
 plugins:
   - edit_url
   - search
+  - social
   - mike:
       canonical_version: latest
       alias_type: redirect

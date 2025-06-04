@@ -10,6 +10,7 @@ drush updatedb
 drush config:import
 drush cache:rebuild
 drush deploy:hook
+drush cache:warm (Drupal 11.2+)
 ```
 
 ## Authoring update functions

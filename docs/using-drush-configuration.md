@@ -19,20 +19,17 @@ to see all discovered config files.
 #### Environment variables
 
 Your Drush config file may reference environment variables using a syntax like `${env.HOME}`.
-For example see the `drush.paths` examples below.
+For example, see `drush.paths` below.
 
 An alternative way to populate Drush configuration is to define environment variables that
 correspond to config keys. For example, to populate the `options.uri` config item,
-create an environment variable `DRUSH_OPTIONS_URI=http://example.com`.
-As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods
-replaced with underscores. Overall, `DRUSH_OPTIONS_URI` is usually a better approach.
+create an environment variable `DRUSH_OPTIONS_URI=http://example.com`. This instructs Drush to use your domain name instead of `http://default`. As you can see, variable names should be uppercased, prefixed with `DRUSH_`, and periods replaced with underscores.
 
-Note: For `uri` you need to use a global location or environment variable, not a site-specific
-one, since it's used by Drupal to select which multi-site gets bootstrapped.
+!!! note
+    For `uri` you need to use a global config location, not a site-specific one, since it's used by Drupal to select which multi-site gets bootstrapped. Thats why the `DRUSH_OPTIONS_URI` approach is recommended.
 
-#### Direnv for multiple code bases 
-
-To handle multiple Drupal installations on the same server, https://direnv.net/ can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.
+!!! tip
+    To handle multiple Drupal installations on the same server, https://direnv.net/ can help, by varying your environment variables, depending on the directory you are in, when you issue a command line request. Use this to define a site URI for each code base.
 
 ### Config examples
 
@@ -97,8 +94,8 @@ options:
   # Specify the base_url that should be used when generating links.
   uri: 'http://example.com/subdir'
   
-  # Specify your Drupal core base directory (useful if you use symlinks).
-  root: '/home/USER/workspace/drupal'
+  # Load Drush config from a non-standard location
+  config: '/home/USER/workspace/drupal'
   
   # Enable verbose mode.
   verbose: true

@@ -72,4 +72,8 @@ class SiteSshTest extends CommandUnishTestCase
         $expected = "[notice] Simulating: ssh -o PasswordAuthentication=no user@server 'cd /path/to/drupal && ls /path1 /path2'";
         $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
+
+    /**
+     * @todo If this becomes an integration test, add test for stdin handling.
+     */
 }

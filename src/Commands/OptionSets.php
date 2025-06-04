@@ -17,8 +17,8 @@ class OptionSets
 
     public static function tableSelection(Command $command): void
     {
-        $command->addOption('skip-tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $skip_tables array. @see [Site aliases](../site-aliases.md)');
-        $command->addOption('structure-tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $structure_tables array. @see [Site aliases](../site-aliases.md)');
+        $command->addOption('skip-tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $skip_tables array. @see [Drush config](../using-drush-configuration.md)');
+        $command->addOption('structure-tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $structure_tables array. @see [Drush config](../using-drush-configuration.md)');
         $command->addOption('tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $tables array.');
         $command->addOption('skip-tables-list', '', InputOption::VALUE_REQUIRED, 'A comma-separated list of tables to exclude completely.');
         $command->addOption('structure-tables-list', '', InputOption::VALUE_REQUIRED, 'A comma-separated list of tables to include for structure, but not data.');

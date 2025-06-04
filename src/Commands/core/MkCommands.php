@@ -209,6 +209,8 @@ EOT;
 ---
 edit_url: $edit_url
 command: {$command->getName()}
+title: {$command->getName()}
+description: {$command->getDescription()}
 ---
 
 EOT;

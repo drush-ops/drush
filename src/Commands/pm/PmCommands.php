@@ -221,7 +221,7 @@ final class PmCommands extends DrushCommands
                         $list[] = "$module: " . (string)$reason;
                     }
                 }
-                throw new \Exception(implode("/n", $list));
+                throw new \Exception(implode("\n", $list));
             }
         }
     }
