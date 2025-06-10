@@ -327,8 +327,9 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
 
         // Register our commands with Robo, our application framework.
-        // Note that Robo::register can accept either Annotated Command
-        // command handlers or Symfony Console Command objects.
+        // Note that Robo::register can accept Annotated Command
+        // handlers or Symfony Console Command objects, but not yet invokables.
+        $commandInstances = $this->serviceManager->commandFromInvokable($commandInstances);
         Robo::register($this, $commandInstances);
 
         // Dispatch our custom event. It also fires later in \Drush\Boot\DrupalBoot8::bootstrapDrupalFull.

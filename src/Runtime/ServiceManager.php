@@ -25,12 +25,14 @@ use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
 use League\Container\Container as DrushContainer;
+use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -416,6 +418,37 @@ class ServiceManager
         }
 
         return $commandHandlers;
+    }
+
+    /**
+     * Robo does not support invokable commands, so build a Command for each one.
+     */
+    public function commandFromInvokable(array $callables): array
+    {
+        $return = [];
+
+        foreach ($callables as $callable) {
+            if (!is_callable($callable)) {
+                $return[] = $callable;
+                continue;
+            }
+
+            // Simplify when https://github.com/symfony/symfony/pull/60394 is merged.
+            /** @var AsCommand $attribute */
+            $attribute = ((new \ReflectionObject($callable))->getAttributes(AsCommand::class)[0] ?? null)?->newInstance()
+                ?? throw new LogicException(\sprintf('The command must use the "%s" attribute.', AsCommand::class));
+
+            $aliases = explode('|', $attribute->name);
+            $name = array_shift($aliases);
+            $command = (new Command($name))
+                ->setAliases($aliases)
+                ->setDescription($attribute->description ?? '')
+                ->setHelp($attribute->help ?? '')
+                ->setCode($callable);
+            $return[] = $command;
+        }
+
+        return $return;
     }
 
     /**
