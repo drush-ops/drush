@@ -107,7 +107,12 @@ final class DrupalCommands extends DrushCommands
 
         $min_severity = $options['severity'];
         foreach ($requirements as $key => $info) {
+            // Adjust once Drupal 11.1- is unsupported.
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
+            if (is_object($severity)) {
+                $severity = $severity->value;
+            }
+
             $rows[$key] = [
                 'title' => $this->styleRow((string) $info['title'], $options['format'], $severity),
                 'value' => $this->styleRow(DrupalUtil::drushRender($info['value'] ?? ''), $options['format'], $severity),
