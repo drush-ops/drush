@@ -80,7 +80,7 @@ final class NotifyCommands extends DrushCommands
                     break;
                 case 'Linux':
                 default:
-                    $icon = Path::join(Drush::config()->get('drush.base-dir'), 'drush_logo-black.png');
+                    $icon = Path::join(Drush::config()->get('drush.base-dir'), 'docs', 'drush_logo-black.png');
                     $cmd = "notify-send %s -i $icon";
                     $error_message = dt('notify-send command failed. Please install it as per http://coderstalk.blogspot.com/2010/02/how-to-install-notify-send-in-ubuntu.html.');
                     break;
