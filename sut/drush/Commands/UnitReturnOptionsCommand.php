@@ -6,11 +6,12 @@ namespace Drush\Commands;
 
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Works like php-eval. Used for testing $command_specific context.',
-    // @todo needs bug fix thats console 7.4+
+    // @todo needs bug fix that will be in Console 7.4+
     // hidden: true,
     aliases: ['unit-eval'],
 )]
@@ -25,6 +26,6 @@ final class UnitReturnOptionsCommand
         // @todo deal with formatters.
         eval($code . ';');
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
