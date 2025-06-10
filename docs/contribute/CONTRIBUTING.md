@@ -1,6 +1,3 @@
----
-edit_url: https://github.com/drush-ops/drush/blob/13.x/CONTRIBUTING.md
----
 Drush is built by people like you! Please [join us](https://github.com/drush-ops/drush).
 
 ## Git and Pull requests
