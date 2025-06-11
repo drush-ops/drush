@@ -24,7 +24,7 @@ trait EntityTypeBundleValidationTrait
 
     protected function validateBundle(string $entityTypeId, string $bundle): void
     {
-        if (!$entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId)) {
+        if (!$entityTypeDefinition = $this->entityTypeManager->getDefinition($entityTypeId, false)) {
             return;
         }
 
