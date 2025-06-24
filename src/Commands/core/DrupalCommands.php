@@ -78,13 +78,6 @@ final class DrupalCommands extends DrushCommands
     public function requirements($options = ['format' => 'table', 'severity' => -1, 'ignore' => '']): RowsOfFields
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        $severities = [
-            REQUIREMENT_INFO => dt('Info'),
-            REQUIREMENT_OK => dt('OK'),
-            REQUIREMENT_WARNING => dt('Warning'),
-            REQUIREMENT_ERROR => dt('Error'),
-        ];
-
         drupal_load_updates();
 
         $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
@@ -105,10 +98,10 @@ final class DrupalCommands extends DrushCommands
         }
         ksort($requirements);
 
+        RequirementSeverity::convertLegacyIntSeveritiesToEnums($requirements, __METHOD__);
         $min_severity = $options['severity'];
         foreach ($requirements as $key => $info) {
-            // Adjust once Drupal 11.1- is unsupported.
-            $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
+            $severity = $info['severity'] ?? RequirementSeverity::from(REQUIREMENT_INFO);
             if (is_object($severity)) {
                 $severity = $severity->value;
             }
@@ -118,7 +111,7 @@ final class DrupalCommands extends DrushCommands
                 'value' => $this->styleRow(DrupalUtil::drushRender($info['value'] ?? ''), $options['format'], $severity),
                 'description' => $this->styleRow(DrupalUtil::drushRender($info['description'] ?? ''), $options['format'], $severity),
                 'sid' => $severity,
-                'severity' => $this->styleRow(@$severities[$severity], $options['format'], $severity)
+                'severity' => $this->styleRow($severity->status(), $options['format'], $severity)
             ];
             if ($severity < $min_severity) {
                 unset($rows[$key]);
