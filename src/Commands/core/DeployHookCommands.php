@@ -24,9 +24,12 @@ final class DeployHookCommands extends DrushCommands
 {
     use AutowireTrait;
 
+    const PREDEPLOY_STATUS = 'deploy:predeploy-status';
     const HOOK_STATUS = 'deploy:hook-status';
+    const PREDEPLOY = 'deploy:predeploy';
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';
+    const MARK_PREDEPLOY_COMPLETE = 'deploy:mark-predeploy-complete';
     const MARK_COMPLETE = 'deploy:mark-complete';
 
     public function __construct(
@@ -38,7 +41,7 @@ final class DeployHookCommands extends DrushCommands
     /**
      * Get the deploy hook update registry.
      */
-    public static function getRegistry(): UpdateRegistry
+    public static function getRegistry(string $update_type = 'deploy'): UpdateRegistry
     {
         return new class (
             \Drupal::getContainer()->getParameter('app.root'),
@@ -46,6 +49,7 @@ final class DeployHookCommands extends DrushCommands
             \Drupal::service('module_handler')->getModuleList(),
             \Drupal::service('keyvalue'),
             \Drupal::service('theme_handler'),
+            $update_type,
         ) extends UpdateRegistry {
             public function __construct(
                 $root,
@@ -53,19 +57,36 @@ final class DeployHookCommands extends DrushCommands
                 $module_list,
                 KeyValueFactoryInterface $key_value_factory,
                 ThemeHandlerInterface $theme_handler,
+                string $update_type,
             ) {
+                $collection = str_replace(':', '_', $update_type);
                 // Do not call the parent constructor, we set the properties directly.
                 // We need a different key value store and set the update type.
                 $this->root = $root;
                 $this->sitePath = $site_path;
                 $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
-                $this->keyValue = $key_value_factory->get('deploy_hook');
-                $this->updateType = 'deploy';
+                $this->keyValue = $key_value_factory->get($collection);
+                $this->updateType = $update_type;
             }
         };
     }
 
     /**
+     * Prints information about pending deploy update hooks.
+     */
+    #[CLI\Command(name: self::PREDEPLOY_STATUS)]
+    #[CLI\Usage(name: 'drush ' . self::PREDEPLOY_STATUS, description: 'Prints information about pending predeploy hooks.')]
+    #[CLI\FieldLabels(labels: ['module' => 'Module', 'hook' => 'Hook', 'description' => 'Description'])]
+    #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
+    #[CLI\FilterDefaultField(field: 'hook')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function predeployStatus(): RowsOfFields
+    {
+        return $this->doStatus('predeploy');
+    }
+
+  /**
      * Prints information about pending deploy update hooks.
      */
     #[CLI\Command(name: self::HOOK_STATUS)]
@@ -77,7 +98,15 @@ final class DeployHookCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function status(): RowsOfFields
     {
-        $updates = self::getRegistry()->getPendingUpdateInformation();
+        return $this->doStatus('deploy');
+    }
+
+    /**
+    + Prints information about pending update hooks of a given type.
+    */
+    protected function doStatus(string $hook_name): RowsOfFields
+    {
+        $updates = self::getRegistry($hook_name)->getPendingUpdateInformation();
         $rows = [];
         foreach ($updates as $module => $update) {
             if (!empty($update['pending'])) {
@@ -95,6 +124,19 @@ final class DeployHookCommands extends DrushCommands
     }
 
     /**
+     * Run pending predeploy update hooks.
+     */
+    #[CLI\Command(name: self::PREDEPLOY)]
+    #[CLI\Usage(name: 'drush ' . self::PREDEPLOY, description: 'Run pending predeploy hooks.')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Version(version: '13.6')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function predeploy(): int
+    {
+        return $this->doRun('predeploy');
+    }
+
+    /**
      * Run pending deploy update hooks.
      */
     #[CLI\Command(name: self::HOOK)]
@@ -104,18 +146,27 @@ final class DeployHookCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function run(): int
     {
-        $pending = self::getRegistry()->getPendingUpdateFunctions();
+      return $this->doRun('deploy');
+    }
+
+    /**
+     * Run pending update hooks.
+     */
+    public function doRun(string $hook): int
+    {
+        $pending = self::getRegistry($hook)->getPendingUpdateFunctions();
 
         if (empty($pending)) {
-            $this->logger()->success(dt('No pending deploy hooks.'));
+            $this->logger()->success(dt('No pending @hook hooks.'. ['@hook' => $hook]));
             return self::EXIT_SUCCESS;
         }
 
-        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), self::HOOK_STATUS, [], Drush::redispatchOptions() + ['strict' => 0]);
+        $status_command = $hook === 'deploy' ? self::HOOK_STATUS : self::PREDEPLOY_STATUS;
+        $process = $this->processManager()->drush($this->siteAliasManager->getSelf(), $status_command, [], Drush::redispatchOptions() + ['strict' => 0]);
         $process->mustRun();
         $this->output()->writeln($process->getOutput());
 
-        if (!$this->io()->confirm(dt('Do you wish to run the specified pending deploy hooks?'))) {
+        if (!$this->io()->confirm(dt('Do you wish to run the specified pending @hook hooks?', ['@hook' => $hook]))) {
             throw new UserAbortException();
         }
 
@@ -123,13 +174,13 @@ final class DeployHookCommands extends DrushCommands
         if (!$this->getConfig()->simulate()) {
             $operations = [];
             foreach ($pending as $function) {
-                $operations[] = ['\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
+                $operations[] = ['\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function, $hook]];
             }
 
             $batch = [
                 'operations' => $operations,
                 'title' => 'Updating',
-                'init_message' => 'Starting deploy hooks',
+                'init_message' => dt('Starting @hook hooks', ['@hook' => $hook]),
                 'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
                 'finished' => [$this, 'updateFinished'],
             ];
@@ -144,7 +195,7 @@ final class DeployHookCommands extends DrushCommands
                 // this array should only contain a single item, but we still output
                 // all available data for completeness.
                 $this->logger()->error(dt('Update aborted by: !process', [
-                    '!process' => implode(', ', $result[0]['#abort']),
+                  '!process' => implode(', ', $result[0]['#abort']),
                 ]));
             } else {
                 $success = true;
@@ -152,7 +203,7 @@ final class DeployHookCommands extends DrushCommands
         }
 
         $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
-        $this->logger()->log($level, dt('Finished performing deploy hooks.'));
+        $this->logger()->log($level, dt('Finished performing @hook hooks.', ['@hook' => $hook]));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
     }
 
@@ -172,7 +223,7 @@ final class DeployHookCommands extends DrushCommands
     /**
      * Batch command that executes a single deploy hook.
      */
-    public static function updateDoOneDeployHook(string $function, array $context): void
+    public static function updateDoOneDeployHook(string $function, string $hook, array $context): void
     {
         $ret = [];
 
@@ -185,10 +236,10 @@ final class DeployHookCommands extends DrushCommands
         // Module names can include '_deploy', so deploy functions like
         // module_deploy_deploy_name() are ambiguous. Check every occurrence.
         $components = explode('_', $function);
-        foreach (array_keys($components, 'deploy', true) as $position) {
+        foreach (array_keys($components, $hook, true) as $position) {
             $module = implode('_', array_slice($components, 0, $position));
             $name = implode('_', array_slice($components, $position + 1));
-            $filename = $module . '.deploy';
+            $filename = "$module.$hook";
             \Drupal::moduleHandler()->loadInclude($module, 'php', $filename);
             if (function_exists($function)) {
                 break;
@@ -198,12 +249,12 @@ final class DeployHookCommands extends DrushCommands
 
         if (function_exists($function)) {
             if (empty($context['results'][$module][$name]['type'])) {
-                Drush::logger()->notice("Deploy hook started: $function");
+                Drush::logger()->notice(ucfirst($hook) . " hook started: $function");
             }
             try {
                 $ret['results']['query'] = $function($context['sandbox']);
                 $ret['results']['success'] = true;
-                $ret['type'] = 'deploy';
+                $ret['type'] = $hook;
 
                 if (!isset($context['sandbox']['#finished']) || (isset($context['sandbox']['#finished']) && $context['sandbox']['#finished'] >= 1)) {
                     self::getRegistry()->registerInvokedUpdates([$function]);
@@ -228,7 +279,8 @@ final class DeployHookCommands extends DrushCommands
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Deploy hook function @function not found in file @filename', [
+            Drush::logger()->warning(dt('@hook hook function @function not found in file @filename', [
+                '@hook' => $hook,
                 '@function' => $function,
                 '@filename' => "$filename.php",
             ]));
@@ -251,7 +303,7 @@ final class DeployHookCommands extends DrushCommands
         if (!empty($ret['#abort'])) {
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
-            Drush::logger()->error("Deploy hook failed: $function");
+            Drush::logger()->error(ucfirst($hook) . " hook failed: $function");
         } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
             $context['message'] = "Performed: $function";
         }
@@ -268,6 +320,19 @@ final class DeployHookCommands extends DrushCommands
     }
 
     /**
+     * Mark all predeploy hooks as having run.
+     */
+    #[CLI\Command(name: self::MARK_PREDEPLOY_COMPLETE)]
+    #[CLI\Usage(name: 'drush ' . self::MARK_PREDEPLOY_COMPLETE, description: 'Skip all pending predeploy hooks and mark them as complete.')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Version(version: '13.6')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function markPredeployComplete(): int
+    {
+      return $this->doMarkComplete('predeploy');
+    }
+
+    /**
      * Mark all deploy hooks as having run.
      */
     #[CLI\Command(name: self::MARK_COMPLETE)]
@@ -277,10 +342,18 @@ final class DeployHookCommands extends DrushCommands
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
     public function markComplete(): int
     {
-        $pending = self::getRegistry()->getPendingUpdateFunctions();
+        return $this->doMarkComplete('deploy');
+    }
+
+    /**
+     * Mark all hooks of a given type as having run.
+     */
+    protected function doMarkComplete(string $hook): int
+    {
+        $pending = self::getRegistry($hook)->getPendingUpdateFunctions();
         self::getRegistry()->registerInvokedUpdates($pending);
 
-        $this->logger()->success(dt('Marked %count pending deploy hooks as complete.', ['%count' => count($pending)]));
+        $this->logger()->success(dt('Marked %count pending @hook hooks as complete.', ['%count' => count($pending), '@hook' => $hook]));
         return self::EXIT_SUCCESS;
     }
 }

@@ -41,6 +41,10 @@ final class DeployCommands extends DrushCommands
         $redispatchOptions = Drush::redispatchOptions();
         $manager = $this->processManager();
 
+        $this->logger()->notice("Predeploy hook start.");
+        $process = $manager->drush($self, DeployHookCommands::PREDEPLOY, [], $redispatchOptions);
+        $process->mustRun($process->showRealtime());
+
         $this->logger()->notice("Database updates start.");
         $process = $manager->drush($self, UpdateDBCommands::UPDATEDB, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
