@@ -552,18 +552,21 @@ final class UpdateDBCommands extends DrushCommands
         $requirements = update_check_requirements();
         $severity = drupal_requirements_severity($requirements);
 
+        RequirementSeverity::convertLegacyIntSeveritiesToEnums($requirements, __METHOD__);
+
         // If there are issues, report them.
-        if ($severity != REQUIREMENT_OK) {
-            if ($severity === REQUIREMENT_ERROR) {
+        if ($maxSeverity > 0) {
+            if ($maxSeverity === 2) {
                 $return = false;
             }
             foreach ($requirements as $requirement) {
-                if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+                $severity = $requirement['severity'] ?? RequirementSeverity::from(REQUIREMENT_OK);
+                if ($severity->status() != RequirementSeverity::from(REQUIREMENT_OK)->status()) {
                     $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
                         $message .= ' (Currently using ' . $requirement['title'] . ' ' . DrupalUtil::drushRender($requirement['value']) . ')';
                     }
-                    $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
+                    $log_level = $severity->status() === RequirementSeverity::Error ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger()->log($log_level, $message);
                 }
             }
