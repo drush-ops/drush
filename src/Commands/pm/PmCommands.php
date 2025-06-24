@@ -146,11 +146,13 @@ final class PmCommands extends DrushCommands
             }
             // Once we've loaded the module, we can invoke its requirements hook.
             $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
+            RequirementSeverity::convertLegacyIntSeveritiesToEnums($requirements, __METHOD__);
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $error = true;
                 $reasons = [];
                 foreach ($requirements as $id => $requirement) {
-                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
+                    $severity = $requirement['severity'] ?? RequirementSeverity::from(REQUIREMENT_OK);
+                    if ($severity->status() != RequirementSeverity::from(REQUIREMENT_ERROR)->status()) {
                         $message = $requirement['description'];
                         if (isset($requirement['value']) && $requirement['value']) {
                             $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
