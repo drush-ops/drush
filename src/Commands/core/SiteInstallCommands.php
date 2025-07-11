@@ -641,6 +641,6 @@ final class SiteInstallCommands extends DrushCommands
             $links[] = sprintf('<href=%s>%s</>', $link, $text);
         }
 
-       return $links;
+        return $links;
     }
 }
