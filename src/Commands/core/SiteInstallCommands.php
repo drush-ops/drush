@@ -623,7 +623,8 @@ final class SiteInstallCommands extends DrushCommands
     private function getLoginLinks(UserInterface $account): array
     {
         $timestamp = \Drupal::time()->getRequestTime();
-        $data = ['' => dt('Home'), 'admin' => dt('Admin')];
+        // @todo Add Homepage if we can find a way to get there via destimation= or otherwise.
+        $data = ['admin' => dt('Admin')];
         foreach ($data as $path => $text) {
             $link = Url::fromRoute(
                 'user.reset.login',
