@@ -62,7 +62,7 @@
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^1.2",
-    "phpunit/phpunit": "^9 || ^10",
+    "phpunit/phpunit": "^9 || ^10 || ^11",
     "rector/rector": "^1",
     "squizlabs/php_codesniffer": "^3.7"
   },
