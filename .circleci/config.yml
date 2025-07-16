@@ -138,7 +138,7 @@ jobs:
           steps:
             - run: composer -n config platform.php --unset
             - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
-            - run: composer -n update
+            - run: composer -n update --with-all-dependencies
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
