@@ -7,6 +7,7 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
+use Drush\Utils\StringUtils;
 
 #[Attribute(Attribute::TARGET_METHOD)]
 class ValidateConfigName extends ValidatorBase implements ValidatorInterface
@@ -14,19 +15,26 @@ class ValidateConfigName extends ValidatorBase implements ValidatorInterface
     /**
      * @param string $argumentName
      *   The name of the argument which specifies the config ID.
+     * @param bool $multiple
+     *   The flag if multiple config IDs should be checked.
      */
     public function __construct(
-        public string $argumentName = 'config_name'
+        public string $argumentName = 'config_name',
+        public bool $multiple = false,
     ) {
     }
 
     public function validate(CommandData $commandData)
     {
         $configName = $commandData->input()->getArgument($this->argumentName);
-        $config = \Drupal::config($configName);
-        if ($config->isNew()) {
-            $msg = dt('Config !name does not exist', ['!name' => $configName]);
-            return new CommandError($msg);
+        $names = $this->multiple ? StringUtils::csvToArray($configName) : [$configName];
+
+        foreach ($names as $name) {
+            $config = \Drupal::config($name);
+            if ($config->isNew()) {
+                $msg = dt('Config !name does not exist', ['!name' => $name]);
+                return new CommandError($msg);
+            }
         }
     }
 }

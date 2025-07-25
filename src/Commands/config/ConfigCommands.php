@@ -219,7 +219,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush config:delete system.site,system.rss', description: 'Delete the system.site and system.rss config objects.')]
     #[CLI\Usage(name: 'drush config:delete system.site page.front', description: "Delete the 'page.front' key from the system.site object.")]
     #[CLI\Complete(method_name_or_callable: 'configComplete')]
-    #[CLI\ValidateConfigName()]
+    #[CLI\ValidateConfigName(multiple: true)]
     #[CLI\InteractConfigName()]
     public function delete($config_name, $key = null): void
     {
