@@ -141,20 +141,18 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
         if (!Tty::isTtySupported()) {
             // Fast path for non-interactive mode (e.g. piped SQL dump).
             // Use direct passthru to avoid PHP I/O buffering.
-            $env = $sql->getEnv();
             $env_str = '';
-            foreach ($env as $k => $v) {
+            foreach ($sql->getEnv() as $k => $v) {
                 $env_str .= "$k=" . escapeshellarg($v) . ' ';
             }
 
             passthru($env_str . $sql_cmd);
-            exit(0);
-        } else {
-            // Interactive mode (TTY): use ProcessManager for better control.
-            $process = $this->processManager()->shell($sql_cmd, null, $sql->getEnv());
-            $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
-            $process->mustRun($process->showRealtime());
+            return;
         }
+        // Interactive mode (TTY): use ProcessManager for better control.
+        $process = $this->processManager()->shell($sql_cmd, null, $sql->getEnv());
+        $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
+        $process->mustRun($process->showRealtime());
     }
 
     /**
