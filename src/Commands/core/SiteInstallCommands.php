@@ -623,7 +623,7 @@ final class SiteInstallCommands extends DrushCommands
     private function getLoginLinks(UserInterface $account): array
     {
         $timestamp = \Drupal::time()->getRequestTime();
-        // @todo Add Homepage if we can find a way to get there via destimation= or otherwise.
+        // @todo Add Homepage if we can find a way to get there via destination= or otherwise.
         $data = ['admin' => dt('Admin')];
         foreach ($data as $path => $text) {
             $link = Url::fromRoute(
@@ -635,7 +635,7 @@ final class SiteInstallCommands extends DrushCommands
                 ],
                 [
                     'absolute' => true,
-                    'query' => $path ? ['destination' => $path] : [],
+                    'query' => ['destination' => $path],
                     'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
                 ]
             )->toString();
