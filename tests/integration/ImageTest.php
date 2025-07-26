@@ -21,7 +21,11 @@ class ImageTest extends UnishIntegrationTestCase
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
         $medium = $styles_dir . 'medium/public/' . $logo;
-        if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
+        if ($this->isDrupalGreaterThanOrEqualTo('11.2.0')) {
+            $thumbnail .= '.avif';
+            $medium .= '.avif';
+        }
+        else {
             $thumbnail .= '.webp';
             $medium .= '.webp';
         }
@@ -32,6 +36,7 @@ class ImageTest extends UnishIntegrationTestCase
         // Test that "drush image-derive" works.
         $style_name = 'thumbnail';
         $this->drush(ImageCommands::DERIVE, [$style_name, $logo]);
+        $this->log($this->getOutput());
         $this->assertFileExists($thumbnail);
 
         // @todo investigate why this is failing.
