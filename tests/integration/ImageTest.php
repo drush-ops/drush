@@ -24,8 +24,7 @@ class ImageTest extends UnishIntegrationTestCase
         if ($this->isDrupalGreaterThanOrEqualTo('11.2.0')) {
             $thumbnail .= '.avif';
             $medium .= '.avif';
-        }
-        else {
+        } else {
             $thumbnail .= '.webp';
             $medium .= '.webp';
         }
