@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\CoreCommands;
-use Drush\Commands\core\DrupalDirectoryCommands;
 use Drush\Commands\core\DrupalCommands;
+use Drush\Commands\core\DrupalDirectoryCommands;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\pm\ThemeCommands;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Component\Yaml\Yaml;
 
 /**
  * Tests for core commands.
@@ -23,7 +21,7 @@ class CoreTest extends UnishIntegrationTestCase
     {
         $root = $this->webroot();
         $options = [
-            'ignore' => 'cron,http requests,update,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
+            'ignore' => 'cron,http requests,update,coverage_core,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         ];
         // Verify that there are no severity 2 items in the status report
         $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['severity' => '2', 'format' => 'json']);

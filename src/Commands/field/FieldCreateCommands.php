@@ -527,11 +527,9 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
         if ($this->moduleHandler->moduleExists('field_ui')) {
             $this->logger()->success(
-                'Further customisation can be done at the following url:'
-                . PHP_EOL
-                . Url::fromRoute($routeName, $routeParams)
-                    ->setAbsolute(true)
-                    ->toString()
+                dt('Further customisation can be done through the <href=%editForm>edit form</>.', [
+                    '%editForm' => Url::fromRoute($routeName, $routeParams)->setAbsolute(true)->toString(),
+                ]),
             );
         }
     }

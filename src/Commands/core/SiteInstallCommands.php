@@ -16,6 +16,9 @@ use Drupal\Core\Installer\Exception\InstallerException;
 use Drupal\Core\Installer\InstallerKernel;
 use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\Url;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
@@ -178,10 +181,10 @@ final class SiteInstallCommands extends DrushCommands
             throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         }
 
+        $links = $this->getLoginLinks(User::load(1));
+        $this->logger()->success(dt('Installation complete. (%links)', ['%links' => implode(' - ', $links)]));
         if (empty($options['account-pass'])) {
-            $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
-        } else {
-            $this->logger()->success(dt('Installation complete.'));
+            $this->logger()->success(dt('User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         }
     }
 
@@ -615,5 +618,30 @@ final class SiteInstallCommands extends DrushCommands
             $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $directory]));
             $commandData->input()->setOption('config-dir', '');
         }
+    }
+
+    private function getLoginLinks(UserInterface $account): array
+    {
+        $timestamp = \Drupal::time()->getRequestTime();
+        // @todo Add Homepage if we can find a way to get there via destination= or otherwise.
+        $data = ['admin' => dt('Admin')];
+        foreach ($data as $path => $text) {
+            $link = Url::fromRoute(
+                'user.reset.login',
+                [
+                    'uid' => $account->id(),
+                    'timestamp' => $timestamp,
+                    'hash' => user_pass_rehash($account, $timestamp),
+                ],
+                [
+                    'absolute' => true,
+                    'query' => ['destination' => $path],
+                    'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
+                ]
+            )->toString();
+            $links[] = sprintf('<href=%s>%s</>', $link, $text);
+        }
+
+        return $links;
     }
 }

@@ -58,11 +58,11 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "^10.2.5 || 11.x-dev",
+    "drupal/core-recommended": "^10.3.0 || 11.x-dev",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^1.2",
-    "phpunit/phpunit": "^9 || ^10",
+    "phpunit/phpunit": "^9 || ^10 || ^11",
     "rector/rector": "^1",
     "squizlabs/php_codesniffer": "^3.7"
   },

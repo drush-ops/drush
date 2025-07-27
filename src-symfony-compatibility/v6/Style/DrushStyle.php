@@ -40,7 +40,7 @@ class DrushStyle extends SymfonyStyle
     {
         if ($multiSelect) {
             // For backward compat. Deprecated.
-            return multiselect($question, $choices, $default, $scroll, $required, $validate, $hint);
+            return multiselect($question, $choices, $default ?? [], $scroll, $required, $validate, $hint);
         } else {
             return select($question, $choices, $default, $scroll, $validate, $hint, $required);
         }
