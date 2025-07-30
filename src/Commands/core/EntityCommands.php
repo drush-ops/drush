@@ -20,6 +20,7 @@ use Drupal\Core\Session\AccountInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
 
 final class EntityCommands extends DrushCommands implements StdinAwareInterface
@@ -61,6 +62,12 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     {
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
+
+        if (count($result) >= 50 && empty($options['limit'] && empty($ids))) {
+            if (!$this->io()->confirm(dt('You are about to delete !count entities. Do you wish to continue?', ['!count' => count($result)]), false)) {
+                throw new UserAbortException();
+            }
+        }
 
         // Don't delete uid=1, uid=0.
         if ($entity_type === 'user') {
