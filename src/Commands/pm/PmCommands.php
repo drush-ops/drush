@@ -145,18 +145,29 @@ final class PmCommands extends DrushCommands
                 require_once $file;
             }
             // Once we've loaded the module, we can invoke its requirements hook.
-            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']);
+            $requirements = $this->getModuleHandler()->invoke($module, 'requirements', ['install']) ?? [];
+            if (function_exists('install_check_class_requirements')) {
+                $requirements = array_merge($requirements, install_check_class_requirements($this->extensionListModule->get($module)));
+            }
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $error = true;
                 $reasons = [];
                 foreach ($requirements as $id => $requirement) {
-                    if (isset($requirement['severity']) && $requirement['severity'] == REQUIREMENT_ERROR) {
-                        $message = $requirement['description'];
-                        if (isset($requirement['value']) && $requirement['value']) {
-                            $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
-                        }
-                        $reasons[$id] = $message;
+                    if (empty($requirement['severity'])) {
+                        continue;
                     }
+                    $value = $requirement['severity'];
+                    if (is_object($requirement['severity'])) {
+                        $value = $requirement['severity']->value;
+                    }
+                    if ($value !== REQUIREMENT_ERROR) {
+                        continue;
+                    }
+                    $message = $requirement['description'];
+                    if (isset($requirement['value']) && $requirement['value']) {
+                        $message = dt('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
+                    }
+                    $reasons[$id] = $message;
                 }
                 $this->logger()->error(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
             }
@@ -164,7 +175,7 @@ final class PmCommands extends DrushCommands
 
         if ($error) {
             // Allow the user to bypass the install requirements.
-            if (!$this->io()->confirm(dt('The module install requirements failed. Do you wish to continue?'), false)) {
+            if (!$this->io()->confirm(dt('The !name module\'s install requirements failed. Do you wish to continue?', ['!name' => $module]), false)) {
                 throw new UserAbortException();
             }
         }
