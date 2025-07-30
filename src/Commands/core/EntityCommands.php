@@ -63,12 +63,6 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
 
-        if ($result && empty($options['limit']) && empty($ids)) {
-            if (!$this->io()->confirm(dt('You are about to delete !count entities. Do you wish to continue?', ['!count' => count($result)]), false)) {
-                throw new UserAbortException();
-            }
-        }
-
         // Don't delete uid=1, uid=0.
         if ($entity_type === 'user') {
             unset($result[0], $result[1]);
@@ -77,6 +71,12 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
         if (empty($result)) {
             $this->logger()->success(dt('No matching entities found.'));
         } else {
+            if (empty($options['limit']) && empty($ids)) {
+                if (!$this->io()->confirm(dt('You are about to delete !count entities. Do you wish to continue?', ['!count' => count($result)]), false)) {
+                    throw new UserAbortException();
+                }
+            }
+
             $chunks = array_chunk($result, (int)$options['chunks'], true);
             $progress = $this->io()->progress('Deleting entities', count($chunks));
             $progress->start();
