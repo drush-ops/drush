@@ -63,7 +63,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
         $query = $this->getQuery($entity_type, $ids, $options);
         $result = $query->execute();
 
-        if (count($result) >= 50 && empty($options['limit'] && empty($ids))) {
+        if (count($result) >= 50 && empty($options['limit']) && empty($ids)) {
             if (!$this->io()->confirm(dt('You are about to delete !count entities. Do you wish to continue?', ['!count' => count($result)]), false)) {
                 throw new UserAbortException();
             }
