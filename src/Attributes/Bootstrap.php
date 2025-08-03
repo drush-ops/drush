@@ -7,7 +7,6 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Boot\DrupalBootLevels;
-use Exception;
 use JetBrains\PhpStorm\ExpectedValues;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
