@@ -15,7 +15,7 @@ class Bootstrap
     /**
      * @param $level
      *   The level to bootstrap to.
-     * @package $extra
+     * @param int|null $max_level
      *   A maximum level when used with MAX.
      */
     public function __construct(
