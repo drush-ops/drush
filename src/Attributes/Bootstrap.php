@@ -7,6 +7,7 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Boot\DrupalBootLevels;
+use Exception;
 use JetBrains\PhpStorm\ExpectedValues;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
@@ -15,7 +16,7 @@ class Bootstrap
     /**
      * @param $level
      *   The level to bootstrap to.
-     * @package $extra
+     * @param int|null $max_level
      *   A maximum level when used with MAX.
      */
     public function __construct(
