@@ -125,6 +125,8 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
 
     /**
      * Open a SQL command-line interface using Drupal's credentials.
+     *
+     * To import an SQL dump, it is more efficient to use sql:connect than sql:cli. See Examples below.
      */
     #[CLI\Command(name: self::CLI, aliases: ['sqlc', 'sql-cli'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
@@ -133,12 +135,14 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Topics(topics: [DocsCommands::POLICY])]
     #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
     #[CLI\Usage(name: 'drush sql:cli --extra=--progress-reports', description: 'Open a SQL CLI and skip reading table information.')]
-    #[CLI\Usage(name: 'drush sql:cli < example.sql', description: 'Import sql statements from a file into the current database.')]
+    #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
+    #[CLI\Usage(name: 'eval (drush sql:connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
     public function cli(InputInterface $input, $options = ['extra' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
         if (!Tty::isTtySupported()) {
+            $this->logger()->warning('It is slow to pass large amounts of data via stdin to the sql:cli command. See the Examples at https://www.drush.org/latest/commands/sql_cli/ for an alternative using sql:connect.');
             $process->setInput($this->stdin()->getStream());
         } else {
             $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
