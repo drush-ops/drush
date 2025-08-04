@@ -142,6 +142,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
         if (!Tty::isTtySupported()) {
+            $this->logger()->warning('It is slow to pass large amounts of data via stdin to the sql:cli command. See the Examples at https://www.drush.org/latest/commands/sql_cli/ for an alternative.');
             $process->setInput($this->stdin()->getStream());
         } else {
             $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
