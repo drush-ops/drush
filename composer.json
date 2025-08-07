@@ -49,6 +49,7 @@
     "laravel/prompts": "^0.3.5",
     "league/container": "^4.2",
     "psy/psysh": "~0.12",
+    "symfony/console": "7.4.x-dev as 7.3",
     "symfony/event-dispatcher": "^6 || ^7",
     "symfony/filesystem": "^6.1 || ^7",
     "symfony/finder": "^6 || ^7",
@@ -132,6 +133,7 @@
       "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
       "sut/themes/contrib/{$name}": ["type:drupal-theme"],
       "sut/drush/contrib/{$name}": ["type:drupal-drush"]
-    }
+    },
+    "patches-file": "composer.patches.json"
   }
 }
