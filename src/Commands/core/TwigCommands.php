@@ -108,8 +108,7 @@ final class TwigCommands extends DrushCommands
             // Loading the template ensures the compiled template is cached.
             try {
                 $this->getTwig()->load($relative);
-            }
-            catch (LoaderError | RuntimeError | SyntaxError $e) {
+            } catch (LoaderError | RuntimeError | SyntaxError $e) {
                 $this->logger()->error($e->getMessage());
                 continue;
             }
