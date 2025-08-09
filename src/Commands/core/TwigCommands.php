@@ -16,6 +16,9 @@ use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 final class TwigCommands extends DrushCommands
 {
@@ -103,7 +106,12 @@ final class TwigCommands extends DrushCommands
         foreach ($files as $file) {
             $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
             // Loading the template ensures the compiled template is cached.
-            $this->twig->load($relative);
+            try {
+                $this->twig->load($relative);
+            } catch (LoaderError | RuntimeError | SyntaxError $e) {
+                $this->logger()->error($e->getMessage());
+                continue;
+            }
             $this->logger()->success(dt('Compiled twig template !path', ['!path' => $relative]));
         }
     }
