@@ -5,28 +5,33 @@ declare(strict_types=1);
 namespace Drush\Commands\sql;
 
 use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\OptionSets;
 use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Export the Drupal DB as SQL using mysqldump or equivalent.',
-    aliases: ['sql-dump']
+    usages: ['sql:dump --result-file=../18.sql', 'sql:dump --skip-tables-key=common', 'sql:dump --extra-dump=--no-data'],
+    // @todo alias causes problem with command name https://github.com/symfony/symfony/pull/61367
+    // aliases: ['sql-dump']
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
-final class SqlDumpCommand extends Command
+#[CLI\FieldLabels(labels: ['path' => 'Path'])]
+#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
+#[CLI\OptionsetSql]
+#[CLI\OptionsetTableSelection]
+#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+final class SqlDumpCommand
 {
     use AutowireTrait;
     use FormatterTrait;
@@ -34,37 +39,34 @@ final class SqlDumpCommand extends Command
     public const NAME = 'sql:dump';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager
-    ) {
-        parent::__construct();
-    }
+        protected BootstrapManager $bootstrapManager,
+        protected readonly FormatterManager $formatterManager,
+    ) {}
 
-    protected function configure()
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Option(name: 'result-file', description: 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value \'auto\', a date-based filename will be created under ~/drush-backups directory.')]
+        ?string $resultFile = null,
+        // create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.
+        #[Option(name: 'create-db', description: 'Omit DROP TABLE statements. Used by Postgres and Oracle only.')]
+        bool $createDb = false,
+        #[Option(name: 'data-only', description: 'Dump data without statements to create any of the schema.')]
+        bool $dataOnly = false,
+        #[Option(name: 'ordered-dump', description: 'Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.')]
+        bool $orderedDump = false,
+        #[Option(name: 'gzip', description: 'Compress the dump using the gzip program which must be in your <info>$PATH</info>.')]
+        bool $gzip = false,
+        #[Option(name: 'extra', description: 'Add custom arguments/options when connecting to database (used internally to list tables).')]
+        ?string $extra = null,
+        #[Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')]
+        ?string $extraDump = null,
+    ): int
     {
-        $this
-            ->addOption('result-file', null, InputOption::VALUE_REQUIRED, 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value \'auto\', a date-based filename will be created under ~/drush-backups directory.')
-            // create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.
-            ->addOption('create-db', null, InputOption::VALUE_NONE, 'Omit DROP TABLE statements. Used by Postgres and Oracle only.')
-            ->addOption('data-only', null, InputOption::VALUE_NONE, 'Dump data without statements to create any of the schema.')
-            ->addOption('ordered-dump', null, InputOption::VALUE_NONE, 'Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.')
-            ->addOption('gzip', null, InputOption::VALUE_NONE, 'Compress the dump using the gzip program which must be in your <info>$PATH</info>.')
-            ->addOption('extra', null, InputOption::VALUE_REQUIRED, 'Add custom arguments/options when connecting to database (used internally to list tables).')
-            ->addOption('extra-dump', null, InputOption::VALUE_REQUIRED, 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')
-            ->addUsage('sql:dump --result-file=../18.sql')
-            ->addUsage('sql:dump --skip-tables-key=common')
-            ->addUsage('sql:dump --extra-dump=--no-data');
-        $formatterOptions = (new FormatterOptions())
-            ->setFieldLabels(['path' => 'Path']);
-        $this->configureFormatter(PropertyList::class, $formatterOptions);
-        OptionSets::sql($this);
-        OptionSets::tableSelection($this);
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
+        $this->bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION);
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 
     protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList

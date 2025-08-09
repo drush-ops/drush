@@ -428,24 +428,7 @@ class ServiceManager
         $return = [];
 
         foreach ($callables as $callable) {
-            if (!is_callable($callable)) {
-                $return[] = $callable;
-                continue;
-            }
-
-            // Simplify when https://github.com/symfony/symfony/pull/60394 is merged.
-            /** @var AsCommand $attribute */
-            $attribute = ((new \ReflectionObject($callable))->getAttributes(AsCommand::class)[0] ?? null)?->newInstance()
-                ?? throw new LogicException(\sprintf('The command must use the "%s" attribute.', AsCommand::class));
-
-            $aliases = explode('|', $attribute->name);
-            $name = array_shift($aliases);
-            $command = (new Command($name))
-                ->setAliases($aliases)
-                ->setDescription($attribute->description ?? '')
-                ->setHelp($attribute->help ?? '')
-                ->setCode($callable);
-            $return[] = $command;
+            $return[] = is_callable($callable) ? new Command(null, $callable) : $callable;
         }
 
         return $return;
