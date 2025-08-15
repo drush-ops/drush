@@ -28,6 +28,7 @@ use Drush\Exec\ExecTrait;
 use Drush\Utils\FsUtils;
 use Drush\Utils\StringUtils;
 use JetBrains\PhpStorm\Deprecated;
+use RuntimeException;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Helper\Table;
@@ -523,14 +524,18 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
         $prefix = ['diff'];
         if (self::programExists('git')) {
-            $prefix = ['git', 'diff'];
+            $prefix = ['git', 'diff', '--no-index', '--exit-code'];
             if ($output->isDecorated()) {
                 $prefix[] = '--color=always';
             }
         }
         $args = array_merge($prefix, ['-u', $temp_destination_dir, $temp_source_dir]);
-        $process = Drush::process($args, "/");
+        $process = Drush::process($args);
         $process->run();
+        // An exit code of 1 merely indicates that there is a diff.
+        if ($process->getExitCode() >= 2) {
+            throw new RuntimeException($process->getExitCodeText());
+        }
         return $process->getOutput();
     }
 }
