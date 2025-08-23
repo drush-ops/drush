@@ -1,7 +1,4 @@
 {
   "patches": {
-    "symfony/console": {
-      "[Console] Add getter for the original command code object (https://github.com/symfony/symfony/pull/61078)": "./patches/console.getcode.diff"
-    }
   }
 }
