@@ -87,8 +87,11 @@ final class DrupalCommands extends DrushCommands
 
         drupal_load_updates();
 
-        $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
-        $this->getModuleHandler()->alter('requirements', $requirements);
+        $requirements = $this->moduleHandler->invokeAll('requirements', ['runtime']);
+        $runtime_requirements = $this->moduleHandler->invokeAll('runtime_requirements');
+        $requirements = array_merge($requirements, $runtime_requirements);
+        $this->moduleHandler->alter('requirements', $requirements);
+        $this->moduleHandler->alter('runtime_requirements', $requirements);
         // If a module uses "$requirements[] = " instead of
         // "$requirements['label'] = ", then build a label from
         // the title.

@@ -500,7 +500,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     protected function tearDown(): void
     {
         // Cleanup any created content.
-        $this->drush('entity:delete', ['node']);
+        $this->drush('entity:delete', ['node'], ['yes' => null]);
 
         // Uninstalling Migrate module doesn't automatically drop the tables.
         // @see https://www.drupal.org/project/drupal/issues/2713327

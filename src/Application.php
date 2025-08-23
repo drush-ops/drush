@@ -346,7 +346,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->doRenderThrowable($e, $output);
     }
 
-    // Discover event listeners, and add those that do not require bootstrap.
+    // Discover event listeners and add those that do not require bootstrap.
     protected function addListeners($commandfileSearchpath): void
     {
         $listenerClasses = $this->serviceManager->discoverListeners($commandfileSearchpath, '\Drush');
