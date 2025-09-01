@@ -6,10 +6,10 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
-use InvalidArgumentException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -20,8 +20,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
     name: self::NAME,
     description: 'Flush all derived images for a given style.',
-    aliases: ['if', 'image-flush']
+    aliases: ['if', 'image-flush'],
+    help: 'Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.',
+    usages: ['image:flush thumbnail,large', 'image:flush --all'],
 )]
+#[CLI\ValidateModulesEnabled(['image'])]
+#[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style-names')]
 final class ImageFlushCommand extends Command
 {
     use AutowireTrait;
@@ -37,18 +41,15 @@ final class ImageFlushCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('style_names', InputArgument::OPTIONAL, 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images')
-            ->addUsage('image:flush thumbnail,large')
-            ->addUsage('image:flush --all')
-            ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.');
+            ->addArgument('style-names', InputArgument::OPTIONAL, 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images');
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
         $io = new DrushStyle($input, $output);
         $styles = array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple());
-        $style_names = $input->getArgument('style_names');
+        $style_names = $input->getArgument('style-names');
 
         if (empty($style_names) && !$input->getOption('all')) {
             $styles_all = $styles;
@@ -58,7 +59,7 @@ final class ImageFlushCommand extends Command
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }
-            $input->setArgument('style_names', $style_names);
+            $input->setArgument('style-names', $style_names);
         }
     }
 
@@ -67,35 +68,14 @@ final class ImageFlushCommand extends Command
         $io = new DrushStyle($input, $output);
 
         if ($input->getOption('all')) {
-            $input->setArgument('style_names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
+            $input->setArgument('style-names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
         }
 
-        $this->validateModulesEnabled(['image']);
-        $this->validateEntityLoad(StringUtils::csvToArray($input->getArgument('style_names')), 'image_style');
-
-        $ids = StringUtils::csvToArray($input->getArgument('style_names'));
+        $ids = StringUtils::csvToArray($input->getArgument('style-names'));
         foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
             $style->flush();
             $io->success("Image style $style_name flushed");
         }
         return self::SUCCESS;
-    }
-
-    protected function validateEntityLoad(array $ids, string $entity_type_id): void
-    {
-        $loaded = $this->entityTypeManager->getStorage($entity_type_id)->loadMultiple($ids);
-        if ($missing = array_diff($ids, array_keys($loaded))) {
-            $msg = dt('Unable to load the !type: !str', ['!type' => $entity_type_id, '!str' => implode(', ', $missing)]);
-            throw new \InvalidArgumentException($msg);
-        }
-    }
-
-    protected function validateModulesEnabled(array $modules): void
-    {
-        $missing = array_filter($modules, fn($module) => !$this->moduleHandler->moduleExists($module));
-        if ($missing) {
-            $message = dt('The following modules are required: !modules', ['!modules' => implode(', ', $missing)]);
-            throw new InvalidArgumentException($message);
-        }
     }
 }

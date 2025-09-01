@@ -17,7 +17,8 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-final class FormatterListener {
+final class FormatterListener
+{
     use AutowireTrait;
 
     public function __construct(
@@ -28,7 +29,9 @@ final class FormatterListener {
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
-            $code = $command->getCode() ?? $command;
+            // Support invokable commands (Symfony Console 7.4+).
+            $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+            $reflection = new \ReflectionObject($code);
             $reflectionObject = new \ReflectionObject($code);
             if (!$attributes = $reflectionObject->getAttributes(CLI\Formatter::class)) {
                 continue;

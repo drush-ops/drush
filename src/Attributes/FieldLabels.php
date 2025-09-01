@@ -12,7 +12,6 @@ use JetBrains\PhpStorm\Deprecated;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class FieldLabels extends \Consolidation\AnnotatedCommand\Attributes\FieldLabels implements FormatterConfigurationItemProviderInterface
 {
-
     const KEY = FormatterOptions::FIELD_LABELS;
 
     public function getConfigurationItem(\ReflectionAttribute $attribute): array
@@ -20,5 +19,4 @@ class FieldLabels extends \Consolidation\AnnotatedCommand\Attributes\FieldLabels
         $args = $attribute->getArguments();
         return [self::KEY => $args['labels']];
     }
-
 }

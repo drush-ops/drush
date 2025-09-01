@@ -302,7 +302,7 @@ class DrupalBoot8 extends DrupalBoot
         $commandHandlers = $this->serviceManager->instantiateServices($bootstrapCommandClasses, $drushContainer, $container);
 
         // Inflect and register all command handlers
-        $this->serviceManager->commandFromInvokable($commandHandlers);
+        $commandHandlers = $this->serviceManager->commandFromInvokable($commandHandlers);
         Robo::register($application, $commandHandlers);
     }
 

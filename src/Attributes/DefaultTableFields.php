@@ -7,8 +7,7 @@ namespace Drush\Attributes;
 use Attribute;
 use JetBrains\PhpStorm\Deprecated;
 
-#[Deprecated(replacement: 'Call \Drush\Formatters\FormatterTrait::configureFormatter during configure()')]
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class DefaultTableFields extends \Consolidation\AnnotatedCommand\Attributes\DefaultTableFields
 {
 }

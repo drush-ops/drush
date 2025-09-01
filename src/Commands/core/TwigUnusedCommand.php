@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\Template\TwigEnvironment;
@@ -15,9 +14,9 @@ use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
@@ -26,10 +25,16 @@ use Symfony\Component\Finder\Finder;
 #[AsCommand(
     name: self::NAME,
     description: 'Find potentially unused Twig templates.',
-    aliases: ['twu']
+    aliases: ['twu'],
+    help: 'Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.',
+    // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050;
+    usages: ['twig:unused /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom'],
 )]
+#[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
+#[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
 #[CLI\FilterDefaultField(field: 'template')]
-final class TwigUnusedCommand extends Command
+#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
+final class TwigUnusedCommand
 {
     use AutowireTrait;
     use FormatterTrait;
@@ -42,32 +47,21 @@ final class TwigUnusedCommand extends Command
         protected readonly TwigEnvironment $twig,
         private readonly LoggerInterface $logger
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search')
-            // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050
-            ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom')
-            ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.');
-        $formatterOptions = (new FormatterOptions())
-            ->setFieldLabels(['template' => 'Template', 'compiled' => 'Compiled'])
-            ->setTableDefaultFields(['template', 'compiled']);
-        $this->configureFormatter(RowsOfFields::class, $formatterOptions);
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('A comma delimited list of paths to recursively search')]
+        string $searchpaths,
+    ) {
+        $data = $this->doExecute($input, $output, $searchpaths);
         $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 
-    public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
+    public function doExecute(InputInterface $input, OutputInterface $output, string $searchpaths): RowsOfFields
     {
-        $searchpaths = $input->getArgument('searchpaths');
         $unused = [];
         $phpstorage = PhpStorageFactory::get('twig');
 

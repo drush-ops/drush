@@ -23,8 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: self::NAME,
     description: 'Export the Drupal DB as SQL using mysqldump or equivalent.',
     usages: ['sql:dump --result-file=../18.sql', 'sql:dump --skip-tables-key=common', 'sql:dump --extra-dump=--no-data'],
-    // @todo alias causes problem with command name https://github.com/symfony/symfony/pull/61367
-    // aliases: ['sql-dump']
+    aliases: ['sql-dump']
 )]
 #[CLI\FieldLabels(labels: ['path' => 'Path'])]
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
@@ -41,7 +40,8 @@ final class SqlDumpCommand
     public function __construct(
         protected BootstrapManager $bootstrapManager,
         protected readonly FormatterManager $formatterManager,
-    ) {}
+    ) {
+    }
 
     public function __invoke(
         InputInterface $input,
@@ -61,8 +61,7 @@ final class SqlDumpCommand
         ?string $extra = null,
         #[Option(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')]
         ?string $extraDump = null,
-    ): int
-    {
+    ): int {
         $this->bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION);
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);

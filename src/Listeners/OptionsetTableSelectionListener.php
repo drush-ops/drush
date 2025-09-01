@@ -18,7 +18,9 @@ class OptionsetTableSelectionListener
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
-            $reflection = new \ReflectionObject($command->getCode() ?? $command);
+            // Support invokable commands (Symfony Console 7.4+).
+            $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+            $reflection = new \ReflectionObject($code);
             $attributes = $reflection->getAttributes(OptionsetTableSelection::class);
             if (empty($attributes)) {
                 continue;
