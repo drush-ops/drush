@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
+use Composer\InstalledVersions;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
@@ -25,14 +26,12 @@ use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
 use League\Container\Container as DrushContainer;
-use LogicException;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -421,14 +420,17 @@ class ServiceManager
     }
 
     /**
-     * Robo does not support invokable commands, so build a Command for each one.
+     * Robo does not support invokable commands, so build a Command as needed.
      */
-    public function commandFromInvokable(array $callables): array
+    public function commandFromInvokable(array &$callables): array
     {
         $return = [];
 
-        foreach ($callables as $callable) {
-            $return[] = is_callable($callable) && class_exists('\Symfony\Component\Console\Command\InvokableCommand') ? new Command(null, $callable) : $callable;
+        foreach ($callables as $key => $callable) {
+            $return[$key] = $callable;
+            if (is_callable($callable) && version_compare(InstalledVersions::getVersion('symfony/console'), '7.4.0', '>=')) {
+                $return[$key] = new Command(null, $callable);
+            }
         }
 
         return $return;
