@@ -22,8 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
     name: self::NAME,
     description: 'Export the Drupal DB as SQL using mysqldump or equivalent.',
+    aliases: ['sql-dump'],
     usages: ['sql:dump --result-file=../18.sql', 'sql:dump --skip-tables-key=common', 'sql:dump --extra-dump=--no-data'],
-    aliases: ['sql-dump']
 )]
 #[CLI\FieldLabels(labels: ['path' => 'Path'])]
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]

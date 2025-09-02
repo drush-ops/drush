@@ -330,6 +330,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // Note that Robo::register can accept Annotated Command
         // handlers or Symfony Console Command objects, but not yet invokables.
         $commandInstances = $this->serviceManager->commandFromInvokable($commandInstances);
+        array_walk($commandInstances, fn($instance) => $this->logger->debug('Add command {class}', ['class' => $instance::class]));
         Robo::register($this, $commandInstances);
 
         // Dispatch our custom event. It also fires later in \Drush\Boot\DrupalBoot8::bootstrapDrupalFull.
