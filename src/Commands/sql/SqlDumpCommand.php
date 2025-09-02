@@ -44,7 +44,8 @@ final class SqlDumpCommand extends Command
         parent::__construct();
     }
 
-    public function configure(): void {
+    public function configure(): void
+    {
         $this
             ->addOption(name: 'result-file', mode: InputOption::VALUE_OPTIONAL, description: 'Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value \'auto\', a date-based filename will be created under ~/drush-backups directory.')
             // create-db is used by sql:sync, since including the DROP TABLE statements interferes with the import when the database is created.

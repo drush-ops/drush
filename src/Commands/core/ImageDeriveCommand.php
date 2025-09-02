@@ -38,7 +38,8 @@ final class ImageDeriveCommand extends Command
         parent::__construct();
     }
 
-    public function configure(): void {
+    public function configure(): void
+    {
         $this
             ->addArgument('style-name', InputArgument::REQUIRED, 'An image style machine name.')
             ->addArgument('source', InputArgument::REQUIRED, 'Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')
