@@ -18,6 +18,7 @@ use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\CommandFailedException;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class LocaleCommands extends DrushCommands
@@ -185,7 +186,7 @@ final class LocaleCommands extends DrushCommands
 
         $file_uri = drush_tempnam('drush_', null, '.po');
         if ($this->writePoFile($file_uri, $language, $poreader_options)) {
-            $this->output()->writeln(file_get_contents($file_uri));
+          $this->output()->writeln(file_get_contents($file_uri), OutputInterface::OUTPUT_RAW);
         } else {
             $this->logger()->success(dt('Nothing to export.'));
         }
