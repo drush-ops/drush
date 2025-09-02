@@ -428,7 +428,7 @@ class ServiceManager
         $return = [];
 
         foreach ($callables as $callable) {
-            $return[] = is_callable($callable) ? new Command(null, $callable) : $callable;
+            $return[] = is_callable($callable) && class_exists('\Symfony\Component\Console\Command\InvokableCommand') ? new Command(null, $callable) : $callable;
         }
 
         return $return;

@@ -21,8 +21,6 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: self::NAME,
     description: 'Flush all derived images for a given style.',
     aliases: ['if', 'image-flush'],
-    help: 'Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.',
-    usages: ['image:flush thumbnail,large', 'image:flush --all'],
 )]
 #[CLI\ValidateModulesEnabled(['image'])]
 #[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style-names')]
@@ -42,7 +40,10 @@ final class ImageFlushCommand extends Command
     {
         $this
             ->addArgument('style-names', InputArgument::OPTIONAL, 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images');
+            ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images')
+            ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.')
+            ->addUsage('image:flush thumbnail,large')
+            ->addUsage('image:flush --all');
     }
 
     protected function interact(InputInterface $input, OutputInterface $output): void

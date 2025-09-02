@@ -8,26 +8,29 @@ use Drush\Attributes as CLI;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Works like php-eval. Used for testing $command_specific context.',
-    // @todo needs bug fix that will be in Console 7.4+
-    // hidden: true,
-    // bug somewhere. alias is becoming part of the command name in the Application
-    // aliases: ['unit-roc'],
+    aliases: ['unit-roc', 'unit-return-options'],
+    hidden: true,
 )]
 #[CLI\OptionsetTableSelection]
-final class UnitReturnOptionsCommand
+final class UnitReturnOptionsCommand extends Command
 {
     public const NAME = 'unit:roc';
 
-    public function __invoke(
-        #[Argument(description: 'Code you wish to run')] string $code,
-    ): int
+    public function configure(): void {
+      $this
+        ->addArgument(name: 'code', description: 'Code you wish to run');
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         // @todo deal with formatters.
-        eval($code . ';');
+        eval($input->getArgument('code') . ';');
 
         return Command::SUCCESS;
     }

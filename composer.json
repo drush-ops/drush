@@ -49,7 +49,6 @@
     "laravel/prompts": "^0.3.5",
     "league/container": "^4.2",
     "psy/psysh": "~0.12",
-    "symfony/console": "7.4.x-dev as 7.3",
     "symfony/event-dispatcher": "^6 || ^7",
     "symfony/filesystem": "^6.1 || ^7",
     "symfony/finder": "^6 || ^7",
@@ -59,7 +58,7 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "11.x-dev",
+    "drupal/core-recommended": "^10.4@stable || ^11",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^1.2",

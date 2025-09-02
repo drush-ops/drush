@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
@@ -26,15 +27,12 @@ use Symfony\Component\Finder\Finder;
     name: self::NAME,
     description: 'Find potentially unused Twig templates.',
     aliases: ['twu'],
-    help: 'Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.',
-    // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050;
-    usages: ['twig:unused /var/www/mass.local/docroot/modules/custom,/var/www/mass.local/docroot/themes/custom'],
 )]
 #[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
 #[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
 #[CLI\FilterDefaultField(field: 'template')]
 #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
-final class TwigUnusedCommand
+final class TwigUnusedCommand extends Command
 {
     use AutowireTrait;
     use FormatterTrait;
@@ -47,15 +45,24 @@ final class TwigUnusedCommand
         protected readonly TwigEnvironment $twig,
         private readonly LoggerInterface $logger
     ) {
+        parent::__construct();
     }
 
-    public function __invoke(
+    protected function configure(): void
+    {
+        $this
+            ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.')
+            ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search.')
+            // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050;
+            ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom')
+            ->addUsage('/var/www/mass.local/docroot/themes/custom');
+    }
+
+    public function execute(
         InputInterface $input,
         OutputInterface $output,
-        #[Argument('A comma delimited list of paths to recursively search')]
-        string $searchpaths,
     ) {
-        $data = $this->doExecute($input, $output, $searchpaths);
+        $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;
     }
