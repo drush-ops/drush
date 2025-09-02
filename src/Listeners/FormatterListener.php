@@ -40,6 +40,7 @@ final class FormatterListener
             $attribute = $attributes[0]->newInstance();
             $configurationData = $this->getConfigurationData($reflectionObject);
             $formatterOptions = new FormatterOptions($configurationData, []);
+            assert(method_exists($command, 'setFormatterOptions'));
             $command->setFormatterOptions($formatterOptions);
 
             $inputOptions = $this->formatterManager->automaticOptions($formatterOptions, $attribute->returnType);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
@@ -33,7 +32,6 @@ final class ImageDeriveCommand extends Command
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
-        private readonly ModuleHandlerInterface $moduleHandler
     ) {
         parent::__construct();
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
@@ -32,7 +31,6 @@ final class ImageFlushCommand extends Command
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
-        private readonly ModuleHandlerInterface $moduleHandler,
     ) {
         parent::__construct();
     }

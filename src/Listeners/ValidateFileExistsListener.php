@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
-use Consolidation\AnnotatedCommand\CommandError;
-use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Attributes\ValidateEntityLoad;
 use Drush\Attributes\ValidateFileExists;
 use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
@@ -20,7 +17,6 @@ class ValidateFileExistsListener
     use AutowireTrait;
 
     public function __construct(
-        private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly LoggerInterface $logger
     ) {
     }

@@ -28,8 +28,9 @@ Drush 14+ deprecates old-style Annotated Commands in favor of pure [Symfony Cons
 - Commands that wish to offer multiple _output formats_ (yes please!) should (Example: 
     - See [TwigUnusedCommand(https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/)) as examples.
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
-    - `execute()` is largely boilerplate. By convention, do your work in a `doExecute()` method instead.
-- [See Optionset and Validate Attributes provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
+    - Command class should `use \Drush\Formatters\FormatterTrait`
+    - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
+- [Various Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
 
 ## Altering Command Info
 
