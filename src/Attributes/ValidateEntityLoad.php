@@ -8,7 +8,6 @@ use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Drush\Utils\StringUtils;
-use JetBrains\PhpStorm\Deprecated;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class ValidateEntityLoad extends ValidatorBase implements ValidatorInterface

@@ -14,7 +14,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -61,7 +60,7 @@ final class TwigUnusedCommand extends Command
     public function execute(
         InputInterface $input,
         OutputInterface $output,
-    ) {
+    ): int {
         $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;
