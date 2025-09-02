@@ -20,30 +20,28 @@ Drush 14+ deprecates old-style Annotated Commands in favor of pure [Symfony Cons
 
 - Each command lives in its own class file
 - The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
-- The command class should use Console's #[AsCommand] Attribute to declare its name, aliases, and hidden status. The old #[Command] Attribute is deprecated.
+- The command class should use Console's #[AsCommand] Attribute to declare its name, aliases, and hidden status. The `#[Command]` Attribute is deprecated.
 - Options and Arguments moved from Attributes to a configure() method on the command class
 - The main logic of the command moved to an execute() method on the command class.
 - User interaction now happens in an interact() method on the command class.
 - Drush and Drupal services may still be autowired. This is how you access the logger. Build own $io as needed.
-- Commands that wish to offer multiple _output formats_ (yes please!) should (Example: _TwigUnusedCommand_,
-  _SqlDumpCommand_):
-    - inject `FormatterManager` in __construct()
-    - `use FormatterTrait`
-    - call `$this->configureFormatter()` in `configure()` in order to automatically add the needed options.
-    - `execute()` is boilerplate. By convention, do your work in a `doExecute()` method instead.
-- [See Optionsets provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Commands/OptionsSets.php). Custom code can supply additional Optionset methods, which any command may choose to use.
+- Commands that wish to offer multiple _output formats_ (yes please!) should (Example: 
+    - See [TwigUnusedCommand(https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/)) as examples.
+    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
+    - `execute()` is largely boilerplate. By convention, do your work in a `doExecute()` method instead.
+- [See Optionset and Validate Attributes provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
 
 ## Altering Command Info
 
 Drush command info can be altered from other modules. This is done by creating and registering a command definition listener. Listeners are dispatched once after non-bootstrap commands are instantiated and once again after bootstrap commands are instantiated.
 
-In the module that wants to alter a command info, add a class that:
+In the module that wants to alter command info, add a class that:
 
 1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\Listeners` and the class file should be located under the `src/Drush/Listeners` directory.
 1. The filename must have a name like FooListener.php. The prefix `Foo` can be whatever string you want. The file must end in `Listener.php`.
 1. The class should implement the `#[AsListener]` PHP Attribute.
 1. Implement the alteration logic via a `__invoke(ConsoleDefinitionsEvent $event)` method.
-1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the logger in the class constructor.
+1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
 
 For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Liseners/WootDefinitionListener.php) provided by the testing 'woot' module.
 

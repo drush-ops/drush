@@ -27,6 +27,7 @@ use Robo\Contract\IOAwareInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Path;
 
+#[Deprecated('See https://www.drush.org/latest/commands/')]
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
     use ProcessManagerAwareTrait;

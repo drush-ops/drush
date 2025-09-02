@@ -52,8 +52,8 @@ final class SqlDumpCommand extends Command
             ->addOption(name: 'data-only', description: 'Dump data without statements to create any of the schema.')
             ->addOption(name: 'ordered-dump', description: 'Order by primary key and add line breaks for efficient diffs. Slows down the dump. Mysql only.')
             ->addOption(name: 'gzip', description: 'Compress the dump using the gzip program which must be in your <info>$PATH</info>.')
-            ->addOption(name: 'extra', description: 'Add custom arguments/options when connecting to database (used internally to list tables).')
-            ->addOption(name: 'extra-dump', description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')
+            ->addOption(name: 'extra', mode: InputOption::VALUE_REQUIRED, description: 'Add custom arguments/options when connecting to database (used internally to list tables).')
+            ->addOption(name: 'extra-dump', mode: InputOption::VALUE_REQUIRED, description: 'Add custom arguments/options to the dumping of the database (e.g. <info>mysqldump</info> command).')
             ->addUsage('sql:dump --result-file=../18.sql')
             ->addUsage('sql:dump --skip-tables-key=common')
             ->addUsage('sql:dump --extra-dump=--no-data');

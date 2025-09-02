@@ -40,7 +40,7 @@ final class ImageDeriveCommand extends Command
 
     public function configure(): void {
         $this
-            ->addArgument('style_name', InputArgument::REQUIRED, 'An image style machine name.')
+            ->addArgument('style-name', InputArgument::REQUIRED, 'An image style machine name.')
             ->addArgument('source', InputArgument::REQUIRED, 'Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')
             ->addUsage('image:derive thumbnail core/themes/bartik/screenshot.png');
     }
@@ -51,7 +51,8 @@ final class ImageDeriveCommand extends Command
     ): int {
         $io = new DrushStyle($input, $output);
 
-        $image_style = $this->entityTypeManager->getStorage('image_style')->load($input->getArgument('style_name'));
+        $image_style = $this->entityTypeManager->getStorage('image_style')->load($input->getArgument('style-name'));
+        $source = $input->getArgument('source');
         $derivative_uri = $image_style->buildUri($source);
         if ($image_style->createDerivative($source, $derivative_uri)) {
             $io->success(dt('Derivative image created: !uri', ['!uri' => $derivative_uri]));
