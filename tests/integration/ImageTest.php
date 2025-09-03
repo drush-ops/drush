@@ -41,18 +41,16 @@ class ImageTest extends UnishApplicationTesterTestCase
         $this->drush(ImageDeriveCommand::NAME, [$style_name, $logo]);
         $this->assertFileExists($thumbnail);
 
-        // @todo investigate why this is failing.
-        $this->markTestSkipped('See https://github.com/drush-ops/drush/pull/6203/checks');
-
         // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
         $applicationTester = new ApplicationTester($this->getApplication());
-        $applicationTester->run([ImageFlushCommand::NAME, 'style_names' => $style_name, '--no-interaction' => true]);
+        $applicationTester->run([ImageFlushCommand::NAME, 'style-names' => $style_name]);
+        $applicationTester->assertCommandIsSuccessful();
         $output = $applicationTester->getDisplay();
         $this->assertFileDoesNotExist($thumbnail);
         // @todo note stdin testing documented at https://github.com/symfony/symfony/issues/37835
 
         // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
-        // existence afterwards.
+        // existence afterward.
         $this->drush(ImageDeriveCommand::NAME, ['thumbnail', $logo]);
         $this->assertFileExists($thumbnail);
         $this->drush(ImageDeriveCommand::NAME, ['medium', $logo]);

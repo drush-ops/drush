@@ -39,7 +39,6 @@ final class ImageFlushCommand extends Command
         $this
             ->addArgument('style-names', InputArgument::OPTIONAL, 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')
             ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images')
-            ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.')
             ->addUsage('image:flush thumbnail,large')
             ->addUsage('image:flush --all');
     }
