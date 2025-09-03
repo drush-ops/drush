@@ -67,7 +67,6 @@ final class SanitizeUserFieldsListener
         }
 
         foreach ($field_definitions as $key => $def) {
-            $execute = false;
             if (!isset($field_storage[$key]) || $field_storage[$key]->isBaseField()) {
                 continue;
             }
@@ -105,6 +104,8 @@ final class SanitizeUserFieldsListener
                     ]);
                     $execute = true;
                     break;
+                default:
+                    $execute = false;
             }
             if ($execute) {
                 $query->execute();

@@ -429,6 +429,7 @@ class ServiceManager
         foreach ($callables as $key => $callable) {
             $return[$key] = $callable;
             if (is_callable($callable) && version_compare(InstalledVersions::getVersion('symfony/console'), '7.4.0', '>=')) {
+                // @phpstan-ignore arguments.count
                 $return[$key] = new Command(null, $callable);
             }
         }
