@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Display a config value, or a whole configuration object.',
     aliases: ['cget','config-get']
 )]
+#[CLI\Formatter(returnType: UnstructuredListData::class, defaultFormatter: 'yaml')]
 final class ConfigGetCommand extends Command
 {
     use AutowireTrait;
@@ -45,8 +46,6 @@ final class ConfigGetCommand extends Command
             ->addOption('include-overridden', null, InputOption::VALUE_NEGATABLE, 'Apply module and settings.php overrides to values')
             ->addUsage('config:get system.site page.front')
             ->addUsage('config:get system.site');
-        $formatterOptions = (new FormatterOptions());
-        $this->configureFormatter(UnstructuredListData::class, $formatterOptions);
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
