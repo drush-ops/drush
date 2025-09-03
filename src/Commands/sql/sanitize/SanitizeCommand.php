@@ -43,7 +43,6 @@ final class SanitizeCommand extends Command implements CustomEventAwareInterface
     protected function configure()
     {
         $this
-            ->setDescription('Sanitize the database by removing or obfuscating user data.')
             ->addUsage('drush sql:sanitize --sanitize-password=no')
             ->addUsage('drush sql:sanitize --allowlist-fields=field_biography,field_phone_number');
     }
@@ -63,17 +62,18 @@ final class SanitizeCommand extends Command implements CustomEventAwareInterface
 
         /**
          * In order to present only one prompt, collect all confirmations up front.
+         * These are the "new" event listeners.
          */
         $event = new SanitizeConfirmsEvent($input);
         $this->eventDispatcher->dispatch($event);
         $messages = $event->getMessages();
 
         // Also collect from legacy commandfiles.
-        // This works but we would need backwars compat forv POST_COMMAND AC hook as well.
-//        $handlers = $this->getCustomEventHandlers(SanitizeCommands::CONFIRMS);
-//        foreach ($handlers as $handler) {
-//            $handler($messages, $input);
-//        }
+        // This works but we would need backward compat for POST_COMMAND AC hook as well.
+        $handlers = $this->getCustomEventHandlers(SanitizeCommands::CONFIRMS);
+        foreach ($handlers as $handler) {
+            $handler($messages, $input);
+        }
         if ($messages) {
             $output->writeln(dt('The following operations will be performed:'));
             $io->listing($messages);

@@ -14,7 +14,6 @@ use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;

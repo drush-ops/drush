@@ -31,7 +31,6 @@ final class FormatterListener
         foreach ($event->getApplication()->all() as $id => $command) {
             // Support invokable commands (Symfony Console 7.4+).
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
-            $reflection = new \ReflectionObject($code);
             $reflectionObject = new \ReflectionObject($code);
             if (!$attributes = $reflectionObject->getAttributes(CLI\Formatter::class)) {
                 continue;
