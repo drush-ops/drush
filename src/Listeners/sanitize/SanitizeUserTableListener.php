@@ -9,11 +9,10 @@ use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Password\PasswordInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\sql\sanitize\SanitizeCommand;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
+use Drush\Log\DrushLoggerManager;
 use Drush\Sql\SqlBase;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputOption;
@@ -21,7 +20,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * Sanitize emails and passwords. This also an example of how to write a
- *  database sanitizer for sql:sync.
+ *  database sanitizer.
  */
 #[AsEventListener(method: 'onDefinition')]
 #[AsEventListener(method: 'onSanitizeConfirm')]
@@ -34,13 +33,14 @@ final class SanitizeUserTableListener
         protected Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager,
+        protected DrushLoggerManager $logger,
     ) {
     }
 
     public function onDefinition(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
-            if ($command->getName() === SanitizeCommand::NAME) {
+            if ($command->getName() === 'sql:sanitize') {
                 $command->addOption(
                     'sanitize-email',
                     null,
@@ -63,18 +63,16 @@ final class SanitizeUserTableListener
         if ($this->isEnabled($options['sanitize-email'])) {
             $event->addMessage(dt('Sanitize user emails.'));
         }
-        if (in_array('ignored-roles', $options)) {
+        if (!empty($options['ignored-roles'])) {
             $event->addMessage(dt('Preserve user emails and passwords for the specified roles.'));
         }
     }
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
-        if ($event->getCommand()->getName() !== SanitizeCommand::NAME) {
+        if ($event->getCommand()->getName() !== 'sql:sanitize') {
             return;
         }
-
-        $io = new DrushStyle($event->getInput(), $event->getOutput());
 
         $options = $event->getInput()->getOptions();
         $query = $this->database->update('users_field_data')->condition('uid', 0, '>');
@@ -137,7 +135,7 @@ final class SanitizeUserTableListener
             $query->execute();
             $this->entityTypeManager->getStorage('user')->resetCache();
             foreach ($messages as $message) {
-                $io->success($message);
+                $this->logger->success($message);
             }
         }
     }

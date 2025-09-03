@@ -9,10 +9,9 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\sql\sanitize\SanitizeCommand;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
-use Drush\Style\DrushStyle;
+use Drush\Log\DrushLoggerManager;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputOption;
@@ -20,7 +19,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * Sanitize user fields. This also an example of how to write a
- *  database sanitizer for sql:sync.
+ *  database sanitizer.
  */
 #[AsEventListener(method: 'onDefinition')]
 #[AsEventListener(method: 'onSanitizeConfirm')]
@@ -34,13 +33,15 @@ final class SanitizeUserFieldsListener
         protected EntityFieldManagerInterface $entityFieldManager,
         protected EntityTypeManagerInterface $entityTypeManager,
         protected FieldTypePluginManagerInterface $fieldTypePluginManager,
+        // @todo Can't type hint to LoggerInterface without getting error from PHPStan about missing success() method.
+        protected DrushLoggerManager $logger,
     ) {
     }
 
     public function onDefinition(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
-            if ($command->getName() === SanitizeCommand::NAME) {
+            if ($command->getName() === 'sql:sanitize') {
                 $command->addOption('allowlist-fields', null, InputOption::VALUE_REQUIRED, 'A comma delimited list of fields exempt from sanitization.');
             }
         }
@@ -53,11 +54,9 @@ final class SanitizeUserFieldsListener
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
-        if ($event->getCommand()->getName() !== SanitizeCommand::NAME) {
+        if ($event->getCommand()->getName() !== 'sql:sanitize') {
             return;
         }
-
-        $io = new DrushStyle($event->getInput(), $event->getOutput());
 
         $options = $event->getInput()->getOptions();
         $field_definitions = $this->entityFieldManager->getFieldDefinitions('user', 'user');
@@ -66,6 +65,7 @@ final class SanitizeUserFieldsListener
             unset($field_definitions[$key], $field_storage[$key]);
         }
 
+        $sanitized = false;
         foreach ($field_definitions as $key => $def) {
             if (!isset($field_storage[$key]) || $field_storage[$key]->isBaseField()) {
                 continue;
@@ -108,12 +108,14 @@ final class SanitizeUserFieldsListener
                     $execute = false;
             }
             if ($execute) {
+                $sanitized = true;
                 $query->execute();
                 $this->entityTypeManager->getStorage('user')->resetCache();
-                $io->success(dt('!table table sanitized.', ['!table' => $table]));
-            } else {
-                $io->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));
+                $this->logger->success(dt('!table table sanitized.', ['!table' => $table]));
             }
+        }
+        if (!$sanitized) {
+            $this->logger->success(dt('No text fields for users need sanitizing.'));
         }
     }
 }

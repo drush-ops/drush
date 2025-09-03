@@ -25,6 +25,7 @@ use Drush\DrupalFinder\DrushDrupalFinder;
 use Drush\Drush;
 use Drush\Formatters\DrushFormatterManager;
 use Drush\Formatters\EntityToArraySimplifier;
+use Drush\Log\DrushLoggerManager;
 use Drush\Log\Logger;
 use Drush\SiteAlias\ProcessManager;
 use Drush\Symfony\DrushStyleInjector;
@@ -103,10 +104,11 @@ class DependencyInjection
     protected function addDrushServices(Container $container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output, InputInterface $input): void
     {
         // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
-        Robo::addShared($container, 'logger', '\Drush\Log\DrushLoggerManager')
+        Robo::addShared($container, 'logger', DrushLoggerManager::class)
             ->addMethodCall('setLogOutputStyler', ['logStyler'])
             ->addMethodCall('add', ['drush', new Logger($output)]);
         Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
+        Robo::addShared($container, DrushLoggerManager::class, 'logger');  // For autowiring
 
         Robo::addShared($container, self::LOADER, $loader);
         Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
