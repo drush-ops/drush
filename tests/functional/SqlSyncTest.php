@@ -116,7 +116,7 @@ class SqlSyncTest extends CommandUnishTestCase
             'structure-tables-list' => 'cache,cache*',
         ];
         $this->drush(SqlSyncCommands::SYNC, ['@sut.stage', '@sut.dev'], $sync_options);
-        $this->drush(SanitizeCommand::NAME, [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
+        $this->drush('sql:sanitize', [], ['yes' => null, 'uri' => 'dev',], '@sut.dev');
 
         // Confirm that the sample user is unchanged on the staging site
         $this->drush(UserCommands::INFORMATION, [$name], $options + ['format' => 'json'], '@sut.stage');

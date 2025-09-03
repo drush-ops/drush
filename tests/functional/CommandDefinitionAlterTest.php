@@ -27,7 +27,7 @@ class CommandDefinitionAlterTest extends CommandUnishTestCase
 
         // Check the debug messages.
         $this->assertStringContainsString("[debug] Module 'woot' changed the alias of 'woot:altered' command into 'woot-new-alias' in Drupal\woot\Drush\Listeners\WootDefinitionListener::__invoke().", $this->getErrorOutput());
-        // Listeners dispatch mostly outside of Drush so no longer able to asset this message.
+        // Listeners dispatch mostly outside of Drush so no longer able to assert this message.
         // $this->assertStringContainsString('[debug] Commands are potentially altered in Drupal\woot\Drush\Listeners.', $this->getErrorOutput());
 
         // Try to run the command with the initial alias.
