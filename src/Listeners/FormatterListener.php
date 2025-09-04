@@ -12,7 +12,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 use ReflectionObject;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]
@@ -54,14 +53,6 @@ final class FormatterListener
             }
             // Use the command's fallback for --format.
             $command->getDefinition()->getOption('format')->setDefault($attribute->defaultFormatter);
-
-            // @todo Move to own listener.
-            // Add the --filter option if the command has a FilterDefaultField attribute.
-            $attributes = $reflectionObject->getAttributes(CLI\FilterDefaultField::class);
-            if (!empty($attributes)) {
-                $instance = $attributes[0]->newInstance();
-                $command->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter output based on provided expression. Default field: ' . $instance->field);
-            }
         }
     }
 

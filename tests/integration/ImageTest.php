@@ -19,6 +19,8 @@ class ImageTest extends UnishApplicationTesterTestCase
     public function testImage()
     {
         $this->drush(PmCommands::INSTALL, ['image']);
+        // Should not be needed. Something prior removed all wrappers. Possibly will be fixed by  https://www.drupal.org/project/drupal/issues/3416735
+        \Drupal::service('stream_wrapper_manager')->register();
 
         $logo = 'core/misc/menu-expanded.png';
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
