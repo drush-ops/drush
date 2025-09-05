@@ -7,7 +7,6 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 trait ConfigNameTrait
 {
-
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestArgumentValuesFor('config_name')) {
