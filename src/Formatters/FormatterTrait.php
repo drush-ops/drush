@@ -51,11 +51,14 @@ trait FormatterTrait
         return new $sourceClass($data);
     }
 
-    public function getFormatterOptions(): FormatterOptions
+    protected function getFormatterOptions(): FormatterOptions
     {
         return $this->formatterOptions;
     }
 
+    /**
+     * Public because is used by FormatterListener.
+     */
     public function setFormatterOptions(FormatterOptions $formatterOptions): void
     {
         $this->formatterOptions = $formatterOptions;
