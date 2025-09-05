@@ -10,6 +10,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
+use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     aliases: ['cget','config-get']
 )]
 #[CLI\Formatter(returnType: UnstructuredListData::class, defaultFormatter: 'yaml')]
+#[CLI\ValidateConfigName()]
 final class ConfigGetCommand extends Command
 {
     use AutowireTrait;
@@ -48,6 +50,17 @@ final class ConfigGetCommand extends Command
             ->addUsage('config:get system.site');
     }
 
+    protected function interact(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->hasArgument('config_name') && empty($input->getArgument('config_name'))) {
+            $io = new DrushStyle($input, $output);
+            // Classes using this trait must have a $configFactory property.
+            $config_names = $this->configFactory->listAll();
+            $choice = $io->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
+            $input->setArgument('config_name', $choice);
+        }
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $data = $this->doExecute($input);
@@ -58,7 +71,7 @@ final class ConfigGetCommand extends Command
     protected function doExecute($input): string|array
     {
         $config_name = $input->getArgument('config_name');
-        $this->validateConfigName($config_name);
+        // $this->validateConfigName($config_name);
         $key = $input->getArgument('key');
 
         // Displaying overrides only applies to active storage.

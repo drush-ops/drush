@@ -26,6 +26,7 @@ use Symfony\Component\Yaml\Parser;
 final class ConfigSetCommand extends Command
 {
     use AutowireTrait;
+    use ConfigNameTrait;
 
     public const NAME = 'config:set';
 
