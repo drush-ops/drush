@@ -11,3 +11,9 @@ services:
     class: Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber
     tags:
       - { name: event_subscriber }
+  woot.autowire_test:
+    class: Drupal\woot\AutowireTestService
+  Drupal\woot\AutowireTestServiceInterface: '@woot.autowire_test'
+
+parameters:
+  foo: bar
