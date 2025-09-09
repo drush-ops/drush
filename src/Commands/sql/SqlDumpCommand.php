@@ -9,6 +9,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
@@ -29,6 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\OptionsetSql]
 #[CLI\OptionsetTableSelection]
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+#[CLI\HelpLinks(links: [HelpLinks::Aliases, HelpLinks::DrushConfiguration, HelpLinks::Policy])]
 final class SqlDumpCommand extends Command
 {
     use AutowireTrait;

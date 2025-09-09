@@ -368,12 +368,4 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         unset($commands[$id]);
         $rf->setValue($this, $commands);
     }
-
-    /**
-     * A base URL for help.
-     */
-    public function getDocsBaseUrl(): string
-    {
-        return 'https://www.drush.org/latest';
-    }
 }
