@@ -35,7 +35,8 @@ final class HelpLinksListener
         }
     }
 
-    public static function bullets(array $links) {
+    public static function bullets(array $links)
+    {
         return "Help topics:\n" . implode("\n", $links);
     }
 }
