@@ -89,7 +89,8 @@
     "allow-plugins": {
       "composer/installers": true,
       "cweagans/composer-patches": true,
-      "symfony/runtime": true
+      "symfony/runtime": true,
+      "drupal/core-composer-scaffold": true
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",
