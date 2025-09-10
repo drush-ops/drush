@@ -6,11 +6,11 @@ namespace Drush\Attributes;
 
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
-use Drush\Boot\DrupalBoot;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Boot\Kernels;
+use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\ExpectedValues;
 
+#[Deprecated('Replace with an initialize() method on a Console command. See \Drush\Commands\core\UpdateDbStatusCommand::initialize')]
 #[Attribute(Attribute::TARGET_METHOD)]
 class Kernel
 {

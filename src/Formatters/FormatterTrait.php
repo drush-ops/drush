@@ -18,8 +18,14 @@ trait FormatterTrait
      */
     protected function writeFormattedOutput(InputInterface $input, OutputInterface $output, $data): void
     {
-        $data = $this->alterResult($data, $input);
-        $this->formatterManager->write($output, $input->getOption('format'), $data, $this->getFormatterOptions()->setInput($input));
+        if (!isset($this->formatterManager)) {
+            throw new \Exception('\Consolidation\OutputFormatters\FormatterManager must be injected into the command during __construct().');
+        }
+
+        if (is_object($data) || is_array($data)) {
+            $data = $this->alterResult($data, $input);
+            $this->formatterManager->write($output, $input->getOption('format'), $data, $this->getFormatterOptions()->setInput($input));
+        }
     }
 
     protected function alterResult($result, InputInterface $input): mixed

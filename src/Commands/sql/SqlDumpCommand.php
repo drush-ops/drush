@@ -61,10 +61,8 @@ final class SqlDumpCommand extends Command
             ->addUsage('sql:dump --extra-dump=--no-data');
     }
 
-    public function execute(
-        InputInterface $input,
-        OutputInterface $output,
-    ): int {
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
 use Drupal\Core\Update\EquivalentUpdate;
-use Drupal\Core\Update\UpdateRegistry;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -19,6 +17,7 @@ use Drush\Drupal\DrupalUtil;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
+use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LogLevel;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
@@ -27,6 +26,7 @@ final class UpdateDBCommands extends DrushCommands
     use AutowireTrait;
 
     const UPDATEDB = 'updatedb';
+    #[Deprecated('Moved. Use \Drush\Commands\core\UpdateDbStatusCommand::NAME')]
     const STATUS = 'updatedb:status';
     const BATCH_PROCESS = 'updatedb:batch-process';
 
@@ -97,39 +97,6 @@ final class UpdateDBCommands extends DrushCommands
         }
 
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
-    }
-
-    /**
-     * List any pending database updates.
-     */
-    #[CLI\Command(name: self::STATUS, aliases: ['updbst', 'updatedb-status'])]
-    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    #[CLI\Kernel(name: 'update')]
-    #[CLI\FieldLabels(labels: [
-        'module' => 'Module',
-        'update_id' => 'Update ID',
-        'description' => 'Description',
-        'type' => 'Type'
-    ])]
-    #[CLI\DefaultTableFields(fields: ['module', 'update_id', 'type', 'description'])]
-    #[CLI\FilterDefaultField(field: 'type')]
-    public function updatedbStatus($options = ['format' => 'table']): ?RowsOfFields
-    {
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
-        drupal_load_updates();
-        list($pending, $start, $warnings) = $this->getUpdatedbStatus($options);
-
-        // Output any warnings.
-        $return = null;
-        foreach ($warnings as $module => $warning) {
-            $this->logger()->warning(dt('!module: !warning', ['!module' => $module, '!warning' => $warning]));
-        }
-        if (empty($pending)) {
-            $this->logger()->success(dt("No database updates required."));
-        } else {
-            $return = new RowsOfFields($pending);
-        }
-        return $return;
     }
 
     /**
@@ -280,7 +247,7 @@ final class UpdateDBCommands extends DrushCommands
             return;
         }
 
-        list($extension, $name) = explode('_post_update_', $function, 2);
+        [$extension, $name] = explode('_post_update_', $function, 2);
         \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
 
         if (function_exists($function)) {
@@ -477,68 +444,6 @@ final class UpdateDBCommands extends DrushCommands
         $module_handler = \Drupal::moduleHandler();
         $module_handler->loadAll();
         $module_handler->invokeAll('rebuild');
-    }
-
-    /**
-     * Returns information about available module updates.
-     *
-     * @return array
-     *   An indexed array (aka tuple) with 3 elements:
-     *  - An array where each item is a 4 item associative array describing a
-     *    pending update.
-     *  - An array listing the first update to run, keyed by module.
-     *  - An array listing the available warnings, keyed by module.
-     */
-    public function getUpdatedbStatus(array $options): array
-    {
-        require_once DRUPAL_ROOT . '/core/includes/update.inc';
-        $pending = \update_get_update_list();
-
-        $return = [];
-        $warnings = [];
-
-        // Ensure system module's updates run first.
-        $start['system'] = [];
-
-        foreach ($pending as $module => $updates) {
-            if (isset($updates['start'])) {
-                $start[$module] = $updates['start'];
-                foreach ($updates['pending'] as $update_id => $description) {
-                    // Strip cruft from front.
-                    $description = str_replace($update_id . ' -   ', '', $description);
-                    $return[$module . "_update_$update_id"] = [
-                        'module' => $module,
-                        'update_id' => $update_id,
-                        'description' => $description,
-                        'type' => 'hook_update_n'
-                    ];
-                }
-            }
-            if (isset($updates['warning'])) {
-                $warnings[$module] = $updates['warning'];
-            }
-        }
-
-        // Pending hook_post_update_X() implementations.
-        /** @var UpdateRegistry $post_update_registry */
-        $post_update_registry = \Drupal::service('update.post_update_registry');
-        $post_updates = $post_update_registry->getPendingUpdateInformation();
-        foreach ($post_updates as $module => $post_update) {
-            foreach ($post_update as $key => $list) {
-                if ($key == 'pending') {
-                    foreach ($list as $id => $item) {
-                        $return[$module . '-post-' . $id] = [
-                            'module' => $module,
-                            'update_id' => $id,
-                            'description' => trim($item),
-                            'type' => 'post-update'
-                        ];
-                    }
-                }
-            }
-        }
-
-        return [$return, $start, $warnings];
     }
 
     /**

@@ -7,10 +7,9 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\config\ConfigCommands;
+use JetBrains\PhpStorm\Deprecated;
 
-/**
- * When migrating to Console commands, use an interact() method instead of an Attribute.
- */
+#[Deprecated('When migrating to Console commands, use an interact() method instead of an Attribute.')]
 #[Attribute(Attribute::TARGET_METHOD)]
 class InteractConfigName
 {
