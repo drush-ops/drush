@@ -9,7 +9,6 @@ use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\SiteProcess\Util\Tty;
-use Drupal\Core\Database\Database;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\core\DocsCommands;
@@ -26,6 +25,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     use ExecTrait;
     use StdinAwareTrait;
 
+    #[Deprecated(reason: 'Moved', replacement: SqlConfCommand::NAME)]
     const CONF = 'sql:conf';
     const CONNECT = 'sql:connect';
     const CREATE = 'sql:create';
@@ -34,32 +34,6 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     const QUERY = 'sql:query';
     #[Deprecated(reason: 'Moved', replacement: SqlDumpCommand::NAME)]
     const DUMP = 'sql:dump';
-
-    #[CLI\Command(name: self::CONF, aliases: ['sql-conf'])]
-    #[CLI\Help(hidden: true)]
-    #[CLI\Option(name: 'all', description: 'Show all database connections, instead of just one.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\OptionsetSql]
-    public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): ?array
-    {
-        if ($options['all']) {
-            $return = Database::getAllConnectionInfo();
-            foreach ($return as $key1 => $value) {
-                foreach ($value as $key2 => $spec) {
-                    if (!$options['show-passwords']) {
-                        unset($return[$key1][$key2]['password']);
-                    }
-                }
-            }
-        } else {
-            $sql = SqlBase::create($options);
-            $return = $sql->getDbSpec();
-            if (!$options['show-passwords']) {
-                unset($return['password']);
-            }
-        }
-        return $return;
-    }
 
     /**
      * A string for connecting to the DB.

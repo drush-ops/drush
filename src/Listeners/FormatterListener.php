@@ -51,7 +51,7 @@ final class FormatterListener
                 $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
                 $command->addOption($inputOption->getName(), $inputOption->getShortcut(), $mode, $inputOption->getDescription(), $inputOption->getDefault(), $suggestedValues);
             }
-            // Use the command's fallback for --format.
+            // Use the command's fallback for --format. The automatic option above doesnt always get it right.
             $command->getDefinition()->getOption('format')->setDefault($attribute->defaultFormatter);
         }
     }

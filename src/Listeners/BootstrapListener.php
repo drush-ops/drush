@@ -37,7 +37,12 @@ class BootstrapListener
         }
         /** @var \Drush\Attributes\Bootstrap $instance */
         $instance = $attributes[0]->newInstance();
-        if (!$this->bootstrapManager->bootstrapToPhaseIndex($instance->level)) {
+        if ($instance->max_level) {
+            $success = $this->bootstrapManager->bootstrapMax($instance->max_level);
+        } else {
+            $success = $this->bootstrapManager->bootstrapToPhaseIndex($instance->level);
+        }
+        if (!$success) {
             $this->logger->error('Bootstrap failed. Run your command with -vvv for more information.');
             $event->disableCommand();
         }
