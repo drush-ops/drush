@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
+use Drush\Attributes as CLI;
 use Drush\Attributes\Bootstrap;
 use Drush\Boot\BootstrapManager;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]
+#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 class BootstrapListener
 {
     use AutowireTrait;
