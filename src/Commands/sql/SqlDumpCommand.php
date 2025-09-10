@@ -29,7 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 #[CLI\OptionsetSql]
 #[CLI\OptionsetTableSelection]
-#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+#[CLI\Bootstrap(level: DrupalBootLevels::CONFIGURATION)]
 #[CLI\HelpLinks(links: [HelpLinks::Aliases, HelpLinks::DrushConfiguration, HelpLinks::Policy])]
 final class SqlDumpCommand extends Command
 {
@@ -65,7 +65,6 @@ final class SqlDumpCommand extends Command
         InputInterface $input,
         OutputInterface $output,
     ): int {
-        $this->bootstrapManager->bootstrapMax(DrupalBootLevels::CONFIGURATION);
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;
