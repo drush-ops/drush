@@ -46,6 +46,7 @@ class DependencyInjection
     const FORMATTER_MANAGER = 'formatterManager';
     const SITE_ALIAS_MANAGER = 'site.alias.manager';
     const BOOTSTRAP_MANAGER = 'bootstrap.manager';
+    const PROCESS_MANAGER = 'process.manager';
     const LOADER = 'loader';
     protected array $handlers = [];
 
@@ -142,12 +143,13 @@ class DependencyInjection
         Robo::addShared($container, 'bootstrap.hook', BootstrapHook::class)
           ->addArgument(self::BOOTSTRAP_MANAGER);
         Robo::addShared($container, 'tildeExpansion.hook', TildeExpansionHook::class);
-        Robo::addShared($container, 'process.manager', ProcessManager::class)
+        Robo::addShared($container, self::PROCESS_MANAGER, ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
             ->addMethodCall('setConfigRuntime', ['config.runtime'])
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
+        Robo::addShared($container, ProcessManager::class, self::PROCESS_MANAGER); // For autowiring
         Robo::addShared($container, 'redispatch.hook', RedispatchHook::class)
-            ->addArgument('process.manager');
+            ->addArgument(self::PROCESS_MANAGER);;
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.
@@ -165,7 +167,7 @@ class DependencyInjection
         $container->inflector(SiteAliasManagerAwareInterface::class)
             ->invokeMethod('setSiteAliasManager', [self::SITE_ALIAS_MANAGER]);
         $container->inflector(ProcessManagerAwareInterface::class)
-            ->invokeMethod('setProcessManager', ['process.manager']);
+            ->invokeMethod('setProcessManager', [self::PROCESS_MANAGER]);
     }
 
     protected function alterServicesForDrush($container, Application $application, InputInterface $input, OutputInterface $output): void
@@ -194,7 +196,7 @@ class DependencyInjection
         $commandProcessor = $container->get('commandProcessor');
         $commandProcessor->setPassExceptions(true);
 
-        ProcessManager::addTransports($container->get('process.manager'));
+        ProcessManager::addTransports($container->get(self::PROCESS_MANAGER));
     }
 
     protected function injectApplicationServices($container, Application $application): void

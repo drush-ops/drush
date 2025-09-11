@@ -7,6 +7,7 @@ namespace Drush\Exec;
 use Consolidation\SiteProcess\Util\Escape;
 use Consolidation\SiteProcess\Util\Shell;
 use Drush\Drush;
+use Drush\Log\DrushLoggerManager;
 
 trait ExecTrait
 {
@@ -84,6 +85,13 @@ trait ExecTrait
             }
         }
         return false;
+    }
+
+    // startBrowser() method uses logger() method which is on DrushCommands, but not Console Commands.
+    public function logger(): ?DrushLoggerManager
+    {
+        assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager, 'Instead of using replacing Drush\'s logger, use $this->add() on DrushLoggerManager to add a custom logger. See https://github.com/drush-ops/drush/pull/5022');
+        return $this->logger;
     }
 
     /*
