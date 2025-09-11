@@ -387,5 +387,4 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             $this->redispatchHook->redispatchIfRemote($input);
         }
     }
-
 }
