@@ -193,6 +193,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         return $command;
     }
 
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
+    {
+        if (!$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
+            $this->redispatchHook->redispatchIfRemote($input);
+            // If we get here, redispatch did not happen.
+        }
+
+        return parent::doRunCommand(
+            $command,
+            $input,
+            $output
+        );
+    }
+
     /**
      * Look up a command. Bootstrap further if necessary.
      */

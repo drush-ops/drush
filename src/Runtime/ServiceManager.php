@@ -463,7 +463,7 @@ class ServiceManager
                     ConsoleTerminateEvent::class => ConsoleEvents::TERMINATE,
                     default => $eventName,
                 };
-                $this->logger->debug('Add listener {class}', ['class' => $instance::class]);
+                $this->logger->debug('Add listener {class}::{method}', ['class' => $instance::class, 'method' => $method]);
                 Drush::getContainer()->get('eventDispatcher')->addListener($eventName, $instance->$method(...), $priority);
             }
         }
