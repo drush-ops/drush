@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
@@ -38,7 +37,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use IO {
         io as roboIo;
     }
-    use ConfiguresPrompts;
 
     // This is more readable.
     const REQ = InputOption::VALUE_REQUIRED;
@@ -111,16 +109,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     public function preHook(CommandData $commandData)
     {
         $this->commandData = $commandData;
-    }
-
-    /**
-     * Configure Laravel prompts package.
-     */
-    #[CLI\Hook(type: HookManager::INITIALIZE, target: '*')]
-    public function initHook($input, AnnotationData $annotationData)
-    {
-
-        $this->configurePrompts($input);
     }
 
     /**

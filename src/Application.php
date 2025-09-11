@@ -196,13 +196,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
     {
-        // Redispatch if the command is remote and is eligible.
-        $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
-        $reflection = new \ReflectionObject($code);
-        $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
-        if (empty($attributes) && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
-            $this->redispatchHook->redispatchIfRemote($input);
-        }
+        $this->redispatchIfRemote($command, $input);
         // If we get here, redispatch did not happen.
         return parent::doRunCommand($command, $input, $output);
     }
@@ -382,4 +376,16 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         unset($commands[$id]);
         $rf->setValue($this, $commands);
     }
+
+    protected function redispatchIfRemote(Command $command, InputInterface $input): void
+    {
+        // Redispatch if the command is remote and is eligible.
+        $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+        $reflection = new \ReflectionObject($code);
+        $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
+        if (empty($attributes) && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
+            $this->redispatchHook->redispatchIfRemote($input);
+        }
+    }
+
 }
