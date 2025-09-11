@@ -149,7 +149,8 @@ class DependencyInjection
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
         Robo::addShared($container, ProcessManager::class, self::PROCESS_MANAGER); // For autowiring
         Robo::addShared($container, 'redispatch.hook', RedispatchHook::class)
-            ->addArgument(self::PROCESS_MANAGER);;
+            ->addArgument(self::PROCESS_MANAGER);
+        ;
 
         // Robo does not manage the command discovery object in the container,
         // but we will register and configure one for our use.

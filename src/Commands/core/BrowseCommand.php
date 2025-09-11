@@ -40,7 +40,8 @@ final class BrowseCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {
+    protected function configure()
+    {
         $this
             ->addArgument(name: 'path', mode: InputOption::VALUE_REQUIRED, description: 'Path to open. If omitted, the site front page will be opened.')
             ->addOption(name: 'browser', mode: InputOption::VALUE_NEGATABLE, description: 'Open the URL in the default browser.')
@@ -49,7 +50,8 @@ final class BrowseCommand extends Command
             ->addUsage(usage: '@example.prod browse');
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int {
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
         $aliasRecord = $this->siteAliasManager->getSelf();
         // Redispatch if called against a remote-host so a browser is started on
         // the *local* machine.
