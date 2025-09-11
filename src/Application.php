@@ -7,6 +7,7 @@ namespace Drush;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Attributes\HandleRemoteCommands;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
@@ -195,16 +196,15 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
     {
-        if (!$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
+        // Redispatch if the command is remote and is eligible.
+        $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+        $reflection = new \ReflectionObject($code);
+        $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
+        if (empty($attributes) && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
             $this->redispatchHook->redispatchIfRemote($input);
-            // If we get here, redispatch did not happen.
         }
-
-        return parent::doRunCommand(
-            $command,
-            $input,
-            $output
-        );
+        // If we get here, redispatch did not happen.
+        return parent::doRunCommand($command, $input, $output);
     }
 
     /**
