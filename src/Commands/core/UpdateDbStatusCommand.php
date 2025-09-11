@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'List any pending database updates.',
     aliases: ['updbst', 'updatedb-status'],
 )]
-// Manage own bootstrap in initialize().
+// Manage own bootstrap in execute().
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
 #[CLI\FieldLabels(labels: [
@@ -48,18 +48,12 @@ class UpdateDbStatusCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * Bootstrap using a custom kernel. Replaces the [#Kernel] attribute.
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        parent::initialize($input, $output);
-        $annotationData = new AnnotationData(['kernel' => 'update']);
-        $this->bootstrapManager->bootstrapToPhaseIndex(DrupalBootLevels::FULL, $annotationData);
-    }
-
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        // Do own bootstrap so we can use the 'update' kernel. Replaces the [#Kernel] attribute.
+        $annotationData = new AnnotationData(['kernel' => 'update']);
+        $this->bootstrapManager->bootstrapToPhaseIndex(DrupalBootLevels::FULL, $annotationData);
+
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;
