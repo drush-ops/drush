@@ -8,7 +8,6 @@ use DrupalCodeGenerator\Asset\AssetCollection as Assets;
 use DrupalCodeGenerator\Attribute\Generator;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use DrupalCodeGenerator\GeneratorType;
-use Drush\Drush;
 
 #[Generator(
     name: 'drush:command-file',
@@ -28,7 +27,7 @@ class DrushCommandFile extends BaseGenerator
         $vars['machine_name'] = $ir->askMachineName();
         $vars['name'] = $ir->askName();
 
-        $vars['class'] = $ir->askClass(default: '{machine_name|camelize}Commands');
+        $vars['class'] = $ir->askClass(default: '{machine_name|camelize}Command');
         $vars['services'] = $ir->askServices(false, ['token']);
 
         $assets->addFile('src/Drush/Commands/{class}.php', 'drush-command-file.php.twig');
