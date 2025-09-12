@@ -72,10 +72,4 @@ final class BrowseCommand extends Command
         $output->writeln($link);
         return self::SUCCESS;
     }
-
-    // startBrowser() method uses logger() method which is on DrushCommands, but not Console Commands.
-    private function logger(): DrushLoggerManager
-    {
-        return $this->logger;
-    }
 }

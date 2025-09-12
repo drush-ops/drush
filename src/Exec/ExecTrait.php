@@ -27,12 +27,12 @@ trait ExecTrait
      */
     public function startBrowser(?string $uri = null, int $sleep = 0, ?int $port = null, string|bool $browser = false): bool
     {
+        $logger = Drush::logger();
         if ($browser) {
             // We can only open a browser if we have a DISPLAY environment variable on
             // POSIX or are running Windows or OS X.
             if (!Drush::simulate() && !getenv('DISPLAY') && !in_array(PHP_OS_FAMILY, ['Windows', 'Darwin'])) {
-                // @phpstan-ignore-next-line
-                $this->logger()->info(dt('No graphical display appears to be available, not starting browser.'));
+                $logger->info(dt('No graphical display appears to be available, not starting browser.'));
                 return false;
             }
             $host = parse_url($uri, PHP_URL_HOST);
@@ -47,8 +47,7 @@ trait ExecTrait
             $hosterror = (gethostbynamel($host) === false);
             $iperror = (ip2long($host) && gethostbyaddr($host) == $host);
             if (!Drush::simulate() && ($hosterror || $iperror)) {
-                // @phpstan-ignore-next-line
-                $this->logger()->warning(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', ['!host' => $host]));
+                $logger->warning(dt('!host does not appear to be a resolvable hostname or IP, not starting browser. You may need to use the --uri option in your command or site alias to indicate the correct URL of this site.', ['!host' => $host]));
                 return false;
             }
             if ($port) {
@@ -69,8 +68,7 @@ trait ExecTrait
             }
 
             if ($browser) {
-                // @phpstan-ignore-next-line
-                $this->logger()->info(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
+                $logger->info(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
                 $args = [];
                 if (!Drush::simulate()) {
                     if ($sleep) {
