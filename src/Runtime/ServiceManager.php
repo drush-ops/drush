@@ -12,6 +12,7 @@ use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
+use Drupal\Core\DefaultContent\ContentExportCommand;
 use Drupal\Core\Recipe\RecipeCommand;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
@@ -303,6 +304,11 @@ class ServiceManager
     public function instantiateDrupalCoreBootstrappedCommands(): array
     {
         $instances = [];
+        if (class_exists(ContentExportCommand::class)) {
+            $instance = new ContentExportCommand($this->autoloader);
+            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            $instances[] = $instance;
+        }
         if (class_exists(RecipeCommand::class)) {
             $instance = new RecipeCommand($this->autoloader);
             $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
