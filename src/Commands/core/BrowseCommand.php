@@ -68,7 +68,7 @@ final class BrowseCommand extends Command
             $link = Url::fromUserInput('/' . $input->getArgument('path'), ['absolute' => true])->toString();
         }
 
-        $this->startBrowser($link, 0, $input->getOption('redirect-port'), $input->getOption('browser'));
+        $this->startBrowser($link, 0, $input->getOption('redirect-port'), (bool) $input->getOption('browser'));
         $output->writeln($link);
         return self::SUCCESS;
     }
