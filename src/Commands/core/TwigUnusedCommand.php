@@ -53,8 +53,7 @@ final class TwigUnusedCommand extends Command
             ->setHelp('Immediately before running this command, web crawl your entire web site. Or use your Production PHPStorage dir for comparison.')
             ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search.')
             // Usages can't have a description with plain Console :(. Use setHelp() if desired as per  https://github.com/symfony/symfony/issues/45050;
-            ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom')
-            ->addUsage('/var/www/mass.local/docroot/themes/custom');
+            ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom');
     }
 
     public function execute(
