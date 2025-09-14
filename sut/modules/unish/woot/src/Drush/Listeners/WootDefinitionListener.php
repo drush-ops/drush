@@ -24,9 +24,6 @@ class WootDefinitionListener
         foreach ($event->getApplication()->all() as $id => $command) {
             if ($command->getName() === 'woot:altered') {
                 $command->setAliases(['woot-new-alias']);
-                if ($id == 'woot-initial-alias') {
-                    $event->getApplication()->remove('woot-initial-alias');
-                }
                 $this->logger->debug(dt("Module 'woot' changed the alias of 'woot:altered' command into 'woot-new-alias' in " . __METHOD__ . '().'));
             }
         }

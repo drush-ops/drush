@@ -363,20 +363,6 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->serviceManager->addListeners($listenerClasses, Drush::getContainer());
     }
 
-    /**
-     * Remove a command. Initially used by WootDefinitionListener and its test.
-     *
-     * An alternative would be console.excluded https://github.com/search?q=repo%3AHuttopia%2Fconsole-bundle%20console.excluded&type=code
-     */
-    public function remove(string $id): void
-    {
-        $rf = new \ReflectionProperty(\Symfony\Component\Console\Application::class, 'commands');
-        $rf->setAccessible(true);
-        $commands = $rf->getValue($this);
-        unset($commands[$id]);
-        $rf->setValue($this, $commands);
-    }
-
     protected function redispatchIfRemote(Command $command, InputInterface $input): void
     {
         // Redispatch if the command is remote and is eligible.
