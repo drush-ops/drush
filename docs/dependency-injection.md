@@ -22,7 +22,7 @@ create() method
 
 Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a [League container](https://container.thephpleague.com/) with a delegate to the Drupal container. Note that the type hint should be to `Psr\Container\ContainerInterface` not `Symfony\Component\DependencyInjection\ContainerInterface`. A create() method and constructor will look something like this:
 ```php
-class WootStaticFactoryCommands extends DrushCommands
+class WootStaticFactoryCommand extends Command
 {
     protected $configFactory;
 
