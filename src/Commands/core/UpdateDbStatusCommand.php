@@ -11,7 +11,7 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
-use Drush\Log\DrushLoggerManager;
+use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,7 +43,6 @@ class UpdateDbStatusCommand extends Command
     public function __construct(
         protected BootstrapManager $bootstrapManager,
         protected readonly FormatterManager $formatterManager,
-        protected readonly DrushLoggerManager $logger,
     ) {
         parent::__construct();
     }
@@ -61,6 +60,8 @@ class UpdateDbStatusCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): ?RowsOfFields
     {
+        $io = new DrushStyle($input, $output);
+
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
         [$pending, $start, $warnings] = $this->getUpdatedbStatus();
@@ -68,10 +69,10 @@ class UpdateDbStatusCommand extends Command
         // Output any warnings.
         $return = null;
         foreach ($warnings as $module => $warning) {
-            $this->logger->warning(dt('!module: !warning', ['!module' => $module, '!warning' => $warning]));
+            $io->warning(dt('!module: !warning', ['!module' => $module, '!warning' => $warning]));
         }
         if (empty($pending)) {
-            $this->logger->success(dt("No database updates required."));
+            $io->success(dt("No database updates required."));
         } else {
             $return = new RowsOfFields($pending);
         }

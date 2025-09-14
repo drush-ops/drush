@@ -8,7 +8,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
-use Drush\Log\DrushLoggerManager;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -33,7 +32,6 @@ final class ImageDeriveCommand extends Command
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
-        protected readonly DrushLoggerManager $logger,
     ) {
         parent::__construct();
     }
@@ -50,13 +48,11 @@ final class ImageDeriveCommand extends Command
         InputInterface $input,
         OutputInterface $output,
     ): int {
-        $io = new DrushStyle($input, $output);
-
         $image_style = $this->entityTypeManager->getStorage('image_style')->load($input->getArgument('style-name'));
         $source = $input->getArgument('source');
         $derivative_uri = $image_style->buildUri($source);
         if ($image_style->createDerivative($source, $derivative_uri)) {
-            $this->logger->success('Derivative image created: {uri}', ['uri' => $derivative_uri]);
+            (new DrushStyle($input, $output))->success(sprintf('Derivative image created: %s', $derivative_uri));
             return Command::SUCCESS;
         }
         return Command::FAILURE;

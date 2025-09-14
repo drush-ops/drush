@@ -11,7 +11,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
-use Drush\Log\DrushLoggerManager;
 use Drush\SiteAlias\ProcessManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -35,7 +34,6 @@ final class BrowseCommand extends Command
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,
         private readonly ProcessManager $processManager,
-        protected readonly DrushLoggerManager $logger,
     ) {
         parent::__construct();
     }
