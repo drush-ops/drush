@@ -7,6 +7,7 @@ namespace Drush\Commands\core;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
+use Drush\Log\DrushLoggerManager;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,6 +32,7 @@ final class ImageFlushCommand extends Command
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
+        protected readonly DrushLoggerManager $logger,
     ) {
         parent::__construct();
     }
@@ -63,8 +65,6 @@ final class ImageFlushCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new DrushStyle($input, $output);
-
         if ($input->getOption('all')) {
             $input->setArgument('style-names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
         }
@@ -72,7 +72,7 @@ final class ImageFlushCommand extends Command
         $ids = StringUtils::csvToArray($input->getArgument('style-names'));
         foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
             $style->flush();
-            $io->success("Image style $style_name flushed");
+            $this->logger->success("Image style {style_name} flushed", ['style_name' => $style_name]);
         }
         return self::SUCCESS;
     }
