@@ -46,8 +46,7 @@ class ValidateConfigNameListener
         foreach ($names as $name) {
             $config = $this->configFactory->get($name);
             if ($config->isNew()) {
-                $msg = dt('Config !name does not exist', ['!name' => $name]);
-                $this->logger->error($msg);
+                $this->logger->error('Config {name} does not exist', ['name' => $name]);
                 $event->disableCommand();
             }
         }

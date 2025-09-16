@@ -39,8 +39,7 @@ class ValidateModulesEnabledListener
         $instance = $attributes[0]->newInstance();
         $missing = array_filter($instance->modules, fn($module) => !$this->moduleHandler->moduleExists($module));
         if ($missing) {
-            $message = dt('The following modules are required: !modules', ['!modules' => implode(', ', $missing)]);
-            $this->logger->error($message);
+            $this->logger->error('The following modules are required: {modules}', ['modules' => implode(', ', $missing)]);
             $event->disableCommand();
         }
     }

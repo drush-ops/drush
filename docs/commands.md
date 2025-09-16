@@ -26,7 +26,6 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
-use Drush\Boot\BootstrapManager;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Psr\Log\LoggerInterface;
@@ -54,7 +53,6 @@ final class TwigUnusedCommand extends Command
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
-        protected readonly BootstrapManager $bootstrapManager,
         protected readonly TwigEnvironment $twig,
         private readonly LoggerInterface $logger
     ) {
@@ -127,7 +125,7 @@ Drush 13.7+ deprecates Annotated Commands in favor of pure [Symfony Console comm
 - Options and Arguments moved from Attributes to a `configure()` method on the command class
 - The main logic of the command moved to an execute() method on the command class.
 - User interaction now happens in an `interact()` method on the command class.
-- Drush and Drupal services may still be autowired. This is how you access the logger. Build own `$io` as needed.
+- Drush and Drupal services may be autowired. See [Dependency Injection](dependency-injection.md).
 - Commands that wish to offer multiple _output formats_ (yes please!) should (Example: 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).

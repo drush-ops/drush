@@ -17,7 +17,7 @@ class ValidateFileExistsListener
     use AutowireTrait;
 
     public function __construct(
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -50,8 +50,7 @@ class ValidateFileExistsListener
         }
 
         if ($missing) {
-            $msg = dt('File(s) not found: !paths', ['!paths' => implode(', ', $missing)]);
-            $this->logger->error($msg);
+            $this->logger->error('File(s) not found: {paths}', ['paths' => implode(', ', $missing)]);
             $event->disableCommand();
         }
     }

@@ -41,8 +41,8 @@ class ValidateEntityLoadListener
         $names = StringUtils::csvToArray($event->getInput()->getArgument($instance->argumentName));
         $loaded = $this->entityTypeManager->getStorage($instance->entityType)->loadMultiple($names);
         if ($missing = array_diff($names, array_keys($loaded))) {
-            $msg = dt('Unable to load the !type: !str', ['!type' => $instance->entityType, '!str' => implode(', ', $missing)]);
-            $this->logger->error($msg);
+            $context = ['type' => $instance->entityType, 'str' => implode(', ', $missing)];
+            $this->logger->error('Unable to load the {type}: {str}', $context);
             $event->disableCommand();
         }
     }
