@@ -59,6 +59,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     protected function io(): DrushStyle
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and build a DrushStyle instance. See https://www.drush.org/latest/commands/.');
         // @phpstan-ignore booleanNot.alwaysFalse
         if (!$this->io) {
             // Specify our own Style class when needed.
@@ -73,6 +74,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     public function logger(): ?DrushLoggerManager
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and inject a Logger. See https://www.drush.org/latest/commands/.');
         assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager, 'Instead of using replacing Drush\'s logger, use $this->add() on DrushLoggerManager to add a custom logger. See https://github.com/drush-ops/drush/pull/5022');
         return $this->logger;
     }
@@ -140,6 +142,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     public function processManager(): ProcessManager
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and inject a ProcessManager. See https://www.drush.org/latest/commands/.');
         return $this->processManager;
     }
 }
