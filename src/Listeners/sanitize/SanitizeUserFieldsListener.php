@@ -111,11 +111,11 @@ final class SanitizeUserFieldsListener
                 $sanitized = true;
                 $query->execute();
                 $this->entityTypeManager->getStorage('user')->resetCache();
-                $this->logger->success(dt('!table table sanitized.', ['!table' => $table]));
+                $this->logger->notice(dt('!table table sanitized.', ['!table' => $table]));
             }
         }
         if (!$sanitized) {
-            $this->logger->success(dt('No text fields for users need sanitizing.'));
+            $this->logger->notice(dt('No text fields for users need sanitizing.'));
         }
     }
 }

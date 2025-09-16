@@ -78,8 +78,7 @@ final class SqlDumpCommand extends Command
 
         // SqlBase::dump() returns null if 'result-file' option is empty.
         if ($return) {
-            $io = new DrushStyle($input, $output);
-            $io->success(dt('Database dump saved to !path', ['!path' => $return]));
+            (new DrushStyle($input, $output))->success(sprintf('Database dump saved to %s', $return));
         }
         return new PropertyList(['path' => $return]);
     }

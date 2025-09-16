@@ -9,6 +9,7 @@ use Drush\Attributes\Bootstrap;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
+use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -46,7 +47,11 @@ class BootstrapListener
             $success = $this->bootstrapManager->bootstrapToPhaseIndex($instance->level);
         }
         if (!$success) {
-            $this->logger->error('Bootstrap failed. Run your command with -vvv for more information.');
+            $message = 'Bootstrap failed';
+            if (!Drush::verbose()) {
+                $message .= ' Run your command with -vvv for more information.';
+            }
+            $this->logger->error($message);
             $event->disableCommand();
         }
     }

@@ -135,7 +135,7 @@ final class SanitizeUserTableListener
             $query->execute();
             $this->entityTypeManager->getStorage('user')->resetCache();
             foreach ($messages as $message) {
-                $this->logger->success($message);
+                $this->logger->notice($message);
             }
         }
     }
