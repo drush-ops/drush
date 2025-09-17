@@ -109,7 +109,6 @@ class DependencyInjection
             ->addMethodCall('setLogOutputStyler', ['logStyler'])
             ->addMethodCall('add', ['drush', new Logger($output)]);
         Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
-        Robo::addShared($container, DrushLoggerManager::class, 'logger');  // For autowiring
 
         Robo::addShared($container, self::LOADER, $loader);
         Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring

@@ -123,14 +123,20 @@ Drush 13.7+ deprecates Annotated Commands in favor of pure [Symfony Console comm
 - The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
 - The command class should use Console's `#[AsCommand]` Attribute to declare its name, aliases, and hidden status. The `#[Command]` Attribute is deprecated.
 - Options and Arguments moved from Attributes to a `configure()` method on the command class
-- The main logic of the command moved to an execute() method on the command class.
 - User interaction now happens in an `interact()` method on the command class.
 - Drush and Drupal services may be autowired. See [Dependency Injection](dependency-injection.md).
+- The main logic of the command moves to an execute() method on the command class.
 - Commands that wish to offer multiple _output formats_ (yes please!) should (Example: 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
+- Add the following snippet to your project's composer.json. Noe that Drush 13.7 is backwards compatible, so this is not a burden on existing projects.
+```json
+"conflict": {
+    "drush/drush": "<13.7"
+},
+```
 - [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
 
 ## Altering Command Info
