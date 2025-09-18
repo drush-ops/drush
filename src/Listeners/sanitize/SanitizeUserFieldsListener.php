@@ -11,8 +11,8 @@ use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
-use Drush\Log\DrushLoggerManager;
 use Drush\Utils\StringUtils;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -33,8 +33,7 @@ final class SanitizeUserFieldsListener
         protected EntityFieldManagerInterface $entityFieldManager,
         protected EntityTypeManagerInterface $entityTypeManager,
         protected FieldTypePluginManagerInterface $fieldTypePluginManager,
-        // @todo Can't type hint to LoggerInterface without getting error from PHPStan about missing success() method.
-        protected DrushLoggerManager $logger,
+        protected LoggerInterface $logger,
     ) {
     }
 

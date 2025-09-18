@@ -11,9 +11,9 @@ use Drupal\Core\Password\PasswordInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
-use Drush\Log\DrushLoggerManager;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -33,7 +33,7 @@ final class SanitizeUserTableListener
         protected Connection $database,
         protected PasswordInterface $passwordHasher,
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected DrushLoggerManager $logger,
+        protected LoggerInterface $logger,
     ) {
     }
 
