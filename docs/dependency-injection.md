@@ -15,7 +15,7 @@ Command files may inject Drush and Drupal services by adding the [AutowireTrait]
  
   - `protected readonly Consolidation\OutputFormatters\FormatterManager $formatterManager`
   - `protected readonly Psr\Log\LoggerInterface $logger`
-  - `protected readonly readonly Drush\SiteAlias\ProcessManager $processManager`
+  - `protected readonly Drush\SiteAlias\ProcessManager $processManager`
   - `protected readonly Consolidation\SiteAlias\SiteAliasManagerInterface $siteAliasManager`
   - `protected readonly Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager`
 

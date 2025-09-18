@@ -7,11 +7,13 @@ enum HelpLinks
     case Aliases;
     case DrushConfiguration;
     case Policy;
+    case Deploy;
 
     public function getConsoleLink(): ConsoleLink
     {
         return match ($this) {
             self::Aliases => new ConsoleLink('site-aliases', 'Creating site aliases for running Drush on remote sites'),
+            self::Deploy => new ConsoleLink('deploy', 'Deploy command for Drupal.'),
             self::DrushConfiguration => new ConsoleLink('using-drush-configuration', 'Drush configuration'),
             self::Policy => new ConsoleLink('examples/PolicyCommands.php', 'Example policy file'),
         };
