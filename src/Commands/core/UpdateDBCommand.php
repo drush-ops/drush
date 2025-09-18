@@ -35,8 +35,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 #[CLI\HelpLinks(links: [HelpLinks::Deploy])]
-final class UpdateDBCommand extends Command {
-
+final class UpdateDBCommand extends Command
+{
     use AutowireTrait;
 
     const NAME = 'updatedb';

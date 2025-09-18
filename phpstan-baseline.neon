@@ -13,7 +13,7 @@ parameters:
 		-
 			message: "#^If condition is always false\\.$#"
 			count: 2
-			path: src/Commands/core/UpdateDBCommands.php
+			path: src/Commands/core/UpdateDBCommand.php
 
 		-
 			message: "#^While loop condition is always true\\.$#"

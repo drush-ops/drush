@@ -25,14 +25,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 #[CLI\Formatter(returnType: UnstructuredListData::class, defaultFormatter: 'json')]
-final class UpdateDbBatchProcessCommand extends Command {
-
+final class UpdateDbBatchProcessCommand extends Command
+{
     use AutowireTrait;
     use FormatterTrait;
 
     public const NAME = 'updatedb:batch-process';
 
-    protected function configure() {
+    protected function configure()
+    {
         $this
             ->addArgument(name: 'batch_id', mode: InputArgument::REQUIRED, description: 'The batch id that will be processed.');
     }
@@ -60,5 +61,4 @@ final class UpdateDbBatchProcessCommand extends Command {
         $result = drush_batch_command($input->getArgument('batch_id'));
         return new UnstructuredListData($result);
     }
-
 }
