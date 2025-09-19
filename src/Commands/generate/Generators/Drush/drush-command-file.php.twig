@@ -20,8 +20,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
   name: self::NAME,
-  description: 'Show all tokens',
-  aliases: ['token'],
+  description: '{{ command.description }}',
+  aliases: [{{ command.alias }}],
 )]
 #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
 #[CLI\FieldLabels(labels: [
@@ -37,7 +37,7 @@ final class {{ class }} extends Command {
   use AutowireTrait;
   use FormatterTrait;
 
-  const NAME = '{{  machine_name }}:token';
+  const NAME = '{{ command.name }}';
 
   /**
    * Constructs {{ class|article }} object.

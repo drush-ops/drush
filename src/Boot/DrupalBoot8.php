@@ -230,7 +230,7 @@ class DrupalBoot8 extends DrupalBoot
     }
 
     /**
-     * Adds module supplied commands, as well as Drush Console commands that require bootstrap.
+     * Adds module supplied commands, as well as Symfony Console commands that require bootstrap.
      */
     public function addDrupalModuleDrushCommands(BootstrapManager $manager): void
     {
