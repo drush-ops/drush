@@ -27,6 +27,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
 
     #[Deprecated(reason: 'Moved', replacement: SqlConfCommand::NAME)]
     const CONF = 'sql:conf';
+    #[Deprecated(reason: 'Moved', replacement: SqlConnectCommand::NAME)]
     const CONNECT = 'sql:connect';
     const CREATE = 'sql:create';
     const DROP = 'sql:drop';
@@ -35,20 +36,6 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[Deprecated(reason: 'Moved', replacement: SqlDumpCommand::NAME)]
     const DUMP = 'sql:dump';
 
-    /**
-     * A string for connecting to the DB.
-     */
-    #[CLI\Command(name: self::CONNECT, aliases: ['sql-connect'])]
-    #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
-    #[CLI\OptionsetSql]
-    #[CLI\Bootstrap(level: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
-    #[CLI\Usage(name: 'eval (drush sql:connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
-    public function connect($options = ['extra' => self::REQ]): string
-    {
-        $sql = SqlBase::create($options);
-        return $sql->connect(false);
-    }
 
     /**
      * Create a database.
@@ -101,15 +88,14 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     /**
      * Open a SQL command-line interface using Drupal's credentials.
      *
-     * To import an SQL dump, it is more efficient to use sql:connect than sql:cli. See Examples below.
+     * To import an SQL dump, it is more efficient to use sql:connect than sql:cli. See the Examples below.
      */
     #[CLI\Command(name: self::CLI, aliases: ['sqlc', 'sql-cli'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
     #[CLI\Topics(topics: [DocsCommands::POLICY])]
-    #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
-    #[CLI\Usage(name: 'drush sql:cli --extra=--progress-reports', description: 'Open a SQL CLI and skip reading table information.')]
+    #[CLI\Usage(name: 'drush sql:cli --extra=-A', description: 'Open a SQL CLI and skip reading table information.')]
     #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
     #[CLI\Usage(name: 'eval (drush sql:connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
     public function cli(InputInterface $input, $options = ['extra' => self::REQ]): void
