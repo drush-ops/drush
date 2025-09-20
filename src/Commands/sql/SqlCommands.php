@@ -27,6 +27,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     const CONF = 'sql:conf';
     #[Deprecated(reason: 'Moved', replacement: SqlConnectCommand::NAME)]
     const CONNECT = 'sql:connect';
+    #[Deprecated(reason: 'Moved', replacement: SqlCreateCommand::NAME)]
     const CREATE = 'sql:create';
     const DROP = 'sql:drop';
     #[Deprecated(reason: 'Moved', replacement: SqlCliCommand::NAME)]
@@ -34,35 +35,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     const QUERY = 'sql:query';
     #[Deprecated(reason: 'Moved', replacement: SqlDumpCommand::NAME)]
     const DUMP = 'sql:dump';
-
-
-    /**
-     * Create a database.
-     */
-    #[CLI\Command(name: self::CREATE, aliases: ['sql-create'])]
-    #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database.')]
-    #[CLI\Option(name: 'db-su-pw', description: 'Password for the db-su account.')]
-    #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
-    #[CLI\Usage(name: 'drush sql:create', description: 'Create the database for the current site.')]
-    #[CLI\Usage(name: 'drush @site.test sql:create', description: 'Create the database as specified for @site.test.')]
-    #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
-    #[CLI\OptionsetSql]
-    public function createDb($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ, 'extra' => self::REQ]): void
-    {
-        $sql = SqlBase::create($options);
-        $db_spec = $sql->getDbSpec();
-
-        $this->output()->writeln(dt("Creating database !target. Any existing database will be dropped!", ['!target' => $db_spec['database']]));
-        if (!$this->getConfig()->simulate() && !$this->io()->confirm(dt('Do you really want to continue?'))) {
-            throw new UserAbortException();
-        }
-
-        if (!$sql->createdb(true)) {
-            throw new \Exception('Unable to create database. Rerun with --debug to see any error message.  ' . $sql->getProcess()->getErrorOutput());
-        }
-    }
-
+    
     /**
      * Drop all tables in a given database.
      */
