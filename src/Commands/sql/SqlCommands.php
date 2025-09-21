@@ -35,7 +35,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     const QUERY = 'sql:query';
     #[Deprecated(reason: 'Moved', replacement: SqlDumpCommand::NAME)]
     const DUMP = 'sql:dump';
-    
+
     /**
      * Drop all tables in a given database.
      */
