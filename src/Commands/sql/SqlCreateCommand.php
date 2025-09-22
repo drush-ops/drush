@@ -9,8 +9,10 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Config\DrushConfig;
 use Drush\Exceptions\UserAbortException;
+use Drush\Exec\ExecTrait;
 use Drush\Sql\SqlBase;
 use Drush\Style\DrushStyle;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,6 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class SqlCreateCommand extends Command
 {
     use AutowireTrait;
+    use ExecTrait;
 
     public const NAME = 'sql:create';
 
@@ -50,6 +53,12 @@ final class SqlCreateCommand extends Command
     {
         $io = new DrushStyle($input, $output);
         $sql = SqlBase::create($input->getOptions());
+        $program = $sql->command();
+        if (!self::programExists($program)) {
+            $msg = dt('The shell command \'!command\' is required but cannot be found. Please install it and retry.', ['!command' => $program]);
+            throw new RuntimeException($msg);
+        }
+
         $db_spec = $sql->getDbSpec();
 
         $io->writeln(dt('Creating database !target. Any existing database will be dropped!', ['!target' => $db_spec['database']]));

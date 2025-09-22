@@ -10,9 +10,11 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Config\DrushConfig;
+use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\ProcessManager;
 use Drush\Sql\SqlBase;
 use Psr\Log\LoggerInterface;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final class SqlCliCommand extends Command
 {
     use AutowireTrait;
+    use ExecTrait;
 
     public const NAME = 'sql:cli';
 
@@ -55,6 +58,12 @@ final class SqlCliCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $sql = SqlBase::create($input->getOptions());
+        $program = $sql->command();
+        if (!self::programExists($program)) {
+            $msg = dt('The shell command \'!command\' is required but cannot be found. Please install it and retry.', ['!command' => $program]);
+            throw new RuntimeException($msg);
+        }
+
         $process = $this->processManager->shell($sql->connect(), null, $sql->getEnv());
         if (!Tty::isTtySupported()) {
             $this->logger->warning('It is slow to pass large amounts of data via stdin to the sql:cli command. See the Examples at https://www.drush.org/latest/commands/sql_cli/ for an alternative using sql:connect.');
