@@ -17,6 +17,7 @@ Command files may inject Drush and Drupal services by adding the [AutowireTrait]
   - `protected readonly Psr\Log\LoggerInterface $logger`
   - `protected readonly Drush\SiteAlias\ProcessManager $processManager`
   - `protected readonly Consolidation\SiteAlias\SiteAliasManagerInterface $siteAliasManager`
+  - `protected readonly \Drush\Config\DrushConfig $drushConfig`
   - `protected readonly Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager`
 
 If your command is not found by Drush, add the `-vvv` option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own `create()` method (see below).
