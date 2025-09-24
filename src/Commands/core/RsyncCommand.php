@@ -77,7 +77,7 @@ final class RsyncCommand extends Command
         $targetEvaluatedPath = $this->injectAliasPathParameterOptions($input, 'target');
 
         if ($sourceEvaluatedPath->isRemote() && $targetEvaluatedPath->isRemote()) {
-            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $this->sourceEvaluatedPath->getSiteAlias()->name(), 'target' => $this->targetEvaluatedPath->getSiteAlias()->name(), 'fulltarget' => $this->targetEvaluatedPath->fullyQualifiedPath()]);
+            $msg = dt("Cannot specify two remote aliases. Instead, use one of the following alternate options:\n\n    `drush {source} rsync @self {target}`\n    `drush {source} rsync @self {fulltarget}\n\nUse the second form if the site alias definitions are not available at {source}.", ['source' => $sourceEvaluatedPath->getSiteAlias()->name(), 'target' => $targetEvaluatedPath->getSiteAlias()->name(), 'fulltarget' => $targetEvaluatedPath->fullyQualifiedPath()]);
             throw new \InvalidArgumentException($msg);
         }
 
@@ -100,7 +100,7 @@ final class RsyncCommand extends Command
         $process->run($process->showRealtime());
 
         if (!$process->isSuccessful()) {
-            throw new \Exception(dt("Could not rsync from !source to !dest", ['!source' => $this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $this->targetEvaluatedPath->fullyQualifiedPath()]));
+            throw new \Exception(dt("Could not rsync from !source to !dest", ['!source' => $sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '!dest' => $targetEvaluatedPath->fullyQualifiedPath()]));
         }
         return self::SUCCESS;
     }
