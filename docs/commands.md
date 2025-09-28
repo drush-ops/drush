@@ -17,69 +17,69 @@ Creating a new Drush command is easy. Follow the steps below.
 ## 4 ways to declare a command
 The following are supported ways to declare a command.
 
-=== "Console Command, _Recommended_"
+=== "Console, _Recommended_"
 
-```php
-namespace Drupal\[module-name]\Drush\Commands;
+    ```php
+    namespace Drupal\[module-name]\Drush\Commands;    
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\Core\Template\TwigEnvironment;
-use Drush\Attributes as CLI;
-use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+    use Consolidation\OutputFormatters\FormatterManager;
+    use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+    use Drupal\Core\Template\TwigEnvironment;
+    use Drush\Attributes as CLI;
+    use Drush\Commands\AutowireTrait;
+    use Drush\Formatters\FormatterTrait;
+    use Psr\Log\LoggerInterface;
+    use Symfony\Component\Console\Attribute\AsCommand;
+    use Symfony\Component\Console\Command\Command;
+    use Symfony\Component\Console\Input\InputArgument;
+    use Symfony\Component\Console\Input\InputInterface;
+    use Symfony\Component\Console\Output\OutputInterface;    
 
-#[AsCommand(
-    name: self::NAME,
-    description: 'Find potentially unused Twig templates.',
-    aliases: ['twu'],
-)]
-#[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
-#[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
-#[CLI\FilterDefaultField(field: 'template')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
-final class TwigUnusedCommand extends Command
-{
-    use AutowireTrait;
-    use FormatterTrait;
-
-    public const NAME = 'twig:unused';
-
-    public function __construct(
-        protected readonly FormatterManager $formatterManager,
-        protected readonly TwigEnvironment $twig,
-        private readonly LoggerInterface $logger
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void {
-        $this
-            ->setHelp('Immediately before running this command, web crawl your entire web site.')
-            ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search.')
-            ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int {
-        $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    public function doExecute(InputInterface $input, OutputInterface $output, string $searchpaths): RowsOfFields
+    #[AsCommand(
+        name: self::NAME,
+        description: 'Find potentially unused Twig templates.',
+        aliases: ['twu'],
+    )]
+    #[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
+    #[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
+    #[CLI\FilterDefaultField(field: 'template')]
+    #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
+    final class TwigUnusedCommand extends Command
     {
-        $this->logger->notice('Found {count} unused', ['count' => count($rows)]);
-        return new RowsOfFields($unused);
-    }
-```
+        use AutowireTrait;
+        use FormatterTrait;    
 
-=== "Attributes, Annotated Command, _Deprecated_"
+        public const NAME = 'twig:unused';    
+
+        public function __construct(
+            protected readonly FormatterManager $formatterManager,
+            protected readonly TwigEnvironment $twig,
+            private readonly LoggerInterface $logger
+        ) {
+            parent::__construct();
+        }    
+
+        protected function configure(): void {
+            $this
+                ->setHelp('Immediately before running this command, web crawl your entire web site.')
+                ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search.')
+                ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom');
+        }    
+
+        public function execute(InputInterface $input, OutputInterface $output): int {
+            $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
+            $this->writeFormattedOutput($input, $output, $data);
+            return Command::SUCCESS;
+        }    
+
+        public function doExecute(InputInterface $input, OutputInterface $output, string $searchpaths): RowsOfFields
+        {
+            $this->logger->notice('Found {count} unused', ['count' => count($rows)]);
+            return new RowsOfFields($unused);
+        }
+    ```
+
+=== "Annotated (Attributes), _Deprecated_"
 
     ```php
     use Drush\Attributes as CLI;
@@ -98,7 +98,7 @@ final class TwigUnusedCommand extends Command
     }
     ```
 
-=== "Annotations, Annotated Command, _Deprecated_"
+=== "Annotated, (Annotations), _Deprecated_"
 
     ```php
     /**
@@ -117,7 +117,7 @@ final class TwigUnusedCommand extends Command
     }
     ```
 
-Drush 13.7+ deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
+Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
 
 - Each command lives in its own class file
 - The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
@@ -149,7 +149,7 @@ In the module that wants to alter command info, add a class that:
 1. The filename must have a name like FooListener.php. The prefix `Foo` can be whatever string you want. The file must end in `Listener.php`.
 1. The class should implement the `#[AsListener]` PHP Attribute.
 1. Implement the alteration logic via a `__invoke(ConsoleDefinitionsEvent $event)` method.
-1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
+1. Along with the alter code, it's recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
 
 For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Liseners/WootDefinitionListener.php) provided by the testing 'woot' module.
 
