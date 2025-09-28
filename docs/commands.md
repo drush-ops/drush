@@ -126,7 +126,7 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
 - User interaction now happens in an `interact()` method on the command class.
 - Drush and Drupal services may be autowired. See [Dependency Injection](dependency-injection.md).
 - The main logic of the command moves to an execute() method on the command class.
-- Commands that wish to offer multiple _output formats_ (yes please!) should (Example: 
+- Commands that wish to offer multiple _output formats_ (yes please!): 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
