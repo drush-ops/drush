@@ -14,7 +14,7 @@ Creating a new Drush command is easy. Follow the steps below.
 5. You may [inject dependencies](dependency-injection.md) into a command instance.
 6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#drush-test-traits).
 
-## 4 ways to declare a command
+## Four ways to declare a command
 The following are supported ways to declare a command.
 
 === "Console, _Recommended_"
@@ -98,7 +98,7 @@ The following are supported ways to declare a command.
     }
     ```
 
-=== "Annotated, (Annotations), _Deprecated_"
+=== "Annotated Command, _Deprecated_"
 
     ```php
     /**
@@ -117,6 +117,52 @@ The following are supported ways to declare a command.
     }
     ```
 
+=== "Console (Invokable), Recommended"
+
+    ```php
+    /**
+     * An example of an invokable command (requires Symfony 7.4+).
+     */
+    
+    declare(strict_types=1);
+    
+    namespace Drupal\woot\Drush\Commands;
+    
+    use Symfony\Component\Console\Attribute\Argument;
+    use Symfony\Component\Console\Attribute\AsCommand;
+    use Symfony\Component\Console\Attribute\Option;
+    use Symfony\Component\Console\Command\Command;
+    use Symfony\Component\Console\Output\OutputInterface;
+    
+    #[AsCommand(
+      name: self::NAME,
+      description: 'This command will concatenate two parameters.',
+      aliases: ['my-cat'],
+      help: 'If the --flip flag is provided, then the result is the concatenation of two and one.',
+      usages: ['bet alpha --flip'],
+    )]
+    final class MyCatCommand {
+    
+      const NAME = 'my:cat';
+    
+      public function __invoke(
+        OutputInterface $output,
+        #[Argument('The first parameter.')] string $one,
+        #[Argument('The second parameter.')] string $two,
+        #[Option('Whether or not the second parameter should come first in the result')] bool $flip = FALSE,
+      ): int
+      {
+        if ($flip) {
+          $output->writeln("{$two}{$one}");
+        }
+        else {
+          $output->writeln("{$one}{$two}");
+        }
+        return Command::SUCCESS;
+      }
+    }
+    ````
+
 Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
 
 - Each command lives in its own class file
@@ -131,10 +177,10 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
-- Add the following snippet to your project's composer.json. Note that Drush 13.7 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
+- Add the following snippet to your project's composer.json. Note that Drush 144 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
 ```json
 "conflict": {
-    "drush/drush": "<13.7"
+    "drush/drush": "<14"
 },
 ```
 - [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
