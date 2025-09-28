@@ -827,6 +827,51 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#altering-command-info" class="md-nav__link">
+    <span class="md-ellipsis">
+      Altering Command Info
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-discovered-commands-psr4" class="md-nav__link">
+    <span class="md-ellipsis">
+      Auto-discovered commands (PSR4)
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#site-wide-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      Site-wide Commands
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-commands-discovered-by-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global commands discovered by configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#xdebug" class="md-nav__link">
+    <span class="md-ellipsis">
+      Xdebug
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -7495,7 +7540,7 @@
 </ol>
 <h2 id="four-ways-to-declare-a-command">Four ways to declare a command<a class="headerlink" href="#four-ways-to-declare-a-command" title="Permanent link">&para;</a></h2>
 <p>The following are supported ways to declare a command.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Console, <em>Recommended</em></label><label for="__tabbed_1_2">Annotated (Attributes), <em>Deprecated</em></label><label for="__tabbed_1_3">Annotated Command, <em>Deprecated</em></label><label for="__tabbed_1_4">Console (Invokable), Recommended</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Console, <em>Recommended</em></label><label for="__tabbed_1_2">Annotated (Attributes), <em>Deprecated</em></label><label for="__tabbed_1_3">Annotated Command, <em>Deprecated</em></label><label for="__tabbed_1_4">Console (Invokable), Symfony 7.4+</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="k">namespace</span> <span class="nx">Drupal\</span><span class="p">[</span><span class="nx">module</span><span class="o">-</span><span class="nx">name</span><span class="p">]</span><span class="nx">\Drush\Commands</span><span class="p">;</span>    
@@ -7592,43 +7637,44 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<p>```php
-/*<em>
- * An example of an invokable command (requires Symfony 7.4+).
- </em>/</p>
-<p>declare(strict_types=1);</p>
-<p>namespace Drupal\woot\Drush\Commands;</p>
-<p>use Symfony\Component\Console\Attribute\Argument;
-use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Attribute\Option;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\OutputInterface;</p>
-<h1 id="ascommand">[AsCommand(<a class="headerlink" href="#ascommand" title="Permanent link">&para;</a></h1>
-<p>name: self::NAME,
-  description: 'This command will concatenate two parameters.',
-  aliases: ['my-cat'],
-  help: 'If the --flip flag is provided, then the result is the concatenation of two and one.',
-  usages: ['bet alpha --flip'],
-)]
-final class MyCatCommand {</p>
-<p>const NAME = 'my:cat';</p>
-<p>public function __invoke(
-    OutputInterface $output,
-    #[Argument('The first parameter.')] string $one,
-    #[Argument('The second parameter.')] string $two,
-    #[Option('Whether or not the second parameter should come first in the result')] bool $flip = FALSE,
-  ): int
-  {
-    if ($flip) {
-      $output-&gt;writeln("{$two}{$one}");
-    }
-    else {
-      $output-&gt;writeln("{$one}{$two}");
-    }
-    return Command::SUCCESS;
-  }
-}
-````</p>
+<div class="highlight"><pre><span></span><code><span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="k">namespace</span> <span class="nx">Drupal\woot\Drush\Commands</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Attribute\Argument</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Attribute\AsCommand</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Attribute\Option</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+
+<span class="p">#[</span><span class="nd">AsCommand</span><span class="p">(</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="o">::</span><span class="na">NAME</span><span class="p">,</span>
+  <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;This command will concatenate two parameters.&#39;</span><span class="p">,</span>
+  <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;my-cat&#39;</span><span class="p">],</span>
+  <span class="nx">help</span><span class="o">:</span> <span class="s1">&#39;If the --flip flag is provided, then the result is the concatenation of two and one.&#39;</span><span class="p">,</span>
+  <span class="nx">usages</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;bet alpha --flip&#39;</span><span class="p">],</span>
+<span class="p">)]</span>
+<span class="k">final</span> <span class="k">class</span> <span class="nc">MyCatCommand</span> <span class="p">{</span>
+
+  <span class="k">const</span> <span class="no">NAME</span> <span class="o">=</span> <span class="s1">&#39;my:cat&#39;</span><span class="p">;</span>
+
+  <span class="k">public</span> <span class="k">function</span> <span class="fm">__invoke</span><span class="p">(</span>
+    <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">&#39;The first parameter.&#39;</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$one</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">&#39;The second parameter.&#39;</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$two</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Option</span><span class="p">(</span><span class="s1">&#39;Whether or not the second parameter should come first in the result&#39;</span><span class="p">)]</span> <span class="nx">bool</span> <span class="nv">$flip</span> <span class="o">=</span> <span class="k">FALSE</span><span class="p">,</span>
+  <span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
+  <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nv">$flip</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{</span><span class="nv">$two</span><span class="si">}{</span><span class="nv">$one</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{</span><span class="nv">$one</span><span class="si">}{</span><span class="nv">$two</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 </div>
 </div>
 </div>
@@ -7648,7 +7694,7 @@ final class MyCatCommand {</p>
 <li><code>execute()</code> is largely boilerplate. See examples above. By convention, do your work in a <code>doExecute()</code> method instead.</li>
 </ul>
 </li>
-<li>Add the following snippet to your project's composer.json. Note that Drush 144 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
+<li>Add the following snippet to your project's composer.json. Note that Drush 14 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;14&quot;</span>
 <span class="p">},</span>
@@ -7767,7 +7813,7 @@ With this configuration in place, global commands may be placed as described in 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2025 22:29:58 UTC">September 28, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2025 22:52:40 UTC">September 28, 2025</span>
   </span>
 
     
