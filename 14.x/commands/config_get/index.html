@@ -1130,11 +1130,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/XkcdCommands.php/" class="md-nav__link">
+      <a href="../../examples/XkcdFetchCommand.php/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    XkcdCommands.php
+    XkcdFetchCommand.php
   </span>
   
 
@@ -1947,15 +1947,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#arguments" class="md-nav__link">
@@ -5745,11 +5736,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/drush_command-file/" class="md-nav__link">
+      <a href="../../generators/drush_command/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    drush:command-file
+    drush:command
   </span>
   
 
@@ -7499,40 +7490,21 @@
                 
                   
 
-  
-    <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigCommands.php" title="Edit this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
-    </a>
-  
-  
-    
-      
-    
-    <a href="https://github.com/drush-ops/drush/raw/13.x/src/Commands/config/ConfigCommands.php" title="View source of this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
-    </a>
-  
-
 
 <h1 id="configget">config:get<a class="headerlink" href="#configget" title="Permanent link">&para;</a></h1>
 <p>Display a config value, or a whole configuration object.</p>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
-<ul>
-<li><code>drush config:get system.site</code>. Displays the system.site config.</li>
-<li><code>drush config:get system.site page.front</code>. Gets system.site:page.front value.</li>
-</ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>config_name</strong>. The config object name, for example <em>system.site</em>.</li>
-<li><strong>[key]</strong>. The config key, for example <em>page.front</em>. Optional.</li>
+<li><strong>[key]</strong>. The config key, for example <em>page.front</em>. Optional</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--format[=FORMAT]</strong>.  [default: <em>yaml</em>]</li>
-<li><strong>--source[=SOURCE]</strong>. The config storage source to read. [default: <em>active</em>]</li>
-<li><strong>--include-overridden</strong>. Apply module and settings.php overrides to values.</li>
+<li><strong>--source=SOURCE</strong>. The config storage source to read. [default: <em>active</em>]</li>
+<li><strong>--include-overridden</strong>. Apply module and settings.php overrides to values</li>
+<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,tsv,var_dump,var_export,xml,yaml [default: <em>yaml</em>]</li>
+<li><strong>--fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
+<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

@@ -1130,11 +1130,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../examples/XkcdCommands.php/" class="md-nav__link">
+      <a href="../../examples/XkcdFetchCommand.php/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    XkcdCommands.php
+    XkcdFetchCommand.php
   </span>
   
 
@@ -5745,11 +5745,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../generators/drush_command-file/" class="md-nav__link">
+      <a href="../../generators/drush_command/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    drush:command-file
+    drush:command
   </span>
   
 
@@ -7518,11 +7518,11 @@
 
 <h1 id="sqlsanitize">sql:sanitize<a class="headerlink" href="#sqlsanitize" title="Permanent link">&para;</a></h1>
 <p>Sanitize the database by removing or obfuscating user data.</p>
-<p>Commandfiles may add custom operations by implementing:</p>
-<div class="highlight"><pre><span></span><code>- `#[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]`. Display summary to user before confirmation.
-- `#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]`. Run queries or call APIs to perform sanitizing
+<p>Commandfiles may add custom operations by implementing a Listener that subscribes to two events:</p>
+<div class="highlight"><pre><span></span><code>- `\Drush\Events\SanitizeConfirmsEvent`. Display a summary to the user before confirmation.
+- `\Symfony\Component\Console\Event\ConsoleTerminateEvent`. Run queries or call APIs to perform sanitizing
 </code></pre></div>
-<p>Several working commandfiles may be found at <a href="https://github.com/drush-ops/drush/tree/13.x/src/Commands/sql/sanitize">https://github.com/drush-ops/drush/tree/13.x/src/Commands/sql/sanitize</a></p>
+<p>Several working Listeners may be found at <a href="https://github.com/drush-ops/drush/tree/13.x/src/Drush/Listeners/sanitize">https://github.com/drush-ops/drush/tree/13.x/src/Drush/Listeners/sanitize</a></p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush sql:sanitize --sanitize-password=no</code>. Sanitize database without modifying any passwords.</li>
@@ -7530,10 +7530,10 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--sanitize-email[=SANITIZE-EMAIL]</strong>. The pattern for test email addresses in the sanitization operation, or <em>no</em> to keep email addresses unchanged. May contain replacement patterns <em>%uid</em>, <em>%mail</em> or <em>%name</em>. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
-<li><strong>--sanitize-password[=SANITIZE-PASSWORD]</strong>. By default, passwords are randomized. Specify <em>no</em> to disable that. Specify any other value to set all passwords to that value.</li>
-<li><strong>--ignored-roles[=IGNORED-ROLES]</strong>. A comma delimited list of roles. Users with at least one of the roles will be exempt from sanitization.</li>
-<li><strong>--allowlist-fields[=ALLOWLIST-FIELDS]</strong>. A comma delimited list of fields exempt from sanitization.</li>
+<li><strong>--sanitize-email=SANITIZE-EMAIL</strong>. The pattern for test email addresses in the sanitization operation, or <em>no</em> to keep email addresses unchanged. May contain replacement patterns <em>%uid</em>, <em>%mail</em> or <em>%name</em>. [default: <em>user+%<a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;">&#117;&#105;&#100;&#64;&#108;&#111;&#99;&#97;&#108;&#104;&#111;&#115;&#116;&#46;&#108;&#111;&#99;&#97;&#108;&#100;&#111;&#109;&#97;&#105;&#110;</a></em>]</li>
+<li><strong>--sanitize-password=SANITIZE-PASSWORD</strong>. By default, passwords are randomized. Specify <em>no</em> to disable that. Specify any other value to set all passwords to that value.</li>
+<li><strong>--ignored-roles=IGNORED-ROLES</strong>. A comma delimited list of roles. Users with at least one of the roles will be exempt from sanitization.</li>
+<li><strong>--allowlist-fields=ALLOWLIST-FIELDS</strong>. A comma delimited list of fields exempt from sanitization.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

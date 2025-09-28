@@ -766,7 +766,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/examples/XkcdCommands.php/</loc>
+         <loc>https://www.drush.org/latest/latest/examples/XkcdFetchCommand.php/</loc>
          <lastmod>2025-09-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -816,7 +816,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/generators/drush_command-file/</loc>
+         <loc>https://www.drush.org/latest/latest/generators/drush_command/</loc>
          <lastmod>2025-09-28</lastmod>
          <changefreq>daily</changefreq>
     </url>

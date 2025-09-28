@@ -1209,11 +1209,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/XkcdCommands.php/" class="md-nav__link">
+      <a href="../examples/XkcdFetchCommand.php/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    XkcdCommands.php
+    XkcdFetchCommand.php
   </span>
   
 
@@ -5732,11 +5732,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../generators/drush_command-file/" class="md-nav__link">
+      <a href="../generators/drush_command/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    drush:command-file
+    drush:command
   </span>
   
 
@@ -7511,13 +7511,20 @@
 </div>
 <h2 id="autowire">Autowire<a class="headerlink" href="#autowire" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 12.5+</p>
-<p>Command files may inject Drush and Drupal services by adding the <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php">AutowireTrait</a> to the class (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php">PmCommands</a>). This enables your <a href="https://www.drupal.org/node/3396179">Constructor parameter type hints to determine the injected service</a>. When a type hint is insufficient, an <a href="https://www.drupal.org/node/3396179">#[Autowire] Attribute</a> on the constructor property (with
-<em>service:</em> named argument) directs AutoWireTrait to the right service (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldDefinitionCommands.php">FieldDefinitionCommands</a>).</p>
+<p>Command files may inject Drush and Drupal services by adding the <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php">AutowireTrait</a> to the class (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php">PmCommands</a>). This enables your <a href="https://www.drupal.org/node/3396179">Constructor parameter type hints to determine the injected service</a>. When a type hint is insufficient, an <a href="https://www.drupal.org/node/3396179">#[Autowire] Attribute</a> on the constructor property (with <em>service:</em> named argument) directs AutoWireTrait to the right service (example: <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldDefinitionCommands.php">FieldDefinitionCommands</a>). Some autowire examples:</p>
+<ul>
+<li><code>protected readonly Consolidation\OutputFormatters\FormatterManager $formatterManager</code></li>
+<li><code>protected readonly Psr\Log\LoggerInterface $logger</code></li>
+<li><code>protected readonly Drush\SiteAlias\ProcessManager $processManager</code></li>
+<li><code>protected readonly Consolidation\SiteAlias\SiteAliasManagerInterface $siteAliasManager</code></li>
+<li><code>protected readonly \Drush\Config\DrushConfig $drushConfig</code></li>
+<li><code>protected readonly Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager</code></li>
+</ul>
 <p>If your command is not found by Drush, add the <code>-vvv</code> option for debug info about any service instantiation errors. If Autowire is still insufficient, a commandfile may implement its own <code>create()</code> method (see below).</p>
 <h2 id="create-method">create() method<a class="headerlink" href="#create-method" title="Permanent link">&para;</a></h2>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.6+</p>
 <p>Command files not using Autowire may inject services by adding a create() method to the commandfile. The passed in Container is a <a href="https://container.thephpleague.com/">League container</a> with a delegate to the Drupal container. Note that the type hint should be to <code>Psr\Container\ContainerInterface</code> not <code>Symfony\Component\DependencyInjection\ContainerInterface</code>. A create() method and constructor will look something like this:
-<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">WootStaticFactoryCommand</span> <span class="k">extends</span> <span class="nx">Command</span>
 <span class="p">{</span>
     <span class="k">protected</span> <span class="nv">$configFactory</span><span class="p">;</span>
 
@@ -7565,7 +7572,7 @@ projects that are <em>not</em> Drupal modules.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="February 7, 2025 13:18:06 UTC">February 7, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="September 28, 2025 18:12:36 UTC">September 28, 2025</span>
   </span>
 
     
@@ -7582,7 +7589,6 @@ projects that are <em>not</em> Drupal modules.</p>
     <nav>
       
         <a href="mailto:greg.1.anderson@greenknowe.org">Greg Anderson</a>, 
-        <a href="mailto:eojthebrave@gmail.com">Joe Shindelar</a>, 
         <a href="mailto:weitzman@tejasa.com">Moshe Weitzman</a>, 
         <a href="mailto:lieverdink@reliefweb.int">Peter Lieverdink</a>, 
         <a href="mailto:50333926+prudloff-insite@users.noreply.github.com">Pierre Rudloff</a>
