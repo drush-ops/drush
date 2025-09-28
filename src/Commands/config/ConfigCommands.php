@@ -35,7 +35,6 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
-use Symfony\Component\Yaml\Parser;
 
 final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 {
@@ -45,7 +44,9 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
     const INTERACT_CONFIG_NAME = 'interact-config-name';
     const VALIDATE_CONFIG_NAME = 'validate-config-name';
+    #[Deprecated(reason: 'Use ConfigGetCommand::NAME')]
     const GET = 'config:get';
+    #[Deprecated(reason: 'Use ConfigSetCommand::NAME')]
     const SET = 'config:set';
     const EDIT = 'config:edit';
     const DELETE = 'config:delete';
@@ -75,99 +76,6 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     public function getImportTransformer(): ImportStorageTransformer
     {
         return $this->importStorageTransformer;
-    }
-
-    /**
-     * Display a config value, or a whole configuration object.
-     */
-    #[CLI\Command(name: self::GET, aliases: ['cget','config-get'])]
-    #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
-    #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Optional.')]
-    #[CLI\Option(name: 'source', description: 'The config storage source to read.')]
-    #[CLI\Option(name: 'include-overridden', description: 'Apply module and settings.php overrides to values.')]
-    #[CLI\Usage(name: 'drush config:get system.site', description: 'Displays the system.site config.')]
-    #[CLI\Usage(name: 'drush config:get system.site page.front', description: 'Gets system.site:page.front value.')]
-    #[CLI\Complete(method_name_or_callable: 'configComplete')]
-    #[CLI\ValidateConfigName()]
-    #[CLI\InteractConfigName()]
-    public function get($config_name, $key = '', $options = ['format' => 'yaml', 'source' => 'active', 'include-overridden' => false])
-    {
-        // Displaying overrides only applies to active storage.
-        $factory = $this->getConfigFactory();
-        $config = $options['include-overridden'] ? $factory->get($config_name) : $factory->getEditable($config_name);
-        $value = $config->get($key);
-        // @todo If the value is TRUE (for example), nothing gets printed. Is this yaml formatter's fault?
-        return $key ? ["$config_name:$key" => $value] : $value;
-    }
-
-    /**
-     * Save a config value directly. Does not perform a config import.
-     */
-    #[CLI\Command(name: self::SET, aliases: ['cset', 'config-set'])]
-    #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
-    #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')]
-    #[CLI\Argument(name: 'value', description: 'The value to assign to the config key. Use <info>-</info> to read from Stdin.')]
-    #[CLI\Option(name: 'input-format', description: 'Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.', suggestedValues: ['string', 'json'])]
-    #[CLI\Usage(name: 'drush config:set system.site name MySite', description: 'Sets a value for the key <info>name</info> of <info>system.site</info> config object.')]
-    #[CLI\Usage(name: 'drush config:set system.site page.front /path/to/page', description: 'Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.')]
-    #[CLI\Usage(name: 'drush config:set system.site \'[]\'', description: 'Sets the given key to an empty array.')]
-    #[CLI\Usage(name: 'drush config:set system.site \'NULL\'', description: 'Sets the given key to NULL.')]
-    #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]', description: 'Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.')]
-    #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
-    #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
-    #[CLI\Usage(name: 'cat tmp.yml | drush config:set --input-format=yaml user.mail ? -', description: 'Update the <info>user.mail</info> config object in its entirety.')]
-    #[CLI\Complete(method_name_or_callable: 'configComplete')]
-    public function set($config_name, $key, $value, $options = ['input-format' => 'string'])
-    {
-        $data = $value;
-
-        if (!isset($data)) {
-            throw new \Exception(dt('No config value specified.'));
-        }
-
-        // Special flag indicating that the value has been passed via STDIN.
-        if ($data === '-') {
-            $data = $this->stdin()->contents();
-        }
-
-        // Special handling for null.
-        if (strtolower($data) === 'null') {
-            $data = null;
-        }
-
-        // Special handling for empty array.
-        if ($data == '[]') {
-            $data = [];
-        }
-
-        if ($options['input-format'] === 'yaml') {
-            $parser = new Parser();
-            $data = $parser->parse($data);
-        }
-
-        $config = $this->getConfigFactory()->getEditable($config_name);
-        // Check to see if config key already exists.
-        $new_key = $config->get($key) === null;
-        $simulate = $this->getConfig()->simulate();
-
-        if ($key == '?' && !empty($data) && $this->io()->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
-            foreach ($data as $data_key => $val) {
-                $config->set($data_key, $val);
-            }
-            return $simulate ? self::EXIT_SUCCESS : $config->save();
-        } else {
-            $confirmed = false;
-            if ($config->isNew() && $this->io()->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
-                $confirmed = true;
-            } elseif ($new_key && $this->io()->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
-                $confirmed = true;
-            } elseif ($this->io()->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
-                $confirmed = true;
-            }
-            if ($confirmed && !$simulate) {
-                return $config->set($key, $data)->save();
-            }
-        }
     }
 
     /**

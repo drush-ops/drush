@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands;
 
-use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
@@ -19,6 +18,7 @@ use Drush\Style\DrushStyle;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\MessageFormatter;
 use GuzzleHttp\Middleware;
+use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Robo\Common\IO;
@@ -27,6 +27,7 @@ use Robo\Contract\IOAwareInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Path;
 
+#[Deprecated('See https://www.drush.org/latest/commands/')]
 abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
     use ProcessManagerAwareTrait;
@@ -36,7 +37,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use IO {
         io as roboIo;
     }
-    use ConfiguresPrompts;
 
     // This is more readable.
     const REQ = InputOption::VALUE_REQUIRED;
@@ -59,6 +59,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     protected function io(): DrushStyle
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and build a DrushStyle instance. See https://www.drush.org/latest/commands/.');
         // @phpstan-ignore booleanNot.alwaysFalse
         if (!$this->io) {
             // Specify our own Style class when needed.
@@ -73,6 +74,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     public function logger(): ?DrushLoggerManager
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and inject a Logger. See https://www.drush.org/latest/commands/.');
         assert(is_null($this->logger) || $this->logger instanceof DrushLoggerManager, 'Instead of using replacing Drush\'s logger, use $this->add() on DrushLoggerManager to add a custom logger. See https://github.com/drush-ops/drush/pull/5022');
         return $this->logger;
     }
@@ -112,16 +114,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Configure Laravel prompts package.
-     */
-    #[CLI\Hook(type: HookManager::INITIALIZE, target: '*')]
-    public function initHook($input, AnnotationData $annotationData)
-    {
-
-        $this->configurePrompts($input);
-    }
-
-    /**
      * Print the contents of a file. The path comes from the @topic annotation.
      *
      * @param CommandData $commandData
@@ -150,6 +142,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     public function processManager(): ProcessManager
     {
+        trigger_deprecation('drush/drush', '13.7.0', 'Convert to a Console command and inject a ProcessManager. See https://www.drush.org/latest/commands/.');
         return $this->processManager;
     }
 }
