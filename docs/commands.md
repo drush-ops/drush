@@ -117,13 +117,9 @@ The following are supported ways to declare a command.
     }
     ```
 
-=== "Console (Invokable), Recommended"
+=== "Console (Invokable), Symfony 7.4+"
 
     ```php
-    /**
-     * An example of an invokable command (requires Symfony 7.4+).
-     */
-    
     declare(strict_types=1);
     
     namespace Drupal\woot\Drush\Commands;
@@ -161,7 +157,7 @@ The following are supported ways to declare a command.
         return Command::SUCCESS;
       }
     }
-    ````
+    ```
 
 Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
 
@@ -177,7 +173,7 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
-- Add the following snippet to your project's composer.json. Note that Drush 144 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
+- Add the following snippet to your project's composer.json. Note that Drush 14 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
 ```json
 "conflict": {
     "drush/drush": "<14"
