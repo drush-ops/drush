@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Listeners\sanitize\SanitizeUserTableListener | Drush API 14</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../fonts/doctum-font.css">
+        <script src="../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../doctum.js"></script>
+        <script async defer src="../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Listeners_sanitize_SanitizeUserTableListener" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../classes.html">Classes</a></li>
+                    <li><a href="../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../traits.html">Traits</a></li>
+                    <li><a href="../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Listeners.html">Listeners</a></li><li class="backslash">\</li><li><a href="../../../Drush/Listeners/sanitize.html">sanitize</a></li><li class="backslash">\</li><li>SanitizeUserTableListener</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>SanitizeUserTableListener    
+            </h1>
+    </div>
+
+    
+    <p>final         class
+    <strong>SanitizeUserTableListener</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            <div class="description">
+            <p><p>Sanitize emails and passwords. This also an example of how to write a
+database sanitizer.</p></p>                    </div>
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
+            </div>
+    
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr> $passwordHasher, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onDefinition">onDefinition</a>(<a href="../../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onSanitizeConfirm">onSanitizeConfirm</a>(<a href="../../../Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onConsoleTerminate">onConsoleTerminate</a>(<abbr title="Symfony\Component\Console\Event\ConsoleTerminateEvent">ConsoleTerminateEvent</abbr> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isEnabled">isEnabled</a>(string|null $value)
+        
+                                            <p><p>Test an option value to see if it is disabled.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php#L32">at line 32</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $database, <abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr> $passwordHasher, <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Database\Connection">Connection</abbr></td>
+                <td>$database</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Password\PasswordInterface">PasswordInterface</abbr></td>
+                <td>$passwordHasher</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+                <td>$entityTypeManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+                <td>$logger</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onDefinition">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php#L40">at line 40</a></div>
+        <code>                    void
+    <strong>onDefinition</strong>(<a href="../../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onSanitizeConfirm">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php#L57">at line 57</a></div>
+        <code>                    void
+    <strong>onSanitizeConfirm</strong>(<a href="../../../Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onConsoleTerminate">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php#L71">at line 71</a></div>
+        <code>                    void
+    <strong>onConsoleTerminate</strong>(<abbr title="Symfony\Component\Console\Event\ConsoleTerminateEvent">ConsoleTerminateEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Event\ConsoleTerminateEvent">ConsoleTerminateEvent</abbr></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isEnabled">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/sanitize/SanitizeUserTableListener.php#L146">at line 146</a></div>
+        <code>            protected        bool
+    <strong>isEnabled</strong>(string|null $value)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Test an option value to see if it is disabled.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
