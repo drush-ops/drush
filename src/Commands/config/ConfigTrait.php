@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\config;
 
 use Drupal\Core\Config\ConfigDirectoryNotDefinedException;
@@ -17,7 +19,7 @@ use Symfony\Component\Filesystem\Path;
 trait ConfigTrait
 {
     use ExecTrait;
-    
+
     /**
      * Get storage corresponding to a configuration directory.
      */
@@ -41,7 +43,6 @@ trait ConfigTrait
      */
     public static function getDirectory(mixed $directory = null): string
     {
-        $return = null;
         // If the user provided a directory, use it.
         if (!empty($directory)) {
             if ($directory === true) {
@@ -53,7 +54,7 @@ trait ConfigTrait
                 $return = $directory;
             }
         } else {
-            // If a directory isn't specified, use default sync directory.
+            // If a directory isn't specified, use the default sync directory.
             $return = Settings::get('config_sync_directory', false);
             if ($return === false) {
                 throw new ConfigDirectoryNotDefinedException('The config sync directory is not defined in $settings["config_sync_directory"]');
@@ -144,22 +145,14 @@ trait ConfigTrait
         $rows = [];
         foreach ($config_changes as $collection => $changes) {
             foreach ($changes as $change => $configs) {
-                switch ($change) {
-                    case 'delete':
-                        $colour = '<fg=white;bg=red>';
-                        break;
-                    case 'update':
-                        $colour = '<fg=black;bg=yellow>';
-                        break;
-                    case 'create':
-                        $colour = '<fg=white;bg=green>';
-                        break;
-                    default:
-                        $colour = "<fg=black;bg=cyan>";
-                        break;
-                }
+                $color = match ($change) {
+                    'delete' => '<fg=white;bg=red>',
+                    'update' => '<fg=black;bg=yellow>',
+                    'create' => '<fg=white;bg=green>',
+                    default => "<fg=black;bg=cyan>",
+                };
                 if ($use_color) {
-                    $prefix = $colour;
+                    $prefix = $color;
                     $suffix = '</>';
                 } else {
                     $prefix = $suffix = '';

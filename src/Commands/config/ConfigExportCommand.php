@@ -77,13 +77,16 @@ final class ConfigExportCommand extends Command
 
     protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
     {
-        $io = new DrushStyle($input, $output);
-
         // Get destination directory.
-        $destination_dir = $this->getDirectory($input->getOption('destination'));
+        $destination = $input->getOption('destination');
+        if (is_null($destination) && array_search('--destination', $input->getRawTokens()) !== false) {
+            // Passing --destination with no value indicates that a new target should be created in the backups dir.
+            $destination = true;
+        }
+        $destination_dir = $this->getDirectory($destination);
 
         // Validate destination
-        $this->validateDestination($input->getOption('destination'));
+        $this->validateDestination($destination_dir);
 
         // Do the actual config export operation.
         $preview = $this->performExport($input, $output, $destination_dir);
