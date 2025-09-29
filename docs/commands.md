@@ -173,10 +173,10 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
-- Add the following snippet to your project's composer.json. Note that Drush 14 is backwards compatible, so this is not a burden on existing projects. Also note that Drush 12 and earlier are no longer supported. 
+- Add the following snippet to your project's composer.json. 
 ```json
 "conflict": {
-    "drush/drush": "<14"
+    "drush/drush": "<13.7"
 },
 ```
 - [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.

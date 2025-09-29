@@ -18,7 +18,7 @@ class DeployTest extends UnishIntegrationTestCase
     public function testDeploy()
     {
         // Prep a config directory that will be imported later.
-        $this->drush(ConfigExportCommand::NAME);
+        $this->drush(ConfigExportCommand::NAME, [], ['yes' => NULL]);
 
         $this->drush(DeployCommands::DEPLOY);
         $expecteds = ["Database updates start.", 'Config import start.', 'Deploy hook start.', 'Cache rebuild start.'];
