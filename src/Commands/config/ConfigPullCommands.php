@@ -55,7 +55,7 @@ final class ConfigPullCommands extends DrushCommands
             'format' => 'string',
         ];
         $this->logger()->notice(dt('Starting to export configuration on :source.', [':source' => $source]));
-        $process = $this->processManager()->drush($sourceRecord, ConfigExportCommands::EXPORT, [], $export_options + $global_options);
+        $process = $this->processManager()->drush($sourceRecord, ConfigExportCommand::NAME, [], $export_options + $global_options);
         $process->mustRun();
 
         if ($this->getConfig()->simulate()) {
