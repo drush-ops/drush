@@ -79,8 +79,9 @@ final class ConfigExportCommand extends Command
     {
         // Get destination directory.
         $destination = $input->getOption('destination');
-        if (is_null($destination) && array_search('--destination', $input->getRawTokens()) !== false) {
+        if (is_null($destination) && str_contains('--destination', (string) $input)) {
             // Passing --destination with no value indicates that a new target should be created in the backups dir.
+            // Historically, thats represented by a boolean true.
             $destination = true;
         }
         $destination_dir = $this->getDirectory($destination);
