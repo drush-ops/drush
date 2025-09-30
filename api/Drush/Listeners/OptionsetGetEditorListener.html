@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Attributes\OptionsetGetEditor | Drush API 14</title>
+    <title>Drush\Listeners\OptionsetGetEditorListener | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Attributes_OptionsetGetEditor" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Listeners_OptionsetGetEditorListener" data-root-path="../../" data-search-index-url="../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -75,18 +75,18 @@
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
                 <li><span class="label label-default">class</span></li>
-                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Attributes.html">Attributes</a></li><li class="backslash">\</li><li>OptionsetGetEditor</li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Listeners.html">Listeners</a></li><li class="backslash">\</li><li>OptionsetGetEditorListener</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>OptionsetGetEditor    
+        <h1>OptionsetGetEditorListener    
             </h1>
     </div>
 
     
     <p>        class
-    <strong>OptionsetGetEditor</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/OptionsetGetEditor.php">View source</a>)
+    <strong>OptionsetGetEditorListener</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/OptionsetGetEditorListener.php">View source</a>)
 </p>
 
         
@@ -102,10 +102,10 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_handle">handle</a>(ReflectionAttribute $attribute, <a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+                    <a href="#method___invoke">__invoke</a>(<a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -118,10 +118,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_handle">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/OptionsetGetEditor.php#L14">at line 14</a></div>
-        <code>        static            
-    <strong>handle</strong>(ReflectionAttribute $attribute, <a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
+                    <h3 id="method___invoke">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/OptionsetGetEditorListener.php#L17">at line 17</a></div>
+        <code>                    void
+    <strong>__invoke</strong>(<a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
         </code>
     </h3>
     <div class="details">    
@@ -137,18 +137,22 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td>ReflectionAttribute</td>
-                <td>$attribute</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a></td>
-                <td>$commandInfo</td>
+                <td><a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a></td>
+                <td>$event</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
