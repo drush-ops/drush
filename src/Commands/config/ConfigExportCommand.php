@@ -12,6 +12,7 @@ use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
+use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Exec\ExecTrait;
 use Drush\Formatters\FormatterTrait;
@@ -33,6 +34,7 @@ use Symfony\Component\Process\Process;
     aliases: ['cex', 'config-export'],
 )]
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
+#[CLI\HelpLinks(links: [HelpLinks::ConfigExporting])]
 final class ConfigExportCommand extends Command
 {
     use AutowireTrait;

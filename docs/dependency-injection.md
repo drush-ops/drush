@@ -11,7 +11,7 @@ Autowire
 ------------------
 :octicons-tag-24: 12.5+
 
-Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/pm/PmCommands.php)). This enables your [Constructor parameter type hints to determine the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [FieldDefinitionCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/field/FieldDefinitionCommands.php)). Some autowire examples:
+Command files may inject Drush and Drupal services by adding the [AutowireTrait](https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php) to the class (example: [PmCommands](https://github.com/drush-ops/drush/blob/14.x/src/Commands/sql/SqlDumpCommand.php)). This enables your [Constructor parameter type hints to determine the injected service](https://www.drupal.org/node/3396179). When a type hint is insufficient, an [#[Autowire] Attribute](https://www.drupal.org/node/3396179) on the constructor property (with _service:_ named argument) directs AutoWireTrait to the right service (example: [FieldDefinitionCommands](https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldDefinitionCommands.php)). Some autowire examples:
  
   ```php
   protected readonly Consolidation\OutputFormatters\FormatterManager $formatterManager

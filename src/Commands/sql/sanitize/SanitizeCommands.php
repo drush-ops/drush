@@ -44,7 +44,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
      *     - `\Drush\Events\SanitizeConfirmsEvent`. Display a summary to the user before confirmation.
      *     - `\Symfony\Component\Console\Event\ConsoleTerminateEvent`. Run queries or call APIs to perform sanitizing
      *
-     * Several working Listeners may be found at https://github.com/drush-ops/drush/tree/13.x/src/Drush/Listeners/sanitize
+     * Several working Listeners may be found at https://github.com/drush-ops/drush/tree/14.x/src/Drush/Listeners/sanitize
     */
     #[CLI\Command(name: self::SANITIZE, aliases: ['sqlsan','sql-sanitize'])]
     #[CLI\Usage(name: 'drush sql:sanitize --sanitize-password=no', description: 'Sanitize database without modifying any passwords.')]
@@ -63,7 +63,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
         foreach ($handlers as $handler) {
             $handler($messages, $this->input());
             $stringCallable = (is_string($handler[0]) ? $handler[0] : get_class($handler[0])) . '::' . $handler[1];
-            $this->logger()->notice('The {handler} sanitize plugin is using a deprecated API. See {url}', ['handler' => $stringCallable, 'url' => 'https://www.drush.org/13.x/events/']);
+            $this->logger()->notice('The {handler} sanitize plugin is using a deprecated API. See {url}', ['handler' => $stringCallable, 'url' => 'https://www.drush.org/14.x/events/']);
         }
         if ($messages) {
             $this->output()->writeln(dt('The following operations will be performed:'));
