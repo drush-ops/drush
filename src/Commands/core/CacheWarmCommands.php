@@ -29,6 +29,8 @@ final class CacheWarmCommands extends DrushCommands
 
     /**
      * Pre-warm all caches.
+     *
+     * Requires Drupal 11.2+. See https://www.drupal.org/node/3386853
      */
     #[CLI\Command(name: self::WARM, aliases: ['warm', 'cache-warm'])]
     #[CLI\Version(version: '13.5')]
