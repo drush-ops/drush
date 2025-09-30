@@ -40,7 +40,10 @@ jobs:
           coverage: none
           tools: composer:v2
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: |
+          composer -n config platform.php --unset
+          composer -n require --dev drupal/core-recommended:11.x-dev --no-update
+          composer -n install --prefer-dist
       - name: Install Drupal
         run: composer sut:si
         env:
