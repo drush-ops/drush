@@ -7,6 +7,7 @@ namespace Drush\Commands\core;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
 use Drush\Attributes as CLI;
+use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,9 +24,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Formatter(returnType: UnstructuredListData::class, defaultFormatter: 'json')]
 class BatchCommand extends Command
 {
+    use AutowireTrait;
     use FormatterTrait;
 
-    const NAME = 'core:batch';
+    const NAME = 'batch:process';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
