@@ -6,6 +6,8 @@ use Consolidation\Filter\FilterOutputData;
 use Consolidation\Filter\LogicalOpFactory;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes\FilterDefaultField;
+use Drush\Drush;
+use Drush\Runtime\DependencyInjection;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -19,7 +21,9 @@ trait FormatterTrait
     protected function writeFormattedOutput(InputInterface $input, OutputInterface $output, $data): void
     {
         if (!isset($this->formatterManager)) {
-            throw new \Exception('\Consolidation\OutputFormatters\FormatterManager must be injected into the command during __construct().');
+            // Be kind and do it for the command author.
+            // throw new \Exception('\Consolidation\OutputFormatters\FormatterManager must be injected into the command during __construct().');
+            $this->formatterManager = Drush::service(DependencyInjection::FORMATTER_MANAGER);
         }
 
         if (is_object($data) || is_array($data)) {
