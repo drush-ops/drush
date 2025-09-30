@@ -222,9 +222,6 @@ class DrupalBoot8 extends DrupalBoot
 
         $this->addDrupalModuleDrushCommands($manager);
 
-        // Dispatch our custom event. It also fires earlier in \Drush\Application::configureAndRegisterCommands.
-        Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent(Drush::getApplication()), ConsoleDefinitionsEvent::class);
-
         // Set a default account to make sure the correct timezone is set
         $this->kernel->getContainer()->get('current_user')->setAccount(new AnonymousUserSession());
     }
@@ -304,6 +301,9 @@ class DrupalBoot8 extends DrupalBoot
         // Inflect and register all command handlers
         $commandHandlers = $this->serviceManager->commandFromInvokable($commandHandlers);
         Robo::register($application, $commandHandlers);
+
+        // Dispatch our custom event. It also fires earlier in \Drush\Application::configureAndRegisterCommands.
+        Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent(Drush::getApplication()), ConsoleDefinitionsEvent::class);
     }
 
     /**

@@ -6,8 +6,10 @@ namespace Unish;
 
 use Drupal\Core\Serialization\Yaml;
 use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigExportCommand;
 use Drush\Commands\config\ConfigExportCommands;
 use Drush\Commands\config\ConfigGetCommand;
+use Drush\Commands\config\ConfigImportCommand;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\core\PhpCommands;
@@ -75,7 +77,7 @@ class ConfigTest extends CommandUnishTestCase
         $system_site_yml = $this->getConfigSyncDir() . '/system.site.yml';
 
         // Test export.
-        $this->drush(ConfigExportCommands::EXPORT);
+        $this->drush(ConfigExportCommand::NAME);
         $this->assertFileExists($system_site_yml);
 
         // Test import and status by finishing the round trip.
@@ -88,7 +90,7 @@ class ConfigTest extends CommandUnishTestCase
         $this->assertStringContainsString('system.site', $this->getOutput(), 'config:status correctly reports changes.');
 
         // Test import.
-        $this->drush(ConfigImportCommands::IMPORT);
+        $this->drush(ConfigImportCommand::NAME);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish', $page['front'], 'Config was successfully imported.');

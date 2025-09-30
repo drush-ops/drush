@@ -14,7 +14,7 @@ class DrushLoggerManager extends LoggerManager implements SuccessInterface
     #[Deprecated(self::DEPRECATED_MESSAGE)]
     public function success(string $message, array $context = array())
     {
-        trigger_deprecation('drush/drush', '13.7.0', self::DEPRECATED_MESSAGE);
+        trigger_deprecation('drush/drush', '14.0.0', self::DEPRECATED_MESSAGE);
         $this->log(self::SUCCESS, $message, $context);
     }
 }
