@@ -80,7 +80,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertSame($expected, $this->getOutput());
 
         // Install node module.
-        $this->drush('pm:install', ['node']);
+        $this->drush('pm:install', ['node'], ['yes' => null]);;
 
         // No installed dependencies.
         $this->drush('why:module', ['node'], ['type' => 'module']);
@@ -94,7 +94,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             EXPECTED;
         $this->assertSame($expected, $this->getOutput());
 
-        $this->drush('pm:install', ['dependent3']);
+        $this->drush('pm:install', ['dependent3'], ['yes' => null]);
         $this->drush('wm', ['node'], ['type' => 'module']);
         $expected = <<<EXPECTED
             node
@@ -199,7 +199,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             EXPECTED;
         $this->assertSame($expected, $this->getOutput());
 
-        $this->drush('pm:install', ['dependent3']);
+        $this->drush('pm:install', ['dependent3'], ['yes' => null]);
         $this->drush('wm', ['node'], ['type' => 'config']);
         $expected = <<<EXPECTED
             node
@@ -238,7 +238,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Invalid system.site config entity', $this->getErrorOutput());
 
         // Install dependent3 module.
-        $this->drush('pm:install', ['dependent3']);
+        $this->drush('pm:install', ['dependent3'], ['yes' => null]);
 
         $this->drush('why:config', ['node.type.vegetable']);
         $expected = <<<EXPECTED
