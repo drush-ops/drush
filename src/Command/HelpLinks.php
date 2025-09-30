@@ -8,6 +8,7 @@ enum HelpLinks
     case DrushConfiguration;
     case Policy;
     case Deploy;
+    case ConfigExporting;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -16,6 +17,7 @@ enum HelpLinks
             self::Deploy => new ConsoleLink('deploy', 'Deploy command for Drupal.'),
             self::DrushConfiguration => new ConsoleLink('using-drush-configuration', 'Drush configuration'),
             self::Policy => new ConsoleLink('examples/PolicyCommands.php', 'Example policy file'),
+            self::ConfigExporting => new ConsoleLink('config-exporting', 'Example policy file'),
         };
     }
 

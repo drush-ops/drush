@@ -56,10 +56,8 @@ final class TwigUnusedCommand extends Command
             ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom');
     }
 
-    public function execute(
-        InputInterface $input,
-        OutputInterface $output,
-    ): int {
+    public function execute(InputInterface $input, OutputInterface $output,): int
+    {
         $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
         $this->writeFormattedOutput($input, $output, $data);
         return Command::SUCCESS;

@@ -32,7 +32,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     const VALIDATE_CONFIG_NAME = 'validate-config-name';
     #[Deprecated(reason: 'Use ConfigGetCommand::NAME')]
     const GET = 'config:get';
-    #[Deprecated(reason: 'Use ConfigSetCommand::NAME')]
+    #[Deprecated(replacement: ConfigSetCommand::NAME)]
     const SET = 'config:set';
     #[Deprecated(reason: 'Use ConfigEditCommand::NAME')]
     const EDIT = 'config:edit';
