@@ -41,7 +41,7 @@ use Drush\Drush;
  *
  * @param string $command
  *   (optional) The command to call for the back end process. By default this will be
- *   the 'batch-process' command, but some commands will
+ *   the 'batch:process' command, but some commands will
  *   have special initialization requirements, and will need to define and
  *   use their own command.
  * @param array $args
@@ -49,7 +49,7 @@ use Drush\Drush;
  * @param array $options
  *   (optional)
  */
-function drush_backend_batch_process($command = 'batch-process', $args = [], $options = []) {
+function drush_backend_batch_process($command = 'batch:process', $args = [], $options = []) {
   // Command line options to pass to the command.
   $options['u'] = \Drupal::currentUser()->id();
   return _drush_backend_batch_process($command, $args, $options);
@@ -88,7 +88,7 @@ function drush_batch_command($id) {
  *   A return array. The callers only care about the finished marker and an #abort on an operation.
  *
  */
-function _drush_backend_batch_process($command = 'batch-process', $args = [], $options = []) {
+function _drush_backend_batch_process($command = 'batch:process', $args = [], $options = []) {
   $result = NULL;
 
   $batch = &batch_get();
