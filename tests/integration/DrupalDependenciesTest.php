@@ -80,7 +80,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertSame($expected, $this->getOutput());
 
         // Install node module.
-        $this->drush('pm:install', ['node'], ['yes' => null]);;
+        $this->drush('pm:install', ['node'], ['yes' => null]);
 
         // No installed dependencies.
         $this->drush('why:module', ['node'], ['type' => 'module']);
