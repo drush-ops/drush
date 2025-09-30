@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Runtime\DependencyInjection | Drush API 14</title>
+    <title>Drush\Runtime\DependencyInjection | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>DependencyInjection</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php">View source</a>)
+    <strong>DependencyInjection</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php">View source</a>)
 </p>
 
         
@@ -100,15 +100,6 @@
             <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
                 <td>
-                                                                                                                        FORMATTER_MANAGER
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
                                                                                                                         SITE_ALIAS_MANAGER
                                     </td>
                 <td class="last">
@@ -119,15 +110,6 @@
                     <tr>
                 <td>
                                                                                                                         BOOTSTRAP_MANAGER
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                                                                                        PROCESS_MANAGER
                                     </td>
                 <td class="last">
                     <p><em></em></p>
@@ -200,7 +182,7 @@
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_addDrushServices">addDrushServices</a>(<abbr title="League\Container\Container">Container</abbr> $container, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <a href="../../Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> $drupalFinder, <a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $aliasManager, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+                    <a href="#method_addDrushServices">addDrushServices</a>($container, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <a href="../../Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> $drupalFinder, <a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $aliasManager, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -211,7 +193,7 @@
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_alterServicesForDrush">alterServicesForDrush</a>($container, <a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <a href="#method_alterServicesForDrush">alterServicesForDrush</a>($container, <a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -236,7 +218,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_desiredHandlers">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L53">at line 53</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L47">at line 47</a></div>
         <code>                    void
     <strong>desiredHandlers</strong>($handlerList)
         </code>
@@ -279,7 +261,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_initContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L55">at line 55</a></div>
         <code>                    <abbr title="League\Container\Container">Container</abbr>
     <strong>initContainer</strong>(<a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <a href="../../Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> $drupalFinder, <a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $aliasManager)
         </code>
@@ -351,7 +333,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_installHandlers">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L96">at line 96</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L90">at line 90</a></div>
         <code>                    void
     <strong>installHandlers</strong>($container)
         </code>
@@ -393,9 +375,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_addDrushServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L105">at line 105</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L99">at line 99</a></div>
         <code>            protected        void
-    <strong>addDrushServices</strong>(<abbr title="League\Container\Container">Container</abbr> $container, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <a href="../../Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> $drupalFinder, <a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $aliasManager, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+    <strong>addDrushServices</strong>($container, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $loader, <a href="../../Drush/DrupalFinder/DrushDrupalFinder.html"><abbr title="Drush\DrupalFinder\DrushDrupalFinder">DrushDrupalFinder</abbr></a> $drupalFinder, <a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $aliasManager, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $config, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
     </h3>
     <div class="details">    
@@ -411,7 +393,7 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="League\Container\Container">Container</abbr></td>
+                <td></td>
                 <td>$container</td>
                 <td></td>
             </tr>
@@ -440,11 +422,6 @@
                 <td>$output</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
             </table>
 
             
@@ -466,9 +443,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_alterServicesForDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L173">at line 173</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L163">at line 163</a></div>
         <code>            protected        void
-    <strong>alterServicesForDrush</strong>($container, <a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+    <strong>alterServicesForDrush</strong>($container, <a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application)
         </code>
     </h3>
     <div class="details">    
@@ -493,16 +470,6 @@
                 <td>$application</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
-                <td>$output</td>
-                <td></td>
-            </tr>
             </table>
 
             
@@ -524,7 +491,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_injectApplicationServices">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/DependencyInjection.php#L202">at line 202</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/DependencyInjection.php#L186">at line 186</a></div>
         <code>            protected        void
     <strong>injectApplicationServices</strong>($container, <a href="../../Drush/Application.html"><abbr title="Drush\Application">Application</abbr></a> $application)
         </code>
