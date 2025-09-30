@@ -136,6 +136,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/cache_warm/</loc>
+         <lastmod>2025-09-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/completion/</loc>
          <lastmod>2025-09-30</lastmod>
          <changefreq>daily</changefreq>
@@ -886,16 +891,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/generators/misc_apache-virtual-host/</loc>
-         <lastmod>2025-09-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://www.drush.org/latest/latest/generators/misc_nginx-virtual-host/</loc>
-         <lastmod>2025-09-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/generators/module/</loc>
          <lastmod>2025-09-30</lastmod>
          <changefreq>daily</changefreq>
@@ -912,11 +907,6 @@
     </url>
     <url>
          <loc>https://www.drush.org/latest/latest/generators/plugin_block/</loc>
-         <lastmod>2025-09-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://www.drush.org/latest/latest/generators/plugin_ckeditor/</loc>
          <lastmod>2025-09-30</lastmod>
          <changefreq>daily</changefreq>
     </url>
