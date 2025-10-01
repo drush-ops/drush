@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\CacheCommands | Drush API %version%</title>
+    <title>Drush\Commands\core\CacheCommands | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>CacheCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        implements        <abbr title="Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface">CustomEventAwareInterface</abbr>, <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareInterface">StdinAwareInterface</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php">View source</a>)
+    <strong>CacheCommands</strong>        extends <a href="../../../Drush/Commands/DrushCommands.html"><abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/CacheCommands.php">View source</a>)
 </p>
 
         
@@ -98,21 +98,6 @@
 
         
     <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-6">
-                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
-                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
-                    <abbr title="Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait">CustomEventAwareTrait</abbr>    </div>
-                <div class="col-md-6"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
-                    <abbr title="Consolidation\AnnotatedCommand\Input\StdinAwareTrait">StdinAwareTrait</abbr>    </div>
-                <div class="col-md-6"></div>
-            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
@@ -135,17 +120,22 @@
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <abbr title="Robo\Common\IO">IO</abbr>    </div>
+                    <a href="../../../Robo/Common/IO.html"><abbr title="Robo\Common\IO">IO</abbr></a>    </div>
                 <div class="col-md-6"></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="../../../Drush/Commands/ConfiguresPrompts.html"><abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a>    </div>
+                    <a href="../../../Robo/Common/ConfigAwareTrait.html"><abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a>    </div>
                 <div class="col-md-6"></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr>    </div>
+                    <a href="../../../Robo/Common/InputAwareTrait.html"><abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Robo/Common/OutputAwareTrait.html"><abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a>    </div>
                 <div class="col-md-6"></div>
             </div>
             </div>
@@ -234,6 +224,15 @@
             </tr>
                     <tr>
                 <td>
+                                                                                                                        REBUILD
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
                                                                                                                         EVENT_CLEAR
                                     </td>
                 <td class="last">
@@ -256,6 +255,56 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Exec/ExecTrait.html#property_uri">
 <abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_config">
+                                        protected                                        <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$config</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#property_config">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_input">
+                                        protected                                        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$input</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Robo/Common/InputAwareTrait.html#property_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_output">
+                                        protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$output</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Robo/Common/OutputAwareTrait.html#property_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_io">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$io</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Robo/Common/IO.html#property_io">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_obj">
+                                        protected                                        
+                                                                                
+                                    </td>
+                <td>$obj</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Robo/Common/IO.html#property_obj">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></td>
             </tr>
                     <tr>
                 <td class="type" id="property_commandData">
@@ -310,71 +359,205 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setConfig">setConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
+        
+                                            <p><p>Set the config management object.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+                                            <p><p>Get the config management object.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
+                    static&nbsp;string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_configurePrompts">configurePrompts</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+                    <a href="#method_configPrefix">configPrefix</a>()
         
-                                            <p><p>Configure the prompt fallbacks.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/ConfiguresPrompts.html#method_configurePrompts">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a></small></div>
+                                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
+, and define a prefix for its configuration items. This is usually
+done in a base class. When used, this method should return a string
+that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    mixed
+                    static&nbsp;
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_promptUntilValid">promptUntilValid</a>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $prompt, bool|string $required, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate)
-        
-                                            <p><p>Prompt the user until the given validation callback passes.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/ConfiguresPrompts.html#method_promptUntilValid">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_restorePrompts">restorePrompts</a>()
-        
-                                            <p><p>Restore the prompts output.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/ConfiguresPrompts.html#method_restorePrompts">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    bool
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_runningUnitTests">runningUnitTests</a>()
+                    <a href="#method_configClassIdentifier">configClassIdentifier</a>($classname)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/ConfiguresPrompts.html#method_runningUnitTests">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a></small></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_configPostfix">configPostfix</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_configure">configure</a>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_configure">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getConfigValue">getConfigValue</a>(string $key, mixed|null $default = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setInput">setInput</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/InputAwareTrait.html#method_setInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_input">input</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/InputAwareTrait.html#method_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getInput">getInput</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Backwards compatibility.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/InputAwareTrait.html#method_getInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setOutput">setOutput</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/OutputAwareTrait.html#method_setOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_output">output</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/OutputAwareTrait.html#method_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_stderr">stderr</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/OutputAwareTrait.html#method_stderr">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOutput">getOutput</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p><p>Backwards compatibility</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/OutputAwareTrait.html#method_getOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, <abbr title="Drupal\Core\Theme\Registry">Registry</abbr> $themeRegistry, <abbr title="Drupal\Core\Routing\RouteBuilderInterface">RouteBuilderInterface</abbr> $routerBuilder, <abbr title="Drupal\Core\Asset\JsCollectionOptimizerLazy">JsCollectionOptimizerLazy</abbr> $jsOptimizer, $cssOptimizer, <abbr title="Drupal\Core\Plugin\CachedDiscoveryClearerInterface">CachedDiscoveryClearerInterface</abbr> $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Drupal\Core\Asset\AssetQueryStringInterface">AssetQueryStringInterface</abbr> $assetQueryString)
+                    <a href="#method_currentState">currentState</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/IO.html#method_currentState">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>($obj, $input, $output, $io)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_restore">restore</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/IO.html#method_restore">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -414,7 +597,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_preHook">preHook</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+                    <a href="#method_preHook">preHook</a>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         
                                             <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
@@ -425,18 +608,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_initHook">initHook</a>($input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
-        
-                                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_initHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_printFileTopic">printFileTopic</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+                    <a href="#method_printFileTopic">printFileTopic</a>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         
                                             <p><p>Print the contents of a file. The path comes from the @topic annotation.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
@@ -464,185 +636,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_processManager">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
             </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        
-                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_get">get</a>($cid, $bin = &#039;default&#039;, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
-        
-                                            <p><p>Fetch a cached object and display it.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_tags">tags</a>(string $tags)
-        
-                                            <p><p>Invalidate by cache tags.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clear">clear</a>(string $type, array $args, $options = [&#039;cache-clear&#039; =&gt; true])
-        
-                                            <p><p>Clear a specific cache, or all Drupal caches.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_interact">interact</a>($input, $output)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_set">set</a>($cid, $data, $bin = &#039;default&#039;, $expire = null, $tags = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;, &#039;cache-get&#039; =&gt; false])
-        
-                                            <p><p>Cache an object expressed in JSON or var_export() format.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setPrepareData">setPrepareData</a>($data, $options)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_validate">validate</a>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getTypes">getTypes</a>($include_bootstrapped_types = false)
-        
-                                            <p><p>Types of caches available for clearing. Contrib commands can hook in their own.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearDrush">clearDrush</a>()
-        
-                                            <p><p>Clear caches internal to Drush core.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearBins">clearBins</a>($args = [&#039;default&#039;])
-        
-                                            <p><p>Clear one or more cache bins.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearThemeRegistry">clearThemeRegistry</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearRouter">clearRouter</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearCssJs">clearCssJs</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearContainer">clearContainer</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearRender">clearRender</a>()
-        
-                                            <p><p>Clears the render cache entries.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_clearPlugin">clearPlugin</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
             </div>
 
 
@@ -652,7 +645,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>                </
                     <div class="method-item">
                     <h3 id="method_startBrowser">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_startBrowser">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Exec/ExecTrait.php#L28">at line 28</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Exec/ExecTrait.php#L28">at line 28</a></div>
         <code>                    bool
     <strong>startBrowser</strong>(string|null $uri = null, int $sleep = 0, int|null $port = null, <abbr title="Drush\Exec\string|bool">string|bool</abbr> $browser = false)
         </code>
@@ -713,7 +706,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_programExists">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_programExists">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Exec/ExecTrait.php#L92">at line 92</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Exec/ExecTrait.php#L90">at line 90</a></div>
         <code>        static            bool
     <strong>programExists</strong>($program)
         </code>
@@ -757,7 +750,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_getEditor">
         <div class="location">in <a href="../../../Drush/Exec/ExecTrait.html#method_getEditor">
-<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Exec/ExecTrait.php#L104">at line 104</a></div>
+<abbr title="Drush\Exec\ExecTrait">ExecTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Exec/ExecTrait.php#L102">at line 102</a></div>
         <code>        static            string
     <strong>getEditor</strong>(string|null $editor = null)
         </code>
@@ -799,10 +792,53 @@ default browser could not be found.</p></td>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_setConfig">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L22">at line 22</a></div>
+        <code>                    $this
+    <strong>setConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Set the config management object.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getConfig">
-        <div class="location">in <a href="../../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
-        <code>                    <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L34">at line 34</a></div>
+        <code>                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
     <strong>getConfig</strong>()
         </code>
     </h3>
@@ -811,8 +847,7 @@ default browser could not be found.</p></td>
             
 
         <div class="method-description">
-                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
-DrushConfig as return type. Helps with IDE completion.</p></p>                        
+                            <p><p>Get the config management object.</p></p>                        
         </div>
         <div class="tags">
             
@@ -820,35 +855,24 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td><a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
+            <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
             
             
-                            <h4>See also</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                            <a href="https://stackoverflow.com/a/37687295.">https://stackoverflow.com/a/37687295.</a>
-                                    </td>
-                <td></td>
-            </tr>
-            </table>
-
             
                     </div>
     </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_configurePrompts">
-        <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_configurePrompts">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L30">at line 30</a></div>
-        <code>            protected        void
-    <strong>configurePrompts</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+                    <h3 id="method_configPrefix">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L47">at line 47</a></div>
+        <code>        static    protected        string
+    <strong>configPrefix</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -856,7 +880,198 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             
 
         <div class="method-description">
-                            <p><p>Configure the prompt fallbacks.</p></p>                        
+                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
+, and define a prefix for its configuration items. This is usually
+done in a base class. When used, this method should return a string
+that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configClassIdentifier">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L52">at line 52</a></div>
+        <code>        static    protected        
+    <strong>configClassIdentifier</strong>($classname)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$classname</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configPostfix">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L60">at line 60</a></div>
+        <code>        static    protected        
+    <strong>configPostfix</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_configure">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_configure">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L84">at line 84</a></div>
+        <code>        static            
+    <strong>configure</strong>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null</td>
+                <td>$config</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getConfigValue">
+        <div class="location">in <a href="../../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L98">at line 98</a></div>
+        <code>            protected        mixed|null
+    <strong>getConfigValue</strong>(string $key, mixed|null $default = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>mixed|null</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setInput">
+        <div class="location">in <a href="../../../Robo/Common/InputAwareTrait.html#method_setInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L20">at line 20</a></div>
+        <code>                    void
+    <strong>setInput</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -881,103 +1096,28 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
             
             
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_promptUntilValid">
-        <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_promptUntilValid">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L148">at line 148</a></div>
-        <code>            protected        mixed
-    <strong>promptUntilValid</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $prompt, bool|string $required, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Prompt the user until the given validation callback passes.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
+                            <h4>See also</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a></td>
-                <td>$prompt</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>bool|string</td>
-                <td>$required</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null</td>
-                <td>$validate</td>
+                <td>
+                                            \Symfony\Component\Console\Input\InputAwareInterface::setInput()
+                                    </td>
                 <td></td>
             </tr>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>mixed</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
                     </div>
     </div>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_restorePrompts">
-        <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_restorePrompts">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L179">at line 179</a></div>
-        <code>            protected        void
-    <strong>restorePrompts</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Restore the prompts output.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_runningUnitTests">
-        <div class="location">in <a href="../../../Drush/Commands/ConfiguresPrompts.html#method_runningUnitTests">
-<abbr title="Drush\Commands\ConfiguresPrompts">ConfiguresPrompts</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/ConfiguresPrompts.php#L184">at line 184</a></div>
-        <code>            protected        bool
-    <strong>runningUnitTests</strong>()
+                    <h3 id="method_input">
+        <div class="location">in <a href="../../../Robo/Common/InputAwareTrait.html#method_input">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L28">at line 28</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>input</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -994,11 +1134,239 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>bool</td>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
             <td></td>
         </tr>
     </table>
 
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getInput">
+        <div class="location">in <a href="../../../Robo/Common/InputAwareTrait.html#method_getInput">
+<abbr title="Robo\Common\InputAwareTrait">InputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/InputAwareTrait.php#L43">at line 43</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>getInput</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Backwards compatibility.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setOutput">
+        <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_setOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L23">at line 23</a></div>
+        <code>                    $this
+    <strong>setOutput</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+                            <h4>See also</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                            \Robo\Contract\OutputAwareInterface::setOutput()
+                                    </td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_output">
+        <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_output">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L33">at line 33</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>output</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_stderr">
+        <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_stderr">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L44">at line 44</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>stderr</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOutput">
+        <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_getOutput">
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L60">at line 60</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>getOutput</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p><p>Backwards compatibility</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_currentState">
+        <div class="location">in <a href="../../../Robo/Common/IO.html#method_currentState">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/IO.php#L24">at line 24</a></div>
+        <code>                    
+    <strong>currentState</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
             
             
             
@@ -1008,9 +1376,10 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L45">at line 45</a></div>
+        <div class="location">in <a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/IO.php#L32">at line 32</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, <abbr title="Drupal\Core\Theme\Registry">Registry</abbr> $themeRegistry, <abbr title="Drupal\Core\Routing\RouteBuilderInterface">RouteBuilderInterface</abbr> $routerBuilder, <abbr title="Drupal\Core\Asset\JsCollectionOptimizerLazy">JsCollectionOptimizerLazy</abbr> $jsOptimizer, $cssOptimizer, <abbr title="Drupal\Core\Plugin\CachedDiscoveryClearerInterface">CachedDiscoveryClearerInterface</abbr> $pluginCacheClearer, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Drupal\Core\Asset\AssetQueryStringInterface">AssetQueryStringInterface</abbr> $assetQueryString)
+    <strong>__construct</strong>($obj, $input, $output, $io)
         </code>
     </h3>
     <div class="details">    
@@ -1026,47 +1395,52 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr></td>
-                <td>$invalidator</td>
                 <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Theme\Registry">Registry</abbr></td>
-                <td>$themeRegistry</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Routing\RouteBuilderInterface">RouteBuilderInterface</abbr></td>
-                <td>$routerBuilder</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Asset\JsCollectionOptimizerLazy">JsCollectionOptimizerLazy</abbr></td>
-                <td>$jsOptimizer</td>
+                <td>$obj</td>
                 <td></td>
             </tr>
                     <tr>
                 <td></td>
-                <td>$cssOptimizer</td>
+                <td>$input</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drupal\Core\Plugin\CachedDiscoveryClearerInterface">CachedDiscoveryClearerInterface</abbr></td>
-                <td>$pluginCacheClearer</td>
+                <td></td>
+                <td>$output</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
-                <td>$bootstrapManager</td>
                 <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\Asset\AssetQueryStringInterface">AssetQueryStringInterface</abbr></td>
-                <td>$assetQueryString</td>
+                <td>$io</td>
                 <td></td>
             </tr>
             </table>
 
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_restore">
+        <div class="location">in <a href="../../../Robo/Common/IO.html#method_restore">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/IO.php#L40">at line 40</a></div>
+        <code>                    
+    <strong>restore</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
             
             
             
@@ -1078,7 +1452,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_io">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_io">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L60">at line 60</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L60">at line 60</a></div>
         <code>            protected        <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
     <strong>io</strong>()
         </code>
@@ -1111,7 +1485,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_logger">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_logger">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L74">at line 74</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L75">at line 75</a></div>
         <code>                    <abbr title="Drush\Commands\Drush\Log\DrushLoggerManager">DrushLoggerManager</abbr>|null
     <strong>logger</strong>()
         </code>
@@ -1144,7 +1518,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFile">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFile">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L86">at line 86</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L88">at line 88</a></div>
         <code>            protected        void
     <strong>printFile</strong>(string $file)
         </code>
@@ -1187,9 +1561,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_preHook">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_preHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L108">at line 108</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L110">at line 110</a></div>
         <code>                    
-    <strong>preHook</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+    <strong>preHook</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
     </h3>
     <div class="details">    
@@ -1204,47 +1578,8 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td><a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
                 <td>$commandData</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_initHook">
-        <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_initHook">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L117">at line 117</a></div>
-        <code>                    
-    <strong>initHook</strong>($input, <abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr> $annotationData)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Persist commandData for use in primary command callback. Used by 'topic' commands.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></td>
-                <td>$annotationData</td>
                 <td></td>
             </tr>
             </table>
@@ -1260,9 +1595,9 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_printFileTopic">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_printFileTopic">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L130">at line 130</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L122">at line 122</a></div>
         <code>            protected        
-    <strong>printFileTopic</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+    <strong>printFileTopic</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
     </h3>
     <div class="details">    
@@ -1277,7 +1612,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td><a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
                 <td>$commandData</td>
                 <td><p>Full path to a file.</p></td>
             </tr>
@@ -1294,7 +1629,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_getStack">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_getStack">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L141">at line 141</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L133">at line 133</a></div>
         <code>            protected        <abbr title="GuzzleHttp\HandlerStack">HandlerStack</abbr>
     <strong>getStack</strong>()
         </code>
@@ -1338,7 +1673,7 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <div class="method-item">
                     <h3 id="method_processManager">
         <div class="location">in <a href="../../../Drush/Commands/DrushCommands.html#method_processManager">
-<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/DrushCommands.php#L151">at line 151</a></div>
+<abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/DrushCommands.php#L143">at line 143</a></div>
         <code>                    <a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a>
     <strong>processManager</strong>()
         </code>
@@ -1357,687 +1692,6 @@ DrushConfig as return type. Helps with IDE completion.</p></p>
                     <table class="table table-condensed">
         <tr>
             <td><a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_create">
-        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php#L27">at line 27</a></div>
-        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
-                <td>$container</td>
-                <td><p>The service container this instance should use.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_get">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L64">at line 64</a></div>
-        <code>                    <abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr>
-    <strong>get</strong>($cid, $bin = &#039;default&#039;, $options = [&#039;format&#039; =&gt; &#039;json&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Fetch a cached object and display it.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$cid</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$bin</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_tags">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L92">at line 92</a></div>
-        <code>                    void
-    <strong>tags</strong>(string $tags)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Invalidate by cache tags.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$tags</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clear">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L106">at line 106</a></div>
-        <code>                    
-    <strong>clear</strong>(string $type, array $args, $options = [&#039;cache-clear&#039; =&gt; true])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Clear a specific cache, or all Drupal caches.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$type</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$args</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_interact">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L128">at line 128</a></div>
-        <code>                    void
-    <strong>interact</strong>($input, $output)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$input</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$output</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_set">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L149">at line 149</a></div>
-        <code>                    
-    <strong>set</strong>($cid, $data, $bin = &#039;default&#039;, $expire = null, $tags = null, $options = [&#039;input-format&#039; =&gt; &#039;string&#039;, &#039;cache-get&#039; =&gt; false])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Cache an object expressed in JSON or var_export() format.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$cid</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$bin</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$expire</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$tags</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_setPrepareData">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L172">at line 172</a></div>
-        <code>            protected        
-    <strong>setPrepareData</strong>($data, $options)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$data</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L202">at line 202</a></div>
-        <code>                    void
-    <strong>validate</strong>(<abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
-                <td>$commandData</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L227">at line 227</a></div>
-        <code>                    array
-    <strong>getTypes</strong>($include_bootstrapped_types = false)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Types of caches available for clearing. Contrib commands can hook in their own.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$include_bootstrapped_types</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearDrush">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L255">at line 255</a></div>
-        <code>                    void
-    <strong>clearDrush</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Clear caches internal to Drush core.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearBins">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L269">at line 269</a></div>
-        <code>                    void
-    <strong>clearBins</strong>($args = [&#039;default&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Clear one or more cache bins.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$args</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearThemeRegistry">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L278">at line 278</a></div>
-        <code>                    void
-    <strong>clearThemeRegistry</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearRouter">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L283">at line 283</a></div>
-        <code>                    void
-    <strong>clearRouter</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearCssJs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L288">at line 288</a></div>
-        <code>                    void
-    <strong>clearCssJs</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L295">at line 295</a></div>
-        <code>                    void
-    <strong>clearContainer</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearRender">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L304">at line 304</a></div>
-        <code>                    void
-    <strong>clearRender</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Clears the render cache entries.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_clearPlugin">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php#L309">at line 309</a></div>
-        <code>                    void
-    <strong>clearPlugin</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
             <td></td>
         </tr>
     </table>

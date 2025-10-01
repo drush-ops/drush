@@ -481,7 +481,9 @@ is searched for a drush.yml file.</p></dd><dt><a href="Drush/Config/ConfigLocato
 <abbr title="Drush\Drush">Drush</abbr>::aliasManager</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drush.html#method_affirmative">
 <abbr title="Drush\Drush">Drush</abbr>::affirmative</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
-                    <dd><p>Return 'true' if we are in affirmative mode</p></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_addMessage">
+                    <dd><p>Return 'true' if we are in affirmative mode</p></dd><dt><a href="Drush/Event/CacheClearEvent.html#method_addType">
+<abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::addType</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_addMessage">
 <abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::addMessage</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Formatters/FormatterTrait.html#method_alterResult">
 <abbr title="Drush\Formatters\FormatterTrait">FormatterTrait</abbr>::alterResult</a>() &mdash; <em>Method in class <a href="Drush/Formatters/FormatterTrait.html"><abbr title="Drush\Formatters\FormatterTrait">FormatterTrait</abbr></a></em></dt>
@@ -1283,26 +1285,37 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BatchCommand.html"><abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/BrowseCommand.html#method_configure">
 <abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BrowseCommand.html"><abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_configure">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearBins">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearBins</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd><p>Clear one or more cache bins.</p></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearThemeRegistry">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearThemeRegistry</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearRouter">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearRouter</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearCssJs">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearCssJs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearContainer">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearContainer</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearRender">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearRender</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd><p>Clears the render cache entries.</p></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_clearPlugin">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::clearPlugin</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clear">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clear</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Clear a specific cache, or all Drupal caches.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearDrush">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearDrush</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Clear caches internal to Drush core.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearBins">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearBins</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Clear one or more cache bins.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearThemeRegistry">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearThemeRegistry</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearRouter">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearRouter</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearCssJs">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearCssJs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearContainer">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearContainer</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearRender">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearRender</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Clears the render cache entries.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_clearPlugin">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::clearPlugin</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheGetCommand.html"><abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheGetCommand.html#method_configure">
+<abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheGetCommand.html"><abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommand.html"><abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommand.html#method_configure">
+<abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheRebuildCommand.html"><abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheSetCommand.html"><abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheSetCommand.html#method_configure">
+<abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheSetCommand.html"><abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheTagsCommand.html"><abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheTagsCommand.html#method_configure">
+<abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheTagsCommand.html"><abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CacheWarmCommands.html"><abbr title="Drush\Commands\core\CacheWarmCommands">CacheWarmCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CacheWarmCommands.html#method_create">
 <abbr title="Drush\Commands\core\CacheWarmCommands">CacheWarmCommands</abbr>::create</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheWarmCommands.html"><abbr title="Drush\Commands\core\CacheWarmCommands">CacheWarmCommands</abbr></a></em></dt>
@@ -1446,7 +1459,8 @@ all identified configuration if necessary.</p></dd><dt><a href="Drush/Config/Dru
 <abbr title="Drush\Drush">Drush</abbr>::commandFactory</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return command factory</p></dd><dt><a href="Drush/Drush.html#method_config">
 <abbr title="Drush\Drush">Drush</abbr>::config</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
-                    <dd><p>Return the configuration object</p></dd><dt><a href="Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Event.html">Drush\Event</a></em></dt>
+                    <dd><p>Return the configuration object</p></dd><dt><a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Event.html">Drush\Event</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Event.html">Drush\Event</a></em></dt>
                     <dd></dd><dt><a href="Drush/Exceptions/CommandFailedException.html"><abbr title="Drush\Exceptions\CommandFailedException">CommandFailedException</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Exceptions.html">Drush\Exceptions</a></em></dt>
                     <dd><p>Throw an exception indicating that the command was unable to continue.</p></dd><dt><a href="Drush/Formatters/EntityToArraySimplifier.html#method_canSimplify">
 <abbr title="Drush\Formatters\EntityToArraySimplifier">EntityToArraySimplifier</abbr>::canSimplify</a>() &mdash; <em>Method in class <a href="Drush/Formatters/EntityToArraySimplifier.html"><abbr title="Drush\Formatters\EntityToArraySimplifier">EntityToArraySimplifier</abbr></a></em></dt>
@@ -2068,6 +2082,14 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\core\ArchiveDumpCommands">ArchiveDumpCommands</abbr>::dump</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ArchiveDumpCommands.html"><abbr title="Drush\Commands\core\ArchiveDumpCommands">ArchiveDumpCommands</abbr></a></em></dt>
                     <dd><p>Backup your code, files, and database into a single file.</p></dd><dt><a href="Drush/Commands/core/BatchCommand.html#method_doExecute">
 <abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BatchCommand.html"><abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheGetCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheGetCommand.html"><abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheSetCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheSetCommand.html"><abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheTagsCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheTagsCommand.html"><abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CliCommands.html#method_docs">
 <abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr>::docs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a></em></dt>
                     <dd><p>Drush's PHP Shell.</p></dd><dt><a href="Drush/Commands/core/DeployCommands.html"><abbr title="Drush\Commands\core\DeployCommands">DeployCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -2511,6 +2533,16 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BatchCommand.html"><abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/BrowseCommand.html#method_execute">
 <abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BrowseCommand.html"><abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_execute">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheGetCommand.html#method_execute">
+<abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheGetCommand.html"><abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommand.html#method_execute">
+<abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheRebuildCommand.html"><abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheSetCommand.html#method_execute">
+<abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheSetCommand.html"><abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheTagsCommand.html#method_execute">
+<abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheTagsCommand.html"><abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_exampleCommand">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::exampleCommand</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd><p>Example Drush command file.</p></dd><dt><a href="Drush/Commands/core/EditCommands.html"><abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -3481,11 +3513,9 @@ environments in the specified site.</p></dd><dt><a href="Consolidation/SiteAlias
 <abbr title="Drush\Commands\config\ConfigTrait">ConfigTrait</abbr>::getDirectory</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigTrait.html"><abbr title="Drush\Commands\config\ConfigTrait">ConfigTrait</abbr></a></em></dt>
                     <dd><p>Determine which configuration directory to use and return directory path.</p></dd><dt><a href="Drush/Commands/config/ConfigTrait.html#method_getDiff">
 <abbr title="Drush\Commands\config\ConfigTrait">ConfigTrait</abbr>::getDiff</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigTrait.html"><abbr title="Drush\Commands\config\ConfigTrait">ConfigTrait</abbr></a></em></dt>
-                    <dd><p>Get diff between two config sets.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_get">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Fetch a cached object and display it.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_getTypes">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::getTypes</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Types of caches available for clearing. Contrib commands can hook in their own.</p></dd><dt><a href="Drush/Commands/core/CliCommands.html#method_getDrushCommands">
+                    <dd><p>Get diff between two config sets.</p></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_getTypes">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::getTypes</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd><p>Types of caches available for clearing. Listeners can add their own.</p></dd><dt><a href="Drush/Commands/core/CliCommands.html#method_getDrushCommands">
 <abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr>::getDrushCommands</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a></em></dt>
                     <dd><p>Returns a filtered list of Drush commands used for CLI commands.</p></dd><dt><a href="Drush/Commands/core/CliCommands.html#method_getCasters">
 <abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr>::getCasters</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CliCommands.html"><abbr title="Drush\Commands\core\CliCommands">CliCommands</abbr></a></em></dt>
@@ -3695,7 +3725,9 @@ loading drush.yml and drush10.yml, etc.</p></dd><dt><a href="Drush/Config/Enviro
 <abbr title="Drush\Drush">Drush</abbr>::getContainer</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Returns the currently active global container.</p></dd><dt><a href="Drush/Drush.html#method_getApplication">
 <abbr title="Drush\Drush">Drush</abbr>::getApplication</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
-                    <dd><p>Get the current Symfony Console Application.</p></dd><dt><a href="Drush/Event/ConsoleDefinitionsEvent.html#method_getApplication">
+                    <dd><p>Get the current Symfony Console Application.</p></dd><dt><a href="Drush/Event/CacheClearEvent.html#method_getTypes">
+<abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::getTypes</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/ConsoleDefinitionsEvent.html#method_getApplication">
 <abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr>::getApplication</a>() &mdash; <em>Method in class <a href="Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_getInput">
 <abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::getInput</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
@@ -4578,8 +4610,8 @@ alias record must either be remote or have a root.</p></dd><dt><a href="Consolid
 <abbr title="Drush\Commands\config\ConfigEditCommand">ConfigEditCommand</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigEditCommand.html"><abbr title="Drush\Commands\config\ConfigEditCommand">ConfigEditCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/config/ConfigGetCommand.html#method_interact">
 <abbr title="Drush\Commands\config\ConfigGetCommand">ConfigGetCommand</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigGetCommand.html"><abbr title="Drush\Commands\config\ConfigGetCommand">ConfigGetCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_interact">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method_interact">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::interact</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageCommands.html"><abbr title="Drush\Commands\core\ImageCommands">ImageCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html"><abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -6346,9 +6378,7 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
                     <dd></dd><dt><a href="Drush/Command/RemoteCommandProxy.html"><abbr title="Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Command.html">Drush\Command</a></em></dt>
                     <dd><p>Create a placeholder proxy command to represent an unknown command.</p></dd><dt>$<a href="Drush/Command/RemoteCommandProxy.html#property_redispatchHook">
 <abbr title="Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr>#redispatchHook</a> &mdash; <em>Property in class <a href="Drush/Command/RemoteCommandProxy.html"><abbr title="Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommands.html#method_rebuild">
-<abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr>::rebuild</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a></em></dt>
-                    <dd><p>Rebuild all caches.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_readme">
+                    <dd></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_readme">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::readme</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd>README.md</dd><dt><a href="Drush/Commands/core/DrupalCommands.html#method_requirements">
 <abbr title="Drush\Commands\core\DrupalCommands">DrupalCommands</abbr>::requirements</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalCommands.html"><abbr title="Drush\Commands\core\DrupalCommands">DrupalCommands</abbr></a></em></dt>
@@ -7238,11 +7268,7 @@ Drupal Kernel is booted.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::secphp</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
                     <dd><p>pm:security-php has been removed. Please use <code>composer audit</code> command.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_sec">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::sec</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
-                    <dd><p>pm:security has been removed. Please use <code>composer audit</code> command. See <a href="https://www.drupal.org/project/project_composer/issues/3301876">https://www.drupal.org/project/project_composer/issues/3301876</a>.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_set">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::set</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Cache an object expressed in JSON or var_export() format.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_setPrepareData">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::setPrepareData</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_siteAliases">
+                    <dd><p>pm:security has been removed. Please use <code>composer audit</code> command. See <a href="https://www.drupal.org/project/project_composer/issues/3301876">https://www.drupal.org/project/project_composer/issues/3301876</a>.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_siteAliases">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::siteAliases</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd><p>Creating site aliases for running Drush on remote sites.</p></dd><dt><a href="Drush/Commands/core/DocsCommands.html#method_script">
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::script</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
@@ -7859,9 +7885,7 @@ runs a sequence of commands.</p></dd><dt>$<a href="Robo/Task/StackBasedTask.html
 <abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr>::terminate</a>() &mdash; <em>Method in class <a href="Drush/Boot/DrupalBoot8.html"><abbr title="Drush\Boot\DrupalBoot8">DrupalBoot8</abbr></a></em></dt>
                     <dd><p>This method is called during the shutdown of drush.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html#method_twigDebug">
 <abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr>::twigDebug</a>() &mdash; <em>Method in class <a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a></em></dt>
-                    <dd><p>twig:debug has been removed. Please use the <code>theme:dev</code> command.</p></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_tags">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::tags</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd><p>Invalidate by cache tags.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_taskCallback">
+                    <dd><p>twig:debug has been removed. Please use the <code>theme:dev</code> command.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_taskCallback">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::taskCallback</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ThemeDevCommands.html"><abbr title="Drush\Commands\core\ThemeDevCommands">ThemeDevCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ThemeDevCommands.html#method_toggleDevMode">
@@ -8442,8 +8466,6 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
 <abbr title="Drush\Commands\config\ConfigCommands">ConfigCommands</abbr>::validateConfigName</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigCommands.html"><abbr title="Drush\Commands\config\ConfigCommands">ConfigCommands</abbr></a></em></dt>
                     <dd><p>Validate that a config name is valid.</p></dd><dt><a href="Drush/Commands/config/ConfigPullCommand.html#method_validateConfigPull">
 <abbr title="Drush\Commands\config\ConfigPullCommand">ConfigPullCommand</abbr>::validateConfigPull</a>() &mdash; <em>Method in class <a href="Drush/Commands/config/ConfigPullCommand.html"><abbr title="Drush\Commands\config\ConfigPullCommand">ConfigPullCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method_validate">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CoreCommands.html#method_version">
 <abbr title="Drush\Commands\core\CoreCommands">CoreCommands</abbr>::version</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CoreCommands.html"><abbr title="Drush\Commands\core\CoreCommands">CoreCommands</abbr></a></em></dt>
                     <dd><p>Show Drush version.</p></dd><dt><a href="Drush/Commands/core/DrupalDependenciesCommands.html#method_validateDependentsOfModule">
@@ -8929,10 +8951,16 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BatchCommand.html"><abbr title="Drush\Commands\core\BatchCommand">BatchCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/BrowseCommand.html#method___construct">
 <abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/BrowseCommand.html"><abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheCommands.html#method___construct">
-<abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheCommands.html"><abbr title="Drush\Commands\core\CacheCommands">CacheCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommands.html#method___construct">
-<abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheRebuildCommands.html"><abbr title="Drush\Commands\core\CacheRebuildCommands">CacheRebuildCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheClearCommand.html#method___construct">
+<abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheClearCommand.html"><abbr title="Drush\Commands\core\CacheClearCommand">CacheClearCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheGetCommand.html#method___construct">
+<abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheGetCommand.html"><abbr title="Drush\Commands\core\CacheGetCommand">CacheGetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheRebuildCommand.html#method___construct">
+<abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheRebuildCommand.html"><abbr title="Drush\Commands\core\CacheRebuildCommand">CacheRebuildCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheSetCommand.html#method___construct">
+<abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheSetCommand.html"><abbr title="Drush\Commands\core\CacheSetCommand">CacheSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/CacheTagsCommand.html#method___construct">
+<abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheTagsCommand.html"><abbr title="Drush\Commands\core\CacheTagsCommand">CacheTagsCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CacheWarmCommands.html#method___construct">
 <abbr title="Drush\Commands\core\CacheWarmCommands">CacheWarmCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/CacheWarmCommands.html"><abbr title="Drush\Commands\core\CacheWarmCommands">CacheWarmCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/CliCommands.html#method___construct">
@@ -9063,6 +9091,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a></em></dt>
                     <dd><p>Constructs a prepare-row event object.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateRunnerHooks.html#method___construct">
 <abbr title="Drush\Drupal\Migrate\MigrateRunnerHooks">MigrateRunnerHooks</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateRunnerHooks.html"><abbr title="Drush\Drupal\Migrate\MigrateRunnerHooks">MigrateRunnerHooks</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/CacheClearEvent.html#method___construct">
+<abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Event/ConsoleDefinitionsEvent.html#method___construct">
 <abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method___construct">
