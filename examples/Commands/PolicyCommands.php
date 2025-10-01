@@ -12,7 +12,7 @@ use Drush\Commands\sql\SqlSyncCommands;
 /**
  * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`
  *
- * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.
+ * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.
  */
 
 class PolicyCommands extends DrushCommands

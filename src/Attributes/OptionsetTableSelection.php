@@ -8,7 +8,7 @@ use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\DrushCommands;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class OptionsetTableSelection
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
@@ -18,7 +18,6 @@ class OptionsetTableSelection
         $commandInfo->addOption('tables-key', 'A key in the $tables array.', [], DrushCommands::REQ);
         $commandInfo->addOption('skip-tables-list', 'A comma-separated list of tables to exclude completely.', [], DrushCommands::REQ);
         $commandInfo->addOption('structure-tables-list', 'A comma-separated list of tables to include for structure, but not data.', [], DrushCommands::REQ);
-        $commandInfo->addOption('skip-tables-list', 'A comma-separated list of tables to exclude completely.', [], DrushCommands::REQ);
         $commandInfo->addOption('tables-list', 'A comma-separated list of tables to transfer.', [], DrushCommands::REQ);
     }
 }

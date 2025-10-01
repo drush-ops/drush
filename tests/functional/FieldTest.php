@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
-use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigGetCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\field\FieldBaseInfoCommands;
 use Drush\Commands\field\FieldBaseOverrideCreateCommands;
@@ -132,7 +132,7 @@ class FieldTest extends CommandUnishTestCase
           'is-required' => true,
         ];
         $this->drush(FieldBaseOverrideCreateCommands::BASE_OVERRIDE_CREATE, ['user', 'user'], $options);
-        $this->drush(ConfigCommands::GET, ['core.base_field_override.user.user.name'], ['format' => 'json']);
+        $this->drush(ConfigGetCommand::NAME, ['core.base_field_override.user.user.name'], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertSame('Handle', $json['label']);
         $this->assertSame(true, $json['required']);

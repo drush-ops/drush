@@ -33,7 +33,7 @@ final class LoginCommands extends DrushCommands
     /**
      * Display a one time login link for user ID 1, or another user.
      *
-     * To avoid the http://default domain in the link, set the [DRUSH_OPTIONS_URI environment variable](https://www.drush.org/13.x/using-drush-configuration/#environment-variables).
+     * To avoid the http://default domain in the link, set the [DRUSH_OPTIONS_URI environment variable](https://www.drush.org/14.x/using-drush-configuration/#environment-variables).
      */
     #[CLI\Command(name: self::LOGIN, aliases: ['uli', 'user-login'])]
     #[CLI\Argument(name: 'path', description: 'Optional path to redirect to after logging in.')]
