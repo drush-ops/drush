@@ -64,9 +64,7 @@ final class ConfigSetCommand extends Command
         if ($data === '-') {
             // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
             // If testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : null;
-            // If nothing from input stream use STDIN instead.
-            $inputStream = $inputStream ?? STDIN;
+            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
             $data = stream_get_contents($inputStream);
         }
 
