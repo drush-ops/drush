@@ -29,7 +29,7 @@ final class HelpLinksListener
                 $instance = $attributes[0]->newInstance();
                 $bullets = array_map(fn($case) => $case->consoleLink(), $instance->links);
                 $help = $command->getHelp();
-                $help .= "\n" . self::bullets($bullets);
+                $help .= "\n\n" . self::bullets($bullets);
                 $command->setHelp($help);
             }
         }
