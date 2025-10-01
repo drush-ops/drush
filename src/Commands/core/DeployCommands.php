@@ -60,7 +60,7 @@ final class DeployCommands extends DrushCommands
         $boot_object = Drush::bootstrap();
         if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot && version_compare($boot_object->getVersion($drupal_root), '11.2-dev', '>='))) {
             $this->logger()->success("Cache prewarm start.");
-            $process = $manager->drush($self, CacheWarmCommands::WARM, [], $redispatchOptions);
+            $process = $manager->drush($self, CacheWarmCommands::NAME, [], $redispatchOptions);
             $process->mustRun($process->showRealtime());
         }
     }
