@@ -50,6 +50,4 @@ final class CacheWarmCommands extends Command
         (new DrushStyle($input, $output))->success(dt('Warmed caches.'));
         return self::SUCCESS;
     }
-
-
 }
