@@ -8,8 +8,8 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\core\DocsCommands;
 use Drush\Formatters\FormatterTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     name: self::NAME,
     description: 'Mark all deploy hooks as having run.',
 )]
-#[CLI\HelpLinks(links: [DocsCommands::DEPLOY])]
+#[CLI\HelpLinks(links: [HelpLinks::Deploy])]
 #[CLI\Version(version: '10.6.1')]
 #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]

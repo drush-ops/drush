@@ -7,8 +7,8 @@ namespace Drush\Commands\core\deploy;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
+use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\core\DocsCommands;
 use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\FieldLabels(labels: ['module' => 'Module', 'hook' => 'Hook', 'description' => 'Description'])]
 #[CLI\DefaultTableFields(fields: ['module', 'hook', 'description'])]
 #[CLI\FilterDefaultField(field: 'hook')]
-#[CLI\HelpLinks(links: [DocsCommands::DEPLOY])]
+#[CLI\HelpLinks(links: [HelpLinks::Deploy])]
 #[CLI\Version(version: '10.6.1')]
 #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
 final class DeployHookStatusCommand extends Command

@@ -13,10 +13,9 @@ use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\config\ConfigImportCommands;
+use Drush\Commands\config\ConfigImportCommand;
 use Drush\Commands\core\cache\CacheRebuildCommand;
 use Drush\Commands\core\cache\CacheWarmCommand;
-use Drush\Commands\core\DeployHookCommands;
 use Drush\Commands\core\UpdateDBCommands;
 use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
@@ -67,13 +66,13 @@ final class DeployCommand extends Command
         $process->mustRun($process->showRealtime());
 
         $this->logger->notice("Config import start.");
-        $process = $this->processManager->drush($self, ConfigImportCommands::IMPORT, [], $redispatchOptions);
+        $process = $this->processManager->drush($self, ConfigImportCommand::NAME, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         $this->cacheRebuild($this->processManager, $self, $redispatchOptions);
 
         $this->logger->notice("Deploy hook start.");
-        $process = $this->processManager->drush($self, DeployHookCommands::HOOK, [], $redispatchOptions);
+        $process = $this->processManager->drush($self, DeployHookCommand::NAME, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
 
         // Since this command is Bootstrap=None, we don't have access to the Drupal container.
