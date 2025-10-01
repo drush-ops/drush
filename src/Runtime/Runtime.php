@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Preflight\Preflight;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Control the Drush runtime environment
@@ -103,6 +103,9 @@ class Runtime
         // from the search paths we found above.  After this point, the input
         // and output objects are ready & we can start using the logger, etc.
         $application->configureAndRegisterCommands($input, $output, $commandfileSearchpath, $this->preflight->environment()->loader());
+
+        // Configure Laravel prompts.
+        (new ConfiguresPrompts($input, $output))->configurePrompts($input);
 
         // Run the Symfony Application
         // Predispatch: call a remote Drush command if applicable (via a 'pre-init' hook)

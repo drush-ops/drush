@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
+use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
 
 final class CoreCommands extends DrushCommands
 {

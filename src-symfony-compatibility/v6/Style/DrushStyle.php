@@ -22,6 +22,11 @@ use function Laravel\Prompts\select;
 
 class DrushStyle extends SymfonyStyle
 {
+    public function success(array|string $message): void {
+      // Force output to stderr so as to not interfere with formatted output.
+      $this->getErrorStyle()->success($message);
+    }
+
     public function confirm(string $question, bool $default = true, string $yes = 'Yes', string $no = 'No', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): bool
     {
         // Automatically accept confirmations if the --yes argument was supplied.
@@ -36,8 +41,7 @@ class DrushStyle extends SymfonyStyle
         return confirm($question, $default, $yes, $no, $required, $validate, $hint);
     }
 
-    #[Deprecated('Use select() or multiselect() instead.')]
-    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): mixed
+    public function choice(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 15, ?\Closure $validate = null, string $hint = '', bool|string $required = true): mixed
     {
         if ($multiSelect) {
             // For backward compat. Deprecated.
