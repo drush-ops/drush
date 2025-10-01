@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\core\cache;
 
 use Drupal\Core\PreWarm\CachePreWarmerInterface;
 use Drush\Attributes as CLI;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     aliases: ['cw', 'cache-warm']
 )]
 #[CLI\Version(version: '13.5')]
-final class CacheWarmCommands extends Command
+final class CacheWarmCommand extends Command
 {
     const NAME = 'cache:warm';
 

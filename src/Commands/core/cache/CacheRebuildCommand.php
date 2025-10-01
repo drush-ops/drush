@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\core\cache;
 
 use Composer\Autoload\ClassLoader;
 use Drupal\Core\DrupalKernel;
