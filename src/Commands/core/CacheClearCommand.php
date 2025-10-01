@@ -9,6 +9,7 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\JsCollectionOptimizerLazy;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheFactoryInterface;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Plugin\CachedDiscoveryClearerInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
@@ -29,7 +30,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Exception\IOException;
 
 #[AsCommand(
     name: self::NAME,
@@ -46,6 +46,7 @@ final class CacheClearCommand extends Command
     public const EVENT_CLEAR = 'cache-clear';
 
     public function __construct(
+        private readonly CacheFactoryInterface $cacheFactory,
         private readonly CacheTagsInvalidatorInterface $invalidator,
         private readonly Registry $themeRegistry,
         private readonly RouteBuilderInterface $routerBuilder,
@@ -161,27 +162,13 @@ final class CacheClearCommand extends Command
     }
 
     /**
-     * Clear caches internal to Drush core.
-     */
-    public function clearDrush(): void
-    {
-        try {
-            $this->logger->info('Deprecation notice - Drush no longer caches anything.');
-        } catch (IOException $e) {
-            // Sometimes another process writes files into a bin dir and \Drush\Cache\FileCache::clear fails.
-            // That is not considered an error. https://github.com/drush-ops/drush/pull/4535.
-            $this->logger->info($e->getMessage());
-        }
-    }
-
-    /**
      * Clear one or more cache bins.
      */
     public function clearBins($args = ['default']): void
     {
         $bins = StringUtils::csvToArray($args);
         foreach ($bins as $bin) {
-            \Drupal::service("cache.$bin")->deleteAll();
+            $this->cacheFactory->get($bin)->deleteAll();
             $this->logger->notice("$bin cache bin cleared.");
         }
     }
