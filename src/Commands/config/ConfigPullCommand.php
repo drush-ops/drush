@@ -13,7 +13,7 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\core\RsyncCommands;
+use Drush\Commands\core\RsyncCommand;
 use Drush\Config\DrushConfig;
 use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
@@ -118,7 +118,7 @@ final class ConfigPullCommand extends Command
             'delete' => true,
             'exclude' => '.htaccess',
         ];
-        $process = $this->processManager->drush($runner, RsyncCommands::RSYNC, $args, ['yes' => true] + $global_options, $options_double_dash);
+        $process = $this->processManager->drush($runner, RsyncCommand::NAME, $args, ['yes' => true] + $global_options, $options_double_dash);
         $process->mustRun();
         return new PropertyList(['path' => $destinationHostPath->getOriginal()]);
     }
