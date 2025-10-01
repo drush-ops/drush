@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\core\deploy;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
@@ -14,7 +14,10 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\config\ConfigImportCommands;
+use Drush\Commands\core\cache\CacheRebuildCommand;
 use Drush\Commands\core\cache\CacheWarmCommand;
+use Drush\Commands\core\DeployHookCommands;
+use Drush\Commands\core\UpdateDBCommands;
 use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
 use Drush\SiteAlias\ProcessManager;
