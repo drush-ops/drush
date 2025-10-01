@@ -8,7 +8,7 @@ use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\DrushCommands;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class OptionsetGetEditor
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)

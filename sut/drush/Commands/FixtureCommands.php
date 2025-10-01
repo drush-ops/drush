@@ -25,17 +25,6 @@ class FixtureCommands extends DrushCommands
     }
 
     /**
-     * Return options as function result.
-     * @command unit-return-options
-     * @hidden
-     */
-    public function drushUnitReturnOptions($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
-    {
-        unset($options['format']);
-        return $options;
-    }
-
-    /**
      * Return original argv as function result.
      * @command unit-return-argv
      * @hidden

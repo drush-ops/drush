@@ -128,6 +128,10 @@ EOT;
             $parameters['ssl-key'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY];
         }
 
+        if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT])) {
+            $parameters['ssl-verify-server-cert'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT];
+        }
+
         return $this->paramsToOptions($parameters);
     }
 

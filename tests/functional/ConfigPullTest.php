@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\config\ConfigPullCommands;
-use Drush\Commands\config\ConfigCommands;
-use Drush\Commands\config\ConfigImportCommands;
+use Drush\Commands\config\ConfigGetCommand;
+use Drush\Commands\config\ConfigImportCommand;
+use Drush\Commands\config\ConfigPullCommand;
+use Drush\Commands\config\ConfigSetCommand;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -37,21 +38,21 @@ class ConfigPullTest extends CommandUnishTestCase
         $source = $aliases['stage'];
         $destination = $aliases['dev'];
         // Make UUID match.
-        $this->drush(ConfigCommands::GET, ['system.site', 'uuid'], $options, $source);
+        $this->drush(ConfigGetCommand::NAME, ['system.site', 'uuid'], $options, $source);
         list($name, $uuid) = explode(' ', $this->getOutput());
-        $this->drush(ConfigCommands::SET, ['system.site', 'uuid', $uuid], $options, $destination);
+        $this->drush(ConfigSetCommand::NAME, ['system.site', 'uuid', $uuid], $options, $destination);
 
-        $this->drush(ConfigCommands::SET, ['system.site', 'name', 'testConfigPull'], $options, $source);
-        $this->drush(ConfigPullCommands::PULL, [$source, $destination], $options);
-        $this->drush(ConfigImportCommands::IMPORT, [], $options, $destination);
-        $this->drush(ConfigCommands::GET, ['system.site', 'name'], $options, $source);
+        $this->drush(ConfigSetCommand::NAME, ['system.site', 'name', 'testConfigPull'], $options, $source);
+        $this->drush(ConfigPullCommand::NAME, [$source, $destination], $options);
+        $this->drush(ConfigImportCommand::NAME, [], $options, $destination);
+        $this->drush(ConfigGetCommand::NAME, ['system.site', 'name'], $options, $source);
         $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
 
         // Test that custom target dir works
         $target = Path::join($this->getSandbox(), __CLASS__);
         $this->recursiveDelete($target);
         $this->mkdir($target);
-        $this->drush(ConfigPullCommands::PULL, [$source, "$destination:$target"], $options);
+        $this->drush(ConfigPullCommand::NAME, [$source, "$destination:$target"], $options);
         $this->assertFileExists(Path::join($target, 'system.site.yml'));
     }
 }

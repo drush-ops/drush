@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
-use Drush\Commands\core\UpdateDBCommands;
+use Drush\Commands\core\UpdateDBCommand;
+use Drush\Commands\core\UpdateDbStatusCommand;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\sql\SqlCommands;
 use Symfony\Component\Filesystem\Path;
@@ -24,30 +25,30 @@ class UpdateDBTest extends CommandUnishTestCase
     {
         $this->setUpDrupal(1, true);
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
-        $this->drush(UpdateDBCommands::STATUS);
+        $this->drush(UpdateDBStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[success] No database updates required.', $err);
+        $this->assertStringContainsString('[OK] No database updates required.', $err);
 
         // Force a pending update.
         $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Assert that pending hook_update_n appears
-        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
+        $this->drush(UpdateDBStatusCommand::NAME, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module_update_8001');
         $this->assertStringContainsString('Fake update hook', trim($out['description']));
 
         // Run hook_update_n
-        $this->drush(UpdateDBCommands::UPDATEDB, []);
+        $this->drush(UpdateDBCommand::NAME, []);
 
         // Assert that we ran hook_update_n properly
-        $this->drush(UpdateDBCommands::STATUS);
+        $this->drush(UpdateDbStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[success] No database updates required.', $err);
+        $this->assertStringContainsString('[OK] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
         copy(__DIR__ . '/resources/drush_empty_module.post_update.php', $this->pathPostUpdate);
-        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
+        $this->drush(UpdateDBStatusCommand::NAME, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module-post-null_op');
         $this->assertStringContainsString('This is a test of the emergency broadcast system.', trim($out['description']));
     }
@@ -75,7 +76,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->forcePostUpdate('woot_post_update_failing', $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options, null, null, self::EXIT_ERROR);
+        $this->drush(UpdateDBCommand::NAME, [], $options, null, null, self::EXIT_ERROR);
 
         foreach ($expected_status_report as $needle) {
             $this->assertStringContainsString($needle, $this->getOutput());
@@ -156,7 +157,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->forcePostUpdate('woot_post_update_failing', $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options, null, null, self::EXIT_ERROR);
+        $this->drush(UpdateDBCommand::NAME, [], $options, null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('woot     a           post-update     Successful post-update.', $this->getOutput());
         $this->assertStringContainsString('woot     failing     post-update     Failing post-update.', $this->getOutput());
         $this->assertStringContainsString('This is the exception message thrown in woot_post_update_failing', $this->getErrorOutput());
@@ -225,12 +226,12 @@ YAML_FRAGMENT;
         file_put_contents($filename, $moduleDependency, FILE_APPEND);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB);
+        $this->drush(UpdateDBCommand::NAME);
 
         // Assert that the updates were run correctly.
-        $this->drush(UpdateDBCommands::STATUS);
+        $this->drush(UpdateDBStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[success] No database updates required.', $err);
+        $this->assertStringContainsString('[OK] No database updates required.', $err);
     }
 
     /**
@@ -252,7 +253,7 @@ YAML_FRAGMENT;
         $this->forcePostUpdate('woot_post_update_render', $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
+        $this->drush(UpdateDBCommand::NAME, [], $options);
         // Check output.
         $this->assertStringContainsString('woot 8104 hook_update_n', $this->getSimplifiedOutput());
         $this->assertStringContainsString('woot a post-update Successful post-update.', $this->getSimplifiedOutput());
@@ -280,7 +281,7 @@ YAML_FRAGMENT;
         $this->forcePostUpdate('woot_post_update_batch', $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
+        $this->drush(UpdateDBCommand::NAME, [], $options);
 
         $expected_update_output = <<<UPDATE
 >  [notice] Update started: woot_update_8105
@@ -320,7 +321,7 @@ POST_UPDATE;
         $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8105)'], $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
+        $this->drush(UpdateDBCommand::NAME, [], $options);
 
         // Check that the post-update function returns the new entity type ID.
         $this->assertStringContainsString('[notice] taxonomy_term', $this->getErrorOutputRaw());
@@ -345,7 +346,7 @@ POST_UPDATE;
         $this->forcePostUpdate('woot_post_update_install_taxonomy', $options);
 
         // Run updates.
-        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
+        $this->drush(UpdateDBCommand::NAME, [], $options);
 
         // Check that the post-update function returns the new entity type ID.
         $this->assertStringContainsString('[notice] taxonomy_term', $this->getErrorOutputRaw());

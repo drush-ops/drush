@@ -19,7 +19,6 @@ class CoreTest extends UnishIntegrationTestCase
 {
     public function testCoreRequirements()
     {
-        $root = $this->webroot();
         $options = [
             'ignore' => 'cron,http requests,update,coverage_core,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         ];

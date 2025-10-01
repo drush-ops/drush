@@ -4,9 +4,8 @@
  * Adapted from Illuminate\Console\Concerns
  */
 
-namespace Drush\Commands;
+namespace Drush\Runtime;
 
-use Drush\Runtime\Runtime;
 use Laravel\Prompts\ConfirmPrompt;
 use Laravel\Prompts\MultiSearchPrompt;
 use Laravel\Prompts\MultiSelectPrompt;
@@ -20,14 +19,14 @@ use Laravel\Prompts\TextPrompt;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-trait ConfiguresPrompts
+trait ConfiguresPromptsTrait
 {
     /**
      * Configure the prompt fallbacks.
      *
      * @return void
      */
-    protected function configurePrompts(InputInterface $input)
+    public function configurePrompts(InputInterface $input)
     {
         Prompt::setOutput($this->output);
 
