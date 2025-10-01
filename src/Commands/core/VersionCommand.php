@@ -8,6 +8,7 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\TableFormat(listDelimiter: ':', tableStyle: 'compact')]
 #[CLI\FieldLabels(labels: ['drush-version' => 'Drush version'])]
 #[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'table')]
+#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 final class VersionCommand extends Command
 {
     use AutowireTrait;
