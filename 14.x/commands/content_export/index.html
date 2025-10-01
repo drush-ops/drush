@@ -6,19 +6,19 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Display status of configuration (differences between the filesystem and database).">
+        <meta name="description" content="Exports a single content entity in YAML format.">
       
       
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/config_status/">
+        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/content_export/">
       
       
-        <link rel="prev" href="../config_set/">
+        <link rel="prev" href="../completion/">
       
       
-        <link rel="next" href="../core_cron/">
+        <link rel="next" href="../drupal_directory/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -26,7 +26,7 @@
     
     
       
-        <title>config:status - Drush</title>
+        <title>content:export - Drush</title>
       
     
     
@@ -63,11 +63,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="config:status - Drush" >
+        <meta  property="og:title"  content="content:export - Drush" >
       
-        <meta  property="og:description"  content="Display status of configuration (differences between the filesystem and database)." >
+        <meta  property="og:description"  content="Exports a single content entity in YAML format." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/config_status.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/content_export.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/config_status/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/content_export/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="config:status - Drush" >
+        <meta  name="twitter:title"  content="content:export - Drush" >
       
-        <meta  name="twitter:description"  content="Display status of configuration (differences between the filesystem and database)." >
+        <meta  name="twitter:description"  content="Exports a single content entity in YAML format." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/config_status.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/content_export.png" >
       
     
     
@@ -104,7 +104,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#configstatus" class="md-skip">
+        <a href="#contentexport" class="md-skip">
           Skip to content
         </a>
       
@@ -143,7 +143,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              config:status
+              content:export
             
           </span>
         </div>
@@ -1327,6 +1327,8 @@
                 
   
   
+    
+  
   
   
     
@@ -1336,11 +1338,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_1" checked>
         
           
           <label class="md-nav__link" for="__nav_6_1" id="__nav_6_1_label" tabindex="0">
@@ -1354,7 +1356,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_1_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_6_1">
             <span class="md-nav__icon md-icon"></span>
             _global
@@ -1449,10 +1451,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../content_export/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    content:export
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1461,6 +1483,53 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arguments
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#global-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Global Options
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1839,8 +1908,6 @@
                 
   
   
-    
-  
   
   
     
@@ -1850,11 +1917,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6_3" >
         
           
           <label class="md-nav__link" for="__nav_6_3" id="__nav_6_3_label" tabindex="0">
@@ -1868,7 +1935,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_3_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_6_3">
             <span class="md-nav__icon md-icon"></span>
             config
@@ -2026,30 +2093,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    config:status
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../config_status/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -2058,53 +2105,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#global-options" class="md-nav__link">
-    <span class="md-ellipsis">
-      Global Options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#aliases" class="md-nav__link">
-    <span class="md-ellipsis">
-      Aliases
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -7415,16 +7415,18 @@
                   
 
 
-<h1 id="configstatus">config:status<a class="headerlink" href="#configstatus" title="Permanent link">&para;</a></h1>
-<p>Display status of configuration (differences between the filesystem and database).</p>
+<h1 id="contentexport">content:export<a class="headerlink" href="#contentexport" title="Permanent link">&para;</a></h1>
+<p>Exports a single content entity in YAML format.</p>
+<p>See <a href="https://drupal.org/project/issues/drupal">https://drupal.org/project/issues/drupal</a> for bug reports and feature requests for this command.</p>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>entity_type_id</strong>. The type of entity to export (e.g., node, taxonomy_term).</li>
+<li><strong>entity_id</strong>. The ID of the entity to export. Will usually be a number.</li>
+</ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--state=STATE</strong>. A comma-separated list of states to filter results. [default: <em>Only in DB,Only in sync dir,Different</em>]</li>
-<li><strong>--prefix=PREFIX</strong>. The config prefix. For example, system. No prefix will return all names in the system.</li>
-<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
-<li><strong>--fields=FIELDS</strong>. Available fields: Name (name), State (state)</li>
-<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
-<li><strong>--filter=FILTER</strong>. Filter output based on provided expression. Default field: name</li>
+<li><strong>-W, --with-dependencies</strong>. Recursively export all of the entities referenced by this entity into a directory structure.</li>
+<li><strong>-d, --dir=DIR</strong>. The path where content should be exported.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7432,11 +7434,6 @@
 <li><strong>-y, --yes</strong>. Auto-accept the default for all user prompts. Equivalent to --no-interaction.</li>
 <li><strong>-l, --uri=URI</strong>. A base URL for building links and selecting a multi-site. Defaults to <em><a href="https://default">https://default</a></em>.</li>
 <li>To see all global options, run <code>drush topic</code> and pick the first choice.</li>
-</ul>
-<h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
-<ul>
-<li>cst</li>
-<li>config-status</li>
 </ul>
 <div class="admonition hint">
 <p class="admonition-title">Legend</p>

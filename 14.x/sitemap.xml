@@ -186,6 +186,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/latest/commands/content_export/</loc>
+         <lastmod>2025-10-01</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/latest/commands/core_cron/</loc>
          <lastmod>2025-10-01</lastmod>
          <changefreq>daily</changefreq>
