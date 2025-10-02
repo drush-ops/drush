@@ -11,6 +11,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
+use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -52,7 +53,7 @@ final class DeployHookMarkCompleteCommand extends Command
         $pending = $this->getRegistry()->getPendingUpdateFunctions();
         $this->getRegistry()->registerInvokedUpdates($pending);
 
-        $this->logger->notice(sprintf('Marked %d pending deploy hooks as complete.', count($pending)));
+        (new DrushStyle($input, $output))->success(sprintf('Marked %d pending deploy hooks as complete.', count($pending)));
 
         return new PropertyList(['result' => sprintf('Marked %d deploy hooks as complete', count($pending))]);
     }

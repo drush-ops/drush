@@ -37,14 +37,4 @@ trait DeployTrait
             }
         };
     }
-
-    /**
-     * Batch finished callback.
-     *
-     * @param boolean $success Whether the batch ended without a fatal error.
-     */
-    public function updateFinished(bool $success, array $results, array $operations): void
-    {
-        // In theory there is nothing to do here.
-    }
 }

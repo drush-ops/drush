@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core\deploy;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\core\DeployHookCommands;
 use Drush\Config\DrushConfig;
 use Drush\Drush;
-use Drush\Formatters\FormatterTrait;
 use Drush\SiteAlias\ProcessManager;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
@@ -29,18 +25,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 #[CLI\HelpLinks(links: [HelpLinks::Deploy])]
 #[CLI\Version(version: '10.3')]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 final class DeployHookCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
     use DeployTrait;
 
     public const NAME = 'deploy:hook';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,
-        protected readonly FormatterManager $formatterManager,
         private readonly LoggerInterface $logger,
         private readonly ProcessManager $processManager,
         private readonly DrushConfig $drushConfig,
@@ -50,20 +43,13 @@ final class DeployHookCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
-    {
         $io = new DrushStyle($input, $output);
 
         $pending = $this->getRegistry()->getPendingUpdateFunctions();
 
         if (empty($pending)) {
             $this->logger->notice('No pending deploy hooks.');
-            return new PropertyList(['result' => 'No pending deploy hooks']);
+            return Command::SUCCESS;
         }
 
         $process = $this->processManager->drush($this->siteAliasManager->getSelf(), DeployHookStatusCommand::NAME, [], Drush::redispatchOptions() + ['strict' => 0]);
@@ -78,7 +64,8 @@ final class DeployHookCommand extends Command
         if (!$this->drushConfig->simulate()) {
             $operations = [];
             foreach ($pending as $function) {
-                $operations[] = ['\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
+                // We need to pass a string callable to it can be serialized by DatabaseQueue
+                $operations[] = [DeployHookCommand::class . '::updateDoOneDeployHook', [$function]];
             }
 
             $batch = [
@@ -86,7 +73,8 @@ final class DeployHookCommand extends Command
                 'title' => 'Updating',
                 'init_message' => 'Starting deploy hooks',
                 'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-                'finished' => [DeployHookCommands::class, 'updateFinished'],
+                // We need to pass a string callable to it can be serialized by DatabaseQueue
+                'finished' => DeployHookCommand::class . '::updateFinished',
             ];
             batch_set($batch);
             $result = drush_backend_batch_process(DeployHookBatchProcessCommand::NAME);
@@ -110,8 +98,7 @@ final class DeployHookCommand extends Command
         } else {
             $this->logger->error($message);
         }
-
-        return new PropertyList(['result' => $success ? 'Deploy hooks completed successfully' : 'Deploy hooks failed']);
+        return $success ? self::SUCCESS : self::FAILURE;
     }
 
     /**
@@ -200,5 +187,15 @@ final class DeployHookCommand extends Command
         } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
             $context['message'] = "Performed: $function";
         }
+    }
+
+    /**
+     * Batch finished callback.
+     *
+     * @param boolean $success Whether the batch ended without a fatal error.
+     */
+    public static function updateFinished(bool $success, array $results, array $operations): void
+    {
+        // In theory there is nothing to do here.
     }
 }
