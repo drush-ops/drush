@@ -73,13 +73,6 @@ final class CliCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
-    {
         $configuration = new Configuration();
 
         // Set the Drush specific history file path.
@@ -145,8 +138,7 @@ final class CliCommand extends Command
         }
 
         $shell->run();
-
-        return new PropertyList(['result' => 'PHP CLI session completed']);
+        return Command::SUCCESS;
     }
 
     /**

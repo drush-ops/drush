@@ -4,12 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core\cache;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Cache\Cache;
-use Drush\Attributes as CLI;
+use Drupal\Core\Cache\CacheFactoryInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,19 +21,18 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Cache an object expressed in JSON or var_export() format.',
     aliases: ['cs', 'cache-set'],
 )]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 final class CacheSetCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
 
     public const NAME = 'cache:set';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
+        private readonly CacheFactoryInterface $cacheFactory,
     ) {
         parent::__construct();
     }
+
 
     protected function configure(): void
     {
@@ -51,13 +47,6 @@ final class CacheSetCommand extends Command
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
     {
         $cid = $input->getArgument('cid');
         $data = $input->getArgument('data');
@@ -74,9 +63,8 @@ final class CacheSetCommand extends Command
             $expire = Cache::PERMANENT;
         }
 
-        \Drupal::cache($bin)->set($cid, $data, $expire, $tags);
-
-        return new PropertyList(['result' => 'Cache set successfully']);
+        $this->cacheFactory->get($bin)->set($cid, $data, $expire, $tags);
+        return Command::SUCCESS;
     }
 
     private function setPrepareData($data, InputInterface $input)
