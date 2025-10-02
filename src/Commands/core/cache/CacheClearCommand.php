@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core\cache;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\JsCollectionOptimizerLazy;
 use Drupal\Core\Cache\Cache;
@@ -14,11 +12,9 @@ use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\Plugin\CachedDiscoveryClearerInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\Core\Theme\Registry;
-use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Commands\AutowireTrait;
 use Drush\Event\CacheClearEvent;
-use Drush\Formatters\FormatterTrait;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -36,11 +32,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
     description: 'Clear a specific cache, or all Drupal caches.',
     aliases: ['cc', 'cache-clear'],
 )]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 final class CacheClearCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
 
     public const NAME = 'cache:clear';
     public const EVENT_CLEAR = 'cache-clear';
@@ -58,7 +52,6 @@ final class CacheClearCommand extends Command
         private readonly BootstrapManager $bootstrapManager,
         private readonly AssetQueryStringInterface $assetQueryString,
         protected EventDispatcherInterface $eventDispatcher,
-        protected readonly FormatterManager $formatterManager,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -95,20 +88,13 @@ final class CacheClearCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
-    {
         $type = $input->getArgument('type');
         $args = $input->getArgument('args');
         $cache_clear = $input->getOption('cache-clear');
 
         if (!$cache_clear) {
             $this->logger->info("Skipping cache-clear operation due to --cache-clear=0 option.");
-            return new PropertyList(['result' => 'Cache clear skipped']);
+            return self::SUCCESS;
         }
 
         $this->validateType($type);
@@ -120,8 +106,7 @@ final class CacheClearCommand extends Command
         if ($type !== 'bin') {
             $this->logger->notice(sprintf("'%s' cache was cleared.", $type));
         }
-
-        return new PropertyList(['result' => 'Cache cleared successfully']);
+        return Command::SUCCESS;
     }
 
     private function validateType(?string $type): void

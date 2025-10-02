@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\config;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\config\StorageReplaceDataWrapper;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigException;
@@ -28,7 +26,6 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -47,12 +44,10 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 )]
 #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
 #[CLI\HelpLinks(links: [HelpLinks::Deploy])]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 final class ConfigImportCommand extends Command
 {
     use AutowireTrait;
     use ConfigTrait;
-    use FormatterTrait;
 
     public const NAME = 'config:import';
 
@@ -75,7 +70,6 @@ final class ConfigImportCommand extends Command
         #[Autowire(service: 'config.storage.sync')]
         protected ?StorageInterface $configStorageSync,
         protected ?ImportStorageTransformer $importStorageTransformer,
-        protected readonly FormatterManager $formatterManager,
         private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -92,13 +86,6 @@ final class ConfigImportCommand extends Command
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
     {
         $io = new DrushStyle($input, $output);
 
@@ -135,7 +122,7 @@ final class ConfigImportCommand extends Command
         $storage_comparer = new StorageComparer($source_storage, $active_storage);
         if (!$storage_comparer->createChangelist()->hasChanges()) {
             $this->logger->notice('There are no changes to import.');
-            return new PropertyList(['result' => 'No changes to import']);
+            return self::SUCCESS;
         }
 
         if (!$input->getOption('diff')) {
@@ -155,8 +142,7 @@ final class ConfigImportCommand extends Command
         }
 
         $this->performImport($storage_comparer);
-
-        return new PropertyList(['result' => 'Import completed successfully']);
+        return self::SUCCESS;
     }
 
     private function validateOptions(InputInterface $input): void
