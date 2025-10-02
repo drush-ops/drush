@@ -9,7 +9,6 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,12 +27,6 @@ final class DeployHookMarkCompleteCommand extends Command
     use DeployTrait;
 
     public const NAME = 'deploy:mark-complete';
-
-    public function __construct(
-        private readonly LoggerInterface $logger,
-    ) {
-        parent::__construct();
-    }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
