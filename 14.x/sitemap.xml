@@ -246,11 +246,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/commands/deploy_mark-complete/</loc>
-         <lastmod>2025-10-02</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/commands/drupal_directory/</loc>
          <lastmod>2025-10-02</lastmod>
          <changefreq>daily</changefreq>
