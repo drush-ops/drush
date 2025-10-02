@@ -29,8 +29,7 @@ final class CacheSetCommand extends Command
 
     public function __construct(
         private readonly CacheFactoryInterface $cacheFactory,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
