@@ -27,7 +27,7 @@ final class DeployHookMarkCompleteCommand extends Command
     use DeployTrait;
 
     public const NAME = 'deploy:mark-complete';
-    
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $pending = $this->getRegistry()->getPendingUpdateFunctions();
