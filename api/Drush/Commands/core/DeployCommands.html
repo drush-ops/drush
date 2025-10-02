@@ -100,11 +100,6 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
-                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
@@ -500,11 +495,12 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+                    <a href="#method___construct">__construct</a>($obj, $input, $output, $io)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -594,38 +590,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                                             <p><p>This method overrides the trait in order to provide a more specific return type.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_processManager">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        
-                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_deploy">deploy</a>()
-        
-                                            <p><p>Run several commands after performing a code deployment.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_cacheRebuild">cacheRebuild</a>(<a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> $manager, <a href="../../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a> $self, array $redispatchOptions)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
             </div>
             </div>
 
@@ -1367,9 +1331,10 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/DeployCommands.php#L26">at line 26</a></div>
+        <div class="location">in <a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/IO.php#L32">at line 32</a></div>
         <code>                    
-    <strong>__construct</strong>(<a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+    <strong>__construct</strong>($obj, $input, $output, $io)
         </code>
     </h3>
     <div class="details">    
@@ -1385,8 +1350,23 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a></td>
-                <td>$siteAliasManager</td>
+                <td></td>
+                <td>$obj</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$io</td>
                 <td></td>
             </tr>
             </table>
@@ -1667,125 +1647,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <table class="table table-condensed">
         <tr>
             <td><a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_create">
-        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
-        <code>        static            
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
-                <td>$container</td>
-                <td><p>The service container this instance should use.</p></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_deploy">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/DeployCommands.php#L35">at line 35</a></div>
-        <code>                    void
-    <strong>deploy</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Run several commands after performing a code deployment.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_cacheRebuild">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/DeployCommands.php#L69">at line 69</a></div>
-        <code>                    void
-    <strong>cacheRebuild</strong>(<a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> $manager, <a href="../../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a> $self, array $redispatchOptions)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
-                <td>$manager</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a href="../../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a></td>
-                <td>$self</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$redispatchOptions</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
             <td></td>
         </tr>
     </table>
