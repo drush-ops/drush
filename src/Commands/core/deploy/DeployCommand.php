@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core\deploy;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
@@ -18,7 +16,6 @@ use Drush\Commands\core\cache\CacheRebuildCommand;
 use Drush\Commands\core\cache\CacheWarmCommand;
 use Drush\Commands\core\UpdateDBCommands;
 use Drush\Drush;
-use Drush\Formatters\FormatterTrait;
 use Drush\SiteAlias\ProcessManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -33,17 +30,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
 #[CLI\Version(version: '10.3')]
 #[CLI\HelpLinks(links: [HelpLinks::Deploy])]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'null')]
 final class DeployCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
 
     public const NAME = 'deploy';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,
-        protected readonly FormatterManager $formatterManager,
         private readonly LoggerInterface $logger,
         private readonly ProcessManager $processManager,
     ) {
@@ -51,13 +45,6 @@ final class DeployCommand extends Command
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
     {
         $self = $this->siteAliasManager->getSelf();
         $redispatchOptions = Drush::redispatchOptions();
@@ -83,8 +70,7 @@ final class DeployCommand extends Command
             $process = $this->processManager->drush($self, CacheWarmCommand::NAME, [], $redispatchOptions);
             $process->mustRun($process->showRealtime());
         }
-
-        return new PropertyList(['result' => 'Deploy completed successfully']);
+        return Command::SUCCESS;
     }
 
     public function cacheRebuild(ProcessManager $manager, SiteAlias $self, array $redispatchOptions): void
