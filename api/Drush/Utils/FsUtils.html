@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Utils\FsUtils | Drush API 14</title>
+    <title>Drush\Utils\FsUtils | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>FsUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php">View source</a>)
+    <strong>FsUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php">View source</a>)
 </p>
 
         
@@ -193,7 +193,7 @@ directory could be created at that path.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;string|bool
+                    static&nbsp;string|bool|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getMimeContentType">getMimeContentType</a>(string $path)
@@ -209,7 +209,7 @@ directory could be created at that path.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getBackupDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L26">at line 26</a></div>
         <code>        static            string
     <strong>getBackupDir</strong>(string|null $subdir = null)
         </code>
@@ -261,7 +261,7 @@ Usually a database name.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getBackupDirParent">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L51">at line 51</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L51">at line 51</a></div>
         <code>        static            
     <strong>getBackupDirParent</strong>()
         </code>
@@ -284,7 +284,7 @@ Usually a database name.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_isUsableDirectory">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L88">at line 88</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L88">at line 88</a></div>
         <code>        static            bool|string
     <strong>isUsableDirectory</strong>(string|null $dir)
         </code>
@@ -327,7 +327,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_tmpDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L119">at line 119</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L119">at line 119</a></div>
         <code>        static            string
     <strong>tmpDir</strong>(string $subdir = null)
         </code>
@@ -378,7 +378,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_registerForDeletion">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L136">at line 136</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L136">at line 136</a></div>
         <code>        static            
     <strong>registerForDeletion</strong>(string $dir)
         </code>
@@ -411,7 +411,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_cleanup">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L149">at line 149</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L149">at line 149</a></div>
         <code>        static            
     <strong>cleanup</strong>()
         </code>
@@ -434,7 +434,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_prepareBackupDir">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L174">at line 174</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L174">at line 174</a></div>
         <code>        static            string
     <strong>prepareBackupDir</strong>(string $subdir = null)
         </code>
@@ -485,7 +485,7 @@ directory could be created at that path.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_realpath">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L193">at line 193</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L193">at line 193</a></div>
         <code>        static            string
     <strong>realpath</strong>(string $path)
         </code>
@@ -528,7 +528,7 @@ return the original path even if it doesn't exist.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_isTarball">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L206">at line 206</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L206">at line 206</a></div>
         <code>        static            string|bool
     <strong>isTarball</strong>(string $path)
         </code>
@@ -570,8 +570,8 @@ return the original path even if it doesn't exist.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getMimeContentType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/FsUtils.php#L234">at line 234</a></div>
-        <code>        static            string|bool
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Utils/FsUtils.php#L234">at line 234</a></div>
+        <code>        static            string|bool|null
     <strong>getMimeContentType</strong>(string $path)
         </code>
     </h3>
@@ -600,7 +600,7 @@ gz, zip and bzip2 types can be detected.</p></p>
 
                     <table class="table table-condensed">
         <tr>
-            <td>string|bool</td>
+            <td>string|bool|null</td>
             <td><p>The MIME content type of the file.</p></td>
         </tr>
     </table>
