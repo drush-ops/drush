@@ -5,6 +5,7 @@ parameters:
         - phpstan-bootstrap.php
     paths:
         - src
+    treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
         - Drupal\Core\Extension\Extension

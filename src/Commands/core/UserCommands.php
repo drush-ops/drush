@@ -226,7 +226,6 @@ final class UserCommands extends DrushCommands
             'status' => 1,
         ];
         if (!$this->getConfig()->simulate()) {
-            // @phpstan-ignore if.alwaysTrue
             if ($account = User::create($new_user)) {
                 $account->save();
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));

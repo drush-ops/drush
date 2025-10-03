@@ -180,8 +180,8 @@ final class MigrateRunnerCommands extends DrushCommands
     {
         try {
             $sourceRowsCount = $migration->getSourcePlugin()->count();
-            // -1 indicates uncountable sources.
-            if ($sourceRowsCount === -1) {
+            // null indicates uncountable/unretrievable sources.
+            if (is_null($sourceRowsCount)) {
                 return null;
             }
             return $sourceRowsCount;

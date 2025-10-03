@@ -327,7 +327,6 @@ class ServiceManager
         ];
 
         foreach ($classes_yaml as $class_yaml) {
-            /** @var Command $instance */
             $instance = new $class_yaml();
             // Namespace the commands.
             $name = $instance->getName();
