@@ -314,10 +314,6 @@ class Preflight
         $this->logger()->log(dt('Config paths: ' . implode(',', $configFilePaths)));
         $this->logger()->log(dt('Alias paths: ' . implode(',', $paths)));
 
-        // We need to check the php minimum version again, in case anyone
-        // has set it to something higher in one of the config files we loaded.
-        $this->verify->confirmPhpVersion($config->get('drush.php.minimum-version'));
-
         return [false, DrushCommands::EXIT_SUCCESS];
     }
 
