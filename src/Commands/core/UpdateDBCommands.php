@@ -494,28 +494,38 @@ final class UpdateDBCommands extends DrushCommands
         require_once DRUPAL_ROOT . '/core/includes/update.inc';
         $pending = \update_get_update_list();
 
+        $start = $this->getUpdateList();
+        // Resolve any update dependencies to determine the actual updates that will
+        // be run and the order they will be run in.
+        $upcoming_updates = update_resolve_dependencies($start);
+
         $return = [];
         $warnings = [];
 
         // Ensure system module's updates run first.
         $start['system'] = [];
 
-        foreach ($pending as $module => $updates) {
-            if (isset($updates['start'])) {
-                $start[$module] = $updates['start'];
-                foreach ($updates['pending'] as $update_id => $description) {
-                    // Strip cruft from front.
-                    $description = str_replace($update_id . ' -   ', '', $description);
-                    $return[$module . "_update_$update_id"] = [
-                        'module' => $module,
-                        'update_id' => $update_id,
-                        'description' => $description,
-                        'type' => 'hook_update_n'
-                    ];
-                }
+        foreach ($upcoming_updates as $upcoming_update) {
+            $module = $upcoming_update['module'];
+            $update_id = $upcoming_update['number'];
+            $description = $pending[$module]['pending'][$update_id];
+            // Strip cruft from front.
+            $description = str_replace($update_id . ' -   ', '', $description);
+            if (empty($upcoming_update['allowed'])) {
+                // This should rarely happen, but it's a good idea to have it
+                // shown rather than silently skipped.
+                $description = dt('[SKIPPED] @description', [
+                    '@description' => $description,
+                ]);
             }
-            if (isset($updates['warning'])) {
-                $warnings[$module] = $updates['warning'];
+            $return[$module . "_update_$update_id"] = [
+                'module' => $module,
+                'update_id' => $update_id,
+                'description' => $description,
+                'type' => 'hook_update_n'
+            ];
+            if (isset($pending[$module]['warning'])) {
+                $warnings[$module] = $pending[$module]['warning'];
             }
         }
 
