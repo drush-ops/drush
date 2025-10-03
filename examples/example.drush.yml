@@ -23,6 +23,13 @@ options:
 
 # Command-specific options.
 command:
+  # Disabling the admin super user account (uid #1) is recommended.
+  # Use this to specify another admin account for the uli command.
+  # See https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-the-admin-super-user-1
+  user:
+    login:
+      options:
+        name: newadminuser
   sql:
     dump:
       options:
