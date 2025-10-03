@@ -14,9 +14,9 @@ parameters:
         - src/Psysh/Caster.php
         # Remove once https://github.com/mglaman/phpstan-drupal/issues/741 is resolved
         - src/Commands/core/LocaleCommands.php
-        - src/Commands/core/LanguageCommands.php
+        - src/Commands/core/LanguageAddCommand.php
         # Remove once we only support Drupal 11.2
-        - src/Commands/core/CacheWarmCommands.php
+        # - src/Commands/core/cache/CacheWarmCommand.php
     ignoreErrors:
         # XHprof
         - '#tideways_xhprof_enable#'
