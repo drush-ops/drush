@@ -1,52 +1,67 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Call to an undefined method Drupal\\\\migrate\\\\Plugin\\\\MigrationInterface\\:\\:set\\(\\)\\.$#"
+			message: '#^Call to an undefined method Drupal\\migrate\\Plugin\\MigrationInterface\:\:set\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Commands/core/MigrateRunnerCommands.php
 
 		-
-			message: "#^Offset '\\#name' on array\\{\\} in isset\\(\\) does not exist\\.$#"
+			message: '#^Offset ''\#name'' on array\{\} in isset\(\) does not exist\.$#'
+			identifier: isset.offset
 			count: 1
 			path: src/Commands/core/SiteCommands.php
 
 		-
-			message: "#^If condition is always false\\.$#"
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
 			count: 2
 			path: src/Commands/core/UpdateDBCommand.php
 
 		-
-			message: "#^While loop condition is always true\\.$#"
+			message: '#^While loop condition is always true\.$#'
+			identifier: while.alwaysTrue
 			count: 1
 			path: src/Commands/core/WatchdogCommands.php
 
 		-
-			message: "#^Negated boolean expression is always false\\.$#"
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
 			count: 1
 			path: src/Commands/core/XhprofCommands.php
 
 		-
-			message: "#^If condition is always true\\.$#"
+			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$#'
+			identifier: arguments.count
 			count: 1
-			path: src/Preflight/PreflightSiteLocator.php
+			path: src/Drupal/Migrate/MigrateRunnerHooks.php
 
 		-
-			message: "#^Call to an undefined method Psr\\\\Container\\\\ContainerInterface\\:\\:getParameter\\(\\)\\.$#"
+			message: '#^Strict comparison using \=\=\= between ''\='' and ''\='' will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: src/Preflight/ArgsPreprocessor.php
+
+		-
+			message: '#^Call to an undefined method Psr\\Container\\ContainerInterface\:\:getParameter\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Runtime/LegacyServiceInstantiator.php
 
 		-
-			message: "#^Negated boolean expression is always true\\.$#"
+			message: '#^Trait Drush\\TestTraits\\CliTestTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
 			count: 1
-			path: src/Symfony/BootstrapCompilerPass.php
+			path: src/TestTraits/CliTestTrait.php
 
 		-
-			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			message: '#^Trait Drush\\TestTraits\\DrushTestTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
 			count: 1
-			path: src/Symfony/BootstrapCompilerPass.php
+			path: src/TestTraits/DrushTestTrait.php
 
 		-
-			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required.$#'
-			identifier: arguments.count
+			message: '#^Trait Drush\\TestTraits\\OutputUtilsTrait is used zero times and is not analysed\.$#'
+			identifier: trait.unused
 			count: 1
-			path: src/Drupal/Migrate/MigrateRunnerHooks.php
+			path: src/TestTraits/OutputUtilsTrait.php

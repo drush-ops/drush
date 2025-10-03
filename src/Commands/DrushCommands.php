@@ -60,7 +60,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     protected function io(): DrushStyle
     {
         trigger_deprecation('drush/drush', '14.0.0', 'Convert to a Console command and build a DrushStyle instance. See https://www.drush.org/latest/commands/.');
-        // @phpstan-ignore booleanNot.alwaysFalse
         if (!$this->io) {
             // Specify our own Style class when needed.
             $this->io = new DrushStyle($this->input(), $this->output());

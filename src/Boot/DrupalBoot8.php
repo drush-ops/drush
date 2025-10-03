@@ -87,7 +87,7 @@ class DrupalBoot8 extends DrupalBoot
 
     public function bootstrapDrupalSiteValidate(BootstrapManager $manager): bool
     {
-        parent::bootstrapDrupalSiteValidate($manager);
+        // parent::bootstrapDrupalSiteValidate($manager);
 
         // Normalize URI.
         $uri = rtrim($this->uri, '/') . '/';
@@ -105,14 +105,7 @@ class DrupalBoot8 extends DrupalBoot
             'SCRIPT_FILENAME' => getcwd() . '/index.php',
             'SCRIPT_NAME' => isset($parsed_url['path']) ? $parsed_url['path'] . 'index.php' : '/index.php',
         ] + $_SERVER;
-        // To do: split into Drupal 9 and Drupal 10 bootstrap
-        if (method_exists(Request::class, 'create')) {
-            // Drupal 9
-            $request = Request::create($uri, 'GET', [], [], [], $server);
-        } else {
-            // Drupal 10
-            $request = Request::createFromGlobals();
-        }
+        $request = Request::create($uri, 'GET', [], [], [], $server);
         $request->overrideGlobals();
         $this->setRequest($request);
         return true;
@@ -203,7 +196,7 @@ class DrupalBoot8 extends DrupalBoot
         // Disable automated cron if the module is enabled.
         $GLOBALS['config']['automated_cron.settings']['interval'] = 0;
 
-        parent::bootstrapDrupalConfiguration($manager);
+        // parent::bootstrapDrupalConfiguration($manager);
     }
 
     public function bootstrapDrupalFull(BootstrapManager $manager): void

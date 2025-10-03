@@ -277,10 +277,7 @@ final class UpdateDBCommand extends Command
 
         $ret = [];
         $update_hook_registry = \Drupal::service('update.update_hook_registry');
-        $equivalent_update = null;
-        if (method_exists($update_hook_registry, 'getEquivalentUpdate')) {
-            $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
-        }
+        $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
         if ($equivalent_update && $equivalent_update instanceof EquivalentUpdate) {
             $ret['results']['query'] = $equivalent_update->toSkipMessage();
             $ret['results']['success'] = true;

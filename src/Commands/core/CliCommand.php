@@ -91,18 +91,6 @@ final class CliCommand extends Command
 
         $shell = new Shell($configuration);
 
-        // Register the assertion handler so exceptions are thrown instead of
-        // errors being triggered. This plays nicer with PsySH. Since we're
-        // using exceptions, turn error warnings off.
-        if (version_compare(PHP_VERSION, '8.3', '<')) {
-            // assert_options() and assert.* INI configuration directives are
-            // all deprecated in PHP 8.3.
-            // @see https://www.php.net/manual/en/function.assert-options.php
-            // @see https://www.php.net/manual/en/info.configuration.php
-            assert_options(ASSERT_EXCEPTION, true);
-            assert_options(ASSERT_WARNING, false);
-        }
-
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
         // Add our casters to the shell configuration.
@@ -188,7 +176,7 @@ final class CliCommand extends Command
      * See http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      * for more information.
      *
-     * @return callable[].
+     * @return callable[]
      *   An array of caster callbacks keyed by class or interface.
      */
     private function getCasters(): array

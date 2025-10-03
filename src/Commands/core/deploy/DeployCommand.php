@@ -7,7 +7,6 @@ namespace Drush\Commands\core\deploy;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBoot;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
@@ -65,7 +64,7 @@ final class DeployCommand extends Command
         // Since this command is Bootstrap=None, we don't have access to the Drupal container.
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
-        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot && version_compare($boot_object->getVersion($drupal_root), '11.2-dev', '>='))) {
+        if ($boot_manager->getRoot() && version_compare($boot_object->getVersion($boot_manager->getRoot()), '11.2-dev', '>=')) {
             $this->logger->notice("Cache prewarm start.");
             $process = $this->processManager->drush($self, CacheWarmCommand::NAME, [], $redispatchOptions);
             $process->mustRun($process->showRealtime());
