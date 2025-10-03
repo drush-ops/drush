@@ -18,7 +18,4 @@ final class DrupalDirectoryCommands extends DrushCommands
 
     #[Deprecated(reason: 'Use DrupalDirectoryCommand::NAME')]
     const DIRECTORY = 'drupal:directory';
-
-
-
 }
