@@ -64,7 +64,7 @@ final class DeployCommand extends Command
         // Since this command is Bootstrap=None, we don't have access to the Drupal container.
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
-        if (($drupal_root = $boot_manager->getRoot())) {
+        if ($boot_manager->getRoot() && version_compare($boot_object->getVersion($boot_manager->getRoot()), '11.2-dev', '>=')) {
             $this->logger->notice("Cache prewarm start.");
             $process = $this->processManager->drush($self, CacheWarmCommand::NAME, [], $redispatchOptions);
             $process->mustRun($process->showRealtime());
