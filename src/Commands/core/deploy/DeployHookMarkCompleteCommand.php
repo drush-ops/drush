@@ -7,7 +7,6 @@ namespace Drush\Commands\core\deploy;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
-use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -23,7 +22,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
 final class DeployHookMarkCompleteCommand extends Command
 {
-    use AutowireTrait;
     use DeployTrait;
 
     public const NAME = 'deploy:mark-complete';
