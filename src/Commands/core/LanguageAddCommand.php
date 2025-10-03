@@ -86,11 +86,10 @@ final class LanguageAddCommand extends Command
     /**
      * Filters valid language codes.
      *
-     * @param $langcodes
      * @throws \Exception
      *   Exception when a language code is not in the standard language list.
      */
-    private function filterValidLangcode($langcodes): array
+    private function filterValidLangcode(array $langcodes): array
     {
         $standardLanguages = $this->languageManager->getStandardLanguageList();
         foreach ($langcodes as $key => $langcode) {
@@ -106,10 +105,8 @@ final class LanguageAddCommand extends Command
 
     /**
      * Filters new language codes.
-     *
-     * @param $langcodes
      */
-    private function filterNewLangcode($langcodes, DrushStyle $io): array
+    private function filterNewLangcode(array $langcodes, DrushStyle $io): array
     {
         $enabledLanguages = $this->languageManager->getLanguages();
         foreach ($langcodes as $key => $langcode) {
@@ -129,12 +126,11 @@ final class LanguageAddCommand extends Command
      *
      * @param $langcodes
      */
-    private function setBatchLanguageImport($langcodes): void
+    private function setBatchLanguageImport(array $langcodes): void
     {
-        $moduleHandler = $this->moduleHandler;
-        $moduleHandler->loadInclude('locale', 'inc', 'locale.translation');
-        $moduleHandler->loadInclude('locale', 'inc', 'locale.fetch');
-        $moduleHandler->loadInclude('locale', 'inc', 'locale.bulk');
+        $this->moduleHandler->loadInclude('locale', 'inc', 'locale.translation');
+        $this->moduleHandler->loadInclude('locale', 'inc', 'locale.fetch');
+        $this->moduleHandler->loadInclude('locale', 'inc', 'locale.bulk');
         $translationOptions = _locale_translation_default_update_options();
 
         locale_translation_clear_status();
