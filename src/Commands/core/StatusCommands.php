@@ -150,7 +150,7 @@ final class StatusCommands extends DrushCommands
         $status_table['php-bin'] = Path::canonicalize(PHP_BINARY);
         $status_table['php-os'] = PHP_OS;
         $status_table['php-version'] = PHP_VERSION;
-        if ($phpIniFiles = EditCommands::phpIniFiles()) {
+        if ($phpIniFiles = EditCommand::phpIniFiles()) {
             $status_table['php-conf'] = array_map([Path::class, 'canonicalize'], $phpIniFiles);
         }
         $status_table['drush-script'] = Path::canonicalize($this->getConfig()->get('runtime.drush-script'));
