@@ -331,11 +331,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/commands/jn_get/</loc>
-         <lastmod>2025-10-03</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/commands/list/</loc>
          <lastmod>2025-10-03</lastmod>
          <changefreq>daily</changefreq>
