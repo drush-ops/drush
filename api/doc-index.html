@@ -1326,6 +1326,8 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method_configure">
 <abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageFlushCommand.html"><abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/JsonapiGetCommand.html#method_configure">
+<abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_check">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::check</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd><p>Checks for available translation updates.</p></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_clearStatus">
@@ -2120,7 +2122,9 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::doDelete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
                     <dd><p>Actual delete method.</p></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_doSave">
 <abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::doSave</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
-                    <dd><p>Actual save method.</p></dd><dt><a href="Drush/Commands/core/MkCommands.html#method_docs">
+                    <dd><p>Actual save method.</p></dd><dt><a href="Drush/Commands/core/JsonapiGetCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/MkCommands.html#method_docs">
 <abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr>::docs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MkCommands.html"><abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr></a></em></dt>
                     <dd><p>Build a Markdown document for each available Drush command/generator.</p></dd><dt><a href="Drush/Commands/core/QueueCommands.html#method_delete">
 <abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/QueueCommands.html"><abbr title="Drush\Commands\core\QueueCommands">QueueCommands</abbr></a></em></dt>
@@ -2579,6 +2583,8 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method_execute">
 <abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageFlushCommand.html"><abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/JsonapiGetCommand.html#method_execute">
+<abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_export">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::export</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
                     <dd><p>Exports to a gettext translation file.</p></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_exportValidate">
@@ -3576,9 +3582,7 @@ environments in the specified site.</p></dd><dt><a href="Consolidation/SiteAlias
 <abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_getQuery">
 <abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/JsonapiCommands.html#method_get">
-<abbr title="Drush\Commands\core\JsonapiCommands">JsonapiCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiCommands.html"><abbr title="Drush\Commands\core\JsonapiCommands">JsonapiCommands</abbr></a></em></dt>
-                    <dd><p>Execute a JSONAPI request.</p></dd><dt><a href="Drush/Commands/core/LanguageCommands.html#method_getLanguageManager">
+                    <dd></dd><dt><a href="Drush/Commands/core/LanguageCommands.html#method_getLanguageManager">
 <abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr>::getLanguageManager</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LanguageCommands.html"><abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LanguageCommands.html#method_getModuleHandler">
 <abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LanguageCommands.html"><abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
@@ -4974,6 +4978,7 @@ pathname.  Empty items are omitted.</p></dd><dt><a href="Consolidation/Annotated
                     <dd><p>Json formatter</p></dd><dt><a href="Consolidation/OutputFormatters/StructuredData/NumericCellRenderer.html#method_justifyCellData">
 <abbr title="Consolidation\OutputFormatters\StructuredData\NumericCellRenderer">NumericCellRenderer</abbr>::justifyCellData</a>() &mdash; <em>Method in class <a href="Consolidation/OutputFormatters/StructuredData/NumericCellRenderer.html"><abbr title="Consolidation\OutputFormatters\StructuredData\NumericCellRenderer">NumericCellRenderer</abbr></a></em></dt>
                     <dd><p>Right-justify the cell data.</p></dd><dt><a href="Drush/Commands/core/JsonapiCommands.html"><abbr title="Drush\Commands\core\JsonapiCommands">JsonapiCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Robo/Task/Assets/ImageMinify.html#method_jpegtran">
 <abbr title="Robo\Task\Assets\ImageMinify">ImageMinify</abbr>::jpegtran</a>() &mdash; <em>Method in class <a href="Robo/Task/Assets/ImageMinify.html"><abbr title="Robo\Task\Assets\ImageMinify">ImageMinify</abbr></a></em></dt>
                     <dd></dd><dt><a href="Robo/Task/Assets/ImageMinify.html#method_jpegoptim">
@@ -9019,6 +9024,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method___construct">
 <abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageFlushCommand.html"><abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/JsonapiGetCommand.html#method___construct">
+<abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LanguageCommands.html#method___construct">
 <abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LanguageCommands.html"><abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LinkHooks.html#method___construct">
