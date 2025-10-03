@@ -1318,7 +1318,11 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr>::complete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommand.html"><abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EntityCreateCommands.html#method_createEntity">
 <abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr>::createEntity</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a></em></dt>
-                    <dd><p>Create a content entity after prompting for field values.</p></dd><dt><a href="Drush/Commands/core/ImageDeriveCommand.html#method_configure">
+                    <dd><p>Create a content entity after prompting for field values.</p></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html#method_configure">
+<abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_configure">
+<abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/ImageDeriveCommand.html#method_configure">
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method_configure">
 <abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageFlushCommand.html"><abbr title="Drush\Commands\core\ImageFlushCommand">ImageFlushCommand</abbr></a></em></dt>
@@ -2112,12 +2116,10 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr>::dependentsOfConfig</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/DrupalDirectoryCommand.html"><abbr title="Drush\Commands\core\DrupalDirectoryCommand">DrupalDirectoryCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/DrupalDirectoryCommands.html"><abbr title="Drush\Commands\core\DrupalDirectoryCommands">DrupalDirectoryCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method_delete">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::delete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Delete content entities.</p></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method_doDelete">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::doDelete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Actual delete method.</p></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method_doSave">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::doSave</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html#method_doDelete">
+<abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::doDelete</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
+                    <dd><p>Actual delete method.</p></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_doSave">
+<abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::doSave</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
                     <dd><p>Actual save method.</p></dd><dt><a href="Drush/Commands/core/MkCommands.html#method_docs">
 <abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr>::docs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MkCommands.html"><abbr title="Drush\Commands\core\MkCommands">MkCommands</abbr></a></em></dt>
                     <dd><p>Build a Markdown document for each available Drush command/generator.</p></dd><dt><a href="Drush/Commands/core/QueueCommands.html#method_delete">
@@ -2567,6 +2569,12 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
                     <dd></dd><dt><a href="Drush/Commands/core/EditCommands.html"><abbr title="Drush\Commands\core\EditCommands">EditCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html#method_execute">
+<abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_execute">
+<abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageDeriveCommand.html#method_execute">
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method_execute">
@@ -3564,8 +3572,10 @@ environments in the specified site.</p></dd><dt><a href="Consolidation/SiteAlias
 <abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr>::generators</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DocsCommands.html"><abbr title="Drush\Commands\core\DocsCommands">DocsCommands</abbr></a></em></dt>
                     <dd><p>Instructions on creating your own Drush Generators.</p></dd><dt><a href="Drush/Commands/core/DrupalDirectoryCommand.html#method_getPath">
 <abbr title="Drush\Commands\core\DrupalDirectoryCommand">DrupalDirectoryCommand</abbr>::getPath</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDirectoryCommand.html"><abbr title="Drush\Commands\core\DrupalDirectoryCommand">DrupalDirectoryCommand</abbr></a></em></dt>
-                    <dd><p>Given a target (e.g.</p></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method_getQuery">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
+                    <dd><p>Given a target (e.g.</p></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html#method_getQuery">
+<abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method_getQuery">
+<abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::getQuery</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/JsonapiCommands.html#method_get">
 <abbr title="Drush\Commands\core\JsonapiCommands">JsonapiCommands</abbr>::get</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/JsonapiCommands.html"><abbr title="Drush\Commands\core\JsonapiCommands">JsonapiCommands</abbr></a></em></dt>
                     <dd><p>Execute a JSONAPI request.</p></dd><dt><a href="Drush/Commands/core/LanguageCommands.html#method_getLanguageManager">
@@ -5093,9 +5103,7 @@ the value of a path alias.</p></dd><dt><a href="Drush/Boot/BaseBoot.html#method_
                     <dd><p>Returns a logger object.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html"><abbr title="Drush\Commands\LegacyCommands">LegacyCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands.html">Drush\Commands</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EditCommand.html#method_load">
 <abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr>::load</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommand.html"><abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method_loadSave">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::loadSave</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
-                    <dd><p>Re-save entities, and publish/unpublish is specified.</p></dd><dt><a href="Drush/Commands/core/LanguageCommands.html"><abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/LanguageCommands.html"><abbr title="Drush\Commands\core\LanguageCommands">LanguageCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LinkHooks.html"><abbr title="Drush\Commands\core\LinkHooks">LinkHooks</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LoginCommands.html"><abbr title="Drush\Commands\core\LoginCommands">LoginCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -9001,10 +9009,12 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\DrupalDirectoryCommand">DrupalDirectoryCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDirectoryCommand.html"><abbr title="Drush\Commands\core\DrupalDirectoryCommand">DrupalDirectoryCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EditCommand.html#method___construct">
 <abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommand.html"><abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/EntityCommands.html#method___construct">
-<abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCommands.html"><abbr title="Drush\Commands\core\EntityCommands">EntityCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/EntityCreateCommands.html#method___construct">
 <abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityCreateCommands.html"><abbr title="Drush\Commands\core\EntityCreateCommands">EntityCreateCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntityDeleteCommand.html#method___construct">
+<abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntityDeleteCommand.html"><abbr title="Drush\Commands\core\EntityDeleteCommand">EntityDeleteCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/EntitySaveCommand.html#method___construct">
+<abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EntitySaveCommand.html"><abbr title="Drush\Commands\core\EntitySaveCommand">EntitySaveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageDeriveCommand.html#method___construct">
 <abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/ImageDeriveCommand.html"><abbr title="Drush\Commands\core\ImageDeriveCommand">ImageDeriveCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/ImageFlushCommand.html#method___construct">
