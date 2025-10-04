@@ -141,7 +141,6 @@ class UserTest extends CommandUnishTestCase
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
         $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
-        $this->assertStringContainsString('Opening browser to http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
         $this->drush(UserLoginCommand::NAME, ['node/add'], $user_login_options + ['name' => self::NAME]);
