@@ -8,6 +8,7 @@ use Drush\Commands\core\LoginCommands;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
+use Drush\Commands\core\UserLoginCommand;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
@@ -135,23 +136,23 @@ class UserTest extends CommandUnishTestCase
     public function testUserLogin()
     {
         // Check user-login
-        $user_login_options = ['simulate' => null, 'browser' => 'unish'];
+        $user_login_options = ['simulate' => null];
         // Collect full logs so we can check browser.
-        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['debug' => null]);
+        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
         $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
-        $this->assertStringContainsString('Opening browser unish at http://', $logOutput);
+        $this->assertStringContainsString('Opening browser to http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
-        $this->drush(LoginCommands::LOGIN, ['node/add'], $user_login_options + ['name' => self::NAME]);
+        $this->drush(UserLoginCommand::NAME, ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $query = $url['query'];
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Check path used as only argument when using uid option.
-        $this->drush(LoginCommands::LOGIN, ['node/add'], $user_login_options + ['name' => self::NAME]);
+        $this->drush(UserLoginCommand::NAME, ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
@@ -159,14 +160,14 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Test specific user by uid.
         $uid = 2;
-        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['uid' => $uid]);
+        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['uid' => $uid]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         // Test specific user by mail.
         $uid = 2;
         $mail = self::MAIL;
-        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['mail' => $mail]);
+        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['mail' => $mail]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');

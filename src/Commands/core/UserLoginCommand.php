@@ -111,6 +111,11 @@ final class UserLoginCommand extends Command
             )->toString();
         }
         $port = $input->getOption('redirect-port');
+//        $browser = $input->getOption('browser');
+//        if (is_null($browser) && !str_contains(strval($input), '--browser')) {
+//            // WHen user doesn't specify, we have always represented that with true.
+//            $browser = true;
+//        }
         $this->startBrowser($link, 0, $port, $input->getOption('browser'));
         $output->writeln($link);
         return self::SUCCESS;

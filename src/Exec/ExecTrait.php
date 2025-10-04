@@ -68,7 +68,7 @@ trait ExecTrait
             }
 
             if ($browser) {
-                $logger->info(dt('Opening browser !browser at !uri', ['!browser' => $browser, '!uri' => $uri]));
+                $logger->info(dt('Opening browser to !uri', ['!browser' => $browser, '!uri' => $uri]));
                 $args = [];
                 if (!Drush::simulate()) {
                     if ($sleep) {
