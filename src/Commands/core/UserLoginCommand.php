@@ -81,8 +81,8 @@ final class UserLoginCommand extends Command
                 throw new \Exception(dt('Unable to load user by uid: !uid', ['!uid' => $input->getOption('uid')]));
             }
 
-            if ($input->getOption('mail') && !$account = user_load_by_mail($input->getOption('uid'))) {
-                throw new \Exception(dt('Unable to load user by mail: !mail', ['!mail' => $input->getOption('uid')]));
+            if ($input->getOption('mail') && !$account = user_load_by_mail($input->getOption('mail'))) {
+                throw new \Exception(dt('Unable to load user by mail: !mail', ['!mail' => $input->getOption('mail')]));
             }
 
             if (empty($account)) {

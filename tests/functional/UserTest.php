@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\LoginCommands;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
@@ -130,14 +129,14 @@ class UserTest extends CommandUnishTestCase
     {
         $this->markTestSkipped('TODO: @none should prevent selection of site at cwd');
         // Check if user-login on a non-bootstrapped environment returns error.
-        $this->drush(LoginCommands::LOGIN, [], [], '@none', null, self::EXIT_ERROR);
+        $this->drush(UserLoginCommand::NAME, [], [], '@none', null, self::EXIT_ERROR);
     }
 
     public function testUserLogin()
     {
         // Check user-login
         $user_login_options = ['simulate' => null];
-        // Collect full logs so we can check browser.
+        // Collect full logs.
         $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
