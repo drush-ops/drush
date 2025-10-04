@@ -7390,6 +7390,13 @@
 
 <span class="c1"># Command-specific options.</span>
 <span class="nt">command</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Disabling the admin super user account (uid #1) is recommended.</span>
+<span class="w">  </span><span class="c1"># Use this to specify another admin account for the uli command.</span>
+<span class="w">  </span><span class="c1"># See https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-the-admin-super-user-1</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">login</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">newadminuser</span>
 <span class="w">  </span><span class="nt">sql</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">dump</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">options</span><span class="p">:</span>
