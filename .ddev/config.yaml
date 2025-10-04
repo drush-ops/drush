@@ -14,7 +14,7 @@ composer_version: ""
 disable_settings_management: true
 webimage_extra_packages:
   - bash-completion
-  - asciinema
+  - xdg-utils
 # https://ddev.readthedocs.io/en/latest/users/extend/database-types/
 # When switching DBs, use ddev delete --omit-snapshot
 #database:
