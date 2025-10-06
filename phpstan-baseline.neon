@@ -4,7 +4,7 @@ parameters:
 			message: '#^Call to an undefined method Drupal\\migrate\\Plugin\\MigrationInterface\:\:set\(\)\.$#'
 			identifier: method.notFound
 			count: 1
-			path: src/Commands/core/MigrateRunnerCommands.php
+			path: src/Commands/migrate/MigrateImportCommand.php
 
 		-
 			message: '#^Offset ''\#name'' on array\{\} in isset\(\) does not exist\.$#'

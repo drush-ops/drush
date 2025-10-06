@@ -20,7 +20,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->drush('pm:install', ['migrate', 'node', 'woot'], ['yes' => null]);;
+        $this->drush('pm:install', ['migrate', 'node', 'woot'], ['yes' => null]);
     }
 
     /**
