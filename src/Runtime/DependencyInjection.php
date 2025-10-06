@@ -77,6 +77,7 @@ class DependencyInjection
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
+        $container->add(\Psr\Container\ContainerInterface::class, 'container'); // For autowiring
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
