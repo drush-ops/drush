@@ -70,7 +70,7 @@ final class MigrateResetStatusCommand extends Command
         $migration = $this->migrationPluginManager->createInstance($migrationId);
         $status = $migration->getStatus();
         if ($status == MigrationInterface::STATUS_IDLE) {
-            $io->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
+            $this->logger->warning(dt('Migration @id is already Idle', ['@id' => $migrationId]));
         } else {
             $migration->setStatus(MigrationInterface::STATUS_IDLE);
             $io->success(dt('Migration @id reset to Idle', ['@id' => $migrationId]));

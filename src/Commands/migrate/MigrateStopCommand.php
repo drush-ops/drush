@@ -69,13 +69,13 @@ final class MigrateStopCommand extends Command
         $migration = $this->migrationPluginManager->createInstance($migrationId);
         switch ($migration->getStatus()) {
             case MigrationInterface::STATUS_IDLE:
-                $io->warning(dt('Migration @id is idle', ['@id' => $migrationId]));
+                $this->logger->warning(dt('Migration @id is idle', ['@id' => $migrationId]));
                 break;
             case MigrationInterface::STATUS_DISABLED:
-                $io->warning(dt('Migration @id is disabled', ['@id' => $migrationId]));
+                $this->logger->warning(dt('Migration @id is disabled', ['@id' => $migrationId]));
                 break;
             case MigrationInterface::STATUS_STOPPING:
-                $io->warning(dt('Migration @id is already stopping', ['@id' => $migrationId]));
+                $this->logger->warning(dt('Migration @id is already stopping', ['@id' => $migrationId]));
                 break;
             default:
                 $migration->interruptMigration(MigrationInterface::RESULT_STOPPED);
