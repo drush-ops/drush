@@ -1378,6 +1378,10 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_configure">
 <abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html#method_configure">
+<abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method_configure">
+<abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_createEarly">
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::createEarly</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
                     <dd><p>Not using Autowire in order to implicitly test backward compat.</p></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_configure">
@@ -2190,6 +2194,8 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\core\RequirementsCommand">RequirementsCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RequirementsCommand.html"><abbr title="Drush\Commands\core\RequirementsCommand">RequirementsCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RouteCommand.html#method_doExecute">
 <abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RouteCommand.html"><abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html#method_doExecute">
+<abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineRecipeOrProfile">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::determineRecipeOrProfile</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd><p>Determine if the passed parameter is a recipe directory, or a profile name.</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_determineProfile">
@@ -2678,6 +2684,10 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_execute">
 <abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html#method_execute">
+<abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method_execute">
+<abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_execute">
 <abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigUnusedCommand.html"><abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html#method_execute">
@@ -7424,17 +7434,15 @@ Drupal Kernel is booted.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html
 <abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr>::scanConfigs</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a></em></dt>
                     <dd><p>Scans all config entities and store their module and config dependencies.</p></dd><dt><a href="Drush/Commands/core/MigrateRunnerCommands.html#method_setMigrationPluginManager">
 <abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr>::setMigrationPluginManager</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/MigrateRunnerCommands.html"><abbr title="Drush\Commands\core\MigrateRunnerCommands">MigrateRunnerCommands</abbr></a></em></dt>
-                    <dd><p>Provide a migration plugin manager.</p></dd><dt><a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/SiteCommands.html#method_siteSet">
-<abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr>::siteSet</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a></em></dt>
-                    <dd><p>Set a site alias that will persist for the current session.</p></dd><dt><a href="Drush/Commands/core/SiteCommands.html#method_siteAlias">
-<abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr>::siteAlias</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a></em></dt>
-                    <dd><p>Show site alias details, or a list of available site aliases.</p></dd><dt><a href="Drush/Commands/core/SiteCommands.html#method_siteAliasExportList">
-<abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr>::siteAliasExportList</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a></em></dt>
+                    <dd><p>Provide a migration plugin manager.</p></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html#method_siteAliasExportList">
+<abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr>::siteAliasExportList</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_serverGlobals">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::serverGlobals</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
-                    <dd><p>Fake the necessary HTTP headers that the Drupal installer still needs:</p></dd><dt><a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd><p>Fake the necessary HTTP headers that the Drupal installer still needs:</p></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html#method_ssh">
 <abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr>::ssh</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a></em></dt>
                     <dd><p>Connect to a webserver via SSH, and optionally run a shell command.</p></dd><dt><a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -9145,10 +9153,12 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method___construct">
 <abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/SiteCommands.html#method___construct">
-<abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteAliasCommand.html#method___construct">
+<abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteAliasCommand.html"><abbr title="Drush\Commands\core\SiteAliasCommand">SiteAliasCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method___construct">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method___construct">
+<abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html#method___construct">
 <abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method___construct">
