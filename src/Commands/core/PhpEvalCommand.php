@@ -33,8 +33,7 @@ final class PhpEvalCommand extends Command
     public function __construct(
         protected readonly BootstrapManager $bootstrapManager,
         protected readonly FormatterManager $formatterManager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 

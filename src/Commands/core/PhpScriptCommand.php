@@ -42,8 +42,7 @@ final class PhpScriptCommand extends Command
         protected readonly DrushConfig $drushConfig,
         protected FormatterManager $formatterManager,
         protected readonly LoggerInterface $logger,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
