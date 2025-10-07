@@ -12,6 +12,7 @@ use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 use ReflectionObject;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]
@@ -34,6 +35,7 @@ final class FormatterListener
             if (!$attributes = $reflectionObject->getAttributes(CLI\Formatter::class)) {
                 continue;
             }
+
             /** @var \Drush\Attributes\Formatter $attribute */
             $attribute = $attributes[0]->newInstance();
             $configurationData = $this->getConfigurationData($reflectionObject);
@@ -50,6 +52,10 @@ final class FormatterListener
                 $mode = $this->getPrivatePropValue($inputOption, 'mode');
                 $suggestedValues = $this->getPrivatePropValue($inputOption, 'suggestedValues');
                 $command->addOption($inputOption->getName(), $inputOption->getShortcut(), $mode, $inputOption->getDescription(), $inputOption->getDefault(), $suggestedValues);
+            }
+            // The command must have a --format option, even if the above didn't add it.
+            if (!$command->getDefinition()->hasOption('format')) {
+                $command->addOption(name:'format', mode: InputOption::VALUE_REQUIRED, description: 'A format for printing the returned data');
             }
             // Use the command's fallback for --format. The automatic option above doesn't always get it right.
             $command->getDefinition()->getOption('format')->setDefault($attribute->defaultFormatter);
