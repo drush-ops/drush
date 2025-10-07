@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
-use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\user\PermissionHandlerInterface;
 use Drush\Attributes\ValidatePermissions;
 use Drush\Commands\AutowireTrait;
@@ -19,7 +18,6 @@ class ValidatePermissionsListener
     use AutowireTrait;
 
     public function __construct(
-        private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly PermissionHandlerInterface $permissionHandler,
         private readonly LoggerInterface $logger
     ) {
