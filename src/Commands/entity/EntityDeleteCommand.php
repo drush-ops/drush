@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\entity;
 
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;

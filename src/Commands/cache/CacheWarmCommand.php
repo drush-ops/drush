@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\cache;
+namespace Drush\Commands\cache;
 
 use Drupal\Core\PreWarm\CachePreWarmerInterface;
 use Drush\Attributes as CLI;

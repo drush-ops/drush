@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\deploy\DeployHookCommand;
-use Drush\Commands\core\deploy\DeployHookMarkCompleteCommand;
-use Drush\Commands\core\deploy\DeployHookStatusCommand;
 use Drush\Commands\core\StateCommands;
+use Drush\Commands\deploy\DeployHookCommand;
+use Drush\Commands\deploy\DeployHookMarkCompleteCommand;
+use Drush\Commands\deploy\DeployHookStatusCommand;
 use Drush\Commands\pm\PmCommands;
 
 /**

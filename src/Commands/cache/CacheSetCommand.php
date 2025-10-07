@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\cache;
+namespace Drush\Commands\cache;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheFactoryInterface;
