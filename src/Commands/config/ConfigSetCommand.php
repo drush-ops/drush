@@ -31,9 +31,9 @@ final class ConfigSetCommand extends Command
     public const NAME = 'config:set';
 
     public function __construct(
-        protected ConfigFactoryInterface $configFactory,
-        protected StorageCacheInterface $configStorage,
-        protected DrushConfig $drushConfig,
+        protected readonly ConfigFactoryInterface $configFactory,
+        protected readonly StorageCacheInterface $configStorage,
+        protected readonly DrushConfig $drushConfig,
     ) {
         parent::__construct();
     }

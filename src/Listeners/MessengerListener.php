@@ -22,8 +22,8 @@ final class MessengerListener
     use AutowireTrait;
 
     public function __construct(
-        protected MessengerInterface $messenger,
-        protected LoggerInterface $logger,
+        protected readonly MessengerInterface $messenger,
+        protected readonly LoggerInterface $logger,
     ) {
     }
 
