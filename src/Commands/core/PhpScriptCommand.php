@@ -63,7 +63,7 @@ final class PhpScriptCommand extends Command
     {
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
+        return is_int($data) ? $data : self::SUCCESS;
     }
 
     public function doExecute(InputInterface $input, OutputInterface $output)
