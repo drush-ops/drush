@@ -3262,15 +3262,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Arguments
@@ -3292,15 +3283,6 @@
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       Global Options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topics" class="md-nav__link">
-    <span class="md-ellipsis">
-      Topics
     </span>
   </a>
   
@@ -7441,35 +7423,12 @@
                 
                   
 
-  
-    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php" title="Edit this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
-    </a>
-  
-  
-    
-      
-    
-    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/core/MigrateRunnerCommands.php" title="View source of this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
-    </a>
-  
-
 
 <h1 id="migratestatus">migrate:status<a class="headerlink" href="#migratestatus" title="Permanent link">&para;</a></h1>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 10.4+</p>
 <p>List all migrations with current status.</p>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
-<ul>
-<li><code>migrate:status</code>. Retrieve status for all migrations</li>
-<li><code>migrate:status --tag</code>. Retrieve status for all migrations, grouped by tag</li>
-<li><code>migrate:status --tag=user,main_content</code>. Retrieve status for all migrations tagged with <em>user</em> or <em>main_content</em></li>
-<li><code>migrate:status classification,article</code>. Retrieve status for specific migrations</li>
-<li><code>migrate:status --field=id</code>. Retrieve a raw list of migration IDs.</li>
-<li><code>ms --fields=id,status --format=json</code>. Retrieve a Json serialized list of migrations, each item containing only the migration ID and its status.</li>
-</ul>
+<p>Retrieve status for all migrations. Use --tag to group by tags, or specify specific migration IDs.</p>
+<p>Help topics:
+* <href=https://www.drush.org/latest/migrate>Defining and running migrations.&lt;/&gt;</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[migrationIds]</strong>. Restrict to a comma-separated list of migrations. Optional.</li>
@@ -7477,10 +7436,10 @@
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--tag=TAG</strong>. A comma-separated list of migration tags to list. If only <em>--tag</em> is provided, all tagged migrations will be listed, grouped by tags.</li>
-<li><strong>--format[=FORMAT]</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
+<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
 <li><strong>--fields=FIELDS</strong>. Available fields: Migration ID (id), Status (status), Total (total), Imported (imported), Needing update (needing_update), Unprocessed (unprocessed), Last Imported (last_imported) [default: <em>id status total imported unprocessed last_imported</em>]</li>
 <li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
-<li><strong>--filter[=FILTER]</strong>. Filter output based on provided expression</li>
+<li><strong>--filter=FILTER</strong>. Filter output based on provided expression. Default field: status</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7488,11 +7447,6 @@
 <li><strong>-y, --yes</strong>. Auto-accept the default for all user prompts. Equivalent to --no-interaction.</li>
 <li><strong>-l, --uri=URI</strong>. A base URL for building links and selecting a multi-site. Defaults to <em><a href="https://default">https://default</a></em>.</li>
 <li>To see all global options, run <code>drush topic</code> and pick the first choice.</li>
-</ul>
-<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
-<ul>
-<li><a href="../../migrate/">Defining and running migrations.</a> (docs:migrate)</li>
-<li><a href="../../output-formats-filters/">Output formatters and filters: control the command output</a> (docs:output-formats-filters)</li>
 </ul>
 <h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
