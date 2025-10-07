@@ -421,7 +421,8 @@ class ServiceManager
             }
         }
 
-        return $commandHandlers;
+        // Omit any null commandhandlers that chose not to instantiate..
+        return array_filter($commandHandlers);
     }
 
     /**

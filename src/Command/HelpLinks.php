@@ -11,6 +11,7 @@ enum HelpLinks
     case ConfigExporting;
     case Repl;
     case Cron;
+    case Migrate;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -22,6 +23,7 @@ enum HelpLinks
             self::ConfigExporting => new ConsoleLink('config-exporting', 'Example policy file'),
             self::Repl => new ConsoleLink('repl', 'Drush\'s PHP Shell'),
             self::Cron => new ConsoleLink('cron', 'Crontab instructions for running your Drupal cron tasks via `drush cron`.'),
+            self::Migrate => new ConsoleLink('migrate', 'Defining and running migrations.'),
         };
     }
 

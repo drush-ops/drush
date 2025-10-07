@@ -7,7 +7,7 @@ namespace Drush\Attributes;
 use Attribute;
 use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class DefaultFields extends \Consolidation\AnnotatedCommand\Attributes\DefaultFields implements FormatterConfigurationItemProviderInterface
 {
     const KEY = 'default-fields';
