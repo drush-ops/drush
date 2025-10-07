@@ -13,13 +13,13 @@ use Attribute;
 class Formatter
 {
     /**
-     * @param string $returnType
+     * @param ?string $returnType
      *     The command's return type, before formatting.
      * @param ?string $defaultFormatter
      *    The fallback formatter.
      */
     public function __construct(
-        public string $returnType,
+        public ?string $returnType = null,
         public ?string $defaultFormatter = 'table',
     ) {
     }

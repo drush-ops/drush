@@ -122,7 +122,7 @@ class UserTest extends CommandUnishTestCase
         $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
         $this->drush(PhpCommands::EVAL, [$eval]);
         $output = $this->getOutput();
-        $this->assertEquals("2", $output, 'User can login with new password.');
+        $this->assertStringContainsString('2', $output, 'User can login with new password.');
     }
 
     public function testUserLoginNoBootstrappedSite(): never

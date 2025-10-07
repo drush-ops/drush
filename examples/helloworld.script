@@ -1,14 +1,16 @@
 <?php
 
 //
-// This example demonstrates how to write a drush
-// script. These scripts are run with the php:script command.
+// This example demonstrates how to write a Drush
+// script. These scripts are run with the php:script command. Use a double dash to
+// send additional arguments: drush php:script foo.php -- apple --cider
 //
+
 use Drush\Drush;
 
-$this->output()->writeln("Hello world!");
-$this->output()->writeln("The extra options/arguments to this command were:");
-$this->output()->writeln(print_r($extra, true));
+$output->writeln("Hello world!");
+$output->writeln("The extra options/arguments to this command were:");
+$output->writeln(print_r($extra, true));
 
 //
 // We can check which site was bootstrapped via
@@ -17,9 +19,9 @@ $this->output()->writeln(print_r($extra, true));
 //
 $self = Drush::aliasManager()->getSelf();;
 if (!$self->hasRoot()) {
-  $this->output()->writeln('No bootstrapped site.');
+  $output->writeln('No bootstrapped site.');
 }
 else {
-  $this->output()->writeln('The following site is bootstrapped:');
-  $this->output()->writeln(print_r($self->legacyRecord(), true));
+  $output->writeln('The following site is bootstrapped:');
+  $output->writeln(print_r($self->legacyRecord(), true));
 }

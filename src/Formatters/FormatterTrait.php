@@ -22,7 +22,7 @@ trait FormatterTrait
             throw new \Exception('\Consolidation\OutputFormatters\FormatterManager must be injected into the command during __construct().');
         }
 
-        if (is_object($data) || is_array($data)) {
+        if (is_object($data) || is_array($data) || is_string($data)) {
             $data = $this->alterResult($data, $input);
             $this->formatterManager->write($output, $input->getOption('format'), $data, $this->getFormatterOptions()->setInput($input));
         }
