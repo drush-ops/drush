@@ -14,6 +14,7 @@ use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
+use stdClass;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -71,6 +72,7 @@ final class QueueRunCommand extends Command
 
         while ((!$timeLimit || $remaining > 0) && (!$itemsLimit || $count < $itemsLimit) && ($item = $queue->claimItem($leaseTime))) {
             try {
+                assert($item instanceof stdClass);
                 $io->note(sprintf('Processing item %s from %s queue.', $name, $item->item_id ?? $item->qid));
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
