@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\deploy;
+namespace Drush\Commands\deploy;
 
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Utility\Error;

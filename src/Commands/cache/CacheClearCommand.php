@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\cache;
+namespace Drush\Commands\cache;
 
 use Drupal\Core\Asset\AssetQueryStringInterface;
 use Drupal\Core\Asset\JsCollectionOptimizerLazy;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\deploy;
+namespace Drush\Commands\deploy;
 
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;

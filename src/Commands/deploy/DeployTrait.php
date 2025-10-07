@@ -1,6 +1,6 @@
 <?php
 
-namespace Drush\Commands\core\deploy;
+namespace Drush\Commands\deploy;
 
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core\deploy;
+namespace Drush\Commands\deploy;
 
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
@@ -10,9 +10,9 @@ use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
+use Drush\Commands\cache\CacheRebuildCommand;
+use Drush\Commands\cache\CacheWarmCommand;
 use Drush\Commands\config\ConfigImportCommand;
-use Drush\Commands\core\cache\CacheRebuildCommand;
-use Drush\Commands\core\cache\CacheWarmCommand;
 use Drush\Commands\core\UpdateDBCommands;
 use Drush\Drush;
 use Drush\SiteAlias\ProcessManager;
