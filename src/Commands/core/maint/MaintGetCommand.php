@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\core\maint;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Attributes as CLI;
