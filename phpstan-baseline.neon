@@ -7,12 +7,6 @@ parameters:
 			path: src/Commands/migrate/MigrateImportCommand.php
 
 		-
-			message: '#^Offset ''\#name'' on array\{\} in isset\(\) does not exist\.$#'
-			identifier: isset.offset
-			count: 1
-			path: src/Commands/core/SiteCommands.php
-
-		-
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 2
