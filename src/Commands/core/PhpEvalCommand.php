@@ -58,7 +58,6 @@ final class PhpEvalCommand extends Command
     {
         $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
 
-        $code = $input->getArgument('code');
-        return eval($code . ';');
+        return eval($input->getArgument('code') . ';');
     }
 }
