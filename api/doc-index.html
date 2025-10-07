@@ -1376,6 +1376,8 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RouteCommand.html"><abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommand.html#method_configure">
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_configure">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_createEarly">
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::createEarly</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
                     <dd><p>Not using Autowire in order to implicitly test backward compat.</p></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_configure">
@@ -2674,6 +2676,8 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RouteCommand.html"><abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommand.html#method_execute">
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_execute">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_execute">
 <abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigUnusedCommand.html"><abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html#method_execute">
@@ -5962,8 +5966,8 @@ site specification formats.</p></dd><dt>$<a href="Drush/Boot/BaseBoot.html#prope
                     <dd></dd><dt><a href="Drush/Commands/core/PhpScriptCommand.html"><abbr title="Drush\Commands\core\PhpScriptCommand">PhpScriptCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Commands/core/RsyncCommand.html#property_pathEvaluator">
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>#pathEvaluator</a> &mdash; <em>Property in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommands.html#method_parseUri">
-<abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr>::parseUri</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommands.html"><abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_parseUri">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::parseUri</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
                     <dd><p>Parse a URI or partial URI (including just a port, host IP or path).</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method_pre">
 <abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr>::pre</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a></em></dt>
                     <dd><p>Perform setup tasks before installation.</p></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_pathAliases">
@@ -6543,10 +6547,9 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommand.html#method_rsyncOptions">
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::rsyncOptions</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommands.html"><abbr title="Drush\Commands\core\RsyncCommands">RsyncCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RunserverCommands.html"><abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommands.html#method_runserver">
-<abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr>::runserver</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommands.html"><abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr></a></em></dt>
-                    <dd><p>Runs PHP's built-in http server for development.</p></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_renderStatusCell">
+                    <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_renderStatusCell">
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::renderStatusCell</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html#method_restoreMaintMode">
 <abbr title="Drush\Commands\core\UpdateDBCommand">UpdateDBCommand</abbr>::restoreMaintMode</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommand.html"><abbr title="Drush\Commands\core\UpdateDBCommand">UpdateDBCommand</abbr></a></em></dt>
@@ -8377,10 +8380,10 @@ data to display in --list format comes from the array keys.</p></dd><dt><a href=
 <abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr>#uri</a> &mdash; <em>Property in class <a href="Drush/Boot/BaseBoot.html"><abbr title="Drush\Boot\BaseBoot">BaseBoot</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/LocaleCommands.html#method_update">
 <abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr>::update</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/LocaleCommands.html"><abbr title="Drush\Commands\core\LocaleCommands">LocaleCommands</abbr></a></em></dt>
-                    <dd><p>Imports the available translation updates.</p></dd><dt>$<a href="Drush/Commands/core/RunserverCommands.html#property_uri">
-<abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr>#uri</a> &mdash; <em>Property in class <a href="Drush/Commands/core/RunserverCommands.html"><abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommands.html#method_uri">
-<abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommands.html"><abbr title="Drush\Commands\core\RunserverCommands">RunserverCommands</abbr></a></em></dt>
+                    <dd><p>Imports the available translation updates.</p></dd><dt>$<a href="Drush/Commands/core/RunserverCommand.html#property_uri">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>#uri</a> &mdash; <em>Property in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method_uri">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::uri</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
                     <dd><p>Determine the URI to use for this server.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html"><abbr title="Drush\Commands\core\UpdateDBCommand">UpdateDBCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html#method_updateCheckRequirements">
 <abbr title="Drush\Commands\core\UpdateDBCommand">UpdateDBCommand</abbr>::updateCheckRequirements</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/UpdateDBCommand.html"><abbr title="Drush\Commands\core\UpdateDBCommand">UpdateDBCommand</abbr></a></em></dt>
@@ -9140,6 +9143,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RouteCommand.html"><abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/RsyncCommand.html#method___construct">
 <abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RsyncCommand.html"><abbr title="Drush\Commands\core\RsyncCommand">RsyncCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/RunserverCommand.html#method___construct">
+<abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RunserverCommand.html"><abbr title="Drush\Commands\core\RunserverCommand">RunserverCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteCommands.html#method___construct">
 <abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteCommands.html"><abbr title="Drush\Commands\core\SiteCommands">SiteCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html#method___construct">
