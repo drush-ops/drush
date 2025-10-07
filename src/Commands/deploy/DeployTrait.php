@@ -2,7 +2,6 @@
 
 namespace Drush\Commands\deploy;
 
-use;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Update\UpdateRegistry;
