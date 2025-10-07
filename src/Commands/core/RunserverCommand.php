@@ -24,6 +24,7 @@ use Symfony\Component\Filesystem\Path;
 #[AsCommand(
     name: self::NAME,
     description: 'Runs PHP\'s built-in http server for development.',
+    # @todo Console is handing off requests for 'rs' to rsync! See \Symfony\Component\Console\Application::find
     aliases: ['rs', 'serve']
 )]
 final class RunserverCommand extends Command
