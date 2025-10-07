@@ -191,6 +191,69 @@
                     <p></p>
                 </td>
             </tr>
+                    <tr>
+                <td>
+                                                                                                                        STATUS
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        IMPORT
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        ROLLBACK
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        STOP
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        RESET_STATUS
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        MESSAGES
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        FIELDS_SOURCE
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
             </table>
 
     
@@ -273,15 +336,6 @@
                                                                                 
                                     </td>
                 <td>$migrationPluginManager</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_keyValue">
-                                        protected                                        <abbr title="Drupal\Core\KeyValueStore\KeyValueStoreInterface">KeyValueStoreInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$keyValue</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -509,7 +563,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr> $dateFormatter, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
+                    <a href="#method___construct">__construct</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -623,186 +677,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     <a href="#method_setMigrationPluginManager">setMigrationPluginManager</a>(<abbr title="Drupal\migrate\Plugin\MigrationPluginManagerInterface">MigrationPluginManagerInterface</abbr> $migrationPluginManager)
         
                                             <p><p>Provide a migration plugin manager.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_status">status</a>(string|null $migrationIds = null, array $options = [&#039;tag&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        
-                                            <p><p>List all migrations with current status.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    int|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationSourceRowsCount">getMigrationSourceRowsCount</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        
-                                            <p><p>Returns the migration source rows count.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    int
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationNeedingUpdateCount">getMigrationNeedingUpdateCount</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        
-                                            <p><p>Returns the number of items that needs update.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    int|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationUnprocessedCount">getMigrationUnprocessedCount</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        
-                                            <p><p>Returns the number of unprocessed items.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    int|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationImportedCount">getMigrationImportedCount</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        
-                                            <p><p>Returns the number of imported items.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationLastImportedTime">getMigrationLastImportedTime</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        
-                                            <p><p>Returns the last imported date/time if any.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_padTableRow">padTableRow</a>(array $row, array $fields)
-        
-                                            <p><p>Pads an incomplete table row with empty cells.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_import">import</a>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;update&#039; =&gt; false, &#039;force&#039; =&gt; false, &#039;execute-dependencies&#039; =&gt; false, &#039;timestamp&#039; =&gt; false, &#039;total&#039; =&gt; false, &#039;progress&#039; =&gt; true, &#039;delete&#039; =&gt; false])
-        
-                                            <p><p>Perform one or more migration processes.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_executeMigration">executeMigration</a>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, string $migrationId, array $userData)
-        
-                                            <p><p>Executes a single migration.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_rollback">rollback</a>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;progress&#039; =&gt; true])
-        
-                                            <p><p>Rollback one or more migrations.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_stop">stop</a>(string $migrationId)
-        
-                                            <p><p>Stop an active migration operation.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_resetStatus">resetStatus</a>(string $migrationId)
-        
-                                            <p><p>Reset an active migration's status to idle.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_messages">messages</a>(string $migrationId, array $options = [&#039;idlist&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        
-                                            <p><p>View any messages associated with a migration.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_preprocessMessageRow">preprocessMessageRow</a>(<a target="_blank" rel="noopener" href="https://www.php.net/StdClass">StdClass</a> $row, array $sourceIdKeys)
-        
-                                            <p><p>Preprocesses migrate message rows.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_fieldsSource">fieldsSource</a>(string $migrationId, $options = [&#039;format&#039; =&gt; &#039;table&#039;])
-        
-                                            <p><p>List the fields available for mapping in a source.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrationList">getMigrationList</a>(string|null $migrationIds, string|null $tags)
-        
-                                            <p><p>Retrieves a list of active migrations.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getMigrateMessage">getMigrateMessage</a>()
-        
-                                            <p><p>Returns the migrate message logger.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getSourceIdKeys">getSourceIdKeys</a>(<abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr> $idMap)
-        
-                                            <p><p>Get the source ID keys.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -1555,9 +1429,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L41">at line 41</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L38">at line 38</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr> $dateFormatter, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $keyValueFactory)
+    <strong>__construct</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -1569,21 +1443,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     
         </div>
         <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Core\Datetime\DateFormatterInterface">DateFormatterInterface</abbr></td>
-                <td>$dateFormatter</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr></td>
-                <td>$keyValueFactory</td>
-                <td></td>
-            </tr>
-            </table>
-
             
             
             
@@ -1907,7 +1766,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setMigrationPluginManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L59">at line 59</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L51">at line 51</a></div>
         <code>                    
     <strong>setMigrationPluginManager</strong>(<abbr title="Drupal\migrate\Plugin\MigrationPluginManagerInterface">MigrationPluginManagerInterface</abbr> $migrationPluginManager)
         </code>
@@ -1939,892 +1798,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_status">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L67">at line 67</a></div>
-        <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-    <strong>status</strong>(string|null $migrationIds = null, array $options = [&#039;tag&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>List all migrations with current status.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string|null</td>
-                <td>$migrationIds</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationSourceRowsCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L179">at line 179</a></div>
-        <code>            protected        int|null
-    <strong>getMigrationSourceRowsCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the migration source rows count.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration plugin instance.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>int|null</td>
-            <td><p>The migration source rows count or null if the source is uncountable or
-the source count couldn't be retrieved.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationNeedingUpdateCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L207">at line 207</a></div>
-        <code>            protected        int
-    <strong>getMigrationNeedingUpdateCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the number of items that needs update.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration plugin instance.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>int</td>
-            <td><p>The number of items that needs update.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationUnprocessedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L222">at line 222</a></div>
-        <code>            protected        int|null
-    <strong>getMigrationUnprocessedCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the number of unprocessed items.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration plugin instance.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>int|null</td>
-            <td><p>The number of unprocessed items or null if it cannot be determined.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationImportedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L240">at line 240</a></div>
-        <code>            protected        int|null
-    <strong>getMigrationImportedCount</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the number of imported items.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration plugin instance.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>int|null</td>
-            <td><p>The number of imported items or null if it cannot be determined.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationLastImportedTime">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L263">at line 263</a></div>
-        <code>            protected        string
-    <strong>getMigrationLastImportedTime</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the last imported date/time if any.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration plugin instance.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td><p>The last imported date/time if any.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_padTableRow">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L282">at line 282</a></div>
-        <code>            protected        array
-    <strong>padTableRow</strong>(array $row, array $fields)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Pads an incomplete table row with empty cells.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>array</td>
-                <td>$row</td>
-                <td><p>The row to be prepared.</p></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$fields</td>
-                <td><p>The table columns.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td><p>The complete table row.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L296">at line 296</a></div>
-        <code>                    void
-    <strong>import</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;limit&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;update&#039; =&gt; false, &#039;force&#039; =&gt; false, &#039;execute-dependencies&#039; =&gt; false, &#039;timestamp&#039; =&gt; false, &#039;total&#039; =&gt; false, &#039;progress&#039; =&gt; true, &#039;delete&#039; =&gt; false])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Perform one or more migration processes.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string|null</td>
-                <td>$migrationIds</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_executeMigration">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L379">at line 379</a></div>
-        <code>            protected        void
-    <strong>executeMigration</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, string $migrationId, array $userData)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Executes a single migration.</p></p>                <p><p>If the --execute-dependencies option was given, the migration's
-dependencies will also be executed first.</p></p>        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr></td>
-                <td>$migration</td>
-                <td><p>The migration to execute.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$migrationId</td>
-                <td><p>The migration ID (not used, just an artifact of array_walk()).</p></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$userData</td>
-                <td><p>Additional data passed to the callback.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_rollback">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L429">at line 429</a></div>
-        <code>                    void
-    <strong>rollback</strong>(string|null $migrationIds = null, array $options = [&#039;all&#039; =&gt; false, &#039;tag&#039; =&gt; self::REQ, &#039;feedback&#039; =&gt; self::REQ, &#039;idlist&#039; =&gt; self::REQ, &#039;progress&#039; =&gt; true])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Rollback one or more migrations.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string|null</td>
-                <td>$migrationIds</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_stop">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L477">at line 477</a></div>
-        <code>                    void
-    <strong>stop</strong>(string $migrationId)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Stop an active migration operation.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$migrationId</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginException">PluginException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_resetStatus">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L509">at line 509</a></div>
-        <code>                    void
-    <strong>resetStatus</strong>(string $migrationId)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Reset an active migration's status to idle.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$migrationId</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginException">PluginException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_messages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L533">at line 533</a></div>
-        <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-    <strong>messages</strong>(string $migrationId, array $options = [&#039;idlist&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>View any messages associated with a migration.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$migrationId</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginException">PluginException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_preprocessMessageRow">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L608">at line 608</a></div>
-        <code>            protected        array
-    <strong>preprocessMessageRow</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/StdClass">StdClass</a> $row, array $sourceIdKeys)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Preprocesses migrate message rows.</p></p>                <p><p>Given an item inside the list generated by
-MigrateIdMapInterface::getMessages(), prepare it for display.</p></p>        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a target="_blank" rel="noopener" href="https://www.php.net/StdClass">StdClass</a></td>
-                <td>$row</td>
-                <td><p>A message to process.</p></td>
-            </tr>
-                    <tr>
-                <td>array</td>
-                <td>$sourceIdKeys</td>
-                <td><p>The source IDs keys, for reference.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-                            <h4>See also</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                            \Drupal\migrate\Plugin\MigrateIdMapInterface::getMessages()
-                                    </td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_fieldsSource">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L635">at line 635</a></div>
-        <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
-    <strong>fieldsSource</strong>(string $migrationId, $options = [&#039;format&#039; =&gt; &#039;table&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>List the fields available for mapping in a source.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$migrationId</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginException">PluginException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrationList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L676">at line 676</a></div>
-        <code>            protected        array
-    <strong>getMigrationList</strong>(string|null $migrationIds, string|null $tags)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Retrieves a list of active migrations.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string|null</td>
-                <td>$migrationIds</td>
-                <td><p>A comma-separated list of migration IDs. If omitted, will return all
-migrations.</p></td>
-            </tr>
-                    <tr>
-                <td>string|null</td>
-                <td>$tags</td>
-                <td><p>A comma separated list of tags.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td><p>An array keyed by migration tag, each value containing an array of
-migrations or an empty array if no migrations match the input criteria.</p></td>
-        </tr>
-    </table>
-
-            
-                            <h4>Exceptions</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\Component\Plugin\Exception\PluginException">PluginException</abbr></td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getMigrateMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L728">at line 728</a></div>
-        <code>            protected        <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr>
-    <strong>getMigrateMessage</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Returns the migrate message logger.</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr></td>
-            <td><p>The migrate message logger.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getSourceIdKeys">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L745">at line 745</a></div>
-        <code>            protected        array
-    <strong>getSourceIdKeys</strong>(<abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr> $idMap)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Get the source ID keys.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Drupal\migrate\Plugin\MigrateIdMapInterface">MigrateIdMapInterface</abbr></td>
-                <td>$idMap</td>
-                <td><p>The migration ID map.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td><p>The source ID keys.</p></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_validateMigrationId">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L766">at line 766</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MigrateRunnerCommands.php#L62">at line 62</a></div>
         <code>                    <abbr title="Drush\Commands\core\Consolidation\AnnotatedCommand\CommandError">CommandError</abbr>|null
     <strong>validateMigrationId</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
