@@ -18,7 +18,7 @@ class ImageTest extends UnishApplicationTesterTestCase
 {
     public function testImage()
     {
-        $this->drush(PmCommands::INSTALL, ['image']);
+        $this->drush(PmCommands::INSTALL, ['image'], ['yes' => null]);
         // Should not be needed. Something prior removed all wrappers. Possibly will be fixed by  https://www.drupal.org/project/drupal/issues/3416735
         \Drupal::service('stream_wrapper_manager')->register();
 
