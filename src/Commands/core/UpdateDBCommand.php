@@ -12,6 +12,7 @@ use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Boot\Kernels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Config\DrushConfig;
@@ -65,7 +66,7 @@ final class UpdateDBCommand extends Command
         $io = new DrushStyle($input, $output);
 
         // Do own bootstrap so we can use the 'update' kernel. Replaces the [#Kernel] attribute.
-        $annotationData = new AnnotationData(['kernel' => 'update']);
+        $annotationData = new AnnotationData(['kernel' => Kernels::UPDATE]);
         $this->bootstrapManager->bootstrapToPhaseIndex(DrupalBootLevels::FULL, $annotationData);
 
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
