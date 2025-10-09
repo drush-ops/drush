@@ -10,7 +10,7 @@ use Drush\Boot\Kernels;
 use JetBrains\PhpStorm\Deprecated;
 use JetBrains\PhpStorm\ExpectedValues;
 
-#[Deprecated('Replace with an initialize() method on a Console command. See \Drush\Commands\core\UpdateDbStatusCommand::initialize')]
+#[Deprecated('Replace with an bootstrap call during execute() in a Console command. See \Drush\Commands\core\UpdateDbStatusCommand::execute')]
 #[Attribute(Attribute::TARGET_METHOD)]
 class Kernel
 {
