@@ -23,26 +23,119 @@ class UpdateDBTest extends CommandUnishTestCase
     public function testUpdateDBStatus()
     {
         $this->setUpDrupal(1, true);
-        $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
+        $this->drush(PmCommands::INSTALL, ['drush_empty_module', 'drush_update_dependency']);
         $this->drush(UpdateDBCommands::STATUS);
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
 
-        // Force a pending update.
-        $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
+        // Force pending updates.
+        $this->drush(PhpCommands::SCRIPT, [
+            'updatedb_script',
+            'drush_empty_module',
+            'drush_update_dependency',
+        ], ['script-path' => __DIR__ . '/resources']);
 
-        // Assert that pending hook_update_n appears
+        // Assert that pending hook_update_n appears and in the right order
         $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module_update_8001');
         $this->assertStringContainsString('Fake update hook', trim($out['description']));
 
+        // Show only allowed updates by default
+        $expected_update_order = [
+            'drush_empty_module_update_8001',
+            'drush_update_dependency_update_8001',
+            'drush_update_dependency_update_8002',
+            'drush_empty_module_update_8002',
+            'drush_empty_module_update_8003',
+        ];
+        $this->assertEquals($expected_update_order, array_keys($this->getOutputFromJSON()));
+
+        // Ensure skipped dependencies are shown as warnings.
+        $err = $this->getErrorOutput();
+        $this->assertStringContainsString('Skipping drush_update_dependency_update_8003() due to missing dependencies: drush_missing_update_dependency1_update_8001().', $err);
+        $this->assertStringContainsString('Skipping drush_update_dependency_update_8004() due to missing dependencies: drush_missing_update_dependency2_update_8001(), drush_missing_update_dependency1_update_8001().', $err);
+        $this->assertStringContainsString('Skipping drush_update_dependency_update_8005() due to missing dependencies: drush_missing_update_dependency2_update_8001(), drush_missing_update_dependency1_update_8001().', $err);
+
+        // Show just the ones which have been skipped
+        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json', 'filter' => 'allowed=no']);
+        $expected_update_order = [
+            'drush_update_dependency_update_8003',
+            'drush_update_dependency_update_8004',
+            'drush_update_dependency_update_8005',
+        ];
+        $this->assertEquals($expected_update_order, array_keys($this->getOutputFromJSON()));
+
+        // Show both allowed and not allowed updates
+        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json', 'filter' => 'allowed=yes||allowed=no']);
+        $expected_update_order = [
+            'drush_empty_module_update_8001',
+            'drush_update_dependency_update_8001',
+            'drush_update_dependency_update_8002',
+            'drush_update_dependency_update_8003',
+            'drush_update_dependency_update_8004',
+            'drush_update_dependency_update_8005',
+            'drush_empty_module_update_8002',
+            'drush_empty_module_update_8003',
+        ];
+        $this->assertEquals($expected_update_order, array_keys($this->getOutputFromJSON()));
+
+        // Install the missing dependencies and force pending updates for them
+        $this->drush(PmCommands::INSTALL, ['drush_missing_update_dependency1', 'drush_missing_update_dependency2']);
+        $this->drush(PhpCommands::SCRIPT, [
+            'updatedb_script',
+            'drush_missing_update_dependency1',
+            'drush_missing_update_dependency2',
+        ], ['script-path' => __DIR__ . '/resources']);
+        $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
+        $err = $this->getErrorOutput();
+        // There should be no warnings since all the main dependencies are
+        // available to run
+        $this->assertEmpty($err);
+        $expected_update_order = [
+            // The initial dependency1 and dependency2 hooks must be run before
+            // drush_update_dependency_update_8003() update
+            'drush_missing_update_dependency2_update_8001',
+            'drush_missing_update_dependency1_update_8001',
+            'drush_empty_module_update_8001',
+            'drush_update_dependency_update_8001',
+            'drush_update_dependency_update_8002',
+            'drush_missing_update_dependency1_update_8002',
+            'drush_update_dependency_update_8003',
+            'drush_update_dependency_update_8004',
+            'drush_update_dependency_update_8005',
+            'drush_empty_module_update_8002',
+            'drush_empty_module_update_8003',
+        ];
+        $this->assertEquals($expected_update_order, array_keys($this->getOutputFromJSON()));
+
         // Run hook_update_n
         $this->drush(UpdateDBCommands::UPDATEDB, []);
+
+        // Ensure the update order matches the summary.
+        $err = $this->getErrorOutput();
+        $output_offset = 0;
+        foreach ($expected_update_order as $expected_update) {
+            $update_completed_string = "Update completed: $expected_update";
+            $output_offset = strpos($err, $update_completed_string, $output_offset);
+            $this->assertIsInt($output_offset, "Could not find update hook: $expected_update");
+            $this->assertStringContainsString($update_completed_string, substr($err, $output_offset));
+          // Move the offset for the next update to search.
+            $output_offset += strlen($update_completed_string);
+        }
 
         // Assert that we ran hook_update_n properly
         $this->drush(UpdateDBCommands::STATUS);
         $err = $this->getErrorOutput();
         $this->assertStringContainsString('[success] No database updates required.', $err);
+
+        // Force a pending update for the module that can't run update hooks
+        // due to a missing dependency.
+        $this->drush(PmCommands::INSTALL, ['drush_missing_update_dependency']);
+        $this->drush(PhpCommands::SCRIPT, ['updatedb_script', 'drush_missing_update_dependency'], [
+            'script-path' => __DIR__ . '/resources',
+            '--' => null,
+            'schema-version' => 8001,
+        ]);
 
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
@@ -50,6 +143,9 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush(UpdateDBCommands::STATUS, [], ['format' => 'json']);
         $out = $this->getOutputFromJSON('drush_empty_module-post-null_op');
         $this->assertStringContainsString('This is a test of the emergency broadcast system.', trim($out['description']));
+        // The missing dependency warning is still shown.
+        $err = $this->getErrorOutput();
+        $this->assertStringContainsString('[warning] drush_missing_update_dependency: Skipping drush_missing_update_dependency_update_8002() due to missing dependencies: drush_non_existent_update_dependency_update_8002().', $err);
     }
 
     /**
