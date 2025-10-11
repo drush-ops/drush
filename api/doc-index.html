@@ -1384,6 +1384,8 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommand.html"><abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method_configure">
 <abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SshCommand.html#method_configure">
+<abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommand.html"><abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method_createEarly">
 <abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr>::createEarly</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></em></dt>
                     <dd><p>Not using Autowire in order to implicitly test backward compat.</p></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_configure">
@@ -2694,6 +2696,8 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommand.html"><abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method_execute">
 <abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SshCommand.html#method_execute">
+<abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommand.html"><abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/TwigUnusedCommand.html#method_execute">
 <abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/TwigUnusedCommand.html"><abbr title="Drush\Commands\core\TwigUnusedCommand">TwigUnusedCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html#method_execute">
@@ -5713,6 +5717,7 @@ user tries to run one, the command's description is shown. Example usage at <a h
                     <dd></dd><dt><a href="Drush/Listeners/MessengerListener.html#method_onConsoleTerminateEvent">
 <abbr title="Drush\Listeners\MessengerListener">MessengerListener</abbr>::onConsoleTerminateEvent</a>() &mdash; <em>Method in class <a href="Drush/Listeners/MessengerListener.html"><abbr title="Drush\Listeners\MessengerListener">MessengerListener</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetGetEditorListener.html"><abbr title="Drush\Listeners\OptionsetGetEditorListener">OptionsetGetEditorListener</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Listeners.html">Drush\Listeners</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Listeners/OptionsetProcBuildListener.html"><abbr title="Drush\Listeners\OptionsetProcBuildListener">OptionsetProcBuildListener</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Listeners.html">Drush\Listeners</a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetSqlListener.html"><abbr title="Drush\Listeners\OptionsetSqlListener">OptionsetSqlListener</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Listeners.html">Drush\Listeners</a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetSshListener.html"><abbr title="Drush\Listeners\OptionsetSshListener">OptionsetSshListener</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Listeners.html">Drush\Listeners</a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetTableSelectionListener.html"><abbr title="Drush\Listeners\OptionsetTableSelectionListener">OptionsetTableSelectionListener</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Listeners.html">Drush\Listeners</a></em></dt>
@@ -7447,10 +7452,9 @@ Drupal Kernel is booted.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html
 <abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr>::serverGlobals</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommand.html"><abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr></a></em></dt>
                     <dd><p>Fake the necessary HTTP headers that the Drupal installer still needs:</p></dd><dt><a href="Drush/Commands/core/SiteInstallCommands.html"><abbr title="Drush\Commands\core\SiteInstallCommands">SiteInstallCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SshCommand.html"><abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html#method_ssh">
-<abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr>::ssh</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a></em></dt>
-                    <dd><p>Connect to a webserver via SSH, and optionally run a shell command.</p></dd><dt><a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method_set">
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::set</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd><p>Set a state value.</p></dd><dt><a href="Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
@@ -9162,8 +9166,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteInstallCommand.html"><abbr title="Drush\Commands\core\SiteInstallCommand">SiteInstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/SiteSetCommand.html#method___construct">
 <abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SiteSetCommand.html"><abbr title="Drush\Commands\core\SiteSetCommand">SiteSetCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/core/SshCommands.html#method___construct">
-<abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommands.html"><abbr title="Drush\Commands\core\SshCommands">SshCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/core/SshCommand.html#method___construct">
+<abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/SshCommand.html"><abbr title="Drush\Commands\core\SshCommand">SshCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StateCommands.html#method___construct">
 <abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/StateCommands.html"><abbr title="Drush\Commands\core\StateCommands">StateCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/StatusCommands.html#method___construct">
@@ -9336,6 +9340,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Listeners\MessengerListener">MessengerListener</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Listeners/MessengerListener.html"><abbr title="Drush\Listeners\MessengerListener">MessengerListener</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetGetEditorListener.html#method___invoke">
 <abbr title="Drush\Listeners\OptionsetGetEditorListener">OptionsetGetEditorListener</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Listeners/OptionsetGetEditorListener.html"><abbr title="Drush\Listeners\OptionsetGetEditorListener">OptionsetGetEditorListener</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Listeners/OptionsetProcBuildListener.html#method___invoke">
+<abbr title="Drush\Listeners\OptionsetProcBuildListener">OptionsetProcBuildListener</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Listeners/OptionsetProcBuildListener.html"><abbr title="Drush\Listeners\OptionsetProcBuildListener">OptionsetProcBuildListener</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetSqlListener.html#method___invoke">
 <abbr title="Drush\Listeners\OptionsetSqlListener">OptionsetSqlListener</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Listeners/OptionsetSqlListener.html"><abbr title="Drush\Listeners\OptionsetSqlListener">OptionsetSqlListener</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Listeners/OptionsetSshListener.html#method___invoke">
