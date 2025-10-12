@@ -24,7 +24,11 @@ trait FormatterTrait
 
         if (is_object($data) || is_array($data) || is_string($data)) {
             $data = $this->alterResult($data, $input);
-            $this->formatterManager->write($output, $input->getOption('format'), $data, $this->getFormatterOptions()->setInput($input));
+            $format = $input->getOption('format');
+            if ($input->hasOption('field') && $input->getOption('field')) {
+                $format = 'string';
+            }
+            $this->formatterManager->write($output, $format, $data, $this->getFormatterOptions()->setInput($input)->setOptions($input->getOptions()));
         }
     }
 

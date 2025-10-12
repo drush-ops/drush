@@ -14,7 +14,7 @@ use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\StateCommands;
-use Drush\Commands\core\StatusCommands;
+use Drush\Commands\core\StatusCommand;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
@@ -111,7 +111,7 @@ XML
         }
 
         // Test the --existing-config option for site:install.
-        $this->drush(StatusCommands::STATUS, [], ['field' => 'drupal-version']);
+        $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
@@ -194,7 +194,7 @@ YAML_FRAGMENT;
 
     protected function getConfigSyncDir()
     {
-        $this->drush(StatusCommands::STATUS, [], ['format' => 'json', 'fields' => 'config-sync']);
+        $this->drush(StatusCommand::NAME, [], ['format' => 'json', 'fields' => 'config-sync']);
         return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
     }
 

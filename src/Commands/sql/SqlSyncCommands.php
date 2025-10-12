@@ -13,7 +13,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\core\RsyncCommands;
-use Drush\Commands\core\StatusCommands;
+use Drush\Commands\core\StatusCommand;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -120,7 +120,7 @@ final class SqlSyncCommands extends DrushCommands
             return 'simulated_db';
         }
 
-        $process = $this->processManager()->drush($record, StatusCommands::STATUS, [], ['fields' => 'db-name', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
+        $process = $this->processManager()->drush($record, StatusCommand::NAME, [], ['fields' => 'db-name', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
         $process->setSimulated(false);
         $process->mustRun();
         $data = $process->getOutputAsJson();
@@ -177,7 +177,7 @@ final class SqlSyncCommands extends DrushCommands
         } else {
             $tmp = '/tmp'; // Our fallback plan.
             $this->logger()->notice(dt('Starting to discover temporary files directory on target.'));
-            $process = $this->processManager()->drush($targetRecord, StatusCommands::STATUS, [], ['format' => 'string', 'field' => 'drush-temp'] + Drush::redispatchOptions() + ['strict' => 0]);
+            $process = $this->processManager()->drush($targetRecord, StatusCommand::NAME, [], ['format' => 'string', 'field' => 'drush-temp'] + Drush::redispatchOptions() + ['strict' => 0]);
             $process->setSimulated(false);
             $process->run();
 

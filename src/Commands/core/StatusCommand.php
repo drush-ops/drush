@@ -22,7 +22,6 @@ use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -88,7 +87,6 @@ class StatusCommand extends Command
         protected readonly BootstrapManager $bootstrapManager,
         private readonly SiteAliasManagerInterface $siteAliasManager,
         private readonly FormatterManager $formatterManager,
-        private readonly LoggerInterface $logger,
         private readonly DrushConfig $drushConfig
     ) {
         parent::__construct();
@@ -122,15 +120,14 @@ class StatusCommand extends Command
 
     public function getPropertyList($options): array
     {
-        $boot_manager = Drush::bootstrapManager();
-        $boot_object = Drush::bootstrap();
-        if ($drupal_root = $boot_manager->getRoot()) {
+        $boot_object = $this->bootstrapManager->bootstrap();
+        if ($drupal_root = $this->bootstrapManager->getRoot()) {
             $status_table['drupal-version'] = $boot_object->getVersion($drupal_root);
             $conf_dir = $boot_object->confPath();
             $settings_file = Path::join($conf_dir, 'settings.php');
             $status_table['drupal-settings-file'] = file_exists($settings_file) ? $settings_file : '';
-            if ($boot_manager->hasBootstrapped(DrupalBootLevels::SITE)) {
-                $status_table['uri'] = $boot_manager->getUri();
+            if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::SITE)) {
+                $status_table['uri'] = $this->bootstrapManager->getUri();
                 try {
                     if ($sql = SqlBase::create($options)) {
                         $db_spec = $sql->getDbSpec();
@@ -145,11 +142,11 @@ class StatusCommand extends Command
                         $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
                         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
-                    if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
+                    if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                         $status_table['install-profile'] = \Drupal::installProfile();
-                        if ($boot_manager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
+                        if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
-                            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
+                            if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
                                 $status_table['bootstrap'] = dt('Successful');
                             }
                         }
@@ -158,7 +155,7 @@ class StatusCommand extends Command
                     // Don't worry be happy.
                 }
             }
-            if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {
+            if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
                 $status_table['theme'] = \Drupal::config('system.theme')->get('default');
                 $status_table['admin-theme'] = $theme = \Drupal::config('system.theme')->get('admin') ?: 'seven';
             }
@@ -180,7 +177,7 @@ class StatusCommand extends Command
         $alias_searchpaths = $this->siteAliasManager->searchLocations();
         $status_table['alias-searchpaths'] = array_map([Path::class, 'canonicalize'], $alias_searchpaths);
 
-        $paths = self::pathAliases($options, $boot_manager, $boot_object);
+        $paths = self::pathAliases($options, $this->bootstrapManager, $boot_object);
         foreach ($paths as $target => $one_path) {
             $name = $target;
             if (str_starts_with($name, '%')) {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\StatusCommands;
+use Drush\Commands\core\StatusCommand;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
@@ -33,7 +33,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
             // and ensure that we can bootstrap the selected site from here.
             // chdir($conf_dir);
             $options['uri'] = 'OMIT'; // A special value which causes --uri to not be specified.
-            $this->drush(StatusCommands::STATUS, [], $options, null, $conf_dir);
+            $this->drush(StatusCommand::NAME, [], $options, null, $conf_dir);
             $output = $this->getOutput();
             $output = preg_replace('#  *#', ' ', $output);
             $this->assertStringContainsString('Database : Connected', $output);
@@ -73,7 +73,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
               ],
             ];
             file_put_contents($drush_config_file, Yaml::dump($config_options, PHP_INT_MAX, 2));
-            $this->drush(StatusCommands::STATUS, [], $command_options);
+            $this->drush(StatusCommand::NAME, [], $command_options);
             unlink($drush_config_file);
             $output = $this->getOutputFromJSON();
             // Include the test URI, for some context in errors.
@@ -168,7 +168,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         file_put_contents($drush_config_file, Yaml::dump($drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($a_drush_config_file, Yaml::dump($a_drush_yml_options, PHP_INT_MAX, 2));
         file_put_contents($b_drush_config_file, Yaml::dump($b_drush_yml_options, PHP_INT_MAX, 2));
-        $this->drush(StatusCommands::STATUS, [], $command_options);
+        $this->drush(StatusCommand::NAME, [], $command_options);
         unlink($drush_config_file);
         unlink($a_drush_config_file);
         unlink($b_drush_config_file);
@@ -199,7 +199,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
             ];
 
             // Test that the site-specific config file is loaded.
-            $this->drush(StatusCommands::STATUS, [], $options);
+            $this->drush(StatusCommand::NAME, [], $options);
             $output = $this->getOutputFromJSON();
             $loaded = array_flip($output['drush-conf']);
             $this->assertArrayHasKey("sites/{$site}/drush.yml", $loaded);
