@@ -13,6 +13,7 @@ enum HelpLinks
     case Cron;
     case Migrate;
     case Script;
+    case Readme;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -26,6 +27,7 @@ enum HelpLinks
             self::Cron => new ConsoleLink('cron', 'Crontab instructions for running your Drupal cron tasks via `drush cron`.'),
             self::Migrate => new ConsoleLink('migrate', 'Defining and running migrations.'),
             self::Script => new ConsoleLink('examples/helloworld.script', 'An example Drush script'),
+            self::Readme => new ConsoleLink('README.md', 'README.md'),
         };
     }
 
