@@ -26,6 +26,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Path;
 
@@ -96,7 +97,7 @@ class StatusCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption(name: 'project', description: 'A comma delimited list of projects. Their paths will be added to path-aliases section.')
+            ->addOption(name: 'project', mode: InputOption::VALUE_REQUIRED, description: 'A comma delimited list of projects. Their paths will be added to path-aliases section.')
             ->addUsage('drush core-status --field=files')
             ->addUsage('drush core-status --fields=*');
     }
