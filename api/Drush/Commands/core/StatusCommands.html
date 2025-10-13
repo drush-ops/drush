@@ -495,11 +495,12 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+                    <a href="#method___construct">__construct</a>($obj, $input, $output, $io)
         
                                             <p class="no-description">No description</p>
                                     </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -589,70 +590,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                                             <p><p>This method overrides the trait in order to provide a more specific return type.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_processManager">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_createEarly">createEarly</a>(<abbr title="League\Container\Container">Container</abbr> $drush_container)
-        
-                                            <p><p>Not using Autowire in order to implicitly test backward compat.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <a href="../../../Consolidation/OutputFormatters/StructuredData/PropertyList.html"><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_status">status</a>($options = [&#039;project&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        
-                                            <p><p>An overview of the environment - Drush and Drupal.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getPropertyList">getPropertyList</a>($options)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_renderStatusCell">renderStatusCell</a>($key, $cellData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_adjustStatusOptions">adjustStatusOptions</a>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_pathAliases">pathAliases</a>(array $options, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $boot_manager, $boot)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
             </div>
             </div>
 
@@ -1394,9 +1331,10 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L31">at line 31</a></div>
+        <div class="location">in <a href="../../../Robo/Common/IO.html#method___construct">
+<abbr title="Robo\Common\IO">IO</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/IO.php#L32">at line 32</a></div>
         <code>                    
-    <strong>__construct</strong>(<a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+    <strong>__construct</strong>($obj, $input, $output, $io)
         </code>
     </h3>
     <div class="details">    
@@ -1412,8 +1350,23 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a></td>
-                <td>$siteAliasManager</td>
+                <td></td>
+                <td>$obj</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$io</td>
                 <td></td>
             </tr>
             </table>
@@ -1694,273 +1647,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <table class="table table-condensed">
         <tr>
             <td><a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_createEarly">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L40">at line 40</a></div>
-        <code>        static            <a href="../../../Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a>
-    <strong>createEarly</strong>(<abbr title="League\Container\Container">Container</abbr> $drush_container)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>Not using Autowire in order to implicitly test backward compat.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="League\Container\Container">Container</abbr></td>
-                <td>$drush_container</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Drush/Commands/core/StatusCommands.html"><abbr title="Drush\Commands\core\StatusCommands">StatusCommands</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_status">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L50">at line 50</a></div>
-        <code>                    <a href="../../../Consolidation/OutputFormatters/StructuredData/PropertyList.html"><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></a>
-    <strong>status</strong>($options = [&#039;project&#039; =&gt; self::REQ, &#039;format&#039; =&gt; &#039;table&#039;])
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p><p>An overview of the environment - Drush and Drupal.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Consolidation/OutputFormatters/StructuredData/PropertyList.html"><abbr title="Consolidation\OutputFormatters\StructuredData\PropertyList">PropertyList</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getPropertyList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L105">at line 105</a></div>
-        <code>                    array
-    <strong>getPropertyList</strong>($options)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_renderStatusCell">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L182">at line 182</a></div>
-        <code>                    
-    <strong>renderStatusCell</strong>($key, $cellData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td></td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$cellData</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_adjustStatusOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L193">at line 193</a></div>
-        <code>                    void
-    <strong>adjustStatusOptions</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
-                <td>$commandData</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_pathAliases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/StatusCommands.php#L203">at line 203</a></div>
-        <code>        static            array
-    <strong>pathAliases</strong>(array $options, <a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $boot_manager, $boot)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>array</td>
-                <td>$options</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
-                <td>$boot_manager</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td></td>
-                <td>$boot</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
             <td></td>
         </tr>
     </table>
