@@ -39,7 +39,7 @@ executors:
           - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   sqlite-highest:
     docker:
-      - image: wodby/php:latest
+      - image: wodby/php:8.4
         environment:
           - "UNISH_DB_URL=sqlite://localhost/:memory:?module=sqlite"
   mysql-lowest:
@@ -51,7 +51,7 @@ executors:
       - image: cimg/mysql:5.7.38
   mysql-highest:
     docker:
-      - image: wodby/php:latest
+      - image: wodby/php:8.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
@@ -69,7 +69,7 @@ executors:
           POSTGRES_USER: unish
   postgres-highest:
     docker:
-      - image: wodby/php:latest
+      - image: wodby/php:8.4
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
       - image: wodby/postgres:latest

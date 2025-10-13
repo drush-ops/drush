@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\role;
 
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\Role;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -36,7 +37,8 @@ final class RolePermRemoveCommand extends Command
 
     public function __construct(
         private readonly ProcessManager $processManager,
-        private readonly SiteAliasManagerInterface $siteAliasManager
+        private readonly SiteAliasManagerInterface $siteAliasManager,
+        protected DateFormatterInterface $dateFormatter,
     ) {
         parent::__construct();
     }
