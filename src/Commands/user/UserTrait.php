@@ -32,7 +32,7 @@ trait UserTrait
         'uuid' => 'Uuid',
     ];
 
-   const array INF_DEFAULT_FIELDS = ['uid', 'name', 'mail', 'roles', 'user_status'];
+    const array INF_DEFAULT_FIELDS = ['uid', 'name', 'mail', 'roles', 'user_status'];
 
     protected function getAccounts(string $names = '', array $options = []): array
     {
