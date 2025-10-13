@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\state;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\AutowireTrait;

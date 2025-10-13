@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\state;
 
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\AutowireTrait;
@@ -14,6 +14,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
+
+use function Drush\Commands\core\gettype;
 
 #[AsCommand(
     name: self::NAME,
