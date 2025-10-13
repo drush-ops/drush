@@ -137,7 +137,7 @@ final class SiteInstallCommand extends Command
                     $additional = $input->getArgument('recipeOrProfile');
                     $recipeOrProfile = array_shift($additional) ?: '';
                     list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $input->getOptions());
-                    require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+                    require_once $this->bootstrapManager->getRoot() . '/core/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
                     $install_state['parameters']['profile'] = $profile ?? '';
                     if ($recipe) {
@@ -395,7 +395,7 @@ final class SiteInstallCommand extends Command
         $msg = 'Starting Drupal installation. This takes a while.';
         $this->logger->notice(dt($msg));
 
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+        require_once $this->bootstrapManager->getRoot() . '/core/includes/install.core.inc';
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
@@ -510,7 +510,7 @@ final class SiteInstallCommand extends Command
             // @endcode
             // block in the profile's info YAML file.
             // See https://www.drupal.org/node/2210443 for more information.
-            require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
+            require_once $this->bootstrapManager->getRoot() . '/core/includes/install.core.inc';
             $install_state = ['interactive' => false] + install_state_defaults();
             try {
                 install_begin_request($this->autoloader, $install_state);
