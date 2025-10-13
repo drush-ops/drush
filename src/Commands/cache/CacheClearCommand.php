@@ -136,6 +136,7 @@ final class CacheClearCommand extends Command
             'plugin' => [$this, 'clearPlugin'],
             'bin' => [$this, 'clearBins'],
             'container' => [$this, 'clearContainer'],
+            'views' => [$this, 'clearViews'],
         ];
 
         // Listeners may customize $types as desired.
@@ -192,5 +193,10 @@ final class CacheClearCommand extends Command
     public function clearPlugin(): void
     {
         $this->pluginCacheClearer->clearCachedDefinitions();
+    }
+
+    public function clearViews(): void
+    {
+        \views_invalidate_cache();
     }
 }
