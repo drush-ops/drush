@@ -62,7 +62,7 @@ class UpdateDbStatusCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): ?RowsOfFields
     {
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        require_once $this->bootstrapManager->getRoot() . '/core/includes/install.inc';
         drupal_load_updates();
         [$pending, $start, $warnings] = $this->getUpdatedbStatus();
 

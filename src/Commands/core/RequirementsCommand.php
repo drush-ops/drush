@@ -65,7 +65,7 @@ final class RequirementsCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
     {
-        include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        include_once DRUPAL_ROOT . '/core/includes/install.inc';
         $severities = [
             REQUIREMENT_INFO => dt('Info'),
             REQUIREMENT_OK => dt('OK'),

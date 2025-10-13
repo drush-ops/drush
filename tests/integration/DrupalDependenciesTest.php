@@ -86,7 +86,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->drush('why:module', ['node'], ['type' => 'module']);
         $this->assertSame('[notice] No other module depends on node', $this->getErrorOutput());
 
-        $this->drush('pm:install', ['taxonomy']);
+        $this->drush('pm:install', ['taxonomy'], ['yes' => null]);
         $this->drush('wm', ['node'], ['type' => 'module']);
         $expected = <<<EXPECTED
             node
@@ -176,7 +176,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Invalid node module', $this->getErrorOutput());
 
         // Install node module.
-        $this->drush('pm:install', ['node']);
+        $this->drush('pm:install', ['node'], ['yes' => null]);
 
         // No installed dependencies.
         $this->drush('why:module', ['node'], ['type' => 'config']);

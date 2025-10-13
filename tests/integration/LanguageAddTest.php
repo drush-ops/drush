@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
@@ -15,7 +15,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
     protected function setup(): void
     {
         parent::setUp();
-        $this->drush(PmCommands::INSTALL, ['language']);
+        $this->drush(PmCommands::INSTALL, ['language'], ['yes' => true]);
     }
 
     public function testLanguageInfoAdd()
@@ -37,21 +37,21 @@ class LanguageAddTest extends UnishIntegrationTestCase
             $this->markTestSkipped('Devel dev snapshot detected. Incompatible with translation import.');
         }
 
-        $this->drush(PmCommands::INSTALL, ['language', 'locale', 'dblog']);
-        $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.import_enabled', true]);
+        $this->drush(PmCommands::INSTALL, ['language', 'locale', 'dblog'], ['yes' => true]);
+        $this->drush(ConfigSetCommand::NAME, ['locale.settings', 'translation.import_enabled', true], ['yes' => true]);
 
         // Setup the interface translation system and prepare a source translation file.
         // The test uses a local po file as translation source. This po file will be
         // imported from the translations directory when a module is enabled.
-        $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.use_source', 'locale']);
-        $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.default_filename', '%project.%language.po']);
-        $this->drush(ConfigCommands::SET, ['locale.settings', 'translation.path', '../translations']);
+        $this->drush(ConfigSetCommand::NAME, ['locale.settings', 'translation.use_source', 'locale'], ['yes' => true]);
+        $this->drush(ConfigSetCommand::NAME, ['locale.settings', 'translation.default_filename', '%project.%language.po'], ['yes' => true]);
+        $this->drush(ConfigSetCommand::NAME, ['locale.settings', 'translation.path', '../translations'], ['yes' => true]);
         $source = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
         $translationDir = Path::join($this->webroot(), '../translations');
         $this->mkdir($translationDir);
         copy($source, Path::join($translationDir, 'drush_empty_module.nl.po'));
 
-        $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
+        $this->drush(PmCommands::INSTALL, ['drush_empty_module'], ['yes' => true]);
         $this->drush(LanguageCommands::ADD, ['nl']);
 
         $this->drush(WatchdogCommands::SHOW);
@@ -64,7 +64,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
 
     protected function tearDown(): void
     {
-        $this->drush(PmCommands::UNINSTALL, ['language']);
+        $this->drush(PmCommands::UNINSTALL, ['language'], ['yes' => true]);
         parent::tearDown();
     }
 }

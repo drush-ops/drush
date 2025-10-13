@@ -7,7 +7,6 @@ namespace Unish;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\QueueCommands;
 use Drush\Commands\pm\PmCommands;
-use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands
@@ -23,7 +22,7 @@ class QueueTest extends UnishIntegrationTestCase
         parent::setUp();
 
         // Enable woot module, which contains a queue worker that throws a RequeueException.
-        $this->drush(PmCommands::INSTALL, [self::WOOT], [], null, '', self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, [self::WOOT], ['yes' => true], null, '', self::EXIT_SUCCESS);
     }
 
     /**

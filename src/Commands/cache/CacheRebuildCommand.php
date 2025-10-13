@@ -58,7 +58,7 @@ class CacheRebuildCommand extends Command
         // We no longer clear APC and similar caches as they are useless on CLI.
         // See https://github.com/drush-ops/drush/pull/2450
         $root  = $this->bootstrapManager->getRoot();
-        require_once DRUSH_DRUPAL_CORE . '/includes/utility.inc';
+        require_once $root . '/core/includes/utility.inc';
 
         $request = $this->bootstrapManager->bootstrap()->getRequest();
         DrupalKernel::bootEnvironment();
