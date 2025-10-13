@@ -134,7 +134,7 @@ final class PmCommands extends DrushCommands
             return;
         }
 
-        require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
+        require_once DRUPAL_ROOT . '/core/includes/install.inc';
         $error = false;
         foreach ($modules as $module) {
             // Note: we can't just call the API ($moduleHandler->loadInclude($module, 'install')),
