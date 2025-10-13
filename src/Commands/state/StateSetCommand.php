@@ -89,7 +89,7 @@ final class StateSetCommand extends Command
         if ($format === 'auto') {
             if (is_numeric($value)) {
                 $value += 0; // http://php.net/manual/en/function.is-numeric.php#107326
-                $format = gettype($value);
+                $format = \gettype($value);
             } elseif (($value == 'TRUE') || ($value == 'FALSE')) {
                 $format = 'bool';
             }
