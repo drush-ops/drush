@@ -17,13 +17,6 @@ parameters:
 			identifier: while.alwaysTrue
 			count: 1
 			path: src/Commands/core/WatchdogCommands.php
-
-		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
-			count: 1
-			path: src/Commands/core/XhprofCommands.php
-
 		-
 			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$#'
 			identifier: arguments.count
