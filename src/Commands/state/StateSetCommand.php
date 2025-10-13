@@ -15,8 +15,6 @@ use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-use function Drush\Commands\core\gettype;
-
 #[AsCommand(
     name: self::NAME,
     description: 'Set a state value.',
