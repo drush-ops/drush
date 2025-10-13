@@ -7,8 +7,8 @@ namespace Unish;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
-use Drush\Commands\core\UserLoginCommand;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\user\UserLoginCommand;
 use Symfony\Component\Filesystem\Path;
 
 /**

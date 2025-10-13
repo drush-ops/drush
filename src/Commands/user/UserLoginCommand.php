@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\user;
 
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Url;
@@ -55,7 +55,7 @@ final class UserLoginCommand extends Command
             ->addUsage('user:login --name=ryan node/add/blog')
             ->addUsage('user:login --uid=123')
             ->addUsage('user:login --mail=foo@bar.com')
-            ->setHelp('To avoid the http://default domain in the link, set the [DRUSH_OPTIONS_URI environment variable](https://www.drush.org/14.x/using-drush-configuration/#environment-variables).');
+            ->setHelp('To avoid the http://default domain in the link, set the [DRUSH_OPTIONS_URI environment variable](https://www.drush.org/latest/using-drush-configuration/#environment-variables).');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
