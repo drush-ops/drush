@@ -14,6 +14,7 @@ enum HelpLinks
     case Migrate;
     case Script;
     case Readme;
+    case Generators;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -28,6 +29,7 @@ enum HelpLinks
             self::Migrate => new ConsoleLink('migrate', 'Defining and running migrations.'),
             self::Script => new ConsoleLink('examples/helloworld.script', 'An example Drush script'),
             self::Readme => new ConsoleLink('README.md', 'README.md'),
+            self::Generators => new ConsoleLink('generators', 'Instructions on creating your own Drush Generators.'),
         };
     }
 
