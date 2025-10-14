@@ -427,10 +427,10 @@ of an alias. If there are no environments</p></dd><dt>$<a href="Consolidation/Si
                     <dd><p>Ask for the allowed formats. Only used in case the command is run interactively.</p></dd><dt><a href="Drush/Commands/generate/ApplicationFactory.html"><abbr title="Drush\Commands\generate\ApplicationFactory">ApplicationFactory</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/generate.html">Drush\Commands\generate</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/generate/ApplicationFactory.html#method_alterGenerators">
 <abbr title="Drush\Commands\generate\ApplicationFactory">ApplicationFactory</abbr>::alterGenerators</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/ApplicationFactory.html"><abbr title="Drush\Commands\generate\ApplicationFactory">ApplicationFactory</abbr></a></em></dt>
-                    <dd><p>Implements hook GeneratorInfoAlter.</p></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_addInstallDependencies">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::addInstallDependencies</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_addUninstallDependencies">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::addUninstallDependencies</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd><p>Implements hook GeneratorInfoAlter.</p></dd><dt><a href="Drush/Commands/pm/PmTrait.html#method_addInstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::addInstallDependencies</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmTrait.html#method_addUninstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::addUninstallDependencies</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommentsCommands.html#method_applies">
 <abbr title="Drush\Commands\sql\sanitize\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr>::applies</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/sanitize/SanitizeCommentsCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Config/ConfigLocator.html#method_addToSources">
@@ -1456,6 +1456,14 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStatusCommand.html"><abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStopCommand.html#method_configure">
 <abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStopCommand.html"><abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmInstallCommand.html#method_configure">
+<abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmListCommand.html#method_configure">
+<abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Commands/pm/PmTrait.html#property_configFactory">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>#configFactory</a> &mdash; <em>Property in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_configure">
+<abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method_configure">
 <abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueDeleteCommand.html"><abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueRunCommand.html#method_configure">
@@ -2266,6 +2274,8 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\migrate\MigrateMessagesCommand">MigrateMessagesCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateMessagesCommand.html"><abbr title="Drush\Commands\migrate\MigrateMessagesCommand">MigrateMessagesCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStatusCommand.html#method_doExecute">
 <abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStatusCommand.html"><abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmListCommand.html#method_doExecute">
+<abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueListCommand.html#method_doExecute">
 <abbr title="Drush\Commands\queue\QueueListCommand">QueueListCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueListCommand.html"><abbr title="Drush\Commands\queue\QueueListCommand">QueueListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RoleListCommand.html#method_doExecute">
@@ -2787,9 +2797,17 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStatusCommand.html"><abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStopCommand.html#method_execute">
 <abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStopCommand.html"><abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_extensionStatus">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::extensionStatus</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd><p>Calculate an extension status based on current status and schema version.</p></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method_execute">
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmInstallCommand.html#method_execute">
+<abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmListCommand.html#method_execute">
+<abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Commands/pm/PmTrait.html#property_extensionListModule">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>#extensionListModule</a> &mdash; <em>Property in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmTrait.html#method_extensionStatus">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::extensionStatus</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
+                    <dd><p>Calculate an extension status based on current status and schema version.</p></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_execute">
+<abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method_execute">
 <abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueDeleteCommand.html"><abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueListCommand.html#method_execute">
 <abbr title="Drush\Commands\queue\QueueListCommand">QueueListCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueListCommand.html"><abbr title="Drush\Commands\queue\QueueListCommand">QueueListCommand</abbr></a></em></dt>
@@ -3845,20 +3863,8 @@ provided uri.</p></dd><dt><a href="Drush/Commands/core/StatusCommand.html#method
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>::getMigrateMessage</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
                     <dd><p>Returns the migrate message logger.</p></dd><dt><a href="Drush/Commands/migrate/MigrateRunnerTrait.html#method_getSourceIdKeys">
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>::getSourceIdKeys</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
-                    <dd><p>Get the source ID keys.</p></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getConfigFactory">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getConfigFactory</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getModuleInstaller">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getModuleInstaller</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getModuleHandler">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getModuleHandler</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getThemeHandler">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getThemeHandler</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getExtensionListModule">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getExtensionListModule</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getPermissionHandler">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getPermissionHandler</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_getModuleLinks">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::getModuleLinks</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd><p>Get the source ID keys.</p></dd><dt><a href="Drush/Commands/pm/PmTrait.html#method_getModuleLinks">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::getModuleLinks</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_getThemeInstaller">
 <abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::getThemeInstaller</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueTrait.html#method_getQueues">
@@ -4845,9 +4851,7 @@ alias record must either be remote or have a root.</p></dd><dt><a href="Consolid
 <abbr title="Drush\Commands\field\FieldInfoCommands">FieldInfoCommands</abbr>::info</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldInfoCommands.html"><abbr title="Drush\Commands\field\FieldInfoCommands">FieldInfoCommands</abbr></a></em></dt>
                     <dd><p>List all configurable fields of an entity bundle</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_isGlobalOption">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::isGlobalOption</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_install">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd><p>Enable one or more modules.</p></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_install">
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_install">
 <abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd><p>Install one or more themes.</p></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_import">
 <abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::import</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
@@ -5432,6 +5436,8 @@ plug them into the result array per the info in the provided map.</p></dd><dt><a
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>#migrationPluginManager</a> &mdash; <em>Property in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStatusCommand.html"><abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/migrate.html">Drush\Commands\migrate</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStopCommand.html"><abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/migrate.html">Drush\Commands\migrate</a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Commands/pm/PmTrait.html#property_moduleHandler">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>#moduleHandler</a> &mdash; <em>Property in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommentsCommands.html#method_messages">
 <abbr title="Drush\Commands\sql\sanitize\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr>::messages</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/sanitize/SanitizeCommentsCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommentsCommands">SanitizeCommentsCommands</abbr></a></em></dt>
                     <dd><p>Use #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]</p></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_messages">
@@ -6026,9 +6032,13 @@ site specification formats.</p></dd><dt>$<a href="Drush/Boot/BaseBoot.html#prope
                     <dd><p>Pads an incomplete table row with empty cells.</p></dd><dt><a href="Drush/Commands/migrate/MigrateRunnerTrait.html#method_preprocessMessageRow">
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>::preprocessMessageRow</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
                     <dd><p>Preprocesses migrate message rows.</p></dd><dt><a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_pmList">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::pmList</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd><p>Show a list of available extensions (modules and themes).</p></dd><dt>$<a href="Drush/Config/ConfigLocator.html#property_processedConfigPaths">
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Commands/pm/PmTrait.html#property_permissionHandler">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>#permissionHandler</a> &mdash; <em>Property in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt>$<a href="Drush/Config/ConfigLocator.html#property_processedConfigPaths">
 <abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr>#processedConfigPaths</a> &mdash; <em>Property in class <a href="Drush/Config/ConfigLocator.html"><abbr title="Drush\Config\ConfigLocator">ConfigLocator</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateExecutable.html#property_preExistingItem">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#preExistingItem</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
@@ -8445,9 +8455,7 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html
 <abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr>::updateDoOneDeployHook</a>() &mdash; <em>Method in class <a href="Drush/Commands/deploy/DeployHookCommand.html"><abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr></a></em></dt>
                     <dd><p>Batch command that executes a single deploy hook.</p></dd><dt><a href="Drush/Commands/deploy/DeployHookCommand.html#method_updateFinished">
 <abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr>::updateFinished</a>() &mdash; <em>Method in class <a href="Drush/Commands/deploy/DeployHookCommand.html"><abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr></a></em></dt>
-                    <dd><p>Batch finished callback.</p></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_uninstall">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::uninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd><p>Uninstall one or more modules and their dependent modules.</p></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_uninstall">
+                    <dd><p>Batch finished callback.</p></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_uninstall">
 <abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::uninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd><p>Uninstall themes.</p></dd><dt><a href="Drush/Commands/user/UserBlockCommand.html"><abbr title="Drush\Commands\user\UserBlockCommand">UserBlockCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserCancelCommand.html"><abbr title="Drush\Commands\user\UserCancelCommand">UserCancelCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
@@ -8674,10 +8682,10 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
 <abbr title="Drush\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr>::validateBundle</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/EntityTypeBundleValidationTrait.html"><abbr title="Drush\Commands\field\EntityTypeBundleValidationTrait">EntityTypeBundleValidationTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCommands.html#method_validate">
 <abbr title="Drush\Commands\help\HelpCommands">HelpCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCommands.html"><abbr title="Drush\Commands\help\HelpCommands">HelpCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_validateEnableModules">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::validateEnableModules</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
-                    <dd><p>Run requirements checks on the module installation.</p></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method_validateUninstall">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::validateUninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmInstallCommand.html#method_validateModules">
+<abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr>::validateModules</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_validateUninstall">
+<abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::validateUninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_validate">
 <abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/views/ViewsDevCommand.html"><abbr title="Drush\Commands\views\ViewsDevCommand">ViewsDevCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/views.html">Drush\Commands\views</a></em></dt>
@@ -9263,8 +9271,12 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStatusCommand.html"><abbr title="Drush\Commands\migrate\MigrateStatusCommand">MigrateStatusCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateStopCommand.html#method___construct">
 <abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateStopCommand.html"><abbr title="Drush\Commands\migrate\MigrateStopCommand">MigrateStopCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/PmCommands.html#method___construct">
-<abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmCommands.html"><abbr title="Drush\Commands\pm\PmCommands">PmCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmInstallCommand.html#method___construct">
+<abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmListCommand.html#method___construct">
+<abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method___construct">
+<abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method___construct">
 <abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method___construct">
