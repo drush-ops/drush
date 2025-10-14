@@ -48,7 +48,7 @@ final class PmUninstallCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('modules', InputArgument::REQUIRED, 'A comma delimited list of modules.')
+            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
             ->addUsage('pm:uninstall --simulate field_ui');
     }
 
