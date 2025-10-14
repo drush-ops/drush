@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
@@ -55,6 +52,7 @@ final class PmInstallCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new DrushStyle($input, $output);
+        $this->validateModules($input, $io);
 
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
@@ -98,10 +96,9 @@ final class PmInstallCommand extends Command
         return self::SUCCESS;
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: self::NAME)]
-    public function validateEnableModules(CommandData $commandData): void
+    public function validateModules(InputInterface $input, DrushStyle $io): void
     {
-        $modules = $commandData->input()->getArgument('modules');
+        $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
         $modules = $this->addInstallDependencies($modules);
         if ($modules === []) {
@@ -149,7 +146,6 @@ final class PmInstallCommand extends Command
 
         if ($error) {
             // Allow the user to bypass the install requirements.
-            $io = new DrushStyle($commandData->input(), $commandData->output());
             if (!$io->confirm(sprintf('The %s module\'s install requirements failed. Do you wish to continue?', $module), false)) {
                 throw new UserAbortException();
             }
