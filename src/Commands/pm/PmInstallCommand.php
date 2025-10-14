@@ -45,7 +45,7 @@ final class PmInstallCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('modules', InputArgument::REQUIRED, 'A comma delimited list of modules.')
+            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
             ->addUsage('pm:install --simulate content_moderation');
     }
 
@@ -86,11 +86,10 @@ final class PmInstallCommand extends Command
                 return sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText());
             }, $links);
 
-            if ($links === []) {
-                $io->success(sprintf('Module %s has been installed.', $moduleName));
-            } else {
-                $io->success(sprintf('Module %s has been installed. (%s)', $moduleName, implode(' - ', $links)));
+            if ($links) {
+                $this->logger->notice('Module links: {list}', ['list' => implode(', ', $links)]);
             }
+            $io->success(sprintf('Module %s has been installed.', $moduleName));
         }
 
         return self::SUCCESS;
