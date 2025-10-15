@@ -15,6 +15,7 @@ enum HelpLinks
     case Script;
     case Readme;
     case Generators;
+    case SyncViaHttp;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -28,6 +29,7 @@ enum HelpLinks
             self::Cron => new ConsoleLink('cron', 'Crontab instructions for running your Drupal cron tasks via `drush cron`.'),
             self::Migrate => new ConsoleLink('migrate', 'Defining and running migrations.'),
             self::Script => new ConsoleLink('examples/helloworld.script', 'An example Drush script'),
+            self::SyncViaHttp => new ConsoleLink('examples/Commands/SyncViaHttpCommands.php', 'Extend sql-sync to allow transfer of the sql dump file via http.'),
             self::Readme => new ConsoleLink('README.md', 'README.md'),
             self::Generators => new ConsoleLink('generators', 'Instructions on creating your own Drush Generators.'),
         };
