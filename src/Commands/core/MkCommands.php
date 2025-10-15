@@ -150,13 +150,15 @@ EOT;
 
     protected static function appendOptions($command): string
     {
-        // @todo Negatable options not showing up here but they do in CLI help.
         if ($opts = $command->getDefinition()->getOptions()) {
             $body = '';
             foreach ($opts as $opt) {
                 if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
                     $opt_array = self::optionToArray($opt);
                     $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
+                }
+                if ($command->getDefinition()->hasNegation('no-' . $opt->getName())) {
+                    $body .= sprintf('- **--no-' . $opt->getName() . '**. Negate the --%s option.', $opt->getName()) . "\n";
                 }
             }
             if ($body) {
@@ -221,6 +223,10 @@ EOT;
         $path = '';
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
+        }
+        else {
+            $reflection = new \ReflectionClass($command);
+            $path = Path::makeRelative($reflection->getFileName(), $root);
         }
         $edit_url = $path ? "https://github.com/drush-ops/drush/blob/14.x/$path" : '';
         $body = <<<EOT
