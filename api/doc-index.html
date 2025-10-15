@@ -1464,6 +1464,10 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>#configFactory</a> &mdash; <em>Property in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_configure">
 <abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeInstallCommand.html#method_configure">
+<abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeInstallCommand.html"><abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeUninstallCommand.html#method_configure">
+<abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeUninstallCommand.html"><abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method_configure">
 <abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueDeleteCommand.html"><abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueRunCommand.html#method_configure">
@@ -2809,6 +2813,10 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::extensionStatus</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
                     <dd><p>Calculate an extension status based on current status and schema version.</p></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_execute">
 <abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeInstallCommand.html#method_execute">
+<abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeInstallCommand.html"><abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeUninstallCommand.html#method_execute">
+<abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeUninstallCommand.html"><abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method_execute">
 <abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueDeleteCommand.html"><abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueListCommand.html#method_execute">
@@ -3869,8 +3877,6 @@ provided uri.</p></dd><dt><a href="Drush/Commands/core/StatusCommand.html#method
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>::getSourceIdKeys</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
                     <dd><p>Get the source ID keys.</p></dd><dt><a href="Drush/Commands/pm/PmTrait.html#method_getModuleLinks">
 <abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr>::getModuleLinks</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_getThemeInstaller">
-<abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::getThemeInstaller</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueTrait.html#method_getQueues">
 <abbr title="Drush\Commands\queue\QueueTrait">QueueTrait</abbr>::getQueues</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueTrait.html"><abbr title="Drush\Commands\queue\QueueTrait">QueueTrait</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserTrait.html#method_getAccounts">
@@ -4855,9 +4861,7 @@ alias record must either be remote or have a root.</p></dd><dt><a href="Consolid
 <abbr title="Drush\Commands\field\FieldInfoCommands">FieldInfoCommands</abbr>::info</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldInfoCommands.html"><abbr title="Drush\Commands\field\FieldInfoCommands">FieldInfoCommands</abbr></a></em></dt>
                     <dd><p>List all configurable fields of an entity bundle</p></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html#method_isGlobalOption">
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::isGlobalOption</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_install">
-<abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
-                    <dd><p>Install one or more themes.</p></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_import">
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_import">
 <abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::import</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd><p>Import file into target.</p></dd><dt><a href="Drush/Commands/user/UserInformationCommand.html#method_infoArray">
 <abbr title="Drush\Commands\user\UserInformationCommand">UserInformationCommand</abbr>::infoArray</a>() &mdash; <em>Method in class <a href="Drush/Commands/user/UserInformationCommand.html"><abbr title="Drush\Commands\user\UserInformationCommand">UserInformationCommand</abbr></a></em></dt>
@@ -8091,6 +8095,8 @@ runs a sequence of commands.</p></dd><dt>$<a href="Robo/Task/StackBasedTask.html
                     <dd><p>Tail watchdog messages.</p></dd><dt><a href="Drush/Commands/field/FieldDefinitionCommands.html#method_types">
 <abbr title="Drush\Commands\field\FieldDefinitionCommands">FieldDefinitionCommands</abbr>::types</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldDefinitionCommands.html"><abbr title="Drush\Commands\field\FieldDefinitionCommands">FieldDefinitionCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeInstallCommand.html"><abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeUninstallCommand.html"><abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/pm.html">Drush\Commands\pm</a></em></dt>
                     <dd></dd><dt><a href="Drush/Config/DrushConfig.html#method_tmp">
 <abbr title="Drush\Config\DrushConfig">DrushConfig</abbr>::tmp</a>() &mdash; <em>Method in class <a href="Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></em></dt>
                     <dd></dd><dt>$<a href="Drush/Runtime/LegacyServiceInstantiator.html#property_tags">
@@ -8458,9 +8464,7 @@ the finished page.</p></dd><dt><a href="Drush/Commands/core/UpdateDBCommand.html
 <abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr>::updateDoOneDeployHook</a>() &mdash; <em>Method in class <a href="Drush/Commands/deploy/DeployHookCommand.html"><abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr></a></em></dt>
                     <dd><p>Batch command that executes a single deploy hook.</p></dd><dt><a href="Drush/Commands/deploy/DeployHookCommand.html#method_updateFinished">
 <abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr>::updateFinished</a>() &mdash; <em>Method in class <a href="Drush/Commands/deploy/DeployHookCommand.html"><abbr title="Drush\Commands\deploy\DeployHookCommand">DeployHookCommand</abbr></a></em></dt>
-                    <dd><p>Batch finished callback.</p></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_uninstall">
-<abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::uninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
-                    <dd><p>Uninstall themes.</p></dd><dt><a href="Drush/Commands/user/UserBlockCommand.html"><abbr title="Drush\Commands\user\UserBlockCommand">UserBlockCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
+                    <dd><p>Batch finished callback.</p></dd><dt><a href="Drush/Commands/user/UserBlockCommand.html"><abbr title="Drush\Commands\user\UserBlockCommand">UserBlockCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserCancelCommand.html"><abbr title="Drush\Commands\user\UserCancelCommand">UserCancelCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserCreateCommand.html"><abbr title="Drush\Commands\user\UserCreateCommand">UserCreateCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserInformationCommand.html"><abbr title="Drush\Commands\user\UserInformationCommand">UserInformationCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/user.html">Drush\Commands\user</a></em></dt>
@@ -9280,8 +9284,10 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmListCommand.html"><abbr title="Drush\Commands\pm\PmListCommand">PmListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method___construct">
 <abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method___construct">
-<abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeInstallCommand.html#method___construct">
+<abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeInstallCommand.html"><abbr title="Drush\Commands\pm\ThemeInstallCommand">ThemeInstallCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/pm/ThemeUninstallCommand.html#method___construct">
+<abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeUninstallCommand.html"><abbr title="Drush\Commands\pm\ThemeUninstallCommand">ThemeUninstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueDeleteCommand.html#method___construct">
 <abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/queue/QueueDeleteCommand.html"><abbr title="Drush\Commands\queue\QueueDeleteCommand">QueueDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/queue/QueueListCommand.html#method___construct">
