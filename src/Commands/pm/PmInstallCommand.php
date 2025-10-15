@@ -135,7 +135,7 @@ final class PmInstallCommand extends Command
                     }
                     $message = $requirement['description'];
                     if (isset($requirement['value']) && $requirement['value']) {
-                        $message = sprintf('@requirements_message (Currently using @item version @version)', ['@requirements_message' => $requirement['description'], '@item' => $requirement['title'], '@version' => $requirement['value']]);
+                        $message = sprintf('%s (Currently using %s version %s)', $requirement['description'], $requirement['title'], $requirement['value']);
                     }
                     $reasons[$id] = $message;
                 }
