@@ -1500,6 +1500,8 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlQueryCommand.html#method_configure">
 <abbr title="Drush\Commands\sql\SqlQueryCommand">SqlQueryCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlQueryCommand.html"><abbr title="Drush\Commands\sql\SqlQueryCommand">SqlQueryCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_configure">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/state/StateDeleteCommand.html#method_configure">
 <abbr title="Drush\Commands\state\StateDeleteCommand">StateDeleteCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/state/StateDeleteCommand.html"><abbr title="Drush\Commands\state\StateDeleteCommand">StateDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/state/StateGetCommand.html#method_configure">
@@ -2284,10 +2286,10 @@ elements.</p></dd><dt><a href="Drush/Application.html#method_doRunCommand">
 <abbr title="Drush\Commands\sql\SqlConfCommand">SqlConfCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlConfCommand.html"><abbr title="Drush\Commands\sql\SqlConfCommand">SqlConfCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlDumpCommand.html#method_doExecute">
 <abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_databaseName">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::databaseName</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_dump">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::dump</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_databaseName">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::databaseName</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_dump">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::dump</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd><p>Perform sql-dump on source unless told otherwise. Returns the path to the dump file.</p></dd><dt><a href="Drush/Commands/state/StateGetCommand.html#method_doExecute">
 <abbr title="Drush\Commands\state\StateGetCommand">StateGetCommand</abbr>::doExecute</a>() &mdash; <em>Method in class <a href="Drush/Commands/state/StateGetCommand.html"><abbr title="Drush\Commands\state\StateGetCommand">StateGetCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserCreateCommand.html#method_doExecute">
@@ -2837,6 +2839,8 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlQueryCommand.html#method_execute">
 <abbr title="Drush\Commands\sql\SqlQueryCommand">SqlQueryCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlQueryCommand.html"><abbr title="Drush\Commands\sql\SqlQueryCommand">SqlQueryCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_execute">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/state/StateDeleteCommand.html#method_execute">
 <abbr title="Drush\Commands\state\StateDeleteCommand">StateDeleteCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/state/StateDeleteCommand.html"><abbr title="Drush\Commands\state\StateDeleteCommand">StateDeleteCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/state/StateGetCommand.html#method_execute">
@@ -4853,8 +4857,8 @@ alias record must either be remote or have a root.</p></dd><dt><a href="Consolid
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::isGlobalOption</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/ThemeCommands.html#method_install">
 <abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr>::install</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/ThemeCommands.html"><abbr title="Drush\Commands\pm\ThemeCommands">ThemeCommands</abbr></a></em></dt>
-                    <dd><p>Install one or more themes.</p></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_import">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::import</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
+                    <dd><p>Install one or more themes.</p></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_import">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::import</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd><p>Import file into target.</p></dd><dt><a href="Drush/Commands/user/UserInformationCommand.html#method_infoArray">
 <abbr title="Drush\Commands\user\UserInformationCommand">UserInformationCommand</abbr>::infoArray</a>() &mdash; <em>Method in class <a href="Drush/Commands/user/UserInformationCommand.html"><abbr title="Drush\Commands\user\UserInformationCommand">UserInformationCommand</abbr></a></em></dt>
                     <dd><p>A flatter and simpler array presentation of a Drupal $user object.</p></dd><dt><a href="Drush/Commands/user/UserTrait.html#method_infoArray">
@@ -6625,8 +6629,8 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
 <abbr title="Drush\Commands\role\RoleListCommand">RoleListCommand</abbr>::renderPermsCell</a>() &mdash; <em>Method in class <a href="Drush/Commands/role/RoleListCommand.html"><abbr title="Drush\Commands\role\RoleListCommand">RoleListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RolePermAddCommand.html"><abbr title="Drush\Commands\role\RolePermAddCommand">RolePermAddCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/role.html">Drush\Commands\role</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RolePermRemoveCommand.html"><abbr title="Drush\Commands\role\RolePermRemoveCommand">RolePermRemoveCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/role.html">Drush\Commands\role</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_rsync">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::rsync</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_rsync">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::rsync</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserCreateCommand.html#method_renderRolesCell">
 <abbr title="Drush\Commands\user\UserCreateCommand">UserCreateCommand</abbr>::renderRolesCell</a>() &mdash; <em>Method in class <a href="Drush/Commands/user/UserCreateCommand.html"><abbr title="Drush\Commands\user\UserCreateCommand">UserCreateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/user/UserInformationCommand.html#method_renderRolesCell">
@@ -7511,10 +7515,9 @@ Drupal Kernel is booted.</p></dd><dt><a href="Drush/Commands/LegacyCommands.html
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlDropCommand.html"><abbr title="Drush\Commands\sql\SqlDropCommand">SqlDropCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql.html">Drush\Commands\sql</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql.html">Drush\Commands\sql</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlQueryCommand.html"><abbr title="Drush\Commands\sql\SqlQueryCommand">SqlQueryCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql.html">Drush\Commands\sql</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql.html">Drush\Commands\sql</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql.html">Drush\Commands\sql</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_sqlsync">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::sqlsync</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
-                    <dd><p>Copy DB data from a source site to a target site. Transfers data via rsync.</p></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql/sanitize.html">Drush\Commands\sql\sanitize</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/sql/sanitize.html">Drush\Commands\sql\sanitize</a></em></dt>
                     <dd><p>This command must extend DrushCommands until we stop supporting sanitize plugins
 that operate using the deprecated POST_COMMAND_HOOK.</p></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommands.html#method_sanitize">
 <abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr>::sanitize</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/sanitize/SanitizeCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr></a></em></dt>
@@ -8686,8 +8689,8 @@ need to know that their module is enabled (e.g. image-flush).</p></dd><dt><a hre
 <abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr>::validateModules</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmInstallCommand.html"><abbr title="Drush\Commands\pm\PmInstallCommand">PmInstallCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/pm/PmUninstallCommand.html#method_validateUninstall">
 <abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr>::validateUninstall</a>() &mdash; <em>Method in class <a href="Drush/Commands/pm/PmUninstallCommand.html"><abbr title="Drush\Commands\pm\PmUninstallCommand">PmUninstallCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method_validate">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::validate</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method_validateSync">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::validateSync</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/views/ViewsDevCommand.html"><abbr title="Drush\Commands\views\ViewsDevCommand">ViewsDevCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/views.html">Drush\Commands\views</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/views/ViewsDisableCommand.html"><abbr title="Drush\Commands\views\ViewsDisableCommand">ViewsDisableCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/views.html">Drush\Commands\views</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/views/ViewsEnableCommand.html"><abbr title="Drush\Commands\views\ViewsEnableCommand">ViewsEnableCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/views.html">Drush\Commands\views</a></em></dt>
@@ -9303,8 +9306,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\sql\SqlCreateCommand">SqlCreateCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCreateCommand.html"><abbr title="Drush\Commands\sql\SqlCreateCommand">SqlCreateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/SqlDumpCommand.html#method___construct">
 <abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommands.html#method___construct">
-<abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommands.html"><abbr title="Drush\Commands\sql\SqlSyncCommands">SqlSyncCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlSyncCommand.html#method___construct">
+<abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlSyncCommand.html"><abbr title="Drush\Commands\sql\SqlSyncCommand">SqlSyncCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommands.html#method___construct">
 <abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/sanitize/SanitizeCommands.html"><abbr title="Drush\Commands\sql\sanitize\SanitizeCommands">SanitizeCommands</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/sql/sanitize/SanitizeCommentsCommands.html#method___construct">
