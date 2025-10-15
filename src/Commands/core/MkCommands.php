@@ -35,8 +35,7 @@ final class MkCommands extends Command
 
     public function __construct(
         protected readonly LoggerInterface $logger,
-    )
-    {
+    ) {
         parent::__construct();
     }
 
