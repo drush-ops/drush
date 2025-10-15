@@ -4105,15 +4105,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      Examples
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#arguments" class="md-nav__link">
     <span class="md-ellipsis">
       Arguments
@@ -4135,15 +4126,6 @@
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       Global Options
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#topics" class="md-nav__link">
-    <span class="md-ellipsis">
-      Topics
     </span>
   </a>
   
@@ -7441,31 +7423,14 @@
                 
                   
 
-  
-    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/sql/SqlSyncCommands.php" title="Edit this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
-    </a>
-  
-  
-    
-      
-    
-    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/sql/SqlSyncCommands.php" title="View source of this page" class="md-content__button md-icon">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
-    </a>
-  
-
 
 <h1 id="sqlsync">sql:sync<a class="headerlink" href="#sqlsync" title="Permanent link">&para;</a></h1>
 <p>Copy DB data from a source site to a target site. Transfers data via rsync.</p>
-<h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
-<ul>
-<li><code>drush sql:sync @source @self</code>. Copy the database from the site with the alias 'source' to the local site.</li>
-<li><code>drush sql:sync @self @target</code>. Copy the database from the local site to the site with the alias 'target'.</li>
-<li><code>drush sql:sync #prod #dev</code>. Copy the database from the site in /sites/prod to the site in /sites/dev (multisite installation).</li>
-</ul>
+<p>Help topics:
+* <href=https://www.drush.org/latest/site-aliases>Creating site aliases for running Drush on remote sites&lt;/&gt;
+* <href=https://www.drush.org/latest/examples/PolicyCommands.php>Example policy file&lt;/&gt;
+* <href=https://www.drush.org/latest/using-drush-configuration>Drush configuration&lt;/&gt;
+* <href=https://www.drush.org/latest/examples/Commands/SyncViaHttpCommands.php>Extend sql-sync to allow transfer of the sql dump file via http.&lt;/&gt;</p>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>source</strong>. A site-alias or site specification whose database you want to copy from.</li>
@@ -7475,15 +7440,15 @@
 <ul>
 <li><strong>--no-dump</strong>. Do not dump the sql database; always use an existing dump file.</li>
 <li><strong>--no-sync</strong>. Do not rsync the database dump file from source to target.</li>
-<li><strong>--runner=RUNNER</strong>. Where to run the rsync command; defaults to the local site. Can also be <em>source</em> or <em>target</em>.</li>
+<li><strong>--runner=RUNNER</strong>. Where to run the rsync command; defaults to the local site. Can also be source or target.</li>
 <li><strong>--create-db</strong>. Create a new database before importing the database dump on the target machine.</li>
-<li><strong>--db-su=DB-SU</strong>. Account to use when creating a new database (e.g. <em>root</em>).</li>
+<li><strong>--db-su=DB-SU</strong>. Account to use when creating a new database (e.g. root).</li>
 <li><strong>--db-su-pw=DB-SU-PW</strong>. Password for the db-su account.</li>
-<li><strong>--target-dump=TARGET-DUMP</strong>. The path for storing the sql-dump on target machine.</li>
 <li><strong>--source-dump[=SOURCE-DUMP]</strong>. The path for retrieving the sql-dump on source machine.</li>
+<li><strong>--target-dump=TARGET-DUMP</strong>. The path for storing the sql-dump on target machine.</li>
 <li><strong>--extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. mysqldump command).</li>
-<li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../using-drush-configuration/">Drush config</a></li>
-<li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../using-drush-configuration/">Drush config</a></li>
+<li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
+<li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
 <li><strong>--skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
 <li><strong>--structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
@@ -7495,13 +7460,6 @@
 <li><strong>-y, --yes</strong>. Auto-accept the default for all user prompts. Equivalent to --no-interaction.</li>
 <li><strong>-l, --uri=URI</strong>. A base URL for building links and selecting a multi-site. Defaults to <em><a href="https://default">https://default</a></em>.</li>
 <li>To see all global options, run <code>drush topic</code> and pick the first choice.</li>
-</ul>
-<h4 id="topics">Topics<a class="headerlink" href="#topics" title="Permanent link">&para;</a></h4>
-<ul>
-<li><a href="../../site-aliases/">Creating site aliases for running Drush on remote sites.</a> (docs:aliases)</li>
-<li><a href="https://raw.githubusercontent.com/drush-ops/drush/14.x/examples/Commands/PolicyCommands.php">Example policy file.</a> (docs:policy)</li>
-<li><a href="../../using-drush-configuration/">Drush configuration.</a> (docs:configuration)</li>
-<li><a href="https://raw.githubusercontent.com/drush-ops/drush/14.x/examples/Commands/SyncViaHttpCommands.php">Extend sql-sync to allow transfer of the sql dump file via http.</a> (docs:example-sync-via-http)</li>
 </ul>
 <h4 id="aliases">Aliases<a class="headerlink" href="#aliases" title="Permanent link">&para;</a></h4>
 <ul>
