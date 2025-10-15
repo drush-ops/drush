@@ -8,7 +8,6 @@ use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -28,7 +27,6 @@ final class ThemeUninstallCommand extends Command
 
     public function __construct(
         private readonly ThemeInstallerInterface $themeInstaller,
-        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -45,11 +43,11 @@ final class ThemeUninstallCommand extends Command
 
         $themes = $input->getArgument('themes');
         $themes = StringUtils::csvToArray($themes);
-        
+
         // The uninstall() method has no return value. Assume it succeeded, and
         // allow exceptions to bubble.
         $this->themeInstaller->uninstall($themes);
-        
+
         $io->success(sprintf('Successfully uninstalled theme: %s', implode(', ', $themes)));
 
         return self::SUCCESS;
