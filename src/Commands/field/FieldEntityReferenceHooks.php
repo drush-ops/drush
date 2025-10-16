@@ -100,7 +100,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
         return $this->io()->select('Referenced entity type', $choices);
     }
 
-    protected function askReferencedBundles(string $targetType): ?array
+    protected function askReferencedBundles(string $targetType): array
     {
         $choices = [];
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($targetType);

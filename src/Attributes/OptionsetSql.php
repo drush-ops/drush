@@ -7,8 +7,9 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\DrushCommands;
+use JetBrains\PhpStorm\Deprecated;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class OptionsetSql
 {
     public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)

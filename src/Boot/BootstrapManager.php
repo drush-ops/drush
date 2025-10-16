@@ -344,11 +344,11 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
                 break;
             }
 
-            $this->logger->info('Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
+            // $this->logger->info('Try to validate bootstrap phase {phase}', ['phase' => $max_phase_index]);
 
             if ($this->bootstrapValidate($phase_index)) {
                 if ($phase_index > $this->getPhase()) {
-                    $this->logger->info('Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
+                    // $this->logger->info('Try to bootstrap at phase {phase}', ['phase' => $max_phase_index]);
                     $result = $this->doBootstrap($phase_index, $max_phase_index, $annotationData);
                 }
             } else {

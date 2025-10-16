@@ -19,7 +19,6 @@ class CoreTest extends UnishIntegrationTestCase
 {
     public function testCoreRequirements()
     {
-        $root = $this->webroot();
         $options = [
             'ignore' => 'cron,http requests,update,coverage_core,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
         ];
@@ -58,7 +57,7 @@ class CoreTest extends UnishIntegrationTestCase
         $output = $this->getOutput();
         $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
 
-        $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
+        $this->drush(PmCommands::INSTALL, ['drush_empty_module'], ['yes' => true]);
         $this->drush(ThemeCommands::INSTALL, ['drush_empty_theme']);
 
         $this->drush(DrupalDirectoryCommands::DIRECTORY, ['drush_empty_module']);

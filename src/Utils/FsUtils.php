@@ -228,7 +228,7 @@ final class FsUtils
      * gz, zip and bzip2 types can be detected.
      *
      *
-     * @return string|bool|null
+     * @return string|bool
      *   The MIME content type of the file.
      */
     public static function getMimeContentType(string $path)

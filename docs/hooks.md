@@ -1,3 +1,10 @@
+!!! Warning
+
+    Hooks are deprecated in Drush 14. A few replacements:
+
+    1. To alter command information (options, arguments, etc.), [see Altering Command Info](commands.md##altering-command-info).
+    2. To validate arguments/options, [provide](commands.md) a PHP8 Attribute class which commands will use to opt into your validation. Add a Listener class with the validation logic.
+    3. To provide an Optionsets, you also [provide an Attribute Class and a Listener Class](commands.md).
 
 ## Core Hooks
 All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a `#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]` (for example) to the top of your method. The class constants for hooks are located in [HookManager](https://github.com/consolidation/annotated-command/blob/e01152f698eff4cb5df3ebfe5e097ef335dbd3c9/src/Hooks/HookManager.php#L30-L57). 
@@ -7,7 +14,7 @@ All commandfiles may implement methods that are called by Drush at various times
 
 ## Custom Hooks
 
-Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizeCommands.php)
+Drush commands can define custom events that other command files can hook. You can find examples in [CacheCommands](https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/CacheCommands.php) and [SanitizeCommands](https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizeCommands.php)
 
 First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the [dependency injection](dependency-injection.md#inflection) documentation.
 

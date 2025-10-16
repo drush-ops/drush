@@ -23,7 +23,7 @@ theme:
 site_url: https://www.drush.org/latest/
 repo_url: https://github.com/drush-ops/drush
 #Overridden on many pages via edit_uri plugin. See front matter.
-edit_uri: blob/13.x/docs
+edit_uri: blob/14.x/docs
 extra_css:
   - css/extra.drush.css
 plugins:
@@ -109,7 +109,7 @@ nav:
       - examples/PolicyCommands.php.md
       - examples/SiteAliasAlterCommands.php.md
       - examples/SyncViaHttpCommands.php.md
-      - examples/XkcdCommands.php.md
+      - examples/XkcdFetchCommand.php.md
       - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
   - Contribute:

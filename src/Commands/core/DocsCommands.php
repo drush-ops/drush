@@ -26,7 +26,6 @@ final class DocsCommands extends DrushCommands
     const CRON = 'docs:cron';
     const COMMANDS = 'docs:commands';
     const GENERATORS = 'docs:generators';
-    const EXAMPLECOMMAND = 'docs:examplecommand';
     const MIGRATE = 'docs:migrate';
     const EXAMPLE_SYNC_VIA_HTTP = 'docs:example-sync-via-http';
     const POLICY = 'docs:policy';
@@ -161,17 +160,6 @@ final class DocsCommands extends DrushCommands
     #[CLI\Help(hidden: true)]
     #[CLI\Topics(path: '../../../docs/generators.md')]
     public function generators(): void
-    {
-        self::printFileTopic($this->commandData);
-    }
-
-    /**
-     * Example Drush command file.
-     */
-    #[CLI\Command(name: self::EXAMPLECOMMAND, aliases: ['docs-examplecommand'])]
-    #[CLI\Help(hidden: true)]
-    #[CLI\Topics(path: '../../../examples/Commands/ArtCommands.php')]
-    public function exampleCommand(): void
     {
         self::printFileTopic($this->commandData);
     }

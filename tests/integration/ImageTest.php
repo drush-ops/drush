@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\ImageCommands;
+use Drush\Commands\core\ImageDeriveCommand;
+use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\pm\PmCommands;
+use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
- * Tests image-flush command
+ * Tests image:flush and image:derive commands.
  *
  * @group commands
  */
-class ImageTest extends UnishIntegrationTestCase
+class ImageTest extends UnishApplicationTesterTestCase
 {
     public function testImage()
     {
-        $this->drush(PmCommands::INSTALL, ['image']);
+        $this->drush(PmCommands::INSTALL, ['image'], ['yes' => null]);
+        // Should not be needed. Something prior removed all wrappers. Possibly will be fixed by  https://www.drupal.org/project/drupal/issues/3416735
+        \Drupal::service('stream_wrapper_manager')->register();
+
         $logo = 'core/misc/menu-expanded.png';
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
@@ -31,27 +36,28 @@ class ImageTest extends UnishIntegrationTestCase
 
         // Remove stray files left over from previous runs
         @unlink($thumbnail);
+        $this->assertFileDoesNotExist($thumbnail);
 
         // Test that "drush image-derive" works.
         $style_name = 'thumbnail';
-        $this->drush(ImageCommands::DERIVE, [$style_name, $logo]);
-        $this->log($this->getOutput());
+        $this->drush(ImageDeriveCommand::NAME, [$style_name, $logo]);
         $this->assertFileExists($thumbnail);
-
-        // @todo investigate why this is failing.
-        $this->markTestSkipped('See https://github.com/drush-ops/drush/pull/6203/checks');
 
         // Test that "drush image-flush thumbnail" deletes derivatives created by the thumbnail image style.
-        $this->drush(ImageCommands::FLUSH, [$style_name], ['all' => null]);
+        $applicationTester = new ApplicationTester($this->getApplication());
+        $applicationTester->run([ImageFlushCommand::NAME, 'style-names' => $style_name]);
+        $applicationTester->assertCommandIsSuccessful();
+        $output = $applicationTester->getDisplay();
         $this->assertFileDoesNotExist($thumbnail);
+        // @todo note stdin testing documented at https://github.com/symfony/symfony/issues/37835
 
         // Check that "drush image-flush --all" deletes all image styles by creating two different ones and testing its
-        // existence afterwards.
-        $this->drush(ImageCommands::DERIVE, ['thumbnail', $logo]);
+        // existence afterward.
+        $this->drush(ImageDeriveCommand::NAME, ['thumbnail', $logo]);
         $this->assertFileExists($thumbnail);
-        $this->drush(ImageCommands::DERIVE, ['medium', $logo]);
+        $this->drush(ImageDeriveCommand::NAME, ['medium', $logo]);
         $this->assertFileExists($medium);
-        $this->drush(ImageCommands::FLUSH, [], ['all' => null]);
+        $this->drush(ImageFlushCommand::NAME, [], ['all' => null]);
         $this->assertFileDoesNotExist($thumbnail);
         $this->assertFileDoesNotExist($medium);
     }
