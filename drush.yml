@@ -1,0 +1,4 @@
+#This is a Drush config file. Sites may override this config to change minimum PHP.
+drush:
+  php:
+    minimum-version: 8.2.5

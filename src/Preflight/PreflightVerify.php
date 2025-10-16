@@ -17,12 +17,33 @@ class PreflightVerify
      */
     public function verify(Environment $environment): void
     {
+        // Fail fast if the PHP version is not at least 8.1.0.
+        // We'll come back and check this again later, in case someone
+        // set a higher value in a configuration file.
+        $this->confirmPhpVersion('8.1.0');
+
         // Fail if this is not a CLI php
         $this->confirmUsingCLI($environment);
 
         // Fail if any mandatory functions have been disabled, or any
         // illegal options have been set in php.ini.
         $this->checkPhpIni();
+    }
+
+    /**
+     * Fail fast if the php version does not meet the minimum requirements.
+     *
+     * @param string $minimumPhpVersion
+     *   The minimum allowable php version
+     */
+    public function confirmPhpVersion(string|null $minimumPhpVersion): void
+    {
+        if (empty($minimumPhpVersion)) {
+            return;
+        }
+        if (version_compare(phpversion(), $minimumPhpVersion) < 0 && !getenv('DRUSH_NO_MIN_PHP')) {
+            throw new \Exception(StringUtils::interpolate('Your command line PHP installation is too old. Drush requires at least PHP {version}. To suppress this check, set the environment variable DRUSH_NO_MIN_PHP=1', ['version' => $minimumPhpVersion]));
+        }
     }
 
     /**
