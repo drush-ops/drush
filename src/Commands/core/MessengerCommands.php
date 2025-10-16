@@ -25,12 +25,11 @@ final class MessengerCommands extends DrushCommands
         self::log();
     }
 
-// MessengerListener is receiving Terminate events even for Annotated Commands.
-//    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: '*')]
-//    public function post(): void
-//    {
-//        self::log();
-//    }
+    #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: '*')]
+    public function post(): void
+    {
+        self::log();
+    }
 
     public function log(): void
     {

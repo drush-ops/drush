@@ -6,41 +6,32 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
-use Drush\Commands\AutowireTrait;
+use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\DrushCommands;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
 use Drush\Commands\help\ListCommands;
 use Drush\Drush;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
-#[AsCommand(
-    name: self::NAME,
-    description: 'Build a Markdown document for each available Drush command/generator.',
-)]
-final class MkCommands extends Command
+final class MkCommands extends DrushCommands
 {
-    use AutowireTrait;
-
-    const string NAME = 'mk:docs';
-
-    public function __construct(
-        protected readonly LoggerInterface $logger,
-    ) {
-        parent::__construct();
-    }
-
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    /**
+     * Build a Markdown document for each available Drush command/generator.
+     *
+     * This command is an early step when building the www.drush.org static site. Adapt it to build a similar site listing the commands that are available on your site. Also see Drush's [Github Actions workflow](https://github.com/drush-ops/drush/blob/13.x/.github/workflows/main.yml).
+     */
+    #[CLI\Command(name: 'mk:docs')]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    #[CLI\Usage(name: 'drush mk:docs', description: 'Build many .md files in the docs/commands and docs/generators directories.')]
+    public function docs(): void
     {
         $dir_root = Drush::bootstrapManager()->getComposerRoot();
 
@@ -57,14 +48,13 @@ final class MkCommands extends Command
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
         $container = Drush::getContainer();
-        $application_generate = (new ApplicationFactory($container, $this->logger))->create();
+        $application_generate = (new ApplicationFactory($container, $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_generators, $destination_path, 'All generators');
 
         $this->writeYml($nav_commands, $nav_generators, $map_commands, $map_generators, $dir_root);
-        return self::SUCCESS;
     }
 
     /**
@@ -137,7 +127,7 @@ EOT;
                             $value = "- [$topic_description]($target_relative) ($name)";
                         } else {
                             $rel_from_root = Path::makeRelative($abs, $base);
-                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/14.x/$rel_from_root) ($name)";
+                            $value = "- [$topic_description](https://raw.githubusercontent.com/drush-ops/drush/13.x/$rel_from_root) ($name)";
                         }
                     }
                 }
@@ -156,9 +146,6 @@ EOT;
                 if (!HelpCLIFormatter::isGlobalOption($opt->getName())) {
                     $opt_array = self::optionToArray($opt);
                     $body .= '- **' . HelpCLIFormatter::formatOptionKeys($opt_array) . '**. ' . self::cliTextToMarkdown(HelpCLIFormatter::formatOptionDescription($opt_array)) . "\n";
-                }
-                if ($command->getDefinition()->hasNegation('no-' . $opt->getName())) {
-                    $body .= sprintf('- **--no-' . $opt->getName() . '**. Negate the --%s option.', $opt->getName()) . "\n";
                 }
             }
             if ($body) {
@@ -199,23 +186,16 @@ EOT;
         return '';
     }
 
-    protected static function appendUsages(Command $command): string
+    protected static function appendUsages(AnnotatedCommand $command): string
     {
-        if ($command instanceof AnnotatedCommand) {
-            $usages = $command->getExampleUsages();
+        if ($usages = $command->getExampleUsages()) {
             $body = "#### Examples\n\n";
             foreach ($usages as $key => $value) {
                 $body .= '- <code>' . $key . '</code>. ' . self::cliTextToMarkdown($value) . "\n";
             }
             return "$body\n";
-        } else {
-            $usages = $command->getUsages();
-            $body = "#### Examples\n\n";
-            foreach ($usages as $value) {
-                $body .= '- <code>' . $value . '</code>' . "\n";
-            }
-            return "$body\n";
         }
+        return '';
     }
 
     protected static function appendPreamble($command, $root): string
@@ -224,11 +204,7 @@ EOT;
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         }
-        else {
-            $reflection = new \ReflectionClass($command);
-            $path = Path::makeRelative($reflection->getFileName(), $root);
-        }
-        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/14.x/$path" : '';
+        $edit_url = $path ? "https://github.com/drush-ops/drush/blob/13.x/$path" : '';
         $body = <<<EOT
 ---
 edit_url: $edit_url
@@ -362,7 +338,9 @@ EOT;
                     $command->optionsHook();
                 }
                 $body = self::appendPreamble($command, $dir_root);
-                $body .= self::appendUsages($command);
+                if ($command instanceof AnnotatedCommand) {
+                    $body .= self::appendUsages($command);
+                }
                 $body .= self::appendArguments($command);
                 $body .= self::appendOptions($command);
                 if ($destination === 'commands') {
@@ -384,7 +362,7 @@ EOT;
                 }
                 unset($map);
             }
-            $this->logger->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
+            $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
             $nav[] = [$category => $pages];
             $pages_all = array_merge($pages_all, $pages);
             $pages = [];

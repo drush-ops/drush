@@ -83,7 +83,7 @@ class ApplicationFactory
                     $exists[] = $class;
                 }
             } catch (\Throwable $e) {
-                $this->logger->notice($e->getMessage());
+                $this->logger()->notice($e->getMessage());
             }
         }
         return $exists;
@@ -103,5 +103,10 @@ class ApplicationFactory
         if (isset($event->generators['theme-settings'])) {
             $event->generators['theme-settings']->setName('theme:settings');
         }
+    }
+
+    public function logger(): LoggerInterface
+    {
+        return $this->logger;
     }
 }
