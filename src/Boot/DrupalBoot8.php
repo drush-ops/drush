@@ -265,7 +265,8 @@ class DrupalBoot8 extends DrupalBoot
         // Robo::register to add any commands, as that is the point where the
         // alteration will happen.
         foreach ($commandInfoAlterers as $altererHandler) {
-            $altererHandler = $this->serviceManager->commandFromInvokable($altererHandler);
+            // @todo This is in Drush14 but is giving an error here.
+            // $altererHandler = $this->serviceManager->commandFromInvokable($altererHandler);
             $commandFactory->addCommandInfoAlterer($altererHandler);
             $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
         }
