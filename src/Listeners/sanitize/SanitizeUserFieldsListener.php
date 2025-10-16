@@ -9,19 +9,16 @@ use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * Sanitize user fields. This also an example of how to write a
  *  database sanitizer.
  */
-#[AsEventListener(method: 'onDefinition')]
 #[AsEventListener(method: 'onSanitizeConfirm')]
 #[AsEventListener(method: 'onConsoleTerminate')]
 final class SanitizeUserFieldsListener
@@ -35,15 +32,6 @@ final class SanitizeUserFieldsListener
         protected FieldTypePluginManagerInterface $fieldTypePluginManager,
         protected LoggerInterface $logger,
     ) {
-    }
-
-    public function onDefinition(ConsoleDefinitionsEvent $event): void
-    {
-        foreach ($event->getApplication()->all() as $id => $command) {
-            if ($command->getName() === 'sql:sanitize') {
-                $command->addOption('allowlist-fields', null, InputOption::VALUE_REQUIRED, 'A comma delimited list of fields exempt from sanitization.');
-            }
-        }
     }
 
     public function onSanitizeConfirm(SanitizeConfirmsEvent $event): void

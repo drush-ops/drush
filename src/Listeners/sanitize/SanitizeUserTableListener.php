@@ -9,20 +9,17 @@ use Drupal\Core\Database\Query\SelectInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Password\PasswordInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\SanitizeConfirmsEvent;
 use Drush\Sql\SqlBase;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * Sanitize emails and passwords. This also an example of how to write a
  *  database sanitizer.
  */
-#[AsEventListener(method: 'onDefinition')]
 #[AsEventListener(method: 'onSanitizeConfirm')]
 #[AsEventListener(method: 'onConsoleTerminate')]
 final class SanitizeUserTableListener
@@ -35,23 +32,6 @@ final class SanitizeUserTableListener
         protected EntityTypeManagerInterface $entityTypeManager,
         protected LoggerInterface $logger,
     ) {
-    }
-
-    public function onDefinition(ConsoleDefinitionsEvent $event): void
-    {
-        foreach ($event->getApplication()->all() as $id => $command) {
-            if ($command->getName() === 'sql:sanitize') {
-                $command->addOption(
-                    'sanitize-email',
-                    null,
-                    InputOption::VALUE_REQUIRED,
-                    'The pattern for test email addresses in the sanitization operation, or <info>no</info> to keep email addresses unchanged. May contain replacement patterns <info>%uid</info>, <info>%mail</info> or <info>%name</info>.',
-                    'user+%uid@localhost.localdomain'
-                )
-                    ->addOption('sanitize-password', null, InputOption::VALUE_REQUIRED, 'By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords to that value.')
-                    ->addOption('ignored-roles', null, InputOption::VALUE_REQUIRED, 'A comma delimited list of roles. Users with at least one of the roles will be exempt from sanitization.');
-            }
-        }
     }
 
     public function onSanitizeConfirm(SanitizeConfirmsEvent $event): void
