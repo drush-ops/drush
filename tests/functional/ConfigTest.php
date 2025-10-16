@@ -5,16 +5,12 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\Core\Serialization\Yaml;
-use Drush\Commands\config\ConfigCommands;
-use Drush\Commands\config\ConfigExportCommand;
-use Drush\Commands\config\ConfigExportCommands;
-use Drush\Commands\config\ConfigGetCommand;
-use Drush\Commands\config\ConfigImportCommand;
-use Drush\Commands\config\ConfigImportCommands;
-use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\core\PhpCommands;
+use Drush\Commands\core\StatusCommands;
+use Drush\Commands\config\ConfigCommands;
+use Drush\Commands\config\ConfigExportCommands;
+use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\core\StateCommands;
-use Drush\Commands\core\StatusCommand;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
@@ -44,29 +40,29 @@ class ConfigTest extends CommandUnishTestCase
     public function testConfigGetSet()
     {
         // Simple value
-        $this->drush(ConfigSetCommand::NAME, ['system.site', 'name', 'config_test']);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'name']);
+        $this->drush(ConfigCommands::SET, ['system.site', 'name', 'config_test']);
+        $this->drush(ConfigCommands::GET, ['system.site', 'name']);
         $this->assertEquals("'system.site:name': config_test", $this->getOutput());
 
         // Nested value
-        $this->drush(ConfigSetCommand::NAME, ['system.site', 'page.front', 'llama']);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'page.front']);
+        $this->drush(ConfigCommands::SET, ['system.site', 'page.front', 'llama']);
+        $this->drush(ConfigCommands::GET, ['system.site', 'page.front']);
         $this->assertEquals("'system.site:page.front': llama", $this->getOutput());
 
         // Simple sequence value
-        $this->drush(ConfigSetCommand::NAME, ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
-        $this->drush(ConfigGetCommand::NAME, ['user.role.authenticated', 'permissions'], ['format' => 'json']);
+        $this->drush(ConfigCommands::SET, ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
+        $this->drush(ConfigCommands::GET, ['user.role.authenticated', 'permissions'], ['format' => 'json']);
         $output = $this->getOutputFromJSON('user.role.authenticated:permissions');
 
         // Mapping value
-        $this->drush(ConfigSetCommand::NAME, ['system.site', 'page', "{403: '403', front: home}"], ['input-format' => 'yaml']);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
+        $this->drush(ConfigCommands::SET, ['system.site', 'page', "{403: '403', front: home}"], ['input-format' => 'yaml']);
+        $this->drush(ConfigCommands::GET, ['system.site', 'page'], ['format' => 'json']);
         $output = $this->getOutputFromJSON('system.site:page');
         $this->assertSame(['403' => '403', 'front' => 'home'], $output);
 
         // Multiple top-level keys
-        $this->drush(ConfigSetCommand::NAME, ['user.role.authenticated', '?', "{label: 'Auth user', weight: 5}"], ['input-format' => 'yaml']);
-        $this->drush(ConfigGetCommand::NAME, ['user.role.authenticated'], ['format' => 'json']);
+        $this->drush(ConfigCommands::SET, ['user.role.authenticated', '?', "{label: 'Auth user', weight: 5}"], ['input-format' => 'yaml']);
+        $this->drush(ConfigCommands::GET, ['user.role.authenticated'], ['format' => 'json']);
         $output = $this->getOutputFromJSON();
         $this->assertSame('Auth user', $output['label']);
         $this->assertSame(5, $output['weight']);
@@ -77,7 +73,7 @@ class ConfigTest extends CommandUnishTestCase
         $system_site_yml = $this->getConfigSyncDir() . '/system.site.yml';
 
         // Test export.
-        $this->drush(ConfigExportCommand::NAME);
+        $this->drush(ConfigExportCommands::EXPORT);
         $this->assertFileExists($system_site_yml);
 
         // Test import and status by finishing the round trip.
@@ -90,8 +86,8 @@ class ConfigTest extends CommandUnishTestCase
         $this->assertStringContainsString('system.site', $this->getOutput(), 'config:status correctly reports changes.');
 
         // Test import.
-        $this->drush(ConfigImportCommand::NAME);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
+        $this->drush(ConfigImportCommands::IMPORT);
+        $this->drush(ConfigCommands::GET, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish', $page['front'], 'Config was successfully imported.');
 
@@ -111,13 +107,13 @@ XML
         }
 
         // Test the --existing-config option for site:install.
-        $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
+        $this->drush(StatusCommands::STATUS, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
         file_put_contents($system_site_yml, $contents);
         $this->installDrupal('dev', true, ['existing-config' => true], false);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
+        $this->drush(ConfigCommands::GET, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
 
@@ -128,7 +124,7 @@ XML
         $this->mkdir($partial_path);
         $contents = file_put_contents($partial_path . '/system.site.yml', $contents);
         $this->drush(ConfigImportCommands::IMPORT, [], ['partial' => null, 'source' => $partial_path]);
-        $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
+        $this->drush(ConfigCommands::GET, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish partial', $page['front'], '--partial was successfully imported.');
     }
@@ -194,7 +190,7 @@ YAML_FRAGMENT;
 
     protected function getConfigSyncDir()
     {
-        $this->drush(StatusCommand::NAME, [], ['format' => 'json', 'fields' => 'config-sync']);
+        $this->drush(StatusCommands::STATUS, [], ['format' => 'json', 'fields' => 'config-sync']);
         return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
     }
 

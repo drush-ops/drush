@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Config;
 
+use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Path;
-use Unish\Utils\Fixtures;
 
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.
@@ -39,6 +39,7 @@ class ConfigLocatorTest extends TestCase
         $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', Path::canonicalize($sources['test']['variant']));
         $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
         $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', Path::canonicalize($sources['test']['site']));
+        $this->assertEquals($this->environment()->drushBasePath() . '/drush.yml', Path::canonicalize($sources['drush']['php']['minimum-version']));
 
         $config = $configLocator->config();
 
@@ -46,6 +47,7 @@ class ConfigLocatorTest extends TestCase
         $this->assertEquals('A system-wide setting', $config->get('test.system'));
         $this->assertEquals('A user-specific setting', $config->get('test.home'));
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
+        $this->assertTrue($config->has('drush.php.minimum-version'));
     }
 
     /**

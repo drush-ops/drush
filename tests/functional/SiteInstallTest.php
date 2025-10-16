@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\RoleCommands;
-use Drush\Commands\core\SiteInstallCommands;
-use Drush\Commands\core\StatusCommand;
+use Drush\Commands\core\StatusCommands;
 use Drush\Commands\sql\SqlCommands;
+use Drush\Commands\core\SiteInstallCommands;
 use Unish\Utils\Fixtures;
 
 /**
@@ -30,7 +30,7 @@ class SiteInstallTest extends CommandUnishTestCase
             $this->installDrupal('dev', true, ['db-prefix' => 'drupal_']);
 
             // Run 'core-status' and insure that we can bootstrap Drupal.
-            $this->drush(StatusCommand::NAME, [], ['fields' => 'bootstrap']);
+            $this->drush(StatusCommands::STATUS, [], ['fields' => 'bootstrap']);
             $output = $this->getOutput();
             $this->assertStringContainsString('Successful', $output);
 
@@ -94,7 +94,7 @@ class SiteInstallTest extends CommandUnishTestCase
         $this->installDrupal('dev', true, ['recipeOrProfile' => $recipeDir]);
 
         // Run 'core-status' and insure that we can bootstrap Drupal.
-        $this->drush(StatusCommand::NAME, [], ['fields' => 'bootstrap']);
+        $this->drush(StatusCommands::STATUS, [], ['fields' => 'bootstrap']);
         $output = $this->getOutput();
         $this->assertStringContainsString('Successful', $output);
 

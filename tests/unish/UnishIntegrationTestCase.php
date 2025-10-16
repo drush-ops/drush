@@ -28,18 +28,6 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     protected string $stderr = '';
 
     /**
-     * This method is called before each test.
-     */
-    protected function setUp(): void
-    {
-        // Install the SUT if necessary
-        if (!RuntimeController::instance()->initialized()) {
-            $this->checkInstallSut();
-        }
-        parent::setUp();
-    }
-
-    /**
      * @inheritdoc
      */
     public function getOutputRaw(): string
@@ -56,8 +44,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
     }
 
     /**
-     * Invoke drush via a direct method call to Application::run(). When
-     * testing command output, use CommandTester or ApplicationTester instead.
+     * Invoke drush via a direct method call to Application::run().
      *
      * @param $command
      *   A defined drush command such as 'cron', 'status' and so on
@@ -73,6 +60,11 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
      */
     public function drush(string $command, array $args = [], array $options = [], ?int $expected_return = self::EXIT_SUCCESS, string|bool $stdin = false): ?int
     {
+        // Install the SUT if necessary
+        if (!RuntimeController::instance()->initialized()) {
+            $this->checkInstallSut();
+        }
+
         $cmd = $this->buildCommandLine($command, $args, $options);
 
         // Get the application instance from the runtime controller.

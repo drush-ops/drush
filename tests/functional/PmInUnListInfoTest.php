@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\StatusCommand;
+use Drush\Commands\core\StatusCommands;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\sql\SqlCommands;
 
@@ -47,7 +47,7 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertStringContainsString('drush_empty_module', $out);
 
-        $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
+        $this->drush(StatusCommands::STATUS, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
 
         // Test the testing install profile theme is installed.

@@ -6,7 +6,7 @@ namespace Drush\Backend;
 
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAlias;
-use Drush\Commands\core\StatusCommand;
+use Drush\Commands\core\StatusCommands;
 use Drush\Drush;
 
 class BackendPathEvaluator
@@ -78,7 +78,7 @@ class BackendPathEvaluator
         // The drupal:directory command uses a path evaluator, which
         // calls this function, so we cannot use dd here, as that
         // would be recursive.
-        $process = Drush::drush($aliasRecord, StatusCommand::NAME, [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
+        $process = Drush::drush($aliasRecord, StatusCommands::STATUS, [], ['project' => $pathAlias, 'fields' => '%paths', 'format' => 'json'] + Drush::redispatchOptions() + ['strict' => 0]);
         $process->setSimulated(false);
         $process->mustRun();
         $json = $process->getOutputAsJson();

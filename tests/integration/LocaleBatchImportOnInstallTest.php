@@ -10,7 +10,7 @@ use Drush\Commands\config\ConfigExportCommands;
 use Drush\Commands\config\ConfigImportCommands;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\PhpCommands;
-use Drush\Commands\core\StatusCommand;
+use Drush\Commands\core\StatusCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
@@ -64,7 +64,7 @@ class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
     {
         $this->drush(ConfigExportCommands::EXPORT);
 
-        $this->drush(StatusCommand::NAME, [], ['format' => 'json', 'fields' => 'config-sync']);
+        $this->drush(StatusCommands::STATUS, [], ['format' => 'json', 'fields' => 'config-sync']);
         $core_sync_dir = $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');
 
         $core_extension_file = "$core_sync_dir/core.extension.yml";

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\LoginCommands;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
-use Drush\Commands\user\UserLoginCommand;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -122,35 +122,36 @@ class UserTest extends CommandUnishTestCase
         $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
         $this->drush(PhpCommands::EVAL, [$eval]);
         $output = $this->getOutput();
-        $this->assertStringContainsString('2', $output, 'User can login with new password.');
+        $this->assertEquals("2", $output, 'User can login with new password.');
     }
 
     public function testUserLoginNoBootstrappedSite(): never
     {
         $this->markTestSkipped('TODO: @none should prevent selection of site at cwd');
         // Check if user-login on a non-bootstrapped environment returns error.
-        $this->drush(UserLoginCommand::NAME, [], [], '@none', null, self::EXIT_ERROR);
+        $this->drush(LoginCommands::LOGIN, [], [], '@none', null, self::EXIT_ERROR);
     }
 
     public function testUserLogin()
     {
         // Check user-login
-        $user_login_options = ['simulate' => null];
-        // Collect full logs.
-        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['debug' => null]);
+        $user_login_options = ['simulate' => null, 'browser' => 'unish'];
+        // Collect full logs so we can check browser.
+        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['debug' => null]);
         $logOutput = $this->getErrorOutput();
         $url = parse_url($this->getOutput());
         $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
+        $this->assertStringContainsString('Opening browser unish at http://', $logOutput);
         // Check specific user with a path argument.
         $uid = 2;
-        $this->drush(UserLoginCommand::NAME, ['node/add'], $user_login_options + ['name' => self::NAME]);
+        $this->drush(LoginCommands::LOGIN, ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $query = $url['query'];
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with user argument returned a valid reset URL');
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Check path used as only argument when using uid option.
-        $this->drush(UserLoginCommand::NAME, ['node/add'], $user_login_options + ['name' => self::NAME]);
+        $this->drush(LoginCommands::LOGIN, ['node/add'], $user_login_options + ['name' => self::NAME]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
@@ -158,14 +159,14 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals('destination=node/add', $query, 'Login included destination path in URL');
         // Test specific user by uid.
         $uid = 2;
-        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['uid' => $uid]);
+        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['uid' => $uid]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with uid option returned a valid reset URL');
         // Test specific user by mail.
         $uid = 2;
         $mail = self::MAIL;
-        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['mail' => $mail]);
+        $this->drush(LoginCommands::LOGIN, [], $user_login_options + ['mail' => $mail]);
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');

@@ -58,6 +58,12 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     {
         // Access a missing array element
         $this->drush(PhpCommands::EVAL, ['$a = []; print $a["b"];']);
-        $this->assertStringContainsString('Undefined array key "b"', $this->getErrorOutput());
+
+        if (empty($this->logLevel()) && PHP_MAJOR_VERSION <= 7) {
+            $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
+        } else {
+            $msg = PHP_MAJOR_VERSION >= 8 ? 'Undefined array key "b" PhpCommands.php' : 'Undefined index: b PhpCommands.php';
+            $this->assertStringContainsString($msg, $this->getErrorOutput());
+        }
     }
 }

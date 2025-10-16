@@ -7,7 +7,6 @@ namespace Drush\Listeners;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drush\Attributes\ValidateQueueName;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\queue\QueueTrait;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -17,7 +16,6 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 class ValidateQueueNameListener
 {
     use AutowireTrait;
-    use QueueTrait;
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,
@@ -51,5 +49,11 @@ class ValidateQueueNameListener
             $this->logger->error('Queue name(s) not found: {names}', ['names' => implode(', ', $missing)]);
             $event->disableCommand();
         }
+    }
+
+    // In 14.x this is in QueueTrait
+    public static function getQueues(): array
+    {
+        return array_keys(\Drupal::service('plugin.manager.queue_worker')->getDefinitions());
     }
 }

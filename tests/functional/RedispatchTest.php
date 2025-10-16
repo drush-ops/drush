@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\StatusCommand;
+use Drush\Commands\core\CoreCommands;
+use Drush\Commands\core\StatusCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
@@ -20,7 +21,7 @@ class RedispatchTest extends CommandUnishTestCase
     public function testDispatchUsingAlias()
     {
         $options = ['uri' => 'OMIT', 'alias-path' => Path::join(__DIR__, 'resources/alias-fixtures'), 'simulate' => null];
-        $this->drush(StatusCommand::NAME, [], $options, '@example.live');
+        $this->drush(StatusCommands::STATUS, [], $options, '@example.live');
         $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=example www-admin@service-provider.com '/example/path/to/drush --no-interaction core:status --uri=https://example.com'", $this->getSimplifiedErrorOutput());
     }
 
