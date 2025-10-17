@@ -169,9 +169,6 @@ final class CliCommands extends DrushCommands
      * These are Symfony VarDumper casters.
      * See http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      * for more information.
-     *
-     * @return array.
-     *   An array of caster callbacks keyed by class or interface.
      */
     protected function getCasters(): array
     {
@@ -190,9 +187,6 @@ final class CliCommands extends DrushCommands
      * Returns the file path for the CLI history.
      *
      * This can either be site specific (default) or Drupal version specific.
-     *
-     *
-     * @return string.
      */
     protected function historyPath(array $options): string
     {
