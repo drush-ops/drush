@@ -2,7 +2,7 @@
 
 !!! tip
 
-      1. Drush 13+ expects commandfiles to use the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 14.
+      1. Drush 13+ expects commandfiles to use the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated.
       1. Drush 12+ expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators|Listeners>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
@@ -10,9 +10,9 @@ Creating a new Drush command is easy. Follow the steps below.
 1. Run `drush generate drush:command-file`.
 2. Drush will prompt for the machine name of the module that should _own_ the file. The module selected must already exist and be enabled. Use `drush generate module` to create a new module.
 3. Drush will then report that it created a commandfile. Edit as needed.
-4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/14.x/src/Commands) as inspiration and documentation.
+4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/13.x/src/Commands) as inspiration and documentation.
 5. You may [inject dependencies](dependency-injection.md) into a command instance.
-6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md#drush-test-traits).
+6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#drush-test-traits).
 
 ## Four ways to declare a command
 The following are supported ways to declare a command.
@@ -159,7 +159,7 @@ The following are supported ways to declare a command.
     }
     ```
 
-Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
+Drush 13.7 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
 
 - Each command lives in its own class file
 - The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
@@ -170,7 +170,7 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
 - The main logic of the command moves to an execute() method on the command class.
 - Commands that wish to offer multiple _output formats_ (yes please!): 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
-    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php).
+    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
 - Add the following snippet to your project's composer.json. 
@@ -179,7 +179,7 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
     "drush/drush": "<13.7"
 },
 ```
-- [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/14.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
+- [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
 
 ## Altering Command Info
 
@@ -193,7 +193,7 @@ In the module that wants to alter command info, add a class that:
 1. Implement the alteration logic via a `__invoke(ConsoleDefinitionsEvent $event)` method.
 1. Along with the alter code, it's recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
 
-For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/14.x/sut/modules/unish/woot/src/Drush/Listeners/WootDefinitionListener.php) provided by the testing 'woot' module.
+For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Listeners/WootDefinitionListener.php) provided by the testing 'woot' module.
 
 ## Auto-discovered commands (PSR4)
 
@@ -221,10 +221,10 @@ Using `require` in place of `conflict` is not recommended.
 
 !!! warning "Symlinked packages"
 
-    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/14.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
+    While it is good practice to make your custom commands into a Composer package, please beware that symlinked packages (by using the composer repository type [Path](https://getcomposer.org/doc/05-repositories.md#path)) will **not** be discovered by Drush. When in development, it is recommended to [specify your package's](https://github.com/drush-ops/drush/blob/13.x/examples/example.drush.yml#L52-L67) path in your `drush.yml` to have quick access to your commands.
 
 ## Site-wide Commands
-Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called _site-wide_ commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/14.x/examples/Commands) folder for examples. In general, it's preferable to use modules to carry your Drush commands.
+Commandfiles that are installed in a Drupal site and are not bundled inside a Drupal module are called _site-wide_ commandfiles. Site-wide commands may either be added directly to the Drupal site's repository (e.g. for site-specific policy files), or via `composer require`. See the [examples/Commands](https://github.com/drush-ops/drush/tree/13.x/examples/Commands) folder for examples. In general, it's preferable to use modules to carry your Drush commands.
 
 Here are some examples of valid commandfile names and namespaces:
 

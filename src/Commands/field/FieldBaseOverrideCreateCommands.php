@@ -135,7 +135,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
         }
     }
 
-    protected function askFieldName(string $entityType): ?string
+    protected function askFieldName(string $entityType): string
     {
         /** @var BaseFieldDefinition[] $definitions */
         $definitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);

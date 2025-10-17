@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
   description: 'This command will concatenate two parameters.',
   aliases: ['my-cat'],
   help: 'If the --flip flag is provided, then the result is the concatenation of two and one.',
-  usages: ['bet alpha --flip'],
+//  usages: ['bet alpha --flip'],
 )]
 final class MyCatCommand {
 

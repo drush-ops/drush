@@ -33,7 +33,7 @@ $iterator = Finder::create()
 return new Doctum($iterator, [
   // 'theme'                => 'symfony',
   // 'versions'             => $versions,
-    'title' => 'Drush API 14',
+    'title' => 'Drush API 13',
   'build_dir'            => __DIR__.'/gh-pages/api',
   //'build_dir'            => __DIR__.'/gh-pages/api/%version%',
   'cache_dir'            => __DIR__.'/.doctum-cache/%version%',
