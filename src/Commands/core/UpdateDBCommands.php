@@ -190,6 +190,7 @@ final class UpdateDBCommands extends DrushCommands
         $ret = [];
         $update_hook_registry = \Drupal::service('update.update_hook_registry');
         $equivalent_update = null;
+        // @phpstan-ignore-next-line
         if (method_exists($update_hook_registry, 'getEquivalentUpdate')) {
             $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
         }

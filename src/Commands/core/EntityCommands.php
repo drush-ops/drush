@@ -258,6 +258,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 $query->range(0, $limit);
             }
         }
+        // @phpstan-ignore-next-line
         return $query->accessCheck(false);
     }
 }
