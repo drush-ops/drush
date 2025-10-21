@@ -117,7 +117,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(string|null $listDelimiter, string|null $tableStyle)
+                    <a href="#method___construct">__construct</a>(string|null $listDelimiter, string|null $tableStyle, bool $include_field_labels = true)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -144,7 +144,7 @@
                     <h3 id="method___construct">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/TableFormat.php#L23">at line 23</a></div>
         <code>                    
-    <strong>__construct</strong>(string|null $listDelimiter, string|null $tableStyle)
+    <strong>__construct</strong>(string|null $listDelimiter, string|null $tableStyle, bool $include_field_labels = true)
         </code>
     </h3>
     <div class="details">    
@@ -169,6 +169,11 @@
                 <td>$tableStyle</td>
                 <td><p>The table style.</p></td>
             </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$include_field_labels</td>
+                <td></td>
+            </tr>
             </table>
 
             
@@ -181,7 +186,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigurationItem">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/TableFormat.php#L30">at line 30</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/TableFormat.php#L31">at line 31</a></div>
         <code>                    array
     <strong>getConfigurationItem</strong>(ReflectionAttribute $attribute)
         </code>
