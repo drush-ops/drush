@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\updatedb;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\OutputFormatters\FormatterManager;

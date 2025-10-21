@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\PhpCommands;
-use Drush\Commands\core\UpdateDBCommand;
-use Drush\Commands\core\UpdateDbStatusCommand;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\sql\SqlCommands;
+use Drush\Commands\updatedb\UpdateDBCommand;
+use Drush\Commands\updatedb\UpdateDbStatusCommand;
 use Symfony\Component\Filesystem\Path;
 
 /**

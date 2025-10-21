@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Commands\updatedb;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
@@ -279,7 +279,7 @@ final class UpdateDBCommand extends Command
         $ret = [];
         $update_hook_registry = \Drupal::service('update.update_hook_registry');
         $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
-        if ($equivalent_update && $equivalent_update instanceof EquivalentUpdate) {
+        if ($equivalent_update instanceof EquivalentUpdate) {
             $ret['results']['query'] = $equivalent_update->toSkipMessage();
             $ret['results']['success'] = true;
             $context['sandbox']['#finished'] = true;
