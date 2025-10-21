@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\LocaleCommands | Drush API 14</title>
+    <title>Drush\Commands\locale\LocaleTrait | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -19,7 +19,7 @@
 
     </head>
 
-    <body id="class" data-name="class:Drush_Commands_core_LocaleCommands" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
+    <body id="class" data-name="class:Drush_Commands_locale_LocaleTrait" data-root-path="../../../" data-search-index-url="../../../doctum-search.json">
             <div id="content">
         <div id="left-column">
                 <div id="control-panel">
@@ -74,19 +74,19 @@
 
                         <div class="namespace-breadcrumbs">
             <ol class="breadcrumb">
-                <li><span class="label label-default">class</span></li>
-                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/core.html">core</a></li><li class="backslash">\</li><li>LocaleCommands</li>
+                <li><span class="label label-default">trait</span></li>
+                        <li><a href="../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../Drush/Commands/locale.html">locale</a></li><li class="backslash">\</li><li>LocaleTrait</li>
             </ol>
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>LocaleCommands    
+        <h1>LocaleTrait    
             </h1>
     </div>
 
     
-    <p>final         class
-    <strong>LocaleCommands</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/LocaleCommands.php">View source</a>)
+    <p>        trait
+    <strong>LocaleTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/locale/LocaleTrait.php">View source</a>)
 </p>
 
         
@@ -95,64 +95,57 @@
 
             
         
-            <h2>Constants</h2>    <table class="table table-condensed">
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
                     <tr>
-                <td>
-                                                                                                                        CHECK
+                <td class="type" id="property_languageManager">
+                                        protected                                        <abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr>
+                                                                                
                                     </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
+                <td>$languageManager</td>
+                <td class="last"></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>
-                                                                                                                        CLEAR
+                <td class="type" id="property_configFactory">
+                                        protected                                        <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+                                                                                
                                     </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
+                <td>$configFactory</td>
+                <td class="last"></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>
-                                                                                                                        UPDATE
+                <td class="type" id="property_moduleHandler">
+                                        protected                                        <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+                                                                                
                                     </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
+                <td>$moduleHandler</td>
+                <td class="last"></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>
-                                                                                                                        EXPORT
+                <td class="type" id="property_state">
+                                        protected                                        <abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr>
+                                                                                
                                     </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
+                <td>$state</td>
+                <td class="last"></td>
+                <td></td>
             </tr>
                     <tr>
-                <td>
-                                                                                                                        IMPORT
+                <td class="type" id="property_logger">
+                                        protected                                        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                                                                                
                                     </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                                                                                        IMPORT_ALL
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
+                <td>$logger</td>
+                <td class="last"></td>
+                <td></td>
             </tr>
             </table>
 
-    
     
     
 </div><div id="footer">
