@@ -10,7 +10,7 @@ parameters:
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 2
-			path: src/Commands/core/UpdateDBCommand.php
+			path: src/Commands/updatedb/UpdateDBCommand.php
 
 		-
 			message: '#^While loop condition is always true\.$#'
