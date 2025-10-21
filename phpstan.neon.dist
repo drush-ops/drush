@@ -13,11 +13,11 @@ parameters:
     excludePaths:
         # Deliberately calls optional external code.
         - src/Psysh/Caster.php
-        # Remove once https://github.com/mglaman/phpstan-drupal/issues/741 is resolved
-        - src/Commands/core/LocaleCommands.php
-        - src/Commands/core/LanguageAddCommand.php
         # Remove once we only support Drupal 11.2
         # - src/Commands/core/cache/CacheWarmCommand.php
+rules:
+    # https://github.com/mglaman/phpstan-drupal/issues/741#issuecomment-2379202809
+    - mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes
 includes:
     - vendor/mglaman/phpstan-drupal/extension.neon
     - phpstan-baseline.neon
