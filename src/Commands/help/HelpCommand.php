@@ -37,8 +37,7 @@ final class HelpCommand extends Command
     public function __construct(
         protected readonly FormatterManager $formatterManager,
         protected readonly BootstrapManager $bootstrapManager,
-    )
-    {
+    ) {
         parent::__construct();
     }
 

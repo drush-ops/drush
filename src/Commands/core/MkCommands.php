@@ -223,8 +223,7 @@ EOT;
         $path = '';
         if ($command instanceof AnnotatedCommand) {
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
-        }
-        else {
+        } else {
             $reflection = new \ReflectionClass($command);
             $path = Path::makeRelative($reflection->getFileName(), $root);
         }
