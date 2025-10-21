@@ -32,7 +32,7 @@ use Symfony\Component\Yaml\Yaml;
 )]
 #[CLI\OptionsetGetEditor]
 #[CLI\Version(version: '12.5')]
-final class EntityCreateCommands extends Command
+final class EntityCreateCommand extends Command
 {
     use AutowireTrait;
     use ExecTrait;
@@ -70,7 +70,7 @@ final class EntityCreateCommands extends Command
         return self::SUCCESS;
     }
 
-    public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
+    public function createEntity(string $entity_type, string $bundle, array $options): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
         /** @var ContentEntityInterface $entity */
