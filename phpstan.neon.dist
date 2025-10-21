@@ -11,6 +11,8 @@ parameters:
         - Drupal\Core\Extension\Extension
         - Drupal\views\ViewExecutable
     excludePaths:
+        # Unclear why the phpstan-drupal rule is not working for this command
+        - src/Commands/core/LanguageAddCommand.php
         # Deliberately calls optional external code.
         - src/Psysh/Caster.php
         # Remove once we only support Drupal 11.2

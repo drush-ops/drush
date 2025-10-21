@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\entity;
 
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\SiteProcess\Util\Escape;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityConstraintViolationListInterface;
@@ -15,44 +14,63 @@ use Drupal\Core\Session\AccountSwitcherInterface;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\DrushCommands;
+use Drush\Exec\ExecTrait;
+use Drush\SiteAlias\ProcessManager;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Yaml\Yaml;
 
-final class EntityCreateCommands extends DrushCommands
+#[AsCommand(
+    name: self::NAME,
+    description: 'Create a content entity after prompting for field values.',
+    aliases: ['econ', 'entity-create']
+)]
+#[CLI\OptionsetGetEditor]
+#[CLI\Version(version: '12.5')]
+final class EntityCreateCommand extends Command
 {
     use AutowireTrait;
+    use ExecTrait;
 
-    const CREATE = 'entity:create';
+    const NAME = 'entity:create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityFieldManagerInterface $entityFieldManager,
-        protected AccountSwitcherInterface $accountSwitcher
+        protected AccountSwitcherInterface $accountSwitcher,
+        protected ProcessManager $processManager,
     ) {
         parent::__construct();
     }
 
-    /**
-     * Create a content entity after prompting for field values.
-     *
-     * When entering field values, one may submit an incomplete document and any entity violations
-     * will be helpfully reported at the top of the document. enter <info>skip</info> as
-     * a value in order to skip validation for that field. Timestamp values may be expressed via any string
-     * recognized by strtotime()
-     */
-    #[CLI\Command(name: self::CREATE, aliases: ['econ', 'entity-create'])]
-    #[CLI\Argument(name: 'entity_type', description: 'An entity type name.')]
-    #[CLI\Argument(name: 'bundle', description: 'A bundle name')]
-    #[CLI\Option(name: 'uid', description: 'The entity author ID. Also used by permission checks (e.g. content moderation)')]
-    #[CLI\Option(name: 'skip-fields', description: 'A list of field names that skip both data entry and validation. Delimit fields by comma')]
-    #[CLI\Option(name: 'validate', description: 'Validate the entity before saving.')]
-    #[CLI\OptionsetGetEditor]
-    #[CLI\Usage(name: 'drush entity:create node article --validate=0', description: 'Create an article entity and skip validation entirely.')]
-    #[CLI\Usage(name: 'drush entity:create node article --skip-fields=field_media_image,field_tags', description: 'Create an article omitting two fields.')]
-    #[CLI\Usage(name: 'drush entity:create user user --editor=nano', description: 'Create a user using the Nano text editor.')]
-    #[CLI\Version(version: '12.5')]
-    public function createEntity(string $entity_type, $bundle, array $options = ['validate' => true, 'uid' => self::REQ, 'skip-fields' => self::REQ]): string
+    protected function configure()
+    {
+        $this
+            ->addArgument('entity_type', InputArgument::REQUIRED, 'An entity type name.')
+            ->addArgument('bundle', InputArgument::REQUIRED, 'A bundle name')
+            ->addOption('uid', null, InputOption::VALUE_REQUIRED, 'The entity author ID. Also used by permission checks (e.g. content moderation)')
+            ->addOption('skip-fields', null, InputOption::VALUE_REQUIRED, 'A list of field names that skip both data entry and validation. Delimit fields by comma')
+            ->addOption('validate', null, null, 'Validate the entity before saving.')
+            ->addUsage('entity:create node article --validate=0')
+            ->addUsage('entity:create node article --validate=0')
+            ->addUsage('drush entity:create user user --editor=nano')
+            ->setHelp('When entering field values, one may submit an incomplete document and any entity violations will be helpfully reported at the top of the document. enter <info>skip</info> as a value in order to skip validation for that field. Timestamp values may be expressed via any string recognized by strtotime()');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->validate($input);
+        $url = $this->createEntity($input->getArgument('entity_type'), $input->getArgument('bundle'), $input->getOptions());
+        $output->writeln("<info>$url</info>");
+        return self::SUCCESS;
+    }
+
+    public function createEntity(string $entity_type, string $bundle, array $options): string
     {
         $bundleKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('bundle');
         /** @var ContentEntityInterface $entity */
@@ -111,7 +129,7 @@ final class EntityCreateCommands extends DrushCommands
     {
         $exec = self::getEditor($editor);
         $cmd = sprintf($exec, Escape::shellArg($path));
-        $process = $this->processManager()->shell($cmd);
+        $process = $this->processManager->shell($cmd);
         $process->setTty(true);
         $process->mustRun();
         return file_get_contents($path);
@@ -184,10 +202,9 @@ final class EntityCreateCommands extends DrushCommands
         return true;
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR)]
-    public function validate(): void
+    public function validate(InputInterface $input): void
     {
-        if (!$this->input()->isInteractive()) {
+        if (!$input->isInteractive()) {
             throw new \RuntimeException('entity:create is designed for an interactive terminal.');
         }
     }
