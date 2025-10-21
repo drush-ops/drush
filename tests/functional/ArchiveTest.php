@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\ArchiveDumpCommands;
-use Drush\Commands\core\ArchiveRestoreCommands;
-use Drush\Commands\core\StatusCommands;
-use PharData;
+use Drush\Commands\core\ArchiveDumpCommand;
 use Symfony\Component\Filesystem\Path;
 use Unish\Utils\FSUtils;
 
@@ -47,7 +44,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Try to overwrite the existing archive with "--destination".
         $this->drush(
-            ArchiveDumpCommands::DUMP,
+            ArchiveDumpCommand::NAME,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
@@ -60,7 +57,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Overwrite the existing archive with "--destination" and "--override".
         $this->drush(
-            ArchiveDumpCommands::DUMP,
+            ArchiveDumpCommand::NAME,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
@@ -72,7 +69,7 @@ class ArchiveTest extends CommandUnishTestCase
 
         // Validate database credentials are present in settings.php file.
         $this->drush(
-            ArchiveDumpCommands::DUMP,
+            ArchiveDumpCommand::NAME,
             [],
             [],
             null,
