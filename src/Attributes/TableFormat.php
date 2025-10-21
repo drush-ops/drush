@@ -23,13 +23,19 @@ class TableFormat implements FormatterConfigurationItemProviderInterface
     public function __construct(
         public ?string $listDelimiter,
         # Sadly, \Symfony\Component\Console\Helper\Table::initStyles is private.
-        #[ExpectedValues(['box', 'box-double', 'borderless', 'compact', 'consolidation'])] public ?string $tableStyle
+        #[ExpectedValues(['box', 'box-double', 'borderless', 'compact', 'consolidation'])] public ?string $tableStyle,
+        public bool $include_field_labels = true,
     ) {
     }
 
     public function getConfigurationItem(\ReflectionAttribute $attribute): array
     {
-        $args = $attribute->getArguments();
-        return [FormatterOptions::TABLE_STYLE => $args['tableStyle'], FormatterOptions::LIST_DELIMITER => $args['listDelimiter']];
+        /** @var TableFormat $args */
+        $args = $attribute->newInstance();
+        return [
+            FormatterOptions::TABLE_STYLE => $args->tableStyle,
+            FormatterOptions::LIST_DELIMITER => $args->listDelimiter,
+            FormatterOptions::INCLUDE_FIELD_LABELS => $args->include_field_labels,
+        ];
     }
 }

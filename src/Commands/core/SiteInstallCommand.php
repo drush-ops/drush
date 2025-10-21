@@ -363,7 +363,7 @@ final class SiteInstallCommand extends Command
                     'op' => dt('Save and continue'),
                 ],
             ],
-            'config_install_path' => $options['config-dir'],
+            'config_install_path' => null, // $options['config-dir']
         ];
 
         if ($recipe) {
