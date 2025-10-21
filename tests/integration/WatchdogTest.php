@@ -70,9 +70,9 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
-        $this->drush(WatchdogCommands::SHOW);
+        $this->drush(WatchdogCommands::SHOW, [], ['format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('', $output);
+        $this->assertEquals('[]', $output);
 
         // Create messages.
         $eval1 = "\\Drupal::logger('other')->info('Scrub');";
@@ -137,9 +137,9 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
         $output = $this->getErrorOutput();
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
-        $this->drush(WatchdogCommands::SHOW);
+        $this->drush(WatchdogCommands::SHOW, [], ['format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('', $output);
+        $this->assertEquals('[]', $output);
         $this->showAll();
     }
 
