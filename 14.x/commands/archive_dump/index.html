@@ -7424,7 +7424,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/ArchiveDumpCommands.php" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/ArchiveDumpCommand.php" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -7433,7 +7433,7 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/core/ArchiveDumpCommands.php" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/core/ArchiveDumpCommand.php" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
@@ -7448,7 +7448,7 @@
 <li>vendor</li>
 <li>[docroot]/sites/@/settings.@.php</li>
 <li>Drupal files directory</li>
-<li>Composer packages installed paths (<code>composer info --path --format=json</code>)</li>
+<li>Composer packages installed paths (`composer info --path --format=json`)</li>
 </ul>
 <p>The following directories would be excluded from a file archive:</p>
 <ul>
@@ -7459,39 +7459,38 @@
 </ul>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>drush archive:dump</code>. Create a site archive file in a temporary directory containing code, database and Drupal files.</li>
-<li><code>drush archive:dump --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing code, database and Drupal files.</li>
-<li><code>drush archive:dump --destination=/path/to/archive.tar.gz --overwrite</code>. Create (or overwrite if exists) /path/to/archive.tar.gz file containing code, database and Drupal files.</li>
-<li><code>drush archive:dump --code --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing the code only.</li>
-<li><code>drush archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing code, database and Drupal files but excluding foo_bar.txt file and settings.php files if found in web/sites/* subdirectories.</li>
-<li><code>drush archive:dump --extra-dump=--no-data --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file and pass extra option to <em>mysqldump</em> command.</li>
-<li><code>drush archive:dump --files --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz file containing the Drupal files only.</li>
-<li><code>drush archive:dump --database --destination=/path/to/archive.tar.gz</code>. Create /path/to/archive.tar.gz archive file containing the database dump only.</li>
+<li><code>archive:dump --destination=/path/to/archive.tar.gz</code></li>
+<li><code>archive:dump --destination=/path/to/archive.tar.gz --overwrite</code></li>
+<li><code>archive:dump --code --destination=/path/to/archive.tar.gz</code></li>
+<li><code>archive:dump --exclude-code-paths=foo_bar.txt,web/sites/.+/settings.php --destination=/path/to/archive.tar.gz</code></li>
+<li><code>archive:dump --extra-dump=--no-data --destination=/path/to/archive.tar.gz</code></li>
+<li><code>archive:dump --files --destination=/path/to/archive.tar.gz</code></li>
+<li><code>archive:dump --database --destination=/path/to/archive.tar.gz</code></li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--code</strong>. Archive codebase.</li>
-<li><strong>--files</strong>. Archive Drupal files.</li>
-<li><strong>--db</strong>. Archive database SQL dump.</li>
 <li><strong>--destination=DESTINATION</strong>. The full path and filename in which the archive should be stored. Any relative path will be calculated from Drupal root (usually <em>web</em> for drupal/recommended-project projects). If omitted, it will be saved to the configured temp directory.</li>
 <li><strong>--overwrite</strong>. Overwrite destination file if exists.</li>
+<li><strong>--code</strong>. Archive codebase.</li>
+<li><strong>--convert-symlinks</strong>. Replace all symlinks with copies of the files/directories that they point to. Default is to only convert symlinks that point outside the project root.</li>
+<li><strong>--exclude-code-paths=EXCLUDE-CODE-PATHS</strong>. Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.</li>
+<li><strong>--extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. <em>mysqldump</em> command).</li>
+<li><strong>--files</strong>. Archive Drupal files.</li>
+<li><strong>--db</strong>. Archive database SQL dump.</li>
 <li><strong>--description=DESCRIPTION</strong>. Describe the archive contents.</li>
 <li><strong>--tags=TAGS</strong>. Add tags to the archive manifest. Delimit several by commas.</li>
 <li><strong>--generator=GENERATOR</strong>. The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".</li>
 <li><strong>--generatorversion=GENERATORVERSION</strong>. The generator version number to store in the MANIFEST file. The default is Drush version.</li>
-<li><strong>--exclude-code-paths=EXCLUDE-CODE-PATHS</strong>. Comma-separated list of paths (or regular expressions matching paths) to exclude from the code archive.</li>
-<li><strong>--extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. <em>mysqldump</em> command).</li>
-<li><strong>--convert-symlinks</strong>. Replace all symlinks with copies of the files/directories that they point to. Default is to only convert symlinks that point outside the project root.</li>
-<li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../using-drush-configuration/">Drush config</a></li>
-<li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../using-drush-configuration/">Drush config</a></li>
+<li><strong>--database=DATABASE</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
+<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
+<li><strong>--target=TARGET</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
+<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
+<li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
+<li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
 <li><strong>--skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
 <li><strong>--structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
 <li><strong>--tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
-<li><strong>--database[=DATABASE]</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
-<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
-<li><strong>--target[=TARGET]</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
-<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
