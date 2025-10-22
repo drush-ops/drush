@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\ArchiveDumpCommands;
-use Drush\Commands\core\ArchiveRestoreCommands;
-use Drush\Commands\core\StatusCommands;
-use PharData;
+use Drush\Commands\core\ArchiveDumpCommand;
 use Symfony\Component\Filesystem\Path;
 use Unish\Utils\FSUtils;
 
@@ -59,7 +56,7 @@ class ArchiveSymlinkTest extends CommandUnishTestCase
         // fail if we did not replace them before archiving.
         // @see https://github.com/drush-ops/drush/pull/6030
         $this->drush(
-            ArchiveDumpCommands::DUMP,
+            ArchiveDumpCommand::NAME,
             [],
             array_merge($this->archiveDumpOptions, [
                 'destination' => $this->archivePath,
