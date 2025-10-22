@@ -16,6 +16,7 @@ enum HelpLinks
     case Readme;
     case Generators;
     case SyncViaHttp;
+    case Events;
 
     public function getConsoleLink(): ConsoleLink
     {
@@ -32,6 +33,7 @@ enum HelpLinks
             self::SyncViaHttp => new ConsoleLink('examples/Commands/SyncViaHttpCommands.php', 'Extend sql-sync to allow transfer of the sql dump file via http.'),
             self::Readme => new ConsoleLink('README.md', 'README.md'),
             self::Generators => new ConsoleLink('generators', 'Instructions on creating your own Drush Generators.'),
+            self::Events => new ConsoleLink('hooks', 'Event dispatching and listening.'),
         };
     }
 
