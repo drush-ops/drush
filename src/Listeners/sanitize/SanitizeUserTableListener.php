@@ -70,7 +70,7 @@ final class SanitizeUserTableListener
 
     public function onConsoleTerminate(ConsoleTerminateEvent $event): void
     {
-        if ($event->getCommand()->getName() !== 'sql:sanitize') {
+        if ($event->getCommand()->getName() !== 'sql:sanitize'  || $event->getExitCode()) {
             return;
         }
 
