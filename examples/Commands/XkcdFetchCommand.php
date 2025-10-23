@@ -5,6 +5,7 @@ namespace Drush\Commands;
 use Drush\Exec\ExecTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -25,7 +26,7 @@ final class XkcdFetchCommand extends Command
     protected function configure(): void
     {
         $this
-        ->addOption('search', null, InputOption::VALUE_REQUIRED, 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')
+        ->addArgument('search', mode: InputArgument::OPTIONAL, description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')
         ->addOption('image-viewer', null, InputOption::VALUE_REQUIRED, 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).', 'open')
         ->addOption('google-custom-search-api-key', null, InputOption::VALUE_REQUIRED, 'Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.', 'AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek')
         ->addUsage('drush xkcd sandwich')
@@ -35,7 +36,7 @@ final class XkcdFetchCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->doFetch($input->getOption('search'), $input->getOptions());
+        $this->doFetch($input->getArgument('search'), $input->getOptions());
         return self::SUCCESS;
     }
 

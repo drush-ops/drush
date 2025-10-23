@@ -306,6 +306,7 @@ class ServiceManager
             ->setSearchPattern('#.*(Listener)s?.php$#');
         $baseNamespace = ltrim($baseNamespace, '\\');
         $listenerClasses = $discovery->discover($directoryList, $baseNamespace);
+        $this->loadCommandClasses($listenerClasses);
         return array_values($listenerClasses);
     }
 
