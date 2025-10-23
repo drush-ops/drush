@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- *  To temporarily use this Listener, use the --include option - e.g. `drush --include=/path/to/drush/examples`
+ *  To temporarily use this Listener, use the --include option - e.g. `drush --include=/path/to/drush/examples sql:sync`
  */
 #[AsEventListener(method: 'onDefinitions')]
 #[AsEventListener(method: 'onConsoleCommand')]
@@ -55,7 +55,7 @@ final class SyncViaHttpListener
         if ($event->getCommand()->getName() !== 'sql:sync') {
             return;
         }
-        
+
         $input = $event->getInput();
         $sql_dump_download_url = $input->getOption('http-sync-url');
         if ($sql_dump_download_url) {
@@ -116,6 +116,4 @@ final class SyncViaHttpListener
         }
         return $destination_tmp;
     }
-
-
 }
