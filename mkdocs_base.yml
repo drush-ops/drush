@@ -108,7 +108,7 @@ nav:
       - examples/ArtCommands.php.md
       - examples/PolicyCommands.php.md
       - examples/SiteAliasAlterCommands.php.md
-      - examples/SyncViaHttpCommands.php.md
+      - examples/SyncViaHttpListener.php.md
       - examples/XkcdFetchCommand.php.md
       - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
