@@ -180,7 +180,7 @@ final class DocsCommands extends DrushCommands
      */
     #[CLI\Command(name: self::EXAMPLE_SYNC_VIA_HTTP, aliases: ['docs-example-sync-via-http'])]
     #[CLI\Help(hidden: true)]
-    #[CLI\Topics(path: '../../../examples/Commands/SyncViaHttpCommands.php')]
+    #[CLI\Topics(path: '../../../examples/Listeners/SyncViaHttpListener.php')]
     public function syncHttp(): void
     {
         self::printFileTopic($this->commandData);
