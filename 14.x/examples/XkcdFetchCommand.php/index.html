@@ -7372,6 +7372,7 @@
 <span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Attribute\AsCommand</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputArgument</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputOption</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
@@ -7392,7 +7393,7 @@
     <span class="k">protected</span> <span class="k">function</span> <span class="nf">configure</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
         <span class="nv">$this</span>
-        <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="s1">&#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;</span><span class="p">)</span>
+        <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">,</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">InputArgument</span><span class="o">::</span><span class="na">OPTIONAL</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;image-viewer&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="s1">&#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">&#39;google-custom-search-api-key&#39;</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="s1">&#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;</span><span class="p">,</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">)</span>
         <span class="o">-&gt;</span><span class="na">addUsage</span><span class="p">(</span><span class="s1">&#39;drush xkcd sandwich&#39;</span><span class="p">)</span>
@@ -7402,7 +7403,7 @@
 
     <span class="k">public</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
     <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">),</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOptions</span><span class="p">());</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;search&#39;</span><span class="p">),</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOptions</span><span class="p">());</span>
         <span class="k">return</span> <span class="nx">self</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>
 
