@@ -35,13 +35,11 @@ final class SyncViaHttpListener
 
     public function onDefinitions(ConsoleDefinitionsEvent $event): void
     {
-        foreach ($event->getApplication()->all() as $id => $command) {
-            if ($command->getName() === 'sql:sync') {
-                $command->addOption(name: 'http-sync-url', mode: InputOption::VALUE_REQUIRED, description: 'Url that the existing database dump can be found at.');
-                $command->addOption(name: 'http-sync-user', mode: InputOption::VALUE_REQUIRED, description: 'Username for the protected directory containing the sql dump.');
-                $command->addOption(name: 'http-sync-password', mode: InputOption::VALUE_REQUIRED, description: 'Password for the same directory.');
-            }
-        }
+
+        $command = $event->getApplication()->get('sql:sync');
+        $command->addOption(name: 'http-sync-url', mode: InputOption::VALUE_REQUIRED, description: 'Url that the existing database dump can be found at.');
+        $command->addOption(name: 'http-sync-user', mode: InputOption::VALUE_REQUIRED, description: 'Username for the protected directory containing the sql dump.');
+        $command->addOption(name: 'http-sync-password', mode: InputOption::VALUE_REQUIRED, description: 'Password for the same directory.');
     }
 
     /**
