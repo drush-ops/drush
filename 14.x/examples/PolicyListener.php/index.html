@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/PolicyCommands.php/">
+        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/PolicyListener.php/">
       
       
         <link rel="prev" href="../ArtCommands.php/">
@@ -26,7 +26,7 @@
     
     
       
-        <title>PolicyCommands.php - Drush</title>
+        <title>PolicyListener.php - Drush</title>
       
     
     
@@ -63,11 +63,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="PolicyCommands.php - Drush" >
+        <meta  property="og:title"  content="PolicyListener.php - Drush" >
       
         <meta  property="og:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/PolicyCommands.php.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/PolicyListener.php.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/PolicyCommands.php/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/PolicyListener.php/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="PolicyCommands.php - Drush" >
+        <meta  name="twitter:title"  content="PolicyListener.php - Drush" >
       
         <meta  name="twitter:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/PolicyCommands.php.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/PolicyListener.php.png" >
       
     
     
@@ -138,7 +138,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              PolicyCommands.php
+              PolicyListener.php
             
           </span>
         </div>
@@ -1076,7 +1076,7 @@
         
   
   <span class="md-ellipsis">
-    PolicyCommands.php
+    PolicyListener.php
   </span>
   
 
@@ -1115,11 +1115,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../SyncViaHttpCommands.php/" class="md-nav__link">
+      <a href="../SyncViaHttpListener.php/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    SyncViaHttpCommands.php
+    SyncViaHttpListener.php
   </span>
   
 
@@ -7347,7 +7347,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/13.x/examples/Commands/PolicyCommands.php" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/14.x/examples/Listeners/PolicyListener.php" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -7356,74 +7356,81 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/13.x/examples/Commands/PolicyCommands.php" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/14.x/examples/Listeners/PolicyListener.php" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
   
 
 
-  <h1>PolicyCommands.php</h1>
+  <h1>PolicyListener.php</h1>
 
 <div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
 
-<span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
+<span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
 
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\CommandData</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Hooks\HookManager</span><span class="p">;</span>
+<span class="k">namespace</span> <span class="nx">Drush\Listeners</span><span class="p">;</span>
+
 <span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Commands\core\RsyncCommands</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Commands\core\UpdateDBCommands</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Commands\sql\SqlSyncCommands</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Boot\DrupalBootLevels</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Event\ConsoleDefinitionsEvent</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Psr\Log\LoggerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Event\ConsoleCommandEvent</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputOption</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\EventDispatcher\Attribute\AsEventListener</span><span class="p">;</span>
 
 <span class="sd">/**</span>
-<span class="sd"> * Load this commandfile using the --include option - e.g. `drush --include=/path/to/drush/examples`</span>
-<span class="sd"> *</span>
-<span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.</span>
+<span class="sd"> *  To temporarily use this Listener, use the --include option - e.g. `drush --include=/path/to/drush/examples updatedb`</span>
 <span class="sd"> */</span>
-
-<span class="k">class</span> <span class="nc">PolicyCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onDefinitions&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onSqlSyncConsoleCommand&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onRSyncConsoleCommand&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onUpdateDbCommand&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Bootstrap</span><span class="p">(</span><span class="nx">level</span><span class="o">:</span> <span class="nx">DrupalBootLevels</span><span class="o">::</span><span class="na">NONE</span><span class="p">)]</span>
+<span class="k">final</span> <span class="k">class</span> <span class="nc">PolicyListener</span>
 <span class="p">{</span>
-    <span class="sd">/**</span>
-<span class="sd">     * Prevent catastrophic braino. Note that this file has to be local to the</span>
-<span class="sd">     * machine that initiates the sql:sync command.</span>
-<span class="sd">     *</span>
-<span class="sd">     * @throws \Exception</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">SqlSyncCommands</span><span class="o">::</span><span class="na">SYNC</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">sqlSyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
+    <span class="k">use</span> <span class="nx">\Drush\Commands\AutowireTrait</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">protected</span> <span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onSqlSyncConsoleCommand</span><span class="p">(</span><span class="nx">ConsoleCommandEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;@prod&#39;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;Per !file, you may never overwrite the production database.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getCommand</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;sql:sync&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$input</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getInput</span><span class="p">();</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;@prod&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="s1">&#39;Per {file}, you may never overwrite the production database.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]);</span>
+                <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">disableCommand</span><span class="p">();</span>
+            <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * Limit rsync operations to production site.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">RsyncCommands</span><span class="o">::</span><span class="na">RSYNC</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">rsyncValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onRSyncConsoleCommand</span><span class="p">(</span><span class="nx">ConsoleCommandEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s2">&quot;/^@prod/&quot;</span><span class="p">,</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">)))</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;Per !file, you may never rsync to the production site.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getCommand</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;rsync&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s2">&quot;/^@prod/&quot;</span><span class="p">,</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getInput</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;target&#39;</span><span class="p">)))</span> <span class="p">{</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="s1">&#39;Per {file}, you may never rsync to the production site.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;file&#39;</span> <span class="o">=&gt;</span> <span class="no">__FILE__</span><span class="p">]);</span>
+                <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">disableCommand</span><span class="p">();</span>
+            <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="sd">/**</span>
-<span class="sd">     * Unauthorized may not execute updates.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">UpdateDBCommands</span><span class="o">::</span><span class="na">UPDATEDB</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">validateUpdateDb</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onUpdateDbCommand</span><span class="p">(</span><span class="nx">ConsoleCommandEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;secret&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mysecret&#39;</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;UpdateDb command requires a secret token per site policy.&#39;</span><span class="p">));</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getCommand</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;updatedb&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getInput</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;secret&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;mysecret&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="s1">&#39;UpdateDb command requires a secret token per site policy.&#39;</span><span class="p">);</span>
+                <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">disableCommand</span><span class="p">();</span>
+            <span class="p">}</span>
         <span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">OPTION_HOOK</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="nx">UpdateDBCommands</span><span class="o">::</span><span class="na">UPDATEDB</span><span class="p">)]</span>
-    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;secret&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;A required token else user may not run updatedb command.&#39;</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">optionsetUpdateDb</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;secret&#39;</span> <span class="o">=&gt;</span> <span class="nx">self</span><span class="o">::</span><span class="na">REQ</span><span class="p">])</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDefinitions</span><span class="p">(</span><span class="nx">ConsoleDefinitionsEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
     <span class="p">{</span>
+        <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getApplication</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;updatedb&#39;</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;secret&#39;</span><span class="p">,</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;A required token else user may not run updatedb command.&#39;</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7447,7 +7454,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 10, 2025 13:03:39 UTC">June 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 24, 2025 13:56:59 UTC">October 24, 2025</span>
   </span>
 
     

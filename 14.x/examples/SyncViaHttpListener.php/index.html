@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/SyncViaHttpCommands.php/">
+        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/SyncViaHttpListener.php/">
       
       
         <link rel="prev" href="../SiteAliasAlterCommands.php/">
@@ -26,7 +26,7 @@
     
     
       
-        <title>SyncViaHttpCommands.php - Drush</title>
+        <title>SyncViaHttpListener.php - Drush</title>
       
     
     
@@ -63,11 +63,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="SyncViaHttpCommands.php - Drush" >
+        <meta  property="og:title"  content="SyncViaHttpListener.php - Drush" >
       
         <meta  property="og:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/SyncViaHttpCommands.php.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/SyncViaHttpListener.php.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/SyncViaHttpCommands.php/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/SyncViaHttpListener.php/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="SyncViaHttpCommands.php - Drush" >
+        <meta  name="twitter:title"  content="SyncViaHttpListener.php - Drush" >
       
         <meta  name="twitter:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/SyncViaHttpCommands.php.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/SyncViaHttpListener.php.png" >
       
     
     
@@ -138,7 +138,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SyncViaHttpCommands.php
+              SyncViaHttpListener.php
             
           </span>
         </div>
@@ -1065,11 +1065,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../PolicyCommands.php/" class="md-nav__link">
+      <a href="../PolicyListener.php/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    PolicyCommands.php
+    PolicyListener.php
   </span>
   
 
@@ -1118,7 +1118,7 @@
         
   
   <span class="md-ellipsis">
-    SyncViaHttpCommands.php
+    SyncViaHttpListener.php
   </span>
   
 
@@ -7347,7 +7347,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/13.x/examples/Commands/SyncViaHttpCommands.php" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/14.x/examples/Listeners/SyncViaHttpListener.php" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -7356,16 +7356,132 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/13.x/examples/Commands/SyncViaHttpCommands.php" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/14.x/examples/Listeners/SyncViaHttpListener.php" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
   
 
 
-  <h1>SyncViaHttpCommands.php</h1>
+  <h1>SyncViaHttpListener.php</h1>
 
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="k">declare</span><span class="p">(</span><span class="nx">strict_types</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span>
+
+<span class="k">namespace</span> <span class="nx">Drush\Listeners</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Boot\DrupalBootLevels</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Drush</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Event\ConsoleDefinitionsEvent</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\SiteAlias\ProcessManager</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Psr\Log\LoggerInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Event\ConsoleCommandEvent</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputOption</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\EventDispatcher\Attribute\AsEventListener</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Filesystem\Filesystem</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> *  To temporarily use this Listener, use the --include option - e.g. `drush --include=/path/to/drush/examples sql:sync`</span>
+<span class="sd"> */</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onDefinitions&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">AsEventListener</span><span class="p">(</span><span class="nx">method</span><span class="o">:</span> <span class="s1">&#39;onConsoleCommand&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Bootstrap</span><span class="p">(</span><span class="nx">level</span><span class="o">:</span> <span class="nx">DrupalBootLevels</span><span class="o">::</span><span class="na">NONE</span><span class="p">)]</span>
+<span class="k">final</span> <span class="k">class</span> <span class="nc">SyncViaHttpListener</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">\Drush\Commands\AutowireTrait</span><span class="p">;</span>
+    <span class="k">use</span> <span class="nx">ExecTrait</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">protected</span> <span class="nx">ProcessManager</span> <span class="nv">$processManager</span><span class="p">,</span>
+        <span class="k">protected</span> <span class="nx">LoggerInterface</span> <span class="nv">$logger</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onDefinitions</span><span class="p">(</span><span class="nx">ConsoleDefinitionsEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+
+        <span class="nv">$command</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getApplication</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;sql:sync&#39;</span><span class="p">);</span>
+        <span class="nv">$command</span><span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync-url&#39;</span><span class="p">,</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Url that the existing database dump can be found at.&#39;</span><span class="p">);</span>
+        <span class="nv">$command</span><span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync-user&#39;</span><span class="p">,</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Username for the protected directory containing the sql dump.&#39;</span><span class="p">);</span>
+        <span class="nv">$command</span><span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;http-sync-password&#39;</span><span class="p">,</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Password for the same directory.&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Determine if the http-sync-url option has been</span>
+<span class="sd">     * specified.  If it has, disable the normal ssh + rsync</span>
+<span class="sd">     * dump-and-transfer that sql:sync usually does, and transfer the</span>
+<span class="sd">     * database dump via an http download.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">onConsoleCommand</span><span class="p">(</span><span class="nx">ConsoleCommandEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getCommand</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getName</span><span class="p">()</span> <span class="o">!==</span> <span class="s1">&#39;sql:sync&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="nv">$input</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getInput</span><span class="p">();</span>
+        <span class="nv">$sql_dump_download_url</span> <span class="o">=</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;http-sync-url&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$sql_dump_download_url</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">info</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;Downloading sql dump from !url&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!url&#39;</span> <span class="o">=&gt;</span> <span class="nv">$sql_dump_download_url</span><span class="p">]));</span>
+            <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;http-sync-user&#39;</span><span class="p">);</span>
+            <span class="nv">$password</span> <span class="o">=</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getOption</span><span class="p">(</span><span class="s1">&#39;http-sync-password&#39;</span><span class="p">);</span>
+            <span class="nv">$source_dump_file</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">downloadFile</span><span class="p">(</span><span class="nv">$sql_dump_download_url</span><span class="p">,</span> <span class="nv">$user</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">&#39;target-dump&#39;</span><span class="p">,</span> <span class="nv">$source_dump_file</span><span class="p">);</span>
+            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">&#39;no-dump&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">&#39;no-sync&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Downloads a file.</span>
+<span class="sd">     *</span>
+<span class="sd">     * Optionally uses user authentication, using either wget or curl, as available.</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">downloadFile</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span> <span class="nv">$user</span> <span class="o">=</span> <span class="k">false</span><span class="p">,</span> <span class="nv">$password</span> <span class="o">=</span> <span class="k">false</span><span class="p">,</span> <span class="nv">$destination</span> <span class="o">=</span> <span class="k">false</span><span class="p">,</span> <span class="nv">$overwrite</span> <span class="o">=</span> <span class="k">true</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">static</span> <span class="nv">$use_wget</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$use_wget</span> <span class="o">===</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$use_wget</span> <span class="o">=</span> <span class="nx">self</span><span class="o">::</span><span class="na">programExists</span><span class="p">(</span><span class="s1">&#39;wget&#39;</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nv">$destination_tmp</span> <span class="o">=</span> <span class="nx">drush_tempnam</span><span class="p">(</span><span class="s1">&#39;download_file&#39;</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$use_wget</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;wget&#39;</span><span class="p">,</span> <span class="s1">&#39;-q&#39;</span><span class="p">,</span> <span class="s1">&#39;--timeout=30&#39;</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$user</span> <span class="o">&amp;&amp;</span> <span class="nv">$password</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nv">$args</span> <span class="o">=</span> <span class="nb">array_merge</span><span class="p">(</span><span class="nv">$args</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;--user=</span><span class="si">$user</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;--password=</span><span class="si">$password</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$url</span><span class="p">]);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nv">$args</span> <span class="o">=</span> <span class="nb">array_merge</span><span class="p">(</span><span class="nv">$args</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;-O&#39;</span><span class="p">,</span> <span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$url</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$args</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;curl&#39;</span><span class="p">,</span> <span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;-L&#39;</span><span class="p">,</span> <span class="s1">&#39;--connect-timeout 30&#39;</span><span class="p">];</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$user</span> <span class="o">&amp;&amp;</span> <span class="nv">$password</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nv">$args</span> <span class="o">=</span> <span class="nb">array_merge</span><span class="p">(</span><span class="nv">$args</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;--user&#39;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">$user</span><span class="s2">:</span><span class="si">$password</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$url</span><span class="p">]);</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="nv">$args</span> <span class="o">=</span> <span class="nb">array_merge</span><span class="p">(</span><span class="nv">$args</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span> <span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$url</span><span class="p">]);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nv">$process</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">processManager</span><span class="o">-&gt;</span><span class="na">process</span><span class="p">(</span><span class="nv">$args</span><span class="p">);</span>
+        <span class="nv">$process</span><span class="o">-&gt;</span><span class="na">mustRun</span><span class="p">();</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">Drush</span><span class="o">::</span><span class="na">simulate</span><span class="p">())</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">drush_file_not_empty</span><span class="p">(</span><span class="nv">$destination_tmp</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nv">$file</span> <span class="o">=</span> <span class="o">@</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="nv">$url</span><span class="p">))</span> <span class="p">{</span>
+                <span class="o">@</span><span class="nb">file_put_contents</span><span class="p">(</span><span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$file</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">drush_file_not_empty</span><span class="p">(</span><span class="nv">$destination_tmp</span><span class="p">))</span> <span class="p">{</span>
+                <span class="c1">// Download failed.</span>
+                <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s2">&quot;The URL !url could not be downloaded.&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;!url&#39;</span> <span class="o">=&gt;</span> <span class="nv">$url</span><span class="p">]));</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$destination</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$fs</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Filesystem</span><span class="p">();</span>
+            <span class="nv">$fs</span><span class="o">-&gt;</span><span class="na">rename</span><span class="p">(</span><span class="nv">$destination_tmp</span><span class="p">,</span> <span class="nv">$destination</span><span class="p">,</span> <span class="nv">$overwrite</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nv">$destination</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="nv">$destination_tmp</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 
 
@@ -7387,7 +7503,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="June 10, 2025 13:03:39 UTC">June 10, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 24, 2025 13:56:59 UTC">October 24, 2025</span>
   </span>
 
     
