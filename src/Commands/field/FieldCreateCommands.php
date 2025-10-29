@@ -15,6 +15,7 @@ use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\Core\Field\WidgetPluginManager;
@@ -302,12 +303,14 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function askFieldLabel(): string
     {
-        return $this->io()->ask('Field label', required: true);
+        $default = $this->getExistingFieldForDefaults()?->getLabel();
+        return $this->io()->ask('Field label', $default, required: true);
     }
 
     protected function askFieldDescription(): ?string
     {
-        return $this->io()->ask('Field description');
+        $default = $this->getExistingFieldForDefaults()?->getDescription();
+        return $this->io()->ask('Field description', $default);
     }
 
     protected function askFieldType(): string
@@ -353,14 +356,16 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
             $choices[$name] = $label;
         }
 
-        $default = $this->input->getOption('show-machine-names') ? key($choices) : current($choices);
+        $fieldName = $this->input->getOption('field-name');
+        $default = $this->getExistingEntityDisplayForDefaults('form')?->getComponent($fieldName)['type'] ?? null;
 
         return $this->io()->select('Field widget', $choices, $default);
     }
 
     protected function askRequired(): bool
     {
-        return $this->io()->confirm('Required', false);
+        $default = $this->getExistingFieldForDefaults()?->isRequired() ?? false;
+        return $this->io()->confirm('Required', $default);
     }
 
     protected function askTranslatable(): bool
@@ -621,5 +626,54 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         }
 
         $this->input->setOption($name, $value);
+    }
+
+    protected function getExistingFieldForDefaults(): ?FieldDefinitionInterface
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $existingBundle = $this->getExistingBundleForDefaults();
+        $fieldName = $this->input->getOption('field-name');
+
+        return $this->entityFieldManager->getFieldDefinitions($entityTypeId, $existingBundle)[$fieldName];
+    }
+
+    protected function getExistingEntityDisplayForDefaults(string $context): ?EntityDisplayInterface
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $fieldName = $this->input->getOption('field-name');
+        $existingBundle = $this->getExistingBundleForDefaults();
+
+        $storage = $this->entityTypeManager
+            ->getStorage(sprintf('entity_%s_display', $context));
+        $displays = $storage->loadByProperties([
+            'targetEntityType' => $entityTypeId,
+            'bundle' => $existingBundle,
+        ]);
+
+        foreach ($displays as $display) {
+            if ($settings = $display->getComponent($fieldName)) {
+                return $display;
+            }
+        }
+
+        return null;
+    }
+
+    protected function getExistingBundleForDefaults(): ?string
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $fieldName = $this->input->getOption('field-name');
+        $fieldMap = $this->entityFieldManager->getFieldMap();
+
+        if (empty($fieldMap[$entityTypeId][$fieldName]['bundles'])) {
+            return null;
+        }
+
+        $bundles = $fieldMap[$entityTypeId][$fieldName]['bundles'];
+
+        // Sort bundles to ensure deterministic behavior.
+        sort($bundles);
+
+        return reset($bundles);
     }
 }
