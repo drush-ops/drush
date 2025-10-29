@@ -3,8 +3,11 @@
 namespace Drush\Commands\field;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Drupal\Core\Entity\Display\EntityDisplayInterface;
+use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -18,6 +21,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        protected EntityFieldManagerInterface $entityFieldManager,
     ) {
     }
 
@@ -100,7 +104,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
         return $this->io()->select('Referenced entity type', $choices);
     }
 
-    protected function askReferencedBundles(string $targetType): array
+    protected function askReferencedBundles(string $targetType): ?array
     {
         $choices = [];
         $bundleInfo = $this->entityTypeBundleInfo->getBundleInfo($targetType);
@@ -114,6 +118,41 @@ final class FieldEntityReferenceHooks extends DrushCommands
             $choices[$bundle] = $label;
         }
 
-        return $this->io()->multiselect('Referenced bundles', $choices);
+        $default = $this->getExistingFieldForDefaults()?->getSetting('handler_settings')['target_bundles'] ?? [];
+
+        return $this->io()->multiselect('Referenced bundles', $choices, $default);
     }
+
+    protected function getExistingFieldForDefaults(): ?FieldDefinitionInterface
+    {
+        $existingBundle = $this->getExistingBundleForDefaults();
+        if ($existingBundle === null) {
+            return null;
+        }
+
+        $entityTypeId = $this->input->getArgument('entityType');
+        $fieldName = $this->input->getOption('field-name');
+
+        return $this->entityFieldManager->getFieldDefinitions($entityTypeId, $existingBundle)[$fieldName];
+    }
+
+
+    protected function getExistingBundleForDefaults(): ?string
+    {
+        $entityTypeId = $this->input->getArgument('entityType');
+        $fieldName = $this->input->getOption('field-name');
+        $fieldMap = $this->entityFieldManager->getFieldMap();
+
+        if (empty($fieldMap[$entityTypeId][$fieldName]['bundles'])) {
+            return null;
+        }
+
+        $bundles = $fieldMap[$entityTypeId][$fieldName]['bundles'];
+
+        // Sort bundles to ensure deterministic behavior.
+        sort($bundles);
+
+        return reset($bundles);
+    }
+
 }
