@@ -630,8 +630,12 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function getExistingFieldForDefaults(): ?FieldDefinitionInterface
     {
-        $entityTypeId = $this->input->getArgument('entityType');
         $existingBundle = $this->getExistingBundleForDefaults();
+        if ($existingBundle === null) {
+            return null;
+        }
+
+        $entityTypeId = $this->input->getArgument('entityType');
         $fieldName = $this->input->getOption('field-name');
 
         return $this->entityFieldManager->getFieldDefinitions($entityTypeId, $existingBundle)[$fieldName];
@@ -639,10 +643,13 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function getExistingEntityDisplayForDefaults(string $context): ?EntityDisplayInterface
     {
+        $existingBundle = $this->getExistingBundleForDefaults();
+        if ($existingBundle === null) {
+            return null;
+        }
+
         $entityTypeId = $this->input->getArgument('entityType');
         $fieldName = $this->input->getOption('field-name');
-        $existingBundle = $this->getExistingBundleForDefaults();
-
         $storage = $this->entityTypeManager
             ->getStorage(sprintf('entity_%s_display', $context));
         $displays = $storage->loadByProperties([
