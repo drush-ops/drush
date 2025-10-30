@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Exports a single content entity in YAML format.">
+        <meta name="description" content="Exports content entities in YAML format.">
       
       
         <meta name="author" content="Moshe Weitzman">
@@ -65,7 +65,7 @@
       
         <meta  property="og:title"  content="content:export - Drush" >
       
-        <meta  property="og:description"  content="Exports a single content entity in YAML format." >
+        <meta  property="og:description"  content="Exports content entities in YAML format." >
       
         <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/content_export.png" >
       
@@ -81,7 +81,7 @@
       
         <meta  name="twitter:title"  content="content:export - Drush" >
       
-        <meta  name="twitter:description"  content="Exports a single content entity in YAML format." >
+        <meta  name="twitter:description"  content="Exports content entities in YAML format." >
       
         <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/content_export.png" >
       
@@ -7441,17 +7441,24 @@
 
 
 <h1 id="contentexport">content:export<a class="headerlink" href="#contentexport" title="Permanent link">&para;</a></h1>
-<p>Exports a single content entity in YAML format.</p>
+<p>Exports content entities in YAML format.</p>
 <p>See <a href="https://drupal.org/project/issues/drupal">https://drupal.org/project/issues/drupal</a> for bug reports and feature requests for this command.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>content:export node 42</code></li>
+<li><code>content:export node 3 --with-dependencies --dir=/path/to/content</code></li>
+<li><code>content:export media --bundle=image --dir=images</code></li>
+<li><code>content:export taxonomy_term --bundle=tags --bundle=categories --dir=terms</code></li>
+</ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>entity_type_id</strong>. The type of entity to export (e.g., node, taxonomy_term).</li>
-<li><strong>entity_id</strong>. The ID of the entity to export. Will usually be a number.</li>
+<li><strong>entity_type_id</strong>. The entity type to export (e.g., node, taxonomy_term).</li>
+<li><strong>[entity_id]</strong>. The ID of the entity to export. Will usually be a number.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>-W, --with-dependencies</strong>. Recursively export all of the entities referenced by this entity into a directory structure.</li>
+<li><strong>-b, --bundle=BUNDLE</strong>. Only export entities of the specified bundle(s).</li>
 <li><strong>-d, --dir=DIR</strong>. The path where content should be exported.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
