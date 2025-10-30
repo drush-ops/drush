@@ -506,7 +506,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -697,6 +697,28 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                 </div>
                 <div class="col-md-8">
                     <a href="#method_askReferencedBundles">askReferencedBundles</a>(string $targetType)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Commands\field\Drupal\Core\Field\FieldDefinitionInterface">FieldDefinitionInterface</abbr>|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getExistingFieldForDefaults">getExistingFieldForDefaults</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getExistingBundleForDefaults">getExistingBundleForDefaults</a>()
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -1442,9 +1464,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L21">at line 21</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr> $entityTypeBundleInfo, <abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr> $entityFieldManager)
         </code>
     </h3>
     <div class="details">    
@@ -1467,6 +1489,11 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Entity\EntityTypeBundleInfoInterface">EntityTypeBundleInfoInterface</abbr></td>
                 <td>$entityTypeBundleInfo</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityFieldManagerInterface">EntityFieldManagerInterface</abbr></td>
+                <td>$entityFieldManager</td>
                 <td></td>
             </tr>
             </table>
@@ -1887,7 +1914,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hookFieldStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L24">at line 24</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L28">at line 28</a></div>
         <code>                    array
     <strong>hookFieldStorage</strong>(array $values, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -1935,7 +1962,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hookFieldConfig">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L38">at line 38</a></div>
         <code>                    array
     <strong>hookFieldConfig</strong>(array $values, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -1983,7 +2010,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTargetType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L44">at line 44</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L48">at line 48</a></div>
         <code>            protected        string
     <strong>getTargetType</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -2026,7 +2053,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getTargetBundles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L63">at line 63</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L67">at line 67</a></div>
         <code>            protected        array|null
     <strong>getTargetBundles</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -2069,7 +2096,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askReferencedEntityType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L88">at line 88</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L92">at line 92</a></div>
         <code>            protected        string
     <strong>askReferencedEntityType</strong>()
         </code>
@@ -2102,7 +2129,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_askReferencedBundles">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L103">at line 103</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L107">at line 107</a></div>
         <code>            protected        array
     <strong>askReferencedBundles</strong>(string $targetType)
         </code>
@@ -2132,6 +2159,72 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getExistingFieldForDefaults">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L126">at line 126</a></div>
+        <code>            protected        <abbr title="Drush\Commands\field\Drupal\Core\Field\FieldDefinitionInterface">FieldDefinitionInterface</abbr>|null
+    <strong>getExistingFieldForDefaults</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Commands\field\Drupal\Core\Field\FieldDefinitionInterface">FieldDefinitionInterface</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getExistingBundleForDefaults">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldEntityReferenceHooks.php#L140">at line 140</a></div>
+        <code>            protected        string|null
+    <strong>getExistingBundleForDefaults</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
             <td></td>
         </tr>
     </table>
