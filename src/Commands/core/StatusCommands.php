@@ -106,7 +106,7 @@ final class StatusCommands extends DrushCommands
     {
         $boot_manager = Drush::bootstrapManager();
         $boot_object = Drush::bootstrap();
-        if (($drupal_root = $boot_manager->getRoot()) && ($boot_object instanceof DrupalBoot)) {
+        if (($drupal_root = $boot_manager->getRoot())) {
             $status_table['drupal-version'] = $boot_object->getVersion($drupal_root);
             $conf_dir = $boot_object->confPath();
             $settings_file = Path::join($conf_dir, 'settings.php');
@@ -128,9 +128,7 @@ final class StatusCommands extends DrushCommands
                         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
                     if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
-                        if (method_exists('Drupal', 'installProfile')) {
-                            $status_table['install-profile'] = \Drupal::installProfile();
-                        }
+                        $status_table['install-profile'] = \Drupal::installProfile();
                         if ($boot_manager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
                             if ($boot_manager->hasBootstrapped(DrupalBootLevels::FULL)) {

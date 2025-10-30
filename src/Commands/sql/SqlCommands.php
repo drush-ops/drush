@@ -39,7 +39,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'all', description: 'Show all database connections, instead of just one.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): ?array
+    public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): array
     {
         if ($options['all']) {
             $return = Database::getAllConnectionInfo();

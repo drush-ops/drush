@@ -69,7 +69,7 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
 
     public function hasImportTransformer(): bool
     {
-        return isset($this->importStorageTransformer);
+        return true;
     }
 
     public function getImportTransformer(): ImportStorageTransformer

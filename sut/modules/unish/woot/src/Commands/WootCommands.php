@@ -30,28 +30,6 @@ class WootCommands
     }
 
     /**
-     * This is the my-cat command
-     *
-     * This command will concatenate two parameters. If the --flip flag
-     * is provided, then the result is the concatination of two and one.
-     *
-     * @command my-cat
-     * @param string $one The first parameter.
-     * @param string $two The other parameter.
-     * @option boolean $flip Whether or not the second parameter should come first in the result.
-     * @aliases c
-     * @usage bet alpha --flip
-     *   Concatinate "alpha" and "bet".
-     */
-    public function myCat($one, $two = '', $options = ['flip' => false]): string
-    {
-        if ($options['flip']) {
-            return "{$two}{$one}";
-        }
-        return "{$one}{$two}";
-    }
-
-    /**
      * Demonstrate formatters.  Default format is 'table'.
      *
      * @command try:formatters
