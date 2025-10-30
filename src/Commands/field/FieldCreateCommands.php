@@ -658,7 +658,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         ]);
 
         foreach ($displays as $display) {
-            if ($settings = $display->getComponent($fieldName)) {
+            assert($display instanceof EntityDisplayInterface);
+            if ($display->getComponent($fieldName)) {
                 return $display;
             }
         }
