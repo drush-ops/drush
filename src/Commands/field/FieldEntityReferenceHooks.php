@@ -154,5 +154,4 @@ final class FieldEntityReferenceHooks extends DrushCommands
 
         return reset($bundles);
     }
-
 }
