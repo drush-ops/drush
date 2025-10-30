@@ -1187,11 +1187,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../examples/XkcdCommands.php/" class="md-nav__link">
+      <a href="../examples/XkcdCommands.php.md" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    XkcdCommands.php
+    None
   </span>
   
 
@@ -7416,6 +7416,15 @@
 
   <h1>Hooks</h1>
 
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Hooks are deprecated in Drush 13.7. A few replacements:</p>
+<ol>
+<li>To alter command information (options, arguments, etc.), <a href="../commands/##altering-command-info">see Altering Command Info</a>.</li>
+<li>To validate arguments/options, <a href="../commands/">provide</a> a PHP8 Attribute class which commands will use to opt into your validation. Add a Listener class with the validation logic.</li>
+<li>To provide an Optionsets, you also <a href="../commands/">provide an Attribute Class and a Listener Class</a>.</li>
+</ol>
+</div>
 <h2 id="core-hooks">Core Hooks<a class="headerlink" href="#core-hooks" title="Permanent link">&para;</a></h2>
 <p>All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a <code>#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]</code> (for example) to the top of your method. The class constants for hooks are located in <a href="https://github.com/consolidation/annotated-command/blob/e01152f698eff4cb5df3ebfe5e097ef335dbd3c9/src/Hooks/HookManager.php#L30-L57">HookManager</a>. </p>
 <ul>
@@ -7489,7 +7498,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 12, 2024 15:59:21 UTC">March 12, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 30, 2025 15:22:05 UTC">October 30, 2025</span>
   </span>
 
     
