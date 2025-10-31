@@ -12,9 +12,13 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/XkcdFetchCommands.php/">
+        <link rel="canonical" href="https://www.drush.org/latest/latest/examples/XkcdCommands.php/">
       
       
+        <link rel="prev" href="../SyncViaHttpCommands.php/">
+      
+      
+        <link rel="next" href="../example.prompt.sh/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -22,7 +26,7 @@
     
     
       
-        <title>XkcdFetchCommands.php - Drush</title>
+        <title>XkcdCommands.php - Drush</title>
       
     
     
@@ -59,11 +63,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="XkcdFetchCommands.php - Drush" >
+        <meta  property="og:title"  content="XkcdCommands.php - Drush" >
       
         <meta  property="og:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/XkcdFetchCommands.php.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/XkcdCommands.php.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -71,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/XkcdFetchCommands.php/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/latest/examples/XkcdCommands.php/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="XkcdFetchCommands.php - Drush" >
+        <meta  name="twitter:title"  content="XkcdCommands.php - Drush" >
       
         <meta  name="twitter:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/XkcdFetchCommands.php.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/examples/XkcdCommands.php.png" >
       
     
     
@@ -134,7 +138,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              XkcdFetchCommands.php
+              XkcdCommands.php
             
           </span>
         </div>
@@ -260,10 +264,12 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
+      <li class="md-tabs__item md-tabs__item--active">
         <a href="../example.drush.yml/" class="md-tabs__link">
           
   
@@ -908,23 +914,28 @@
       
   
   
+    
   
   
+  
     
     
     
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -935,7 +946,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1114,18 +1125,26 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../XkcdCommands.php.md" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    None
+    XkcdCommands.php
   </span>
   
 
       </a>
+      
     </li>
   
 
@@ -7344,9 +7363,71 @@
   
 
 
-  <h1>XkcdFetchCommands.php</h1>
+  <h1>XkcdCommands.php</h1>
 
-<div class="highlight"><pre><span></span><code>
+<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
+
+<span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Drush\Exec\ExecTrait</span><span class="p">;</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples xkcd`</span>
+<span class="sd"> *</span>
+<span class="sd"> * For an example of a Drush extension with tests for Drush:</span>
+<span class="sd"> * - https://github.com/drush-ops/example-drush-extension</span>
+<span class="sd"> */</span>
+
+<span class="k">class</span> <span class="nc">XkcdCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">ExecTrait</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Retrieve and display xkcd cartoons.</span>
+<span class="sd">     */</span>
+    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;xkcd:fetch&#39;</span><span class="p">,</span> <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;xkcd&#39;</span><span class="p">])]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;search&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Optional argument to retrieve the cartoons matching an index number, keyword search or &quot;random&quot;. If omitted the latest cartoon will be retrieved.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;image-viewer&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Command to use to view images (e.g. xv, firefox). Defaults to &quot;display&quot; (from ImageMagick).&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Google Custom Search API Key, available from https://code.google.com/apis/console/. Default key limited to 100 queries/day globally.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display the latest cartoon.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd sandwich&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display cartoons about sandwiches.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd 123 --image-viewer=eog&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display cartoon #123 in eog.&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd random --image-viewer=firefox&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display a random cartoon in Firefox.&#39;</span><span class="p">)]</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIzaSyDpE01VDNNT73s6CEeJRdSg5jukoG244ek&#39;</span><span class="p">])</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * @param $search</span>
+<span class="sd">     * @param array $options</span>
+<span class="sd">     * @throws \Exception</span>
+<span class="sd">     */</span>
+    <span class="nd">protected</span> <span class="nd">function</span> <span class="nd">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="k">array</span> <span class="nv">$options</span><span class="p">)</span><span class="o">:</span> <span class="nd">void</span>
+    <span class="p">{</span>
+        <span class="nd">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$search</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com&#39;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="nd">elseif</span> <span class="p">(</span><span class="nb">is_numeric</span><span class="p">(</span><span class="nv">$search</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com/&#39;</span> <span class="o">.</span> <span class="nv">$search</span><span class="p">);</span>
+        <span class="p">}</span> <span class="nd">elseif</span> <span class="p">(</span><span class="nv">$search</span> <span class="o">==</span> <span class="s1">&#39;random&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$xkcd_response</span> <span class="o">=</span> <span class="o">@</span><span class="nd">json_decode</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com/info.0.json&#39;</span><span class="p">));</span>
+            <span class="nd">if</span> <span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$xkcd_response</span><span class="o">-&gt;</span><span class="na">num</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="s1">&#39;http://xkcd.com/&#39;</span> <span class="o">.</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nv">$xkcd_response</span><span class="o">-&gt;</span><span class="na">num</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">}</span> <span class="nd">else</span> <span class="p">{</span>
+            <span class="c1">// This uses an API key with a limited number of searches per.</span>
+            <span class="nv">$search_response</span> <span class="o">=</span> <span class="o">@</span><span class="nd">json_decode</span><span class="p">(</span><span class="nb">file_get_contents</span><span class="p">(</span><span class="s1">&#39;https://www.googleapis.com/customsearch/v1?key=&#39;</span> <span class="o">.</span> <span class="nv">$options</span><span class="p">[</span><span class="s1">&#39;google-custom-search-api-key&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s1">&#39;&amp;cx=012652707207066138651:zudjtuwe28q&amp;q=&#39;</span> <span class="o">.</span> <span class="nv">$search</span><span class="p">));</span>
+            <span class="nd">if</span> <span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$search_response</span><span class="o">-&gt;</span><span class="na">items</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nd">foreach</span> <span class="p">(</span><span class="nv">$search_response</span><span class="o">-&gt;</span><span class="na">items</span> <span class="k">as</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">startBrowser</span><span class="p">(</span><span class="nv">$item</span><span class="o">-&gt;</span><span class="na">link</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="nd">else</span> <span class="p">{</span>
+                <span class="nd">throw</span> <span class="nd">new</span> <span class="nd">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;The search failed or produced no results.&#39;</span><span class="p">));</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 </code></pre></div>
 
 
@@ -7368,7 +7449,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 30, 2025 15:22:05 UTC">October 30, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="October 31, 2025 14:19:33 UTC">October 31, 2025</span>
   </span>
 
     
