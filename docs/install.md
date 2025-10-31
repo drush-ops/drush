@@ -31,7 +31,7 @@ Drupal Compatibility
     <td> Drush 14 </td>
     <td> 8.3+ </td>
     <td> TBD </td>
-    <td></td> <td></td> <td></td> <td><b>✓ 10.2+</b></td> <td><b>✅11.2+</b></td>
+    <td></td> <td></td> <td></td> <td><b>✓ 10.5+</b></td> <td><b>✅11.2+</b></td>
   </tr>
   <tr>
     <td> Drush 13 </td>
