@@ -108,12 +108,12 @@ final class FieldTextHooks extends DrushCommands
     protected function askAllowedFormats(): array
     {
         $formats = filter_formats();
-        $choices = ['_none' => '- None -'];
+        $choices = [];
 
         foreach ($formats as $format) {
             $choices[$format->id()] = $format->label();
         }
 
-        return $this->io()->multiselect('Allowed formats', $choices, ['_none']);
+        return $this->io()->multiselect('Allowed formats', $choices);
     }
 }
