@@ -366,6 +366,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     protected function redispatchIfRemote(Command $command, InputInterface $input): void
     {
         // Redispatch if the command is remote and is eligible.
+        // @phpstan-ignore-next-line
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
