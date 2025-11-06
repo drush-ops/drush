@@ -74,6 +74,29 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
             $messages[] = dt('User emails sanitized.');
         }
 
+        // Sanitize usernames.
+        if ($this->isEnabled($options['sanitize-usernames'])) {
+            if (str_contains($options['sanitize-usernames'], '%')) {
+                $sql = SqlBase::create($commandData->input()->getOptions());
+                $db_driver = $sql->scheme();
+                if ($db_driver === 'pgsql') {
+                    $username_map = ['%uid' => "' || uid || '"];
+                    $new_username =  "'" . str_replace(array_keys($username_map), array_values($username_map), $options['sanitize-usernames']) . "'";
+                } elseif ($db_driver === 'mssql') {
+                    $username_map = ['%uid' => "' + uid + '"];
+                    $new_username =  "'" . str_replace(array_keys($username_map), array_values($username_map), $options['sanitize-email']) . "'";
+                } else {
+                    $username_map = ['%uid' => "', uid, '"];
+                    $new_username = "concat('" . str_replace(array_keys($username_map), array_values($username_map), $options['sanitize-usernames']) . "')";
+                }
+                $query->condition('name', "root", '<>')
+                    ->expression('name', $new_username);
+            } else {
+                $query->fields(['name' => $options['sanitize-usernames']]);
+            }
+            $messages[] = dt('Usernames sanitized.');
+        }
+
         if (!empty($options['ignored-roles'])) {
             $roles = explode(',', $options['ignored-roles']);
             /** @var \Drupal\Core\Database\Query\SelectInterface $roles_query */
@@ -102,8 +125,9 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: SanitizeCommands::SANITIZE)]
     #[CLI\Option(name: 'sanitize-email', description: 'The pattern for test email addresses in the sanitization operation, or <info>no</info> to keep email addresses unchanged. May contain replacement patterns <info>%uid</info>, <info>%mail</info> or <info>%name</info>.')]
     #[CLI\Option(name: 'sanitize-password', description: 'By default, passwords are randomized. Specify <info>no</info> to disable that. Specify any other value to set all passwords to that value.')]
+    #[CLI\Option(name: 'sanitize-usernames', description: 'Sanitize the names of users by replacing the originals with user+UID, or <info>no</info> to keep usernames unchanged.')]
     #[CLI\Option(name: 'ignored-roles', description: 'A comma delimited list of roles. Users with at least one of the roles will be exempt from sanitization.')]
-    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null, 'ignored-roles' => null]): void
+    public function options($options = ['sanitize-email' => 'user+%uid@localhost.localdomain', 'sanitize-password' => null, 'sanitize-usernames' => 'user+%uid', 'ignored-roles' => null]): void
     {
     }
 
@@ -116,6 +140,9 @@ final class SanitizeUserTableCommands extends DrushCommands implements SanitizeP
         }
         if ($this->isEnabled($options['sanitize-email'])) {
             $messages[] = dt('Sanitize user emails.');
+        }
+        if ($this->isEnabled($options['sanitize-usernames'])) {
+            $messages[] = dt('Sanitize usernames.');
         }
         if (in_array('ignored-roles', $options)) {
             $messages[] = dt('Preserve user emails and passwords for the specified roles.');
