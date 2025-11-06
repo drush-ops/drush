@@ -97,7 +97,6 @@ final class PmUninstallCommand extends Command
             $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->moduleInstaller->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $reasons) {
-                    // @phpstan-ignore foreach.nonIterable
                     foreach ($reasons as $reason) {
                         $list[] = "$module: " . (string)$reason;
                     }
