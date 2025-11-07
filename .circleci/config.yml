@@ -48,20 +48,20 @@ executors:
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
-      - image: cimg/mysql:5.7.38
+      - image: cimg/mysql:8.0
   mysql-highest:
     docker:
       - image: wodby/php:8.4
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
-      - image: cimg/mysql:8.0
+      - image: cimg/mysql:latest
   postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
-      - image: wodby/postgres:14
+      - image: wodby/postgres:16
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
