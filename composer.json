@@ -90,7 +90,7 @@
       "composer/installers": true,
       "cweagans/composer-patches": true,
       "symfony/runtime": true,
-      "drupal/core-composer-scaffold": true
+      "drupal/core-composer-scaffold": false
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",
