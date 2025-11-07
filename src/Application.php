@@ -321,7 +321,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->addListeners($commandfileSearchpath);
 
         // Directly add the yaml-cli commands.
-        $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
+        // @todo these are breaking on Symfony Console 7.4
+        // $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
         // Find the command handlers that we can instantiate without bootstrapping Drupal
         $commandClasses = $this->serviceManager->discover($commandfileSearchpath, '\Drush');
