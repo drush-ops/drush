@@ -58,7 +58,7 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "^10.4.0 || 11.x-dev",
+    "drupal/core-recommended": "11.x-dev",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^2",
@@ -90,7 +90,7 @@
       "composer/installers": true,
       "cweagans/composer-patches": true,
       "symfony/runtime": true,
-      "drupal/core-composer-scaffold": true
+      "drupal/core-composer-scaffold": false
     },
     "optimize-autoloader": true,
     "preferred-install": "dist",
