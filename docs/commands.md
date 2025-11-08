@@ -19,6 +19,8 @@ The following are supported ways to declare a command.
 
 === "Console, _Recommended_"
 
+    :warning: Drush 13.7+ is required to use this approach.
+
     ```php
     namespace Drupal\[module-name]\Drush\Commands;    
 
