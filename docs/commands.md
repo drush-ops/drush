@@ -18,9 +18,8 @@ Creating a new Drush command is easy. Follow the steps below.
 The following are supported ways to declare a command.
 
 === "Console, _Recommended_"
-!!! tip
 
-      Requires Drush 13.7+
+    :warning: Drush 13.7+ is required to use this approach.
 
     ```php
     namespace Drupal\[module-name]\Drush\Commands;    
