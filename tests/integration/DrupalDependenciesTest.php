@@ -225,23 +225,22 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         // of Drupal core. Ensure a backwards compatible expectation.
         // @todo Remove the BC layer when Drupal 10 support is dropped.
         return DeprecationHelper::backwardsCompatibleCall(
-          \Drupal::VERSION,
-          '11.0.0',
-          function(): string
-          {
-              // Starting with 11.3.x the field.storage.node.body is no longer
-              // shipped but, for backwards compatibility reasons, a new and
-              // deprecated `node_storage_body_field` module is offered.
-              // @see https://www.drupal.org/node/3540814
-              // @todo Remove when 11.3.0 is the minimum Drupal requirement.
-              $nodeStorageBodyField = DeprecationHelper::backwardsCompatibleCall(
-                \Drupal::VERSION,
-                '11.3.0',
-                fn(): string => "├─node_storage_body_field\n",
-                fn(): string => '',
-              );
+            \Drupal::VERSION,
+            '11.0.0',
+            function (): string {
+                // Starting with 11.3.x the field.storage.node.body is no longer
+                // shipped but, for backwards compatibility reasons, a new and
+                // deprecated `node_storage_body_field` module is offered.
+                // @see https://www.drupal.org/node/3540814
+                // @todo Remove when 11.3.0 is the minimum Drupal requirement.
+                $nodeStorageBodyField = DeprecationHelper::backwardsCompatibleCall(
+                    \Drupal::VERSION,
+                    '11.3.0',
+                    fn(): string => "├─node_storage_body_field\n",
+                    fn(): string => '',
+                );
 
-              return <<<EXPECTED
+                return <<<EXPECTED
                 node
                 ├─dependent1
                 │ └─dependent2
@@ -257,9 +256,9 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                   └─dependent1
                     └─dependent2 (circular)
                 EXPECTED;
-          },
-          // @deprecated
-          fn(): string => <<<EXPECTED
+            },
+            // @deprecated
+            fn(): string => <<<EXPECTED
                 node
                 ├─book
                 ├─dependent1
@@ -280,7 +279,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 │ │ └─dependent2 (circular)
                 │ └─forum
                 └─tracker
-                EXPECTED,
+                  EXPECTED,
         );
     }
 }
