@@ -241,21 +241,21 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 );
 
                 return <<<EXPECTED
-                node
-                ├─dependent1
-                │ └─dependent2
-                │   ├─dependent3
-                │   └─dependent4
-                ├─dependent2
-                │ ├─dependent3
-                │ └─dependent4
-                ├─history
-                │ └─dependent1
-                │   └─dependent2 (circular)
-                {$nodeStorageBodyField}└─taxonomy
-                  └─dependent1
-                    └─dependent2 (circular)
-                EXPECTED;
+                    node
+                    ├─dependent1
+                    │ └─dependent2
+                    │   ├─dependent3
+                    │   └─dependent4
+                    ├─dependent2
+                    │ ├─dependent3
+                    │ └─dependent4
+                    ├─history
+                    │ └─dependent1
+                    │   └─dependent2 (circular)
+                    {$nodeStorageBodyField}└─taxonomy
+                      └─dependent1
+                        └─dependent2 (circular)
+                    EXPECTED;
             },
             // @deprecated
             fn(): string => <<<EXPECTED
@@ -279,7 +279,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 │ │ └─dependent2 (circular)
                 │ └─forum
                 └─tracker
-                  EXPECTED,
+                EXPECTED,
         );
     }
 }
