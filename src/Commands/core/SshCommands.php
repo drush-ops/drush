@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinAwareTrait;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Shell;
 use Consolidation\SiteProcess\Util\Tty;
@@ -13,9 +15,10 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
-final class SshCommands extends DrushCommands
+final class SshCommands extends DrushCommands implements StdinAwareInterface
 {
     use AutowireTrait;
+    use StdinAwareTrait;
 
     const SSH = 'site:ssh';
 
@@ -37,6 +40,7 @@ final class SshCommands extends DrushCommands
     #[CLI\Usage(name: 'drush @prod ssh "ls /tmp"', description: 'Run <info>ls /tmp</info> on <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush @prod ssh "git pull"', description: 'Run <info>git pull</info> on the Drupal root directory on the <info>@prod</info> site.')]
     #[CLI\Usage(name: 'drush ssh "git pull"', description: 'Run <info>git pull</info> on the local Drupal root directory.')]
+    #[CLI\Usage(name: 'echo \'Deny from all\' | drush @prod ssh "tee > do-not-expose-dir/.htaccess"', description: 'Protect directory <info>do-not-expose-dir</info> from being served by Apache httpd.')]
     #[CLI\Topics(topics: [DocsCommands::ALIASES])]
     public function ssh(array $code, $options = ['cd' => self::REQ]): void
     {
@@ -56,7 +60,9 @@ final class SshCommands extends DrushCommands
         }
 
         $process = $this->processManager()->siteProcess($alias, $code);
-        if (Tty::isTtySupported()) {
+        if (!Tty::isTtySupported()) {
+            $process->setInput($this->stdin()->getStream());
+        } else {
             $process->setTty($options['tty']);
         }
         // The transport handles the chdir during processArgs().

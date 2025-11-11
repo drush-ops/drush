@@ -53,6 +53,15 @@ final class DeployCommands extends DrushCommands
         $this->logger()->success("Deploy hook start.");
         $process = $manager->drush($self, DeployHookCommands::HOOK, [], $redispatchOptions);
         $process->mustRun($process->showRealtime());
+
+        // Since this command is Bootstrap=None, we don't have access to the Drupal container.
+        $boot_manager = Drush::bootstrapManager();
+        $boot_object = Drush::bootstrap();
+        if (version_compare($boot_object->getVersion(null), '11.2-dev', '>=')) {
+            $this->logger()->success("Cache prewarm start.");
+            $process = $manager->drush($self, CacheWarmCommands::WARM, [], $redispatchOptions);
+            $process->mustRun($process->showRealtime());
+        }
     }
 
     public function cacheRebuild(ProcessManager $manager, SiteAlias $self, array $redispatchOptions): void

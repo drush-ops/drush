@@ -86,13 +86,6 @@ final class CliCommands extends DrushCommands
 
         $shell = new Shell($configuration);
 
-
-        // Register the assertion handler so exceptions are thrown instead of
-        // errors being triggered. This plays nicer with PsySH. Since we're
-        // using exceptions, turn error warnings off.
-        assert_options(ASSERT_EXCEPTION, true);
-        assert_options(ASSERT_WARNING, false);
-
         $shell->setScopeVariables(['container' => \Drupal::getContainer()]);
 
         // Add our casters to the shell configuration.
@@ -176,9 +169,6 @@ final class CliCommands extends DrushCommands
      * These are Symfony VarDumper casters.
      * See http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      * for more information.
-     *
-     * @return callable[].
-     *   An array of caster callbacks keyed by class or interface.
      */
     protected function getCasters(): array
     {
@@ -197,9 +187,6 @@ final class CliCommands extends DrushCommands
      * Returns the file path for the CLI history.
      *
      * This can either be site specific (default) or Drupal version specific.
-     *
-     *
-     * @return string.
      */
     protected function historyPath(array $options): string
     {

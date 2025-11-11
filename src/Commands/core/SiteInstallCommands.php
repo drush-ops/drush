@@ -16,6 +16,9 @@ use Drupal\Core\Installer\Exception\InstallerException;
 use Drupal\Core\Installer\InstallerKernel;
 use Drupal\Core\Mail\MailFormatHelper;
 use Drupal\Core\Site\Settings;
+use Drupal\Core\Url;
+use Drupal\user\Entity\User;
+use Drupal\user\UserInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
@@ -55,6 +58,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Option(name: 'db-prefix', description: 'An optional table prefix to use for initial install.')]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database. Must have Grant permission (mysql only). Optional.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the <info>db-su</info> account. Optional.')]
+    #[CLI\Option(name: 'extra', description: 'Add custom options to the SQL connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Option(name: 'account-name', description: 'uid1 name.')]
     #[CLI\Option(name: 'account-pass', description: 'uid1 pass. Defaults to a randomly generated password. If desired, set a fixed password in drush.yml.')]
     #[CLI\Option(name: 'account-mail', description: 'uid1 email.')]
@@ -73,7 +77,7 @@ final class SiteInstallCommands extends DrushCommands
     #[CLI\Usage(name: 'drush si core/recipes/standard', description: 'Install from the core Standard recipe.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::ROOT)]
     #[CLI\Kernel(name: Kernels::INSTALLER)]
-    public function install(array $recipeOrProfile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
+    public function install(array $recipeOrProfile, $options = ['db-url' => self::REQ, 'db-prefix' => self::REQ, 'db-su' => self::REQ, 'db-su-pw' => self::REQ, 'extra' => self::REQ, 'account-name' => 'admin', 'account-mail' => 'admin@example.com', 'site-mail' => 'admin@example.com', 'account-pass' => self::REQ, 'locale' => 'en', 'site-name' => 'Drush Site-Install', 'site-pass' => self::REQ, 'sites-subdir' => self::REQ, 'config-dir' => self::REQ, 'existing-config' => false]): void
     {
         $additional = $recipeOrProfile;
         $recipeOrProfile = array_shift($additional) ?: '';
@@ -177,10 +181,10 @@ final class SiteInstallCommands extends DrushCommands
             throw new InstallerException(MailFormatHelper::htmlToText($e->getMessage()), $e->getTitle(), $e->getCode(), ($this->output()->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) ? $e : null);
         }
 
+        $links = $this->getLoginLinks(User::load(1));
+        $this->logger()->success(dt('Installation complete. (%links)', ['%links' => implode(' - ', $links)]));
         if (empty($options['account-pass'])) {
-            $this->logger()->success(dt('Installation complete.  User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
-        } else {
-            $this->logger()->success(dt('Installation complete.'));
+            $this->logger()->success(dt('User name: @name  User password: @pass', ['@name' => $options['account-name'], '@pass' => $account_pass]));
         }
     }
 
@@ -614,5 +618,30 @@ final class SiteInstallCommands extends DrushCommands
             $this->logger()->warning(dt('Configuration import directory @config does not contain any configuration; will skip import.', ['@config' => $directory]));
             $commandData->input()->setOption('config-dir', '');
         }
+    }
+
+    private function getLoginLinks(UserInterface $account): array
+    {
+        $timestamp = \Drupal::time()->getRequestTime();
+        // @todo Add Homepage if we can find a way to get there via destination= or otherwise.
+        $data = ['admin' => dt('Admin')];
+        foreach ($data as $path => $text) {
+            $link = Url::fromRoute(
+                'user.reset.login',
+                [
+                    'uid' => $account->id(),
+                    'timestamp' => $timestamp,
+                    'hash' => user_pass_rehash($account, $timestamp),
+                ],
+                [
+                    'absolute' => true,
+                    'query' => ['destination' => $path],
+                    'language' => \Drupal::languageManager()->getLanguage($account->getPreferredLangcode()),
+                ]
+            )->toString();
+            $links[] = sprintf('<href=%s>%s</>', $link, $text);
+        }
+
+        return $links;
     }
 }

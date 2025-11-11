@@ -83,9 +83,11 @@ trait ConfiguresPrompts
 
             return $this->promptUntilValid(
                 // MW: Had to change to 'none' as key to fix test failure. Deviates from Laravel.
-                fn () => collect($style->choice($prompt->label, ['none' => 'None', ...$prompt->options], 'none', true))
-                    ->reject('none')
-                    ->all(),
+                fn () => array_filter(
+                    $style->choice($prompt->label, ['none' => 'None', ...$prompt->options], 'none', true),
+                    fn ($option, $key) => $key !== 'none',
+                    ARRAY_FILTER_USE_BOTH,
+                ),
                 $prompt->required,
                 $prompt->validate
             );
@@ -118,16 +120,17 @@ trait ConfiguresPrompts
 
                 if ($prompt->required === false) {
                     if (array_is_list($options)) {
-                        return collect($style->choice($prompt->label, ['None', ...$options], 'None', true))
-                            ->reject('None')
-                            ->values()
-                            ->all();
+                        return array_filter(
+                            $style->choice($prompt->label, ['None', ...$options], 'None', true),
+                            fn ($option) => $option !== 'None',
+                        );
                     }
 
-                    return collect($style->choice($prompt->label, ['' => 'None', ...$options], '', true))
-                        ->reject('')
-                        ->values()
-                        ->all();
+                    return array_filter(
+                        $style->choice($prompt->label, ['' => 'None', ...$options], '', true),
+                        fn ($option, $key) => $key !== '',
+                        ARRAY_FILTER_USE_BOTH,
+                    );
                 }
 
                 return $style->choice($prompt->label, $options, true);

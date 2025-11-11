@@ -87,8 +87,11 @@ final class DrupalCommands extends DrushCommands
 
         drupal_load_updates();
 
-        $requirements = $this->getModuleHandler()->invokeAll('requirements', ['runtime']);
-        $this->getModuleHandler()->alter('requirements', $requirements);
+        $requirements = $this->moduleHandler->invokeAll('requirements', ['runtime']);
+        $runtime_requirements = $this->moduleHandler->invokeAll('runtime_requirements');
+        $requirements = array_merge($requirements, $runtime_requirements);
+        $this->moduleHandler->alter('requirements', $requirements);
+        $this->moduleHandler->alter('runtime_requirements', $requirements);
         // If a module uses "$requirements[] = " instead of
         // "$requirements['label'] = ", then build a label from
         // the title.
@@ -107,7 +110,12 @@ final class DrupalCommands extends DrushCommands
 
         $min_severity = $options['severity'];
         foreach ($requirements as $key => $info) {
+            // Adjust once Drupal 11.1- is unsupported.
             $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
+            if (is_object($severity)) {
+                $severity = $severity->value;
+            }
+
             $rows[$key] = [
                 'title' => $this->styleRow((string) $info['title'], $options['format'], $severity),
                 'value' => $this->styleRow(DrupalUtil::drushRender($info['value'] ?? ''), $options['format'], $severity),

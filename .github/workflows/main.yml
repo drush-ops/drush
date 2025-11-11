@@ -28,8 +28,10 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          # Later versions of mkdocs giving build error remated to a missing import for 'templates'.
+          # Later versions of mkdocs giving build error related to a missing import for 'templates'.
           pip install mkdocs==1.5.3 mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
+          # https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#dependencies
+          pip install "mkdocs-material[imaging]"
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -38,7 +40,10 @@ jobs:
           coverage: none
           tools: composer:v2
       - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-interaction
+        run: |
+          composer -n config platform.php --unset
+          composer -n require --dev drupal/core-recommended:11.x-dev --no-update
+          composer -n install --prefer-dist
       - name: Install Drupal
         run: composer sut:si
         env:

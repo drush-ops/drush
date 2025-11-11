@@ -76,7 +76,7 @@ class ArgsPreprocessor
                 $sawArg = true;
             }
 
-            list($methodName, $value, $acceptsValueFromNextArg) = $this->findMethodForOptionWithValues($optionsTable, $opt);
+            [$methodName, $value, $acceptsValueFromNextArg] = $this->findMethodForOptionWithValues($optionsTable, $opt);
             if ($methodName) {
                 if (!isset($value) && $acceptsValueFromNextArg && static::nextCouldBeValue($argv)) {
                     $value = array_shift($argv);
@@ -198,7 +198,8 @@ class ArgsPreprocessor
 
         // If $opt is a double-dash option, and it contains an '=', then
         // the option value is everything after the '='.
-        if ((strlen($key) < strlen($opt)) && ($opt[1] === '-') && ($opt[strlen($key)] === '=')) {
+        // @phpstan-ignore-next-line
+        if ((strlen($key) < strlen($opt)) && ($opt[1] == '-') && ($opt[strlen($key)] == '=')) {
             $value = substr($opt, strlen($key) + 1);
             return [$methodName, $value, false];
         }

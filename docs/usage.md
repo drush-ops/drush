@@ -10,12 +10,10 @@ For even more documentation, use the [topic command](commands/core_topic.md):
 
     $ drush topic
 
-Using the --uri option.
------------
 
-For multi-site installations, use a site alias or the --uri option to target a particular site.
+Drush needs to be told the domain of your site in order for commands to generate correct links (e.g. user:login). You may set a [DRUSH_OPTIONS_URL environment variable](using-drush-configuration.md#environment-variables) (preferred), or use the --uri option.
 
-    $ drush --uri=http://example.com pm:install
+    $ drush --uri=http://example.com user:login
 
 Site Aliases
 ------------

@@ -1,7 +1,6 @@
-name: drush
 type: php
 docroot: sut
-php_version: "8.3"
+php_version: "8.4"
 webserver_type: nginx-fpm
 router_http_port: "87"
 router_https_port: "444"

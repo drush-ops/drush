@@ -13,7 +13,7 @@
 !!! note
     - See [Usage](usage.md) for details on using Drush. 
     - To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desirable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
-    - To use a custom php.ini for Drush requests, [see this comment](https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342). 
+    - To use custom PHP configuration such as _memory_limit_, create a custom php.ini for Drush requests as per https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342 and https://github.com/drush-ops/drush/issues/3294#issuecomment-618962852. This approach ensures that the custom config is used for the subprocesses as well (e.g. `updatedb`).   
     - See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9) from Drush 8 to later versions. Also note that alias and config files use a new .yml format in Drush 10+.
 
 Drupal Compatibility
@@ -28,6 +28,12 @@ Drupal Compatibility
     <th>7</th> <th>8</th> <th>9</th> <th>10</th> <th>11</th>
   </tr>
   <tr>
+    <td> Drush 14 </td>
+    <td> 8.3+ </td>
+    <td> TBD </td>
+    <td></td> <td></td> <td></td> <td><b>✓ 10.5+</b></td> <td><b>✅11.2+</b></td>
+  </tr>
+  <tr>
     <td> Drush 13 </td>
     <td> 8.3+ </td>
     <td> TBD </td>
@@ -38,7 +44,7 @@ Drupal Compatibility
     <td> 8.1+ </td>
     <!-- Released Jun 2023 -->
     <td> TBD </td>
-    <td></td> <td></td> <td></td> <td><b>✅</b></td> <td></td>
+    <td></td> <td></td> <td></td> <td><b>✓</b></td> <td></td>
   </tr>
   <tr>
     <td> Drush 11 </td>

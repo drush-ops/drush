@@ -25,7 +25,7 @@ class SqlMysql extends SqlBase
         $process = Drush::shell('mysql --version');
         $process->setSimulated(false);
         $process->run();
-        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb')) {
+        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb') && self::programExists('mariadb-dump')) {
             $instance = new SqlMariaDB($dbSpec, $options);
         } else {
             $instance = new self($dbSpec, $options);
@@ -126,6 +126,10 @@ EOT;
 
         if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY])) {
             $parameters['ssl-key'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY];
+        }
+
+        if (!empty($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT])) {
+            $parameters['ssl-verify-server-cert'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT];
         }
 
         return $this->paramsToOptions($parameters);

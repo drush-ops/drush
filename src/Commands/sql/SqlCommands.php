@@ -39,7 +39,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Option(name: 'all', description: 'Show all database connections, instead of just one.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): ?array
+    public function conf($options = ['format' => 'yaml', 'all' => false, 'show-passwords' => false]): array
     {
         if ($options['all']) {
             $return = Database::getAllConnectionInfo();
@@ -81,12 +81,13 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::CREATE, aliases: ['sql-create'])]
     #[CLI\Option(name: 'db-su', description: 'Account to use when creating a new database.')]
     #[CLI\Option(name: 'db-su-pw', description: 'Password for the db-su account.')]
+    #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\Usage(name: 'drush sql:create', description: 'Create the database for the current site.')]
     #[CLI\Usage(name: 'drush @site.test sql:create', description: 'Create the database as specified for @site.test.')]
     #[CLI\Usage(name: 'drush sql:create --db-su=root --db-su-pw=rootpassword --db-url="mysql://drupal_db_user:drupal_db_password@127.0.0.1/drupal_db"', description: 'Create the database as specified in the db-url option.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
     #[CLI\OptionsetSql]
-    public function createDb($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ]): void
+    public function createDb($options = ['db-su' => self::REQ, 'db-su-pw' => self::REQ, 'extra' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
@@ -106,9 +107,10 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::DROP, aliases: ['sql-drop'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX, max_level: DrupalBootLevels::CONFIGURATION)]
+    #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
     #[CLI\OptionsetSql]
     #[CLI\Topics(topics: [DocsCommands::POLICY])]
-    public function drop($options = []): void
+    public function drop($options = ['extra' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $db_spec = $sql->getDbSpec();
@@ -123,6 +125,8 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
 
     /**
      * Open a SQL command-line interface using Drupal's credentials.
+     *
+     * To import an SQL dump, it is more efficient to use sql:connect than sql:cli. See Examples below.
      */
     #[CLI\Command(name: self::CLI, aliases: ['sqlc', 'sql-cli'])]
     #[CLI\Option(name: 'extra', description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)')]
@@ -131,12 +135,14 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Topics(topics: [DocsCommands::POLICY])]
     #[CLI\Usage(name: 'drush sql:cli', description: 'Open a SQL command-line interface using Drupal\'s credentials.')]
     #[CLI\Usage(name: 'drush sql:cli --extra=--progress-reports', description: 'Open a SQL CLI and skip reading table information.')]
-    #[CLI\Usage(name: 'drush sql:cli < example.sql', description: 'Import sql statements from a file into the current database.')]
+    #[CLI\Usage(name: '$(drush sql:connect) < example.sql', description: 'Bash: Import SQL statements from a file into the current database.')]
+    #[CLI\Usage(name: 'eval (drush sql:connect) < example.sql', description: 'Fish: Import SQL statements from a file into the current database.')]
     public function cli(InputInterface $input, $options = ['extra' => self::REQ]): void
     {
         $sql = SqlBase::create($options);
         $process = $this->processManager()->shell($sql->connect(), null, $sql->getEnv());
         if (!Tty::isTtySupported()) {
+            $this->logger()->warning('It is slow to pass large amounts of data via stdin to the sql:cli command. See the Examples at https://www.drush.org/latest/commands/sql_cli/ for an alternative using sql:connect.');
             $process->setInput($this->stdin()->getStream());
         } else {
             $process->setTty((bool) $this->getConfig()->get('ssh.tty', $input->isInteractive()));
@@ -207,6 +213,7 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Usage(name: 'drush sql:dump --skip-tables-key=common', description: 'Skip standard tables. See [Drush configuration](../../using-drush-configuration.md)')]
     #[CLI\Usage(name: 'drush sql:dump --extra-dump=--no-data', description: 'Pass extra option to <info>mysqldump</info> command.')]
     #[CLI\FieldLabels(labels: ['path' => 'Path'])]
+    #[CLI\Topics(topics: [DocsCommands::ALIASES, DocsCommands::POLICY, DocsCommands::CONFIGURATION])]
     public function dump($options = ['result-file' => self::REQ, 'create-db' => false, 'data-only' => false, 'ordered-dump' => false, 'gzip' => false, 'extra' => self::REQ, 'extra-dump' => self::REQ, 'format' => 'null']): PropertyList
     {
         $sql = SqlBase::create($options);

@@ -21,7 +21,10 @@ class ImageTest extends UnishIntegrationTestCase
         $styles_dir = $this->webroot() . '/sites/default/files/styles/';
         $thumbnail = $styles_dir . 'thumbnail/public/' . $logo;
         $medium = $styles_dir . 'medium/public/' . $logo;
-        if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
+        if ($this->isDrupalGreaterThanOrEqualTo('11.2.0')) {
+            $thumbnail .= '.avif';
+            $medium .= '.avif';
+        } else {
             $thumbnail .= '.webp';
             $medium .= '.webp';
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Runtime;
 
 use Composer\Autoload\ClassLoader;
+use Composer\InstalledVersions;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
 use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
@@ -12,25 +13,32 @@ use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
+use Drupal\Core\DefaultContent\ContentExportCommand;
 use Drupal\Core\Recipe\RecipeCommand;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\DrushCommands;
 use Drush\Config\DrushConfig;
+use Drush\Drush;
 use Grasmash\YamlCli\Command\GetValueCommand;
 use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
 use Grasmash\YamlCli\Command\UpdateKeyCommand;
 use Grasmash\YamlCli\Command\UpdateValueCommand;
 use League\Container\Container as DrushContainer;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\ConsoleEvents;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
+use Symfony\Component\Console\Event\ConsoleTerminateEvent;
 use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 /**
  * Manage Drush services.
@@ -53,6 +61,9 @@ class ServiceManager
 {
     /** @var string[] */
     protected array $bootstrapCommandClasses = [];
+
+    /** @var string[] */
+    protected array $bootstrapListenerClasses = [];
 
     public function __construct(
         protected ClassLoader $autoloader,
@@ -88,6 +99,17 @@ class ServiceManager
     }
 
     /**
+     * Return cached of deferred scubscriber objects.
+     *
+     * @return string[]
+     *   List of class names to instantiate at bootstrap time.
+     */
+    public function bootstrapListenerClasses(): array
+    {
+        return $this->bootstrapListenerClasses;
+    }
+
+    /**
      * Discover all of the different kinds of command handler objects
      * in the places where Drush can find them. Called during preflight;
      * some command classes are returned right away, and others are saved
@@ -95,7 +117,7 @@ class ServiceManager
      *
      * @param string[] $commandfileSearchpath List of directories to search
      * @param string $baseNamespace The namespace to use at the base of each
-     *   search diretory. Namespace components mirror directory structure.
+     *   search directory. Namespace components mirror directory structure.
      *
      * @return string[]
      *   List of command classes
@@ -262,6 +284,33 @@ class ServiceManager
     }
 
     /**
+     * Discovers Listener classes from a provided search path.
+     *
+     * @param string[] $directoryList List of directories to search
+     * @param string $baseNamespace The namespace to use at the base of each
+     *   search directory. Namespace components mirror directory structure.
+     *
+     * @return string[]
+     *   List Listeners.
+     */
+    public function discoverListeners(array $directoryList, string $baseNamespace): array
+    {
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(3)
+            ->ignoreNamespacePart('contrib', 'Listeners')
+            ->ignoreNamespacePart('custom', 'Listeners')
+            ->ignoreNamespacePart('src')
+            ->setSearchLocations(['Listeners'])
+            ->setSearchPattern('#.*(Listener)s?.php$#');
+        $baseNamespace = ltrim($baseNamespace, '\\');
+        $listenerClasses = $discovery->discover($directoryList, $baseNamespace);
+        $this->loadCommandClasses($listenerClasses);
+        return array_values($listenerClasses);
+    }
+
+    /**
      * Instantiate commands from Grasmash\YamlCli that we want to expose
      * as Drush commands.
      *
@@ -279,7 +328,6 @@ class ServiceManager
         ];
 
         foreach ($classes_yaml as $class_yaml) {
-            /** @var Command $instance */
             $instance = new $class_yaml();
             // Namespace the commands.
             $name = $instance->getName();
@@ -303,6 +351,11 @@ class ServiceManager
     public function instantiateDrupalCoreBootstrappedCommands(): array
     {
         $instances = [];
+        if (class_exists(ContentExportCommand::class)) {
+            $instance = new ContentExportCommand($this->autoloader);
+            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            $instances[] = $instance;
+        }
         if (class_exists(RecipeCommand::class)) {
             $instance = new RecipeCommand($this->autoloader);
             $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
@@ -318,12 +371,12 @@ class ServiceManager
      * Drupal and Drush DI containers. If there is no static factory, then
      * instantiate it via 'new $class'
      *
-     * @param string[] $bootstrapCommandClasses Classes to instantiate.
+     * @param string[] $serviceClasses Classes to instantiate.
      *
      * @return object[]
      *   List of instantiated service objects
      */
-    public function instantiateServices(array $bootstrapCommandClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null): array
+    public function instantiateServices(array $serviceClasses, DrushContainer $drushContainer, ?DrupalContainer $container = null): array
     {
         $commandHandlers = [];
 
@@ -331,7 +384,7 @@ class ServiceManager
         // particularly DrushCommands (our abstract base class).
         // n.b. we cannot simply use 'isInstantiable' here because
         // the constructor is typically protected when using a static create method
-        $bootstrapCommandClasses = array_filter($bootstrapCommandClasses, function ($class) {
+        $serviceClasses = array_filter($serviceClasses, function ($class) {
             try {
                 $reflection = new \ReflectionClass($class);
             } catch (\Throwable $e) {
@@ -345,7 +398,7 @@ class ServiceManager
             // Combine the two containers.
             $drushContainer->delegate($container);
         }
-        foreach ($bootstrapCommandClasses as $class) {
+        foreach ($serviceClasses as $class) {
             $commandHandler = null;
 
             try {
@@ -369,7 +422,57 @@ class ServiceManager
             }
         }
 
-        return $commandHandlers;
+        // Omit any null commandhandlers that chose not to instantiate..
+        return array_filter($commandHandlers);
+    }
+
+    /**
+     * Robo does not support invokable commands, so build a Command as needed.
+     */
+    public function commandFromInvokable(array &$callables): array
+    {
+        $return = [];
+
+        foreach ($callables as $key => $callable) {
+            $return[$key] = $callable;
+            if (is_callable($callable) && version_compare(InstalledVersions::getVersion('symfony/console'), '7.4.0', '>=')) {
+                $return[$key] = new Command(null, $callable);
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * Add listeners to Drush's event dispatcher.
+     */
+    public function addListeners(iterable $classes, ContainerInterface $drushContainer, ?ContainerInterface $drupalContainer = null): void
+    {
+        $instances = $this->instantiateServices($classes, $drushContainer, $drupalContainer);
+        foreach ($instances as $instance) {
+            $reflectionObject = new \ReflectionObject($instance);
+            $attributes = $reflectionObject->getAttributes(AsEventListener::class);
+            foreach ($attributes as $attribute) {
+                $attributeInstance = $attribute->newInstance();
+                $method = $attributeInstance->method ?? '__invoke';
+                $priority = $attributeInstance->priority ?? 0;
+                $reflectionMethod = $reflectionObject->getMethod($method);
+                $reflectionParameters = $reflectionMethod->getParameters();
+                $paramType = $reflectionParameters[0]->getType();
+                if ($paramType instanceof \ReflectionNamedType) {
+                    $eventName = $paramType->getName();
+                } else {
+                    throw new \Exception('Event listener method must have a single parameter with a type hint.');
+                }
+                $eventName = match ($eventName) {
+                    ConsoleCommandEvent::class => ConsoleEvents::COMMAND,
+                    ConsoleTerminateEvent::class => ConsoleEvents::TERMINATE,
+                    default => $eventName,
+                };
+                $this->logger->debug('Add listener {class}::{method}', ['class' => $instance::class, 'method' => $method]);
+                Drush::getContainer()->get('eventDispatcher')->addListener($eventName, $instance->$method(...), $priority);
+            }
+        }
     }
 
     /**
@@ -404,6 +507,16 @@ class ServiceManager
         } catch (\ReflectionException $e) {
         }
         return null;
+    }
+
+    // If a command class has a Bootstrap Attribute or static `create` method, we
+    // postpone instantiating it until after we bootstrap Drupal.
+    public function filterListeners($listenClasses): array
+    {
+        $this->bootstrapListenerClasses = array_filter($listenClasses, [$this, 'requiresBootstrap']);
+
+        // Remove the listener classes that we put into the bootstrap listener classes.
+        return array_diff($listenClasses, $this->bootstrapListenerClasses);
     }
 
     /**

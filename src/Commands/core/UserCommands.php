@@ -215,6 +215,7 @@ final class UserCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: self::INF_DEFAULT_FIELDS)]
     #[CLI\FilterDefaultField(field: 'name')]
     #[CLI\Usage(name: "drush user:create newuser --mail='person@example.com' --password='letmein'", description: 'Create a new user account with the name newuser, the email address person@example.com, and the password letmein')]
+    #[CLI\Usage(name: "drush user:create anotheruser --fields=uuid,langcode", description: 'Create a new user account with the name anotheruser and show the values of the UUID and Language fields')]
     public function createUser(string $name, $options = ['format' => 'table', 'password' => self::REQ, 'mail' => self::REQ]): RowsOfFields|CommandError
     {
         $new_user = [
@@ -225,7 +226,6 @@ final class UserCommands extends DrushCommands
             'status' => 1,
         ];
         if (!$this->getConfig()->simulate()) {
-            // @phpstan-ignore if.alwaysTrue
             if ($account = User::create($new_user)) {
                 $account->save();
                 $this->logger()->success(dt('Created a new user with uid !uid', ['!uid' => $account->id()]));
