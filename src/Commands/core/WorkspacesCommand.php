@@ -70,7 +70,7 @@ final class WorkspacesCommand extends Command
         $diff = $workspace_publisher->getDifferringRevisionIdsOnSource();
         if (empty($diff)) {
             $io->success(dt('There are no changes that can be published from %source_label to %target_label.', $args));
-            return;
+            return self::SUCCESS;
         }
 
         $workspace->publish();
