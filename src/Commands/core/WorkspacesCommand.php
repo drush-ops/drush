@@ -6,14 +6,24 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\workspaces\WorkspaceOperationFactory;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\DrushCommands;
-use Drush\Drush;
+use Drush\Style\DrushStyle;
+use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
-final class WorkspacesCommands extends DrushCommands
+#[AsCommand(
+    name: self::NAME,
+    description: 'Publish a workspace.'
+)]
+#[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
+final class WorkspacesCommand extends Command
 {
     use AutowireTrait;
 
-    const PUBLISH = 'workspaces:publish';
+    const NAME = 'workspaces:publish';
 
     protected ?WorkspaceOperationFactory $workspacesOperationFactory = null;
 
@@ -22,24 +32,27 @@ final class WorkspacesCommands extends DrushCommands
      */
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
+        protected readonly ContainerInterface $container,
     ) {
         parent::__construct();
-
-        $container = Drush::getContainer();
+        
         if ($container->has('workspaces.operation_factory')) {
             $this->workspacesOperationFactory = $container->get('workspaces.operation_factory');
         }
     }
 
-    /**
-   * Publish a workspace.
-   */
-    #[CLI\Command(name: self::PUBLISH)]
-    #[CLI\Argument(name: 'id', description: 'The workspace to publish.')]
-    #[CLI\Usage(name: 'workspaces:publish stage', description: 'Publish the stage workspace')]
-    #[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
-    public function publish($id)
+    protected function configure()
     {
+        $this
+            ->addArgument('id', InputArgument::REQUIRED, 'The workspace to publish.')
+            ->addUsage('workspaces:publish stage');
+    }
+
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new DrushStyle($input, $output);
+        $id = $input->getArgument('id');
         /** @var \Drupal\workspaces\Entity\Workspace $workspace */
         $workspace = $this->entityTypeManager->getStorage('workspace')->load($id);
         if (!$workspace) {
@@ -53,14 +66,14 @@ final class WorkspacesCommands extends DrushCommands
             '%target_label' => $workspace_publisher->getTargetLabel(),
         ];
 
-      // Does this workspace have any content to publish?
+        // Does this workspace have any content to publish?
         $diff = $workspace_publisher->getDifferringRevisionIdsOnSource();
         if (empty($diff)) {
-            $this->logger()->success(dt('There are no changes that can be published from %source_label to %target_label.', $args));
+            $io->success(dt('There are no changes that can be published from %source_label to %target_label.', $args));
             return;
         }
 
         $workspace->publish();
-        $this->logger()->success(dt('Workspace %source_label published.', $args));
+        $io->success(dt('Workspace %source_label published.', $args));
     }
 }
