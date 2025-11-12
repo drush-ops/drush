@@ -180,7 +180,7 @@ EOT;
                 // The values don't go through standard formatting since we want to show http://default not the uri that was used when running this command.
                 $body .= '- **' . HelpCLIFormatter::formatOptionKeys(self::optionToArray($value)) . '**. ' . self::cliTextToMarkdown($value->getDescription()) . "\n";
             }
-            $body .= '- To see all global options, run <code>drush topic</code> and pick the first choice.' . "\n";
+            $body .= '- To see all global options, run <code>drush core:global-options</code>.' . "\n";
             return "#### Global Options\n\n$body\n";
         }
         return '';

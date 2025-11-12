@@ -102,7 +102,7 @@ class HelpCLIFormatter implements FormatterInterface
         }
         $rows[] = [
             '',
-            'To see all global options, run `drush topic` and pick the first choice.',
+            'To see all global options, run `drush core:global-options`.',
         ];
         $formatterManager->write($output, 'table', new RowsOfFields($rows), $options);
 
