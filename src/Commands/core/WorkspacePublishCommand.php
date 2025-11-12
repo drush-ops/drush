@@ -19,11 +19,12 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Publish a workspace.'
 )]
 #[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
-final class WorkspacesCommand extends Command
+#[CLI\Version(version: '13.7')]
+final class WorkspacePublishCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'workspaces:publish';
+    const NAME = 'workspace:publish';
 
     protected ?WorkspaceOperationFactory $workspacesOperationFactory = null;
 
@@ -45,7 +46,7 @@ final class WorkspacesCommand extends Command
     {
         $this
             ->addArgument('id', InputArgument::REQUIRED, 'The workspace to publish.')
-            ->addUsage('workspaces:publish stage');
+            ->addUsage('workspace:publish stage');
     }
 
 

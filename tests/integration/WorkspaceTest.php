@@ -6,22 +6,24 @@ namespace Unish;
 
 use Drupal\node\Entity\Node;
 use Drupal\workspaces\WorkspaceManagerInterface;
-use Drush\Commands\core\WorkspacesCommand;
+use Drush\Commands\core\WorkspacePublishCommand;
+use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\pm\PmInstallCommand;
+use Drush\Commands\pm\PmUninstallCommand;
 
 /**
- * Tests Workspaces commands
+ * Tests Workspace commands
  *
  * @group commands
  */
-class WorkspacesTest extends UnishIntegrationTestCase
+class WorkspaceTest extends UnishIntegrationTestCase
 {
     private WorkspaceManagerInterface $workspaceManager;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->drush(PmInstallCommand::NAME, ['workspaces', 'node']);
+        $this->drush(PmInstallCommand::NAME, ['workspaces', 'node'], ['yes' => true]);
         $this->workspaceManager = \Drupal::service('workspaces.manager');
 
         // Create article content type if it doesn't exist
@@ -65,11 +67,11 @@ class WorkspacesTest extends UnishIntegrationTestCase
         $workspace_id = 'stage';
 
         // Publish the workspace
-        $this->drush(WorkspacesCommand::NAME, [$workspace_id]);
+        $this->drush(WorkspacePublishCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('Workspace Stage published', $this->getErrorOutput());
 
         // Verify no more changes exist after publishing
-        $this->drush(WorkspacesCommand::NAME, [$workspace_id]);
+        $this->drush(WorkspacePublishCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('There are no changes that can be published', $this->getErrorOutput());
     }
 
@@ -79,9 +81,9 @@ class WorkspacesTest extends UnishIntegrationTestCase
     protected function tearDown(): void
     {
         // Cleanup the test workspace (this should also handle content deletion)
-        $this->drush('entity:delete', ['workspace', 'stage'], ['yes' => true]);
-        $this->drush('entity:delete', ['node'], ['yes' => true, 'bundle' => 'article']);
-        $this->drush('pm:uninstall', ['workspaces', 'node'], ['yes' => true]);
+        $this->drush(EntityDeleteCommand::NAME, ['workspace', 'stage'], ['yes' => true]);
+        $this->drush(EntityDeleteCommand::NAME, ['node'], ['yes' => true, 'bundle' => 'article']);
+        $this->drush(PmUninstallCommand::NAME, ['workspaces', 'node'], ['yes' => true]);
         parent::tearDown();
     }
 }
