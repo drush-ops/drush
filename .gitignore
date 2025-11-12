@@ -27,3 +27,6 @@ sut/modules/contrib
 # Test fixtures
 sut/drush/sites/synctest.site.yml
 /tests/.phpunit.result.cache
+
+# Code tools
+.claude
