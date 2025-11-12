@@ -61,19 +61,15 @@ final class WorkspacesCommand extends Command
 
         $workspace_publisher = $this->workspacesOperationFactory->getPublisher($workspace);
 
-        $args = [
-            '%source_label' => $workspace->label(),
-            '%target_label' => $workspace_publisher->getTargetLabel(),
-        ];
-
         // Does this workspace have any content to publish?
         $diff = $workspace_publisher->getDifferringRevisionIdsOnSource();
         if (empty($diff)) {
-            $io->success(dt('There are no changes that can be published from %source_label to %target_label.', $args));
+            $io->success(sprintf('There are no changes that can be published from %s to %s', $workspace->label(), $workspace_publisher->getTargetLabel()));
             return self::SUCCESS;
         }
 
         $workspace->publish();
-        $io->success(dt('Workspace %source_label published.', $args));
+        $io->success(sprintf('Workspace %s published.', $workspace->label()));
+        return self::SUCCESS;
     }
 }
