@@ -55,7 +55,7 @@ final class SqlCliCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->has_piped_input()) {
+        if ($this->hasPipedInput()) {
             throw new RuntimeException('Instead of piping SQL to sql:cli, it is faster to use sql:connect. See the Examples at https://www.drush.org/latest/commands/sql_connect/#examples');
         }
 
@@ -78,7 +78,7 @@ final class SqlCliCommand extends Command
     /**
      * Test if there is input waiting on STDIN
      */
-    function has_piped_input(): bool
+    protected function hasPipedInput(): bool
     {
         $streams = [STDIN]; // note STDIN here is not a string
         $write_array = [];
@@ -86,7 +86,6 @@ final class SqlCliCommand extends Command
         $seconds = 0; // zero seconds on timeout since this is just for testing stream change
         $streamCount = @stream_select($streams, $write_array, $except_array, $seconds);
 
-        return (boolean) $streamCount;
+        return (bool) $streamCount;
     }
-
 }
