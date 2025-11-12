@@ -6,14 +6,14 @@ namespace Unish;
 
 use Drupal\node\Entity\Node;
 use Drupal\workspaces\WorkspaceManagerInterface;
-use Drush\Commands\core\WorkspacesCommands;
+use Drush\Commands\core\WorkspacePublishCommand;
 
 /**
  * Tests Workspaces commands
  *
  * @group commands
  */
-class WorkspacesTest extends UnishIntegrationTestCase
+class WorkspaceTest extends UnishIntegrationTestCase
 {
     private WorkspaceManagerInterface $workspaceManager;
 
@@ -64,11 +64,11 @@ class WorkspacesTest extends UnishIntegrationTestCase
         $workspace_id = 'stage';
 
         // Publish the workspace
-        $this->drush(WorkspacesCommands::PUBLISH, [$workspace_id]);
+        $this->drush(WorkspacePublishCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('Workspace Stage published', $this->getErrorOutput());
 
         // Verify no more changes exist after publishing
-        $this->drush(WorkspacesCommands::PUBLISH, [$workspace_id]);
+        $this->drush(WorkspacePublishCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('There are no changes that can be published', $this->getErrorOutput());
     }
 
