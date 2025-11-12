@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql;
 
-use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
@@ -19,7 +18,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -57,6 +55,10 @@ final class SqlCliCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        if ($this->has_piped_input()) {
+            throw new RuntimeException('Instead of piping SQL to sql:cli, it is faster to use sql:connect. See the Examples at https://www.drush.org/latest/commands/sql_connect/#examples');
+        }
+
         $sql = SqlBase::create($input->getOptions());
         $program = $sql->command();
         if (!self::programExists($program)) {
@@ -65,19 +67,26 @@ final class SqlCliCommand extends Command
         }
 
         $process = $this->processManager->shell($sql->connect(), null, $sql->getEnv());
-        if (!Tty::isTtySupported()) {
-            $this->logger->warning('It is slow to pass large amounts of data via stdin to the sql:cli command. See the Examples at https://www.drush.org/latest/commands/sql_cli/ for an alternative using sql:connect.');
-            // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
-            // If testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : null;
-            // If nothing from input stream use STDIN instead.
-            $inputStream = $inputStream ?? STDIN;
-            // $data = stream_get_contents($inputStream);
-            $process->setInput($inputStream);
-        } else {
-            $process->setTty((bool) $this->drushConfig->get('ssh.tty', $input->isInteractive()));
-        }
+        // No longer needed?
+        // if (Tty::isTtySupported()) {
+        //     $process->setTty((bool) $this->drushConfig->get('ssh.tty', $input->isInteractive()));
+        // }
         $process->mustRun($process->showRealtime());
         return Command::SUCCESS;
     }
+
+    /**
+     * Test if there is input waiting on STDIN
+     */
+    function has_piped_input(): bool
+    {
+        $streams = [STDIN]; // note STDIN here is not a string
+        $write_array = [];
+        $except_array = [];
+        $seconds = 0; // zero seconds on timeout since this is just for testing stream change
+        $streamCount = @stream_select($streams, $write_array, $except_array, $seconds);
+
+        return (boolean) $streamCount;
+    }
+
 }
