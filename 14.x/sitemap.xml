@@ -721,7 +721,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/commands/workspaces_publish/</loc>
+         <loc>https://www.drush.org/latest/latest/commands/workspace_publish/</loc>
          <lastmod>2025-11-12</lastmod>
          <changefreq>daily</changefreq>
     </url>
