@@ -19,6 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Publish a workspace.'
 )]
 #[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
+#[CLI\Version(version: '13.7')]
 final class WorkspacePublishCommand extends Command
 {
     use AutowireTrait;
