@@ -35,7 +35,7 @@ final class WorkspacesCommand extends Command
         protected readonly ContainerInterface $container,
     ) {
         parent::__construct();
-        
+
         if ($container->has('workspaces.operation_factory')) {
             $this->workspacesOperationFactory = $container->get('workspaces.operation_factory');
         }

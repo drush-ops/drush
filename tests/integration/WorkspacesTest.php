@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\node\Entity\Node;
 use Drupal\workspaces\WorkspaceManagerInterface;
 use Drush\Commands\core\WorkspacesCommand;
+use Drush\Commands\pm\PmInstallCommand;
 
 /**
  * Tests Workspaces commands
@@ -20,7 +21,7 @@ class WorkspacesTest extends UnishIntegrationTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->drush('pm:install', ['workspaces', 'node']);
+        $this->drush(PmInstallCommand::NAME, ['workspaces', 'node']);
         $this->workspaceManager = \Drupal::service('workspaces.manager');
 
         // Create article content type if it doesn't exist
@@ -64,11 +65,11 @@ class WorkspacesTest extends UnishIntegrationTestCase
         $workspace_id = 'stage';
 
         // Publish the workspace
-        $this->drush(WorkspacesCommand::PUBLISH, [$workspace_id]);
+        $this->drush(WorkspacesCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('Workspace Stage published', $this->getErrorOutput());
 
         // Verify no more changes exist after publishing
-        $this->drush(WorkspacesCommand::PUBLISH, [$workspace_id]);
+        $this->drush(WorkspacesCommand::NAME, [$workspace_id]);
         $this->assertStringContainsString('There are no changes that can be published', $this->getErrorOutput());
     }
 
