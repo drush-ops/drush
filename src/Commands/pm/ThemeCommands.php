@@ -36,7 +36,7 @@ final class ThemeCommands extends DrushCommands
     public function install(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);
-        if (!$this->getThemeInstaller()->install($themes)) {
+        if (!$this->getThemeInstaller()->install($themes, true)) {
             throw new \Exception('Unable to install themes.');
         }
         $this->logger()->success(dt('Successfully installed theme: !list', ['!list' => implode(', ', $themes)]));
