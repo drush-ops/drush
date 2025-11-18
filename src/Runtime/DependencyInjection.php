@@ -50,7 +50,7 @@ class DependencyInjection
     const LOADER = 'loader';
     protected array $handlers = [];
 
-    public function desiredHandlers($handlerList): void
+    public function desiredHandlers(array $handlerList): void
     {
         $this->handlers = $handlerList;
     }
@@ -171,7 +171,7 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', [self::PROCESS_MANAGER]);
     }
 
-    protected function alterServicesForDrush($container, Application $application, InputInterface $input, OutputInterface $output): void
+    protected function alterServicesForDrush(\Psr\Container\ContainerInterface $container, Application $application, InputInterface $input, OutputInterface $output): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());

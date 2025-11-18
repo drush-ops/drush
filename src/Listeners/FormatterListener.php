@@ -79,7 +79,7 @@ final class FormatterListener
         return $configurationData;
     }
 
-    protected function getPrivatePropValue(mixed $object, $name): mixed
+    protected function getPrivatePropValue(mixed $object, string $name): mixed
     {
         $rc = new \ReflectionClass($object);
         $prop = $rc->getProperty($name);

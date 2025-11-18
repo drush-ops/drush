@@ -125,7 +125,7 @@ final class EntityCreateCommand extends Command
         return $entity->toUrl('canonical', ['absolute' => true])->toString();
     }
 
-    private function edit($editor, string $path): string
+    private function edit(?string $editor, string $path): string
     {
         $exec = self::getEditor($editor);
         $cmd = sprintf($exec, Escape::shellArg($path));

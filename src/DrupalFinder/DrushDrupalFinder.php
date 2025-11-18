@@ -17,11 +17,8 @@ class DrushDrupalFinder
 
     /**
      * Get the Drupal root.
-     *
-     * @return string|bool
-     *   The path to the Drupal root, if it was discovered. False otherwise.
      */
-    public function getDrupalRoot()
+    public function getDrupalRoot(): string|false
     {
         $core = InstalledVersions::getInstallPath('drupal/core');
         return $core ? Path::canonicalize(realpath(dirname($core))) : false;

@@ -56,7 +56,7 @@ final class HelpCommand extends Command
         return Command::SUCCESS;
     }
 
-    public function doExecute(InputInterface $input, OutputInterface $output): HelpDocument
+    public function doExecute(InputInterface $input, OutputInterface $output): \Drush\Commands\help\DrushHelpDocument
     {
         $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
 

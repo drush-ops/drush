@@ -147,7 +147,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv): PreflightArgs
+    public function preflightArgs(array $argv): PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
@@ -312,7 +312,7 @@ class Preflight
      * Find the Drupal root of the preferred Drupal site (the one
      * that shares the `vendor` directory with Drush).
      */
-    protected function preferredSite()
+    protected function preferredSite(): string
     {
         $root = $this->drupalFinder()->getDrupalRoot();
 

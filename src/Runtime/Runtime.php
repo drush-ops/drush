@@ -52,7 +52,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun($argv, $output): int
+    protected function doRun($argv, ?\Symfony\Component\Console\Output\OutputInterface $output): int
     {
         // Do the preflight steps
         [$preflightDidRedispatch, $exitStatus] = $this->preflight->preflight($argv);

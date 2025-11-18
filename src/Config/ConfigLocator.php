@@ -206,7 +206,7 @@ class ConfigLocator
      * Take any configuration from the active alias record, and add it
      * to our configuration.
      */
-    public function addAliasConfig($aliasConfig): self
+    public function addAliasConfig(\Consolidation\Config\ConfigInterface $aliasConfig): self
     {
         $this->config->addContext(self::ALIAS_CONTEXT, $aliasConfig);
         return $this;
@@ -378,7 +378,7 @@ class ConfigLocator
         );
         $base_dirs = array_filter(array_merge($this->siteRoots, $siteroot_parents, [$this->composerRoot]));
         $site_local_paths = array_map(
-            fn($item) => Path::join($item, '/drush/sites'),
+            fn(string $item) => Path::join($item, '/drush/sites'),
             array_unique($base_dirs)
         );
 

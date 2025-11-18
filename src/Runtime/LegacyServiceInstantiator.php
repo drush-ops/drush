@@ -218,7 +218,7 @@ class LegacyServiceInstantiator
      * @return array
      *   Arguments after they have been resolved by DI container
      */
-    protected function resolveArguments(array $arguments)
+    protected function resolveArguments(array $arguments): array
     {
         return array_map([$this, 'resolveArgument'], $arguments);
     }

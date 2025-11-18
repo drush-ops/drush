@@ -184,7 +184,7 @@ class Environment
         return $this->homeDir() . '/.drush';
     }
 
-    public function setConfigFileVariant($variant): void
+    public function setConfigFileVariant(string $variant): void
     {
         $this->configFileVariant = $variant;
     }
