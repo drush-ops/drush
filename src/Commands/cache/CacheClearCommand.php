@@ -129,14 +129,14 @@ final class CacheClearCommand extends Command
     public function getTypes(): array
     {
         $types = [
-            'theme-registry' => [$this, 'clearThemeRegistry'],
-            'router' => [$this, 'clearRouter'],
-            'css-js' => [$this, 'clearCssJs'],
-            'render' => [$this, 'clearRender'],
-            'plugin' => [$this, 'clearPlugin'],
-            'bin' => [$this, 'clearBins'],
-            'container' => [$this, 'clearContainer'],
-            'views' => [$this, 'clearViews'],
+            'theme-registry' => $this->clearThemeRegistry(...),
+            'router' => $this->clearRouter(...),
+            'css-js' => $this->clearCssJs(...),
+            'render' => $this->clearRender(...),
+            'plugin' => $this->clearPlugin(...),
+            'bin' => $this->clearBins(...),
+            'container' => $this->clearContainer(...),
+            'views' => $this->clearViews(...),
         ];
 
         // Listeners may customize $types as desired.

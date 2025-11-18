@@ -101,7 +101,7 @@ final class UserInformationCommand extends Command
         }
 
         $result = new RowsOfFields($outputs);
-        $result->addRendererFunction([$this, 'renderRolesCell']);
+        $result->addRendererFunction($this->renderRolesCell(...));
         return $result;
     }
 

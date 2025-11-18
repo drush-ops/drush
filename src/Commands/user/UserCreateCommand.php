@@ -99,7 +99,7 @@ final class UserCreateCommand extends Command
                 $outputs[$account->id()] = $this->infoArray($account);
 
                 $result = new RowsOfFields($outputs);
-                $result->addRendererFunction([$this, 'renderRolesCell']);
+                $result->addRendererFunction($this->renderRolesCell(...));
                 return $result;
             } else {
                 throw new InvalidArgumentException(sprintf('Could not create a new user account with the name %s.', $name));

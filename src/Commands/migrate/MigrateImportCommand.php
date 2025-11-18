@@ -175,7 +175,7 @@ final class MigrateImportCommand extends Command
 
         $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $userData['output'], $userData['options']);
         // drush_op() provides --simulate support.
-        drush_op([$executable, 'import']);
+        drush_op($executable->import(...));
         if ($count = $executable->getFailedCount()) {
             // Nudge Drush to use a non-zero exit code.
             throw new \Exception(dt('!name migration: !count failed.', ['!name' => $migrationId, '!count' => $count]));

@@ -64,7 +64,7 @@ final class RoleListCommand extends Command
                 'perms' => $role->getPermissions(),
             ];
         }
-        return (new RowsOfFields($rows))->addRendererFunction([$this, 'renderPermsCell']);
+        return (new RowsOfFields($rows))->addRendererFunction($this->renderPermsCell(...));
         ;
     }
 

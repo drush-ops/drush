@@ -113,7 +113,7 @@ class StatusCommand extends Command
 
         $data = $this->getPropertyList($input->getOptions());
         $result = new PropertyList($data);
-        $result->addRendererFunction([$this, 'renderStatusCell']);
+        $result->addRendererFunction($this->renderStatusCell(...));
 
         return $result;
     }
@@ -164,18 +164,18 @@ class StatusCommand extends Command
         $status_table['php-os'] = PHP_OS;
         $status_table['php-version'] = PHP_VERSION;
         if ($phpIniFiles = EditCommand::phpIniFiles()) {
-            $status_table['php-conf'] = array_map([Path::class, 'canonicalize'], $phpIniFiles);
+            $status_table['php-conf'] = array_map(Path::canonicalize(...), $phpIniFiles);
         }
         $status_table['drush-script'] = Path::canonicalize($this->drushConfig->get('runtime.drush-script'));
         $status_table['drush-version'] = Drush::getVersion();
         $status_table['drush-temp'] = Path::canonicalize($this->drushConfig->tmp());
-        $status_table['drush-conf'] = array_map([Path::class, 'canonicalize'], $this->drushConfig->configPaths());
+        $status_table['drush-conf'] = array_map(Path::canonicalize(...), $this->drushConfig->configPaths());
         // List available alias files
         $alias_files = $this->siteAliasManager->listAllFilePaths();
         sort($alias_files);
         $status_table['drush-alias-files'] = $alias_files;
         $alias_searchpaths = $this->siteAliasManager->searchLocations();
-        $status_table['alias-searchpaths'] = array_map([Path::class, 'canonicalize'], $alias_searchpaths);
+        $status_table['alias-searchpaths'] = array_map(Path::canonicalize(...), $alias_searchpaths);
 
         $paths = self::pathAliases($options, $this->bootstrapManager, $boot_object);
         foreach ($paths as $target => $one_path) {
@@ -189,7 +189,7 @@ class StatusCommand extends Command
         // Store the paths into the '%paths' index; this will be
         // used by other code, but will not be included in the default output
         // of the drush status command.
-        $status_table['%paths'] = array_map([Path::class, 'canonicalize'], array_filter($paths));
+        $status_table['%paths'] = array_map(Path::canonicalize(...), array_filter($paths));
 
         return $status_table;
     }
