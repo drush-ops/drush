@@ -24,7 +24,7 @@ return static function (RectorConfig $config): void {
 
     $config->sets([
         SetList::CODE_QUALITY,
-        SetList::PHP_81,
+        SetList::PHP_82,
         SetList::DEAD_CODE
     ]);
 
@@ -37,6 +37,7 @@ return static function (RectorConfig $config): void {
         SimplifyIfElseToTernaryRector::class,
         \Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector::class,
         NullToStrictStringFuncCallArgRector::class,
+        \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector::class,
         \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
         \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class,
         \Rector\DeadCode\Rector\ClassMethod\RemoveEmptyClassMethodRector::class,
