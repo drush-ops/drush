@@ -38,7 +38,7 @@ final class BrowseCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(name: 'path', mode: InputOption::VALUE_REQUIRED, description: 'Path to open. If omitted, the site front page will be opened.')

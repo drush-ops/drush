@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class OptionsetSsh
 {
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $commandInfo->addOption('ssh-options', 'A string appended to ssh command during rsync, sql-sync, etc.', [], DrushCommands::REQ);
     }

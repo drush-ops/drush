@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class OptionsetProcBuild
 {
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $commandInfo->addOption('ssh-options', 'A string of extra options that will be passed to the ssh command (e.g. <info>-p 100</info>)', [], DrushCommands::REQ);
         $commandInfo->addOption('tty', 'Create a tty (e.g. to run an interactive program).', [], false);

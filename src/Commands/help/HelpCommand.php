@@ -41,7 +41,7 @@ final class HelpCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(name: 'command_name', mode: InputArgument::REQUIRED, description: 'A command name')

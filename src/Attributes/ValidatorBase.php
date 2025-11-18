@@ -11,7 +11,7 @@ use Drush\Drush;
 
 abstract class ValidatorBase
 {
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $instance = $attribute->newInstance();
         $hookManager = Drush::getContainer()->get('hookManager');

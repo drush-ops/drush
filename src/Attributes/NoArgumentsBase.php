@@ -11,7 +11,7 @@ abstract class NoArgumentsBase
 {
     protected const NAME = 'annotation-name';
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $commandInfo->addAnnotation(static::NAME, true);
     }

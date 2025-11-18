@@ -140,7 +140,7 @@ class LegacyServiceFinder
      * @return string
      *   One discovered drush.service.yml file
      */
-    protected function findAppropriateServicesFile($module, $services, $dir)
+    protected function findAppropriateServicesFile($module, $services, $dir): string
     {
         $version = Drush::getVersion();
         $version = preg_replace('#-dev.*#', '', $version);

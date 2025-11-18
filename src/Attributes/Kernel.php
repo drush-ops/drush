@@ -23,7 +23,7 @@ class Kernel
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $args = $attribute->getArguments();
         $commandInfo->addAnnotation('kernel', $args['name']);

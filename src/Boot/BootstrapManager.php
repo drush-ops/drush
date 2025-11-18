@@ -94,7 +94,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
      * This method is called by the Application iff the user
      * did not explicitly provide a URI.
      */
-    public function selectUri($cwd)
+    public function selectUri($cwd): string
     {
         $uri = $this->bootstrap()->findUri($this->getRoot(), $cwd);
         $this->setUri($uri);
@@ -304,7 +304,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
         return $this->bootstrapToPhaseIndex($phase, $annotationData);
     }
 
-    protected function maxPhaseLimit($bootstrap_str)
+    protected function maxPhaseLimit($bootstrap_str): ?int
     {
         $bootstrap_words = explode(' ', $bootstrap_str);
         array_shift($bootstrap_words);

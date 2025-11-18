@@ -105,7 +105,7 @@ class ProcessManager extends ConsolidationProcessManager
     /**
      * Return the relative path to 'vendor/bin/drush' from the Drupal root.
      */
-    protected function relativePathToVendorBinDrush()
+    protected function relativePathToVendorBinDrush(): string
     {
         // https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-bin-dir-from-a-binary
         $vendorBin = $GLOBALS['_composer_bin_dir'] ?? Path::join($this->getDrupalFinder()->getVendorDir(), 'bin');

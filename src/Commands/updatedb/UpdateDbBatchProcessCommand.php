@@ -32,7 +32,7 @@ final class UpdateDbBatchProcessCommand extends Command
 
     public const string NAME = 'updatedb:batch-process';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(name: 'batch_id', mode: InputArgument::REQUIRED, description: 'The batch id that will be processed.');

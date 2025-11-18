@@ -48,7 +48,7 @@ final class EntityCreateCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('entity_type', InputArgument::REQUIRED, 'An entity type name.')

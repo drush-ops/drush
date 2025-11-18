@@ -133,7 +133,7 @@ final class FsUtils
      * @param string $dir
      *   Path to directory to be deleted later.
      */
-    public static function registerForDeletion(string $dir)
+    public static function registerForDeletion(string $dir): void
     {
         if (!isset(self::$deletionList)) {
             self::$deletionList = [];
@@ -146,7 +146,7 @@ final class FsUtils
     /**
      * Delete all of the files registered for deletion.
      */
-    public static function cleanup()
+    public static function cleanup(): void
     {
         if (!isset(self::$deletionList)) {
             return;

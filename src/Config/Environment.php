@@ -194,7 +194,7 @@ class Environment
      * the Drush major version number. This is for
      * loading drush.yml and drush10.yml, etc.
      */
-    public function getConfigFileVariant()
+    public function getConfigFileVariant(): string
     {
         return $this->configFileVariant;
     }

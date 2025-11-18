@@ -42,7 +42,7 @@ final class WorkspacePublishCommand extends Command
         }
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('id', InputArgument::REQUIRED, 'The workspace to publish.')

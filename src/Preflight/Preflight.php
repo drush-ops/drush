@@ -28,11 +28,6 @@ use Symfony\Component\HttpKernel\Kernel;
 class Preflight
 {
     /**
-     * @var Environment $environment
-     */
-    protected $environment;
-
-    /**
      * @var PreflightVerify
      */
     protected $verify;
@@ -42,10 +37,7 @@ class Preflight
      */
     protected $configLocator;
 
-    /**
-     * @var DrushDrupalFinder
-     */
-    protected $drupalFinder;
+    protected \Drush\DrupalFinder\DrushDrupalFinder $drupalFinder;
 
     /**
      * @var PreflightArgs
@@ -65,12 +57,11 @@ class Preflight
     /**
      * Preflight constructor
      */
-    public function __construct(Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
+    public function __construct(protected \Drush\Config\Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
     {
-        $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
-        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
-        $this->drupalFinder = new DrushDrupalFinder($environment);
+        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $this->environment->getConfigFileVariant());
+        $this->drupalFinder = new DrushDrupalFinder($this->environment);
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
