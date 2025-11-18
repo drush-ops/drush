@@ -9,6 +9,7 @@ use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\user\PermissionHandlerInterface;
@@ -20,37 +21,54 @@ trait PmTrait
     protected ModuleExtensionList $extensionListModule;
     protected ModuleHandlerInterface $moduleHandler;
     protected PermissionHandlerInterface $permissionHandler;
+    protected ThemeExtensionList $extensionListTheme;
 
-    public function addInstallDependencies($modules): array
+    public function addInstallDependencies($projects, $type = 'modules'): array
     {
-        $module_data = $this->extensionListModule->reset()->getList();
-        $module_list  = array_combine($modules, $modules);
-        if ($missing_modules = array_diff_key($module_list, $module_data)) {
-            // One or more of the given modules doesn't exist.
-            throw new MissingDependencyException(sprintf('Unable to install modules %s due to missing modules %s.', implode(', ', $module_list), implode(', ', $missing_modules)));
+        if (!in_array($type, ['modules', 'themes'])) {
+            return [];
         }
+        $data = ($type === 'modules') ?
+            $this->extensionListModule->reset()->getList() :
+            $this->extensionListTheme->reset()->getList();
+        $list  = array_combine($projects, $projects);
+        if ($missing = array_diff_key($list, $data)) {
+            // One or more of the given modules/themes doesn't exist.
+            throw new MissingDependencyException(sprintf('Unable to install %s %s due to missing %s %s.', $type, implode(', ', $list), $type, implode(', ', $missing)));
+        }
+
         $extension_config = $this->configFactory->getEditable('core.extension');
         $installed_modules = $extension_config->get('module') ?: [];
 
         // Copied from \Drupal\Core\Extension\ModuleInstaller::install
         // Add dependencies to the list. The new modules will be processed as
         // the while loop continues.
-        foreach (array_keys($module_list) as $module) {
-            foreach (array_keys($module_data[$module]->requires) as $dependency) {
-                if (!isset($module_data[$dependency])) {
-                    // The dependency does not exist.
-                    throw new MissingDependencyException("Unable to install modules: module '$module' is missing its dependency module $dependency.");
-                }
+        foreach (array_keys($list) as $item) {
+            if ($type === 'modules') {
+                foreach (array_keys($data[$item]->requires) as $dependency) {
+                    if (!isset($data[$dependency])) {
+                        // The dependency does not exist.
+                        throw new MissingDependencyException("Unable to install modules: module '$item' is missing its dependency module $dependency.");
+                    }
 
-                // Skip already installed modules.
-                if (!isset($module_list[$dependency]) && !isset($installed_modules[$dependency])) {
-                    $module_list[$dependency] = $dependency;
+                    // Skip already installed modules.
+                    if (!isset($list[$dependency]) && !isset($installed_modules[$dependency])) {
+                        $list[$dependency] = $dependency;
+                    }
+                }
+            } else {
+                $modules = $data[$item]->module_dependencies;
+                foreach (array_keys($modules) as $dependency) {
+                    // Skip already installed modules.
+                    if (!isset($list[$dependency]) && !isset($installed_modules[$dependency])) {
+                        $list[$dependency] = $dependency;
+                    }
                 }
             }
         }
 
         // Remove already installed modules.
-        $todo = array_diff_key($module_list, $installed_modules);
+        $todo = array_diff_key($list, $installed_modules);
         return $todo;
     }
 

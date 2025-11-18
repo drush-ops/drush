@@ -11,6 +11,7 @@ namespace Unish;
 
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\pm\ThemeInstallCommand;
 use Drush\Commands\sql\SqlCommands;
 
 /**
@@ -46,6 +47,12 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->drush(PmCommands::LIST, [], ['status' => 'enabled']);
         $out = $this->getOutput();
         $this->assertStringContainsString('drush_empty_module', $out);
+
+        // Test theme:install enables a theme, and pm:list verifies the dependencies were installed too.
+        $this->drush(ThemeInstallCommand::NAME, ['drush_theme_with_dependency']);
+        $this->drush(PmCommands::LIST, [], ['status' => 'enabled']);
+        $out = $this->getOutput();
+        $this->assertStringContainsString('dependent1', $out);
 
         $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
