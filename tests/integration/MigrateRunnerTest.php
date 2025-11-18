@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use PHPUnit\Framework\Attributes\CoversClass;
-use PHPUnit\Framework\Attributes\CoversMethod;
-use PHPUnit\Framework\Attributes\Group;
 use Drupal\migrate\Plugin\MigrationInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 
 #[CoversClass(\Drush\Commands\core\MigrateRunnerCommands::class)]
-#[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'handleMissingSourceRows')]
-#[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'initProgressBar')]
+// Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'handleMissingSourceRows')]
+// Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'initProgressBar')]
 #[Group('commands')]
 class MigrateRunnerTest extends UnishIntegrationTestCase
 {
