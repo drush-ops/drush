@@ -312,7 +312,7 @@ class Preflight
      * Find the Drupal root of the preferred Drupal site (the one
      * that shares the `vendor` directory with Drush).
      */
-    protected function preferredSite()
+    protected function preferredSite(): string
     {
         $root = $this->drupalFinder()->getDrupalRoot();
 

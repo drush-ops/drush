@@ -82,7 +82,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Return the framework uri selected by the user.
      */
-    public function getUri()
+    public function getUri(): false|string
     {
         if (!$this->hasBootstrap()) {
             return false;

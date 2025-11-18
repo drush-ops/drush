@@ -355,7 +355,7 @@ class Drush
     /**
      * Return 'true' if we are in affirmative mode
      */
-    public static function affirmative()
+    public static function affirmative(): mixed
     {
         if (!self::hasService('input')) {
             throw new \Exception('No input service available.');
@@ -366,7 +366,7 @@ class Drush
     /**
      * Return 'true' if we are in negative mode
      */
-    public static function negative()
+    public static function negative(): mixed
     {
         if (!self::hasService('input')) {
             throw new \Exception('No input service available.');

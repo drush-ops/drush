@@ -484,7 +484,7 @@ final class ArchiveDumpCommand extends Command
      * @param array $excludes
      *   The list of file exclude rules (regular expressions).
      */
-    private function getFileIterator(string $path, array $excludes): Traversable
+    private function getFileIterator(string $path, array $excludes): \RecursiveIteratorIterator
     {
         return new RecursiveIteratorIterator(
             new RecursiveCallbackFilterIterator(

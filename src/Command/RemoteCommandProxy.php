@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class RemoteCommandProxy extends Command
 {
-    public function __construct($name, protected RedispatchHook $redispatchHook)
+    public function __construct(?string $name, protected RedispatchHook $redispatchHook)
     {
         parent::__construct($name);
 

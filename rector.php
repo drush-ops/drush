@@ -19,7 +19,7 @@ return RectorConfig::configure()
     ->withPhpSets(php83: true)
     ->withImportNames(importNames: false, importShortClasses: false)
     ->withPreparedSets(deadCode: true, codeQuality: true)
-    ->withTypeCoverageLevel(29)
+    ->withTypeCoverageLevel(39)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,
