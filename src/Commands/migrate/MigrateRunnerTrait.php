@@ -191,7 +191,7 @@ trait MigrateRunnerTrait
             return [null => $migrations];
         }
 
-        $tags = array_filter(array_map('trim', explode(',', $tags)));
+        $tags = array_filter(array_map(trim(...), explode(',', $tags)));
 
         $list = [];
         foreach ($migrations as $migrationId => $migration) {

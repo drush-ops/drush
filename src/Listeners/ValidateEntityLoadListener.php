@@ -34,7 +34,7 @@ class ValidateEntityLoadListener
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(ValidateEntityLoad::class);
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return;
         }
         $instance = $attributes[0]->newInstance();

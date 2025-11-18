@@ -76,7 +76,7 @@ final class EditCommand extends Command
         }
 
         $editor = self::getEditor($options['editor'] ?? null);
-        if (count($all) == 1) {
+        if (count($all) === 1) {
             $filepath = current($all);
         } else {
             $choice = $io->choice(dt("Choose a file to edit"), $all);

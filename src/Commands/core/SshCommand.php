@@ -68,7 +68,7 @@ final class SshCommand extends Command
             $ttyOption = true;
         }
 
-        if ((count($code) == 1)) {
+        if ((count($code) === 1)) {
             $code = [Shell::preEscaped($code[0])];
         }
 

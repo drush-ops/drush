@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql;
 
+use Drush\Config\DrushConfig;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
@@ -43,7 +44,7 @@ final class SqlSyncCommand extends Command
         private readonly SiteAliasManagerInterface $siteAliasManager,
         private readonly LoggerInterface $logger,
         private readonly ProcessManager $processManager,
-        protected readonly \Drush\Config\DrushConfig $drushConfig,
+        protected readonly DrushConfig $drushConfig,
     ) {
         parent::__construct();
     }

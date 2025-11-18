@@ -21,7 +21,7 @@ class OptionsetGetEditorListener
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflection = new \ReflectionObject($code);
             $attributes = $reflection->getAttributes(CLI\OptionsetGetEditor::class);
-            if (empty($attributes)) {
+            if ($attributes === []) {
                 continue;
             }
             $command->addOption(name: 'editor', mode: InputOption::VALUE_REQUIRED, description: 'A string of bash which launches user\'s preferred text editor. Defaults to <info>${VISUAL-${EDITOR-vi}}</info>.');

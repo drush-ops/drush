@@ -153,7 +153,7 @@ trait ConfiguresPromptsTrait
             $result = $prompt();
             $style = new SymfonyStyle($this->input, $this->output);
 
-            if ($required && ($result === '' || $result === [] || $result === false)) {
+            if ($required && (in_array($result, ['', [], false], true))) {
                 $style->error(is_string($required) ? $required : 'Required.');
 
                 continue;

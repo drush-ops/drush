@@ -68,10 +68,8 @@ class SqlSqlite extends SqlBase
         $tables = [];
         foreach ($tables_raw as $line) {
             preg_match_all('/[^\s]+/', $line, $matches);
-            if (!empty($matches[0])) {
-                foreach ($matches[0] as $match) {
-                    $tables[] = $match;
-                }
+            foreach ($matches[0] as $match) {
+                $tables[] = $match;
             }
         }
         return $tables;

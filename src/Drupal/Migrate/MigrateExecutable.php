@@ -446,7 +446,7 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     public function onPostRowDelete(MigrateRowDeleteEvent $event): void
     {
-        if ($this->feedback && ($this->deleteCounter) && $this->deleteCounter % $this->feedback == 0) {
+        if ($this->feedback && ($this->deleteCounter) && $this->deleteCounter % $this->feedback === 0) {
             $this->rollbackFeedbackMessage(false);
             $this->resetCounters();
         }

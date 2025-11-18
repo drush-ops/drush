@@ -40,9 +40,9 @@ final class Kernels
     public static function availableKernels(): array
     {
         return [
-            static::DRUPAL,
-            static::UPDATE,
-            static::INSTALLER,
+            self::DRUPAL,
+            self::UPDATE,
+            self::INSTALLER,
         ];
     }
 

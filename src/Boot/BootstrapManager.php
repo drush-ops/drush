@@ -43,7 +43,7 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     /**
      * Add a bootstrap object to the list of candidates.
      *
-     * @param \Drush\Boot\Boot|array $candidateList
+     * @param Boot|array $candidateList
      *   List of boot candidates
      */
     public function add($candidateList): void

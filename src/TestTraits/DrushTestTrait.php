@@ -75,7 +75,7 @@ trait DrushTestTrait
         }
 
         $cmd[] = (string) $suffix;
-        $exec = array_filter($cmd, 'strlen'); // Removes empty strings.
+        $exec = array_filter($cmd, strlen(...)); // Removes empty strings.
 
         $cmd = implode(' ', $exec);
         $this->execute($cmd, $expected_return, $cd, $env);

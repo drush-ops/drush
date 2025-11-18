@@ -32,8 +32,8 @@ class MigrateIdMapFilter extends \FilterIterator
     public function __construct(MigrateIdMapInterface $idMap, array $sourceIdList = [], array $destinationIdList = [])
     {
         parent::__construct($idMap);
-        $this->sourceIdList = array_map('array_values', $sourceIdList);
-        $this->destinationIdList = array_map('array_values', $destinationIdList);
+        $this->sourceIdList = array_map(array_values(...), $sourceIdList);
+        $this->destinationIdList = array_map(array_values(...), $destinationIdList);
     }
 
     /**

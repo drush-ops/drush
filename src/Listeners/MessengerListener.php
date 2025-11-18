@@ -17,13 +17,13 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
  */
 #[AsEventListener(method: 'onConsoleCommandEvent')]
 #[AsEventListener(method: 'onConsoleTerminateEvent')]
-final class MessengerListener
+final readonly class MessengerListener
 {
     use AutowireTrait;
 
     public function __construct(
-        protected readonly MessengerInterface $messenger,
-        protected readonly LoggerInterface $logger,
+        protected MessengerInterface $messenger,
+        protected LoggerInterface $logger,
     ) {
     }
 

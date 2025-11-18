@@ -225,9 +225,7 @@ final class CliCommand extends Command
             $file_name = "drupal-site-$site_suffix";
         }
 
-        $full_path = "$cli_directory/$file_name";
-
-        return $full_path;
+        return "$cli_directory/$file_name";
     }
 
     /**
