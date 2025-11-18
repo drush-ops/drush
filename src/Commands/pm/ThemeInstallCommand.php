@@ -30,6 +30,7 @@ final class ThemeInstallCommand extends Command
     const string NAME = 'theme:install';
 
     public function __construct(
+        protected ConfigFactoryInterface $configFactory,
         private readonly ThemeInstallerInterface $themeInstaller,
         private readonly ModuleInstallerInterface $moduleInstaller,
         protected ThemeExtensionList $extensionListTheme,
