@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Console\Completion\Output\FishCompletionOutput;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Custom\Library\Drush\Commands\ExampleAttributesCommands;
@@ -12,9 +13,8 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests commands defined using PHP 8+ attributes.
- *
- * @group commands
  */
+#[Group('commands')]
 class AttributesTest extends UnishIntegrationTestCase
 {
     private ExampleAttributesCommands $commandFileInstance;

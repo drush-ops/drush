@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\config\ConfigGetCommand;
 use Drush\Commands\config\ConfigImportCommand;
 use Drush\Commands\config\ConfigPullCommand;
@@ -12,10 +13,10 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for config-pull command. Sets up two Drupal sites.
- * @group commands
- * @group slow
- * @group config
  */
+#[Group('commands')]
+#[Group('slow')]
+#[Group('config')]
 class ConfigPullTest extends CommandUnishTestCase
 {
     public function setup(): void

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\SshCommands;
 
 /**
  * @file
  *   Tests for SSHCommands
- *
- * @group commands
  */
+#[Group('commands')]
 class SiteSshTest extends CommandUnishTestCase
 {
     /**

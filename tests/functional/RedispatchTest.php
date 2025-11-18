@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\StatusCommand;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @group base
- */
+#[Group('base')]
 class RedispatchTest extends CommandUnishTestCase
 {
     /**

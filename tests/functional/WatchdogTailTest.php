@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\pm\PmCommands;
 
 /**
  * Tests for watchdog tail command.
- *
- * @group commands
- * @group watchdog
- * @group slow
  */
+#[Group('commands')]
+#[Group('watchdog')]
+#[Group('slow')]
 class WatchdogTailTest extends CommandUnishTestCase
 {
     /**

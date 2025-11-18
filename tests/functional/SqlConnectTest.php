@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\sql\SqlCommands;
 
@@ -11,10 +12,9 @@ use Drush\Commands\sql\SqlCommands;
  * Tests sql-connect command
  *
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
- *
- * @group commands
- * @group sql
  */
+#[Group('commands')]
+#[Group('sql')]
 class SqlConnectTest extends CommandUnishTestCase
 {
     public function testSqlConnect(): void

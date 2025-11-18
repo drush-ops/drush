@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\DrupalCommands;
 use Drush\Commands\core\DrupalDirectoryCommands;
 use Drush\Commands\pm\PmCommands;
@@ -12,9 +13,8 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for core commands.
- *
- * @group commands
  */
+#[Group('commands')]
 class CoreTest extends UnishIntegrationTestCase
 {
     public function testCoreRequirements(): void

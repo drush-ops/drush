@@ -4,16 +4,12 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use Drupal\Component\Utility\DeprecationHelper;
 
-/**
- * @coversDefaultClass \Drush\Commands\core\DrupalDependenciesCommands
- */
+#[CoversClass(\Drush\Commands\core\DrupalDependenciesCommands::class)]
 class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
-    /**
-     * @covers ::dependentsOfModule
-     */
     public function testModuleDependentOfModule(): void
     {
         $this->drush('list');
@@ -96,9 +92,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertSame($expected, $this->getOutputFromJSON());
     }
 
-    /**
-     * @covers ::validateDependentsOfModule
-     */
     public function testOptionsMismatch(): void
     {
         $this->drush('why:module', ['node'], [], UnishTestCase::EXIT_ERROR);
@@ -120,9 +113,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         );
     }
 
-    /**
-     * @covers ::dependentsOfModule
-     */
     public function testConfigDependentOfModule(): void
     {
         // Trying to check an uninstalled module.
@@ -183,9 +173,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
         $this->assertSame($expected, $this->getOutput());
     }
 
-    /**
-     * @covers ::dependentsOfConfig
-     */
     public function testConfigDependentOfConfig(): void
     {
         $this->drush('why:config', ['system.site'], [], UnishTestCase::EXIT_ERROR);

@@ -4,15 +4,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\ArchiveDumpCommand;
 use Symfony\Component\Filesystem\Path;
 use Unish\Utils\FSUtils;
 
-/**
- * @group slow
- * @group commands
- * @group archive
- */
+#[Group('slow')]
+#[Group('commands')]
+#[Group('archive')]
 class ArchiveSymlinkTest extends CommandUnishTestCase
 {
     use FSUtils;

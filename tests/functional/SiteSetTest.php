@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\SiteCommands;
 
-/**
- * @group base
- * @group slow
- */
+#[Group('base')]
+#[Group('slow')]
 class SiteSetTest extends CommandUnishTestCase
 {
     /**

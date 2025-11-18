@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drush\Commands\config\ConfigGetCommand;
 use Drush\Commands\core\PhpCommands;
@@ -15,9 +16,7 @@ use Drush\Commands\field\FieldInfoCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @group commands
- */
+#[Group('commands')]
 class FieldTest extends CommandUnishTestCase
 {
     public function setup(): void

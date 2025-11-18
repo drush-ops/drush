@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
@@ -11,11 +12,9 @@ use Drush\Commands\sql\sanitize\SanitizeCommands;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\sql\SqlSyncCommands;
 
-/**
- * @group slow
- * @group commands
- * @group sql
- */
+#[Group('slow')]
+#[Group('commands')]
+#[Group('sql')]
 class SqlSyncTest extends CommandUnishTestCase
 {
     public function testSimulatedSqlSync(): void

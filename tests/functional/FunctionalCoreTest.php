@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\StatusCommand;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Yaml\Yaml;
 
 /**
  * Tests for core commands.
- *
- * @group commands
  */
+#[Group('commands')]
 class FunctionalCoreTest extends CommandUnishTestCase
 {
     public function setup(): void

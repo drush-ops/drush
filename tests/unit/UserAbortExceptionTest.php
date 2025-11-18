@@ -4,20 +4,19 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Exceptions\UserAbortException;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the UserAbortException to ensure that it does not reference
  * anything that might break on older versions of PHP (e.g. \Throwable).
- *
- * @group base
  */
+#[CoversClass(\Drush\Exceptions\UserAbortException::class)]
+#[Group('base')]
 class UserAbortExceptionTest extends TestCase
 {
-    /**
-     * @covers \Drush\Exceptions\UserAbortException
-     */
     public function testUserAbortException(): never
     {
         $this->expectException(UserAbortException::class);

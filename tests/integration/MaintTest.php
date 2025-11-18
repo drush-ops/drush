@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\MaintCommands;
 
 /**
  * Tests Maintenance commands
- *
- * @group commands
  */
+#[Group('commands')]
 class MaintTest extends UnishIntegrationTestCase
 {
     public function testMaint(): void

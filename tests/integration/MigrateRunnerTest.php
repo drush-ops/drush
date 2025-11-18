@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\migrate\Plugin\MigrationInterface;
 
-/**
- * @group commands
- * @coversDefaultClass \Drush\Commands\core\MigrateRunnerCommands
- */
+#[CoversClass(\Drush\Commands\core\MigrateRunnerCommands::class)]
+#[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'handleMissingSourceRows')]
+#[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'initProgressBar')]
+#[Group('commands')]
 class MigrateRunnerTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
@@ -23,10 +26,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->drush('pm:install', ['migrate', 'node', 'woot'], ['yes' => null]);
     }
 
-    /**
-     * @covers ::status
-     * @covers ::getMigrationList
-     */
     public function testMigrateStatus(): void
     {
         // No arguments, no options.
@@ -106,10 +105,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertArrayNotHasKey('last_imported', $this->getOutputFromJSON(2));
     }
 
-    /**
-     * @covers ::import
-     * @covers ::rollback
-     */
     public function testMigrateImportAndRollback(): void
     {
         // Reset status just in case.
@@ -181,10 +176,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         }
     }
 
-    /**
-     * @covers ::import
-     * @covers ::rollback
-     */
     public function testMigrateImportAndRollbackWithIdList(): void
     {
         // Enlarge the source recordset to 50 rows.
@@ -220,10 +211,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals(['Item 12', 'Item 29'], $this->getOutputAsList());
     }
 
-    /**
-     * @covers ::import
-     * @covers \Drush\Drupal\Migrate\MigrateExecutable::handleMissingSourceRows
-     */
     public function testMissingSourceRows(): void
     {
         $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '5']);
@@ -245,10 +232,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertSame(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
     }
 
-    /**
-     * @covers ::stop
-     * @covers ::resetStatus
-     */
     public function testMigrateStopAndResetStatus(): void
     {
         $this->drush('migrate:stop', ['test_migration']);
@@ -260,10 +243,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Migration test_migration is already Idle', $this->getErrorOutput());
     }
 
-    /**
-     * @covers ::messages
-     * @covers ::fieldsSource
-     */
     public function testMigrateMessagesAndFieldSource(): void
     {
         $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '20']);
@@ -368,7 +347,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
     /**
      * Regression test when importing with --update and --idlist.
      *
-     * @covers ::executeMigration
      * @see https://www.drupal.org/project/migrate_tools/issues/3015386
      */
     public function testImportingWithUpdateAndIdlist(): void
@@ -398,9 +376,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertSame(0, $this->getOutputFromJSON(0)['needing_update']);
     }
 
-    /**
-     * @covers \Drush\Drupal\Migrate\MigrateExecutable::initProgressBar
-     */
     public function testCommandProgressBar(): void
     {
         $this->drush('state:set', ['woot.migrate_runner.source_data_amount', '50']);

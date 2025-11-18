@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\StateCommands;
 use Drush\Commands\deploy\DeployHookCommand;
 use Drush\Commands\deploy\DeployHookMarkCompleteCommand;
 use Drush\Commands\deploy\DeployHookStatusCommand;
 use Drush\Commands\pm\PmCommands;
 
-/**
- *  @group slow
- *  @group commands
- */
+#[Group('slow')]
+#[Group('commands')]
 class DeployHookTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;

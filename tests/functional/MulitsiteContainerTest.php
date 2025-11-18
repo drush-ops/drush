@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\DrupalCommands;
 use Drush\Commands\pm\PmCommands;
 
 /**
  * Tests for core commands.
- *
- * @group commands
  */
+#[Group('commands')]
 class MulitsiteContainerTest extends CommandUnishTestCase
 {
     public function setup(): void

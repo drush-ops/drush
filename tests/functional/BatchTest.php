@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
+
 /**
  * Tests the Drush Batch subsystem.
- *
- * @group base
  */
+#[Group('base')]
 class BatchTest extends CommandUnishTestCase
 {
     public function testBatch(): void

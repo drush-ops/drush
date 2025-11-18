@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\RsyncCommands;
 
 /**
  * @file
  *   Tests for rsync command
- *
- * @group commands
  */
+#[Group('commands')]
 class RsyncIntegrationTest extends UnishIntegrationTestCase
 {
     /**

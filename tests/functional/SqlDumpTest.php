@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\CacheRebuildCommands;
 use Drush\Commands\sql\SqlCommands;
 use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for sql:dump commands.
- *
- * @group commands
- * @group sql
- * @group slow
  */
+#[Group('commands')]
+#[Group('sql')]
+#[Group('slow')]
 class SqlDumpTest extends CommandUnishTestCase
 {
   /**

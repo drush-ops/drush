@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
@@ -11,10 +12,8 @@ use Drush\Commands\pm\PmCommands;
 use Drush\Commands\user\UserLoginCommand;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group commands
- */
+#[Group('slow')]
+#[Group('commands')]
 class UserTest extends CommandUnishTestCase
 {
     const NAME = 'example';

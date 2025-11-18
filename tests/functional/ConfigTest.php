@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Core\Serialization\Yaml;
 use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\config\ConfigExportCommand;
@@ -20,10 +21,9 @@ use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for Configuration Management commands.
- *
- * @group commands
- * @group config
  */
+#[Group('commands')]
+#[Group('config')]
 class ConfigTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;

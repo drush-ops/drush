@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Migrate;
 
+use PHPUnit\Framework\Attributes\CoversMethod;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
 use Composer\Autoload\ClassLoader;
 use Drupal\Core\Database\Database;
@@ -14,12 +17,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
 use Unish\TestSqlIdMap;
 
+#[CoversMethod(\Drush\Drupal\Migrate\MigrateUtils::class, 'parseIdList')]
+#[CoversClass(\Drush\Drupal\Migrate\MigrateIdMapFilter::class)]
 class MigrateRunnerTest extends TestCase
 {
-    /**
-     * @covers \Drush\Drupal\Migrate\MigrateUtils::parseIdList
-     * @dataProvider dataProviderParseIdList
-     */
+    #[DataProvider('dataProviderParseIdList')]
     public function testParseIdList(string $idList, array $expected): void
     {
         $this->assertSame($expected, MigrateUtils::parseIdList($idList));
@@ -54,10 +56,7 @@ class MigrateRunnerTest extends TestCase
         ];
     }
 
-    /**
-     * @covers \Drush\Drupal\Migrate\MigrateIdMapFilter
-     * @dataProvider dataProviderMigrateIdMapFilter
-     */
+    #[DataProvider('dataProviderMigrateIdMapFilter')]
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
         $migration = $this->createMock(MigrationInterface::class);

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\CacheCommands;
 
 /**
  * Cache command testing.
- *
- * @group commands
  */
+#[Group('commands')]
 class CacheCommandTest extends UnishIntegrationTestCase
 {
     public function testCacheGet(): void
