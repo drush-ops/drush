@@ -33,7 +33,7 @@ class Runtime
      * Typically, this will happen only for code that fails fast during
      * preflight. Later code should catch and handle its own exceptions.
      */
-    public function run($argv): int
+    public function run(array $argv): int
     {
         try {
             $output = new ConsoleOutput();
@@ -52,7 +52,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun($argv, ?\Symfony\Component\Console\Output\OutputInterface $output): int
+    protected function doRun(array $argv, ?\Symfony\Component\Console\Output\OutputInterface $output): int
     {
         // Do the preflight steps
         [$preflightDidRedispatch, $exitStatus] = $this->preflight->preflight($argv);

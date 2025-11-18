@@ -234,7 +234,7 @@ class Preflight
      *
      * @return array{bool, int}
      */
-    public function preflight($argv): array
+    public function preflight(array $argv): array
     {
         // Fail fast if there is anything in our environment that does not check out
         $this->verify->verify($this->environment);

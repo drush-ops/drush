@@ -14,9 +14,11 @@ use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__ . '/src',
-        // __DIR__ . '/tests',
+        __DIR__ . '/tests',
     ])
     ->withPhpSets(php83: true)
+    ->withParallel()
+    ->withAttributesSets(phpunit: true)
     ->withImportNames(importNames: false, importShortClasses: true)
     ->withPreparedSets(deadCode: true, codeQuality: true)
     ->withTypeCoverageLevel(50)

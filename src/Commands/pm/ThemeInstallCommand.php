@@ -54,14 +54,14 @@ final class ThemeInstallCommand extends Command
 
         $todo = $this->addInstallDependencies($themes, 'themes');
         $todo_str = ['!list' => implode(', ', $todo)];
-        if (!empty($todo)) {
+        if ($todo !== []) {
             $output->writeln(dt('The following module(s) and themes(s) will be installed: !list', $todo_str));
             if (!$io->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
 
             $modules = array_diff(array_values($todo), array_values($themes));
-            if (!empty($modules)) {
+            if ($modules !== []) {
                 if (!$this->moduleInstaller->install($modules, true)) {
                     throw new \Exception('Unable to install modules.');
                 }
