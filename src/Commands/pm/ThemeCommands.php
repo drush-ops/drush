@@ -6,6 +6,7 @@ namespace Drush\Commands\pm;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
+use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drupal\Core\Extension\ThemeExtensionList;
 use Drush\Attributes as CLI;
@@ -24,6 +25,7 @@ final class ThemeCommands extends DrushCommands
     public function __construct(
         protected ConfigFactoryInterface $configFactory,
         protected ThemeInstallerInterface $themeInstaller,
+        protected ModuleInstallerInterface $moduleInstaller,
         protected ThemeExtensionList $extensionListTheme,
     ) {
         parent::__construct();
@@ -37,6 +39,11 @@ final class ThemeCommands extends DrushCommands
     public function getThemeInstaller(): ThemeInstallerInterface
     {
         return $this->themeInstaller;
+    }
+
+    public function getModuleInstaller(): ModuleInstallerInterface
+    {
+        return $this->moduleInstaller;
     }
 
     public function getExtensionListTheme(): ThemeExtensionList
@@ -55,9 +62,16 @@ final class ThemeCommands extends DrushCommands
         $todo = $this->addInstallDependencies($themes);
         $todo_str = ['!list' => implode(', ', $todo)];
         if (!empty($todo)) {
-            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
+            $this->output()->writeln(dt('The following module(s) and themes(s) will be installed: !list', $todo_str));
             if (!$this->io()->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
+            }
+
+            $modules = array_diff(array_values($todo), array_values($themes));
+            if (!empty($modules)) {
+                if (!$this->getModuleInstaller()->install($modules, true)) {
+                    throw new \Exception('Unable to install modules.');
+                }
             }
         }
 
@@ -96,12 +110,8 @@ final class ThemeCommands extends DrushCommands
         // Add dependencies to the list. The new modules will be processed as
         // the while loop continues.
         foreach (array_keys($theme_list) as $theme) {
-            foreach (array_keys($theme_data[$theme]->requires) as $dependency) {
-                if (!isset($theme_data[$dependency])) {
-                    // The dependency does not exist.
-                    throw new MissingDependencyException("Unable to install themes: theme '$theme' is missing its dependency module $dependency.");
-                }
-
+            $modules = $theme_data[$theme]->module_dependencies;
+            foreach (array_keys($modules) as $dependency) {
                 // Skip already installed modules.
                 if (!isset($theme_list[$dependency]) && !isset($installed_modules[$dependency])) {
                     $theme_list[$dependency] = $dependency;
