@@ -65,7 +65,7 @@ class HelpCLIFormatter implements FormatterInterface
             $output->writeln('');
             $output->writeln('<comment>Arguments:</comment>');
             foreach ($data['arguments'] as $argument) {
-                $formatted = $this->formatArgumentName($argument);
+                $formatted = static::formatArgumentName($argument);
                 $description = $argument['description'];
                 if (isset($argument['defaults'])) {
                     $description .= ' [default: <info>' . implode(',', $argument['defaults']) . '</info>]';
@@ -96,7 +96,7 @@ class HelpCLIFormatter implements FormatterInterface
                 $name = '-' . $value->getShortcut() . ', ' . $name;
             }
             $rows[] = [
-                $this->formatOptionKeys(MkCommands::optionToArray($value)),
+                static::formatOptionKeys(MkCommands::optionToArray($value)),
                 $value->getDescription(),
             ];
         }
@@ -211,7 +211,7 @@ class HelpCLIFormatter implements FormatterInterface
                     '--xh-'
                 ) && !str_starts_with($option['name'], '--druplicon')
             ) {
-                 $rows[] = [$this->formatOptionKeys($option), $this->formatOptionDescription($option)];
+                 $rows[] = [static::formatOptionKeys($option), static::formatOptionDescription($option)];
             }
         }
         return $rows;

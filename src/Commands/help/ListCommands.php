@@ -38,7 +38,7 @@ class ListCommands extends DrushCommands
     {
         $application = Drush::getApplication();
         $all = $application->all();
-        $namespaced = $this->categorize($all);
+        $namespaced = static::categorize($all);
 
         // Filter out namespaces that the user does not want to see
         $filter_category = $options['filter'];
@@ -60,7 +60,7 @@ class ListCommands extends DrushCommands
             return null;
         } elseif ($options['format'] == 'listcli') {
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
-            $this->renderListCLI($application, $namespaced, $this->output(), $preamble);
+            static::renderListCLI($application, $namespaced, $this->output(), $preamble);
             if (!Drush::bootstrapManager()->hasBootstrapped((DrupalBootLevels::ROOT))) {
                 $this->io()->note(dt('Drupal root not found. In order to see Drupal-specific commands, make sure that the `drush` you are calling is a dependency in your site\'s composer.json. The --uri option might also help.'));
             }
@@ -136,9 +136,7 @@ class ListCommands extends DrushCommands
                 // any alias 'foo-bar' from the alias list.
                 $aliasList = array_filter(
                     $command->getAliases(),
-                    function ($aliasName) use ($name) {
-                        return $aliasName != str_replace(':', '-', $name);
-                    }
+                    fn($aliasName) => $aliasName != str_replace(':', '-', $name)
                 );
 
                 $aliases = implode(', ', $aliasList);

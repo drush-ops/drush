@@ -133,7 +133,7 @@ final class PmListCommand extends Command
 
             $row = [
                 'package' => $extension->info['package'],
-                'project' => isset($extension->info['project']) ? $extension->info['project'] : '',
+                'project' => $extension->info['project'] ?? '',
                 'display_name' => $extension->info['name'] . ' (' . $extension->getName() . ')',
                 'name' => $extension->getName(),
                 'type' => $extension->getType(),

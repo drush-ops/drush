@@ -242,9 +242,7 @@ trait MigrateRunnerTrait
         }
         $idMap->rewind();
         $columns = $idMap->currentSource();
-        $sourceIdKeys = array_map(static function ($id) {
-            return "src_$id";
-        }, array_keys($columns));
+        $sourceIdKeys = array_map(static fn($id) => "src_$id", array_keys($columns));
         return array_combine($sourceIdKeys, $sourceIdKeys);
     }
 

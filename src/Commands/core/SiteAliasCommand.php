@@ -88,9 +88,7 @@ final class SiteAliasCommand extends Command
     protected function siteAliasExportList(array $aliasList): array
     {
         return array_map(
-            function ($aliasRecord) {
-                return $aliasRecord->export();
-            },
+            fn($aliasRecord) => $aliasRecord->export(),
             $aliasList
         );
     }

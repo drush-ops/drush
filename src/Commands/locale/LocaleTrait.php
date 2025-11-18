@@ -42,37 +42,25 @@ trait LocaleTrait
     {
         $result = [];
 
-        switch ($override) {
-            case 'none':
-                $result = [
-                    'not_customized' => false,
-                    'customized' => false,
-                ];
-                break;
-
-            case 'customized':
-                $result = [
-                    'not_customized' => false,
-                    'customized' => true,
-                ];
-                break;
-
-            case 'not-customized':
-                $result = [
-                    'not_customized' => true,
-                    'customized' => false,
-                ];
-                break;
-
-            case 'all':
-                $result = [
-                    'not_customized' => true,
-                    'customized' => true,
-                ];
-                break;
-        }
-
-        return $result;
+        return match ($override) {
+            'none' => [
+                'not_customized' => false,
+                'customized' => false,
+            ],
+            'customized' => [
+                'not_customized' => false,
+                'customized' => true,
+            ],
+            'not-customized' => [
+                'not_customized' => true,
+                'customized' => false,
+            ],
+            'all' => [
+                'not_customized' => true,
+                'customized' => true,
+            ],
+            default => $result,
+        };
     }
 
     /**

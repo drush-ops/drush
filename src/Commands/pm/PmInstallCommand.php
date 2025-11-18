@@ -81,9 +81,7 @@ final class PmInstallCommand extends Command
         $moduleData = $this->extensionListModule->getList();
         foreach ($todo as $moduleName) {
             $links = $this->getModuleLinks($moduleData[$moduleName]);
-            $links = array_map(function ($link) {
-                return sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText());
-            }, $links);
+            $links = array_map(fn($link) => sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText()), $links);
 
             if ($links) {
                 $this->logger->notice('Module links: {list}', ['list' => implode(', ', $links)]);

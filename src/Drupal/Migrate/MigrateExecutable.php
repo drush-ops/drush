@@ -26,11 +26,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class MigrateExecutable extends MigrateExecutableBase
 {
     /**
-     * The Symfony console output.
-     */
-    protected OutputInterface $output;
-
-    /**
      * Counters of map statuses.
      */
     protected array $saveCounters = [
@@ -100,7 +95,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Static cached ID map.
      */
-    protected ?MigrateIdMapFilter $idMap;
+    protected ?MigrateIdMapFilter $idMap = null;
 
     /**
      * If the execution exposes a progress bar.
@@ -110,12 +105,12 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * The Symfony progress bar.
      */
-    protected ?ProgressBar $progressBar;
+    protected ?ProgressBar $progressBar = null;
 
     /**
      * Constructs a new migrate executable instance.
      */
-    public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, OutputInterface $output, array $options = [])
+    public function __construct(MigrationInterface $migration, MigrateMessageInterface $message, protected OutputInterface $output, array $options = [])
     {
         Timer::start('migrate:' . $migration->getPluginId());
 
@@ -133,8 +128,6 @@ class MigrateExecutable extends MigrateExecutableBase
         $this->idlist = MigrateUtils::parseIdList($options['idlist']);
 
         parent::__construct($migration, $message);
-
-        $this->output = $output;
         $this->limit = $options['limit'];
         $this->feedback = $options['feedback'] ? intval($options['feedback']) : null;
         $this->showTimestamp = $options['timestamp'];

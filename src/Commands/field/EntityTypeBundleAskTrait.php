@@ -23,9 +23,7 @@ trait EntityTypeBundleAskTrait
     {
         return array_filter(
             $this->entityTypeManager->getDefinitions(),
-            function (EntityTypeInterface $entityType) {
-                return $entityType->entityClassImplements(FieldableEntityInterface::class);
-            }
+            fn(EntityTypeInterface $entityType) => $entityType->entityClassImplements(FieldableEntityInterface::class)
         );
     }
 

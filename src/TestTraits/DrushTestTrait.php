@@ -104,7 +104,7 @@ trait DrushTestTrait
         if (!isset($major)) {
             $this->drush('version', [], ['field' => 'drush-version']);
             $version = trim($this->getOutput());
-            list($major) = explode('.', $version);
+            [$major] = explode('.', $version);
         }
         return (int)$major;
     }

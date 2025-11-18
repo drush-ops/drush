@@ -187,7 +187,7 @@ class LegacyServiceInstantiator
     {
         try {
             $refl = new \ReflectionClass($class);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             return;
         }
         return $refl->newInstanceArgs($this->resolveArguments($arguments));
@@ -245,12 +245,9 @@ class LegacyServiceInstantiator
             // Check to see if a previous drush.services.yml instantiated
             // this service; return any service found.
             $drushServiceName = ltrim(substr($arg, 1), '?');
-            if (isset($this->instantiatedDrushServices[$drushServiceName])) {
-                return $this->instantiatedDrushServices[$drushServiceName];
-            }
 
             // If the service is not found in the dynamic container
-            return $this->resolveFromContainer($this->container, substr($arg, 1));
+            return $this->instantiatedDrushServices[$drushServiceName] ?? $this->resolveFromContainer($this->container, substr($arg, 1));
         }
 
         // Look up references to service parameters

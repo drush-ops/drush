@@ -9,16 +9,11 @@ namespace Drush\Preflight;
  */
 class ArgsRemapper
 {
-    protected $remapOptions;
-    protected $remapCommandAliases;
-
     /**
      * ArgsRemapper constructor
      */
-    public function __construct($remapOptions, $remapCommandAliases)
+    public function __construct(protected $remapOptions, protected $remapCommandAliases)
     {
-        $this->remapOptions = $remapOptions;
-        $this->remapCommandAliases = $remapCommandAliases;
     }
 
     /**

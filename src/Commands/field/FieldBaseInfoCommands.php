@@ -67,7 +67,7 @@ final class FieldBaseInfoCommands extends DrushCommands
         'format' => 'table',
     ]): RowsOfFields
     {
-        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);

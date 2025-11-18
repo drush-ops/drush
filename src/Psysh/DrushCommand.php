@@ -20,19 +20,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DrushCommand extends BaseCommand
 {
     /**
-     * @var \Symfony\Component\Console\Command\Command
-     */
-    private $command;
-
-    /**
      * DrushCommand constructor.
      *
      * @param \Symfony\Component\Console\Command\Command $command
      *   Original Drush command.
      */
-    public function __construct(Command $command)
+    public function __construct(private readonly Command $command)
     {
-        $this->command = $command;
         parent::__construct();
     }
 

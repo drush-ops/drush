@@ -98,9 +98,7 @@ final class ConfigStatusCommand extends Command
         if ($state) {
             $allowed_states = explode(',', $state);
             if (!in_array('Any', $allowed_states)) {
-                $config_list = array_filter($config_list, function ($state) use ($allowed_states) {
-                     return in_array($state, $allowed_states);
-                });
+                $config_list = array_filter($config_list, fn($state) => in_array($state, $allowed_states));
             }
         }
 

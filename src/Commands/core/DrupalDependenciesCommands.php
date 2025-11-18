@@ -153,11 +153,7 @@ final class DrupalDependenciesCommands extends DrushCommands
 
         $module = $commandData->input()->getArgument('module');
         if ($type === 'module') {
-            $this->dependencies['module-module'] = array_map(function (Extension $extension): array {
-                return array_map(function (string $dependencyString) {
-                    return Dependency::createFromString($dependencyString)->getName();
-                }, $extension->info['dependencies']);
-            }, $this->moduleExtensionList->reset()->getList());
+            $this->dependencies['module-module'] = array_map(fn(Extension $extension): array => array_map(fn(string $dependencyString) => Dependency::createFromString($dependencyString)->getName(), $extension->info['dependencies']), $this->moduleExtensionList->reset()->getList());
 
             if (!$notOnlyInstalled) {
                 $this->dependencies['module-module'] = array_intersect_key(

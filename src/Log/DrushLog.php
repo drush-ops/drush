@@ -28,19 +28,13 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
     use RfcLoggerTrait;
 
     /**
-     * The message's placeholders parser.
-     */
-    protected LogMessageParserInterface $parser;
-
-    /**
      * Constructs a DrushLog object.
      *
      * @param LogMessageParserInterface $parser
      *   The parser to use when extracting message variables.
      */
-    public function __construct(LogMessageParserInterface $parser)
+    public function __construct(protected LogMessageParserInterface $parser)
     {
-        $this->parser = $parser;
     }
 
     /**
@@ -71,9 +65,7 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
         $message_placeholders = $this->parser->parseMessagePlaceholders($message, $context);
 
         // Filter out any placeholders that can not be cast to strings.
-        $message_placeholders = array_filter($message_placeholders, function ($element) {
-            return is_scalar($element) || is_callable([$element, '__toString']);
-        });
+        $message_placeholders = array_filter($message_placeholders, fn($element) => is_scalar($element) || is_callable([$element, '__toString']));
 
         $message = $message_placeholders === [] ? $message : strtr($message, $message_placeholders);
 

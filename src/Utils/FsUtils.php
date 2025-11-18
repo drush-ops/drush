@@ -137,7 +137,7 @@ final class FsUtils
     {
         if (!isset(self::$deletionList)) {
             self::$deletionList = [];
-            register_shutdown_function([static::class, 'cleanup']);
+            register_shutdown_function([self::class, 'cleanup']);
         }
 
         self::$deletionList[] = $dir;
@@ -156,7 +156,7 @@ final class FsUtils
         foreach (self::$deletionList as $dir) {
             try {
                 $fs->remove($dir);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
               // No action taken if someone already deleted the directory
             }
         }

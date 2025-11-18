@@ -17,13 +17,13 @@ class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
     use LoggerAwareTrait;
     use ConfigAwareTrait;
 
-    protected ?DrushDrupalFinder $drupalFinder;
+    protected ?DrushDrupalFinder $drupalFinder = null;
     /**
      * @var Boot[]
      */
     protected array $bootstrapCandidates = [];
-    protected ?Boot $bootstrap;
-    protected ?int $phase;
+    protected ?Boot $bootstrap = null;
+    protected ?int $phase = null;
 
     public function getPhase(): int
     {

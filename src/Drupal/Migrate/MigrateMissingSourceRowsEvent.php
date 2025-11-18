@@ -13,18 +13,6 @@ use Symfony\Contracts\EventDispatcher\Event;
 class MigrateMissingSourceRowsEvent extends Event
 {
     /**
-     * The migration plugin instance.
-     */
-    protected MigrationInterface $migration;
-
-    /**
-     * Values representing the destination IDs.
-     *
-     * @var array[]
-     */
-    protected array $destinationIds;
-
-    /**
      * Constructs a new event instance.
      *
      * @param MigrationInterface $migration
@@ -32,10 +20,14 @@ class MigrateMissingSourceRowsEvent extends Event
      * @param array[] $destinationIds
      *   Values representing the destination ID.
      */
-    public function __construct(MigrationInterface $migration, array $destinationIds)
+    public function __construct(
+        protected MigrationInterface $migration,
+        /**
+         * Values representing the destination IDs.
+         */
+        protected array $destinationIds
+    )
     {
-        $this->migration = $migration;
-        $this->destinationIds = $destinationIds;
     }
 
     /**

@@ -148,9 +148,7 @@ final class DeployHookCommand extends Command
                 Drush::logger()->error($e->getMessage());
 
                 $variables = Error::decodeException($e);
-                $variables = array_filter($variables, function ($key) {
-                    return $key[0] === '@' || $key[0] === '%';
-                }, ARRAY_FILTER_USE_KEY);
+                $variables = array_filter($variables, fn($key) => $key[0] === '@' || $key[0] === '%', ARRAY_FILTER_USE_KEY);
                 // On windows there is a problem with json encoding a string with backslashes.
                 $variables['%file'] = strtr($variables['%file'], [DIRECTORY_SEPARATOR => '/']);
                 $ret['#abort'] = [

@@ -131,16 +131,11 @@ final class RequirementsCommand extends Command
             return $content;
         }
 
-        switch ($severity) {
-            case REQUIREMENT_OK:
-                return '<info>' . $content . '</>';
-            case REQUIREMENT_WARNING:
-                return '<comment>' . $content . '</>';
-            case REQUIREMENT_ERROR:
-                return '<fg=red>' . $content . '</>';
-            case REQUIREMENT_INFO:
-            default:
-                return $content;
-        }
+        return match ($severity) {
+            REQUIREMENT_OK => '<info>' . $content . '</>',
+            REQUIREMENT_WARNING => '<comment>' . $content . '</>',
+            REQUIREMENT_ERROR => '<fg=red>' . $content . '</>',
+            default => $content,
+        };
     }
 }
