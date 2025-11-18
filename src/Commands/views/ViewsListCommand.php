@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -73,7 +72,6 @@ final class ViewsListCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
     {
-        $io = new DrushStyle($input, $output);
         $nameOption = $input->getOption('name');
         $tagsOption = $input->getOption('tags');
         $statusOption = $input->getOption('status');

@@ -79,8 +79,7 @@ final class PhpScriptCommand extends Command
             // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
             // If testing this will get input added by `CommandTester::setInputs` method.
             $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
-            $data = stream_get_contents($inputStream);
-            return $data;
+            return stream_get_contents($inputStream);
         } elseif ($script && file_exists($script)) {
             $found = $script;
         } else {

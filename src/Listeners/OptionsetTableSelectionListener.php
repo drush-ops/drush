@@ -22,7 +22,7 @@ class OptionsetTableSelectionListener
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflection = new \ReflectionObject($code);
             $attributes = $reflection->getAttributes(OptionsetTableSelection::class);
-            if (empty($attributes)) {
+            if ($attributes === []) {
                 continue;
             }
             $command->addOption('skip-tables-key', '', InputOption::VALUE_REQUIRED, 'A key in the $skip_tables array. @see [Site aliases](../site-aliases.md)');

@@ -14,8 +14,6 @@ class MigrateUtils
      *
      * IDs are delimited by comma. Each ID consists in one are many ID columns,
      * separated by a colon (":").
-     *
-     * @param string|null $idlist
      */
     public static function parseIdList(?string $idlist): array
     {

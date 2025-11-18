@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
+use Drupal\Core\Logger\RfcLogLevel;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Connection;
@@ -107,7 +108,7 @@ final class WatchdogShowCommand extends Command
             $table[$row->wid] = (array)$row;
         }
 
-        if (empty($table)) {
+        if ($table === []) {
             $this->logger->notice('No log messages available.');
         }
 
@@ -117,7 +118,7 @@ final class WatchdogShowCommand extends Command
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestOptionValuesFor('severity') || $input->mustSuggestOptionValuesFor('severity-min')) {
-            $suggestions->suggestValues(array_keys(\Drupal\Core\Logger\RfcLogLevel::getLevels()));
+            $suggestions->suggestValues(array_keys(RfcLogLevel::getLevels()));
         }
         if ($input->mustSuggestOptionValuesFor('type')) {
             $suggestions->suggestValues(self::messageTypes());

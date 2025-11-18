@@ -69,7 +69,7 @@ class PreflightVerify
     protected function invalidIniValue(mixed $ini_value, string|array $disallowed_value): bool
     {
         if (empty($disallowed_value)) {
-            return !empty($ini_value) && (strcasecmp($ini_value, 'off') != 0);
+            return !empty($ini_value) && (strcasecmp($ini_value, 'off') !== 0);
         } else {
             foreach ($disallowed_value as $test_value) {
                 if (preg_match('/(^|,)' . $test_value . '(,|$)/', $ini_value)) {

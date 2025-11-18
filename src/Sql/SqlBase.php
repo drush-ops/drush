@@ -121,7 +121,7 @@ abstract class SqlBase implements ConfigAwareInterface
         $driver = $db_spec['driver'];
         // Drush ships drivers for core database types, and modules/libraries
         // may define additional Drush DB drivers in this namespace.
-        $class_name = !empty($driver) ? 'Drush\Sql\Sql' . ucfirst($driver) : null;
+        $class_name = empty($driver) ? null : 'Drush\Sql\Sql' . ucfirst($driver);
         try {
             if (!$class_name || !class_exists($class_name)) {
                 // Handle custom database drivers which extend a defined driver.

@@ -44,7 +44,7 @@ class Caster
                 // Collapse single value'd field values.
                 if (count($value[0] ?? []) === 1) {
                     // Filter out non-strings.
-                    $to_implode = array_filter(array_column($value, array_keys($value[0])[0]), fn ($v) => is_string($v));
+                    $to_implode = array_filter(array_column($value, array_keys($value[0])[0]), is_string(...));
                     $value = implode(', ', $to_implode);
                 }
                 $array[$key] = $value;

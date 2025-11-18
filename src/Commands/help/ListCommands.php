@@ -193,7 +193,7 @@ class ListCommands extends DrushCommands
         // Avoid solo namespaces.
         $namespaced['_global'] = [];
         foreach ($namespaced as $namespace => $commands) {
-            if (count($commands) == 1) {
+            if (count($commands) === 1) {
                 $namespaced['_global'] += $commands;
                 unset($namespaced[$namespace]);
             }

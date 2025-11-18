@@ -96,7 +96,7 @@ trait OutputUtilsTrait
      */
     public function getOutputAsList(): array
     {
-        return array_map('rtrim', explode("\n", $this->getOutput()));
+        return array_map(rtrim(...), explode("\n", $this->getOutput()));
     }
 
     /**
@@ -104,7 +104,7 @@ trait OutputUtilsTrait
      */
     public function getErrorOutputAsList(): array
     {
-        return array_map('rtrim', explode("\n", $this->getErrorOutput()));
+        return array_map(rtrim(...), explode("\n", $this->getErrorOutput()));
     }
 
     /**

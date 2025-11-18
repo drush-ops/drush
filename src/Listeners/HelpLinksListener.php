@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
+use Drush\Attributes\HelpLinks;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Event\ConsoleDefinitionsEvent;
@@ -20,12 +21,12 @@ final class HelpLinksListener
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);
             $attributes = $reflectionObject->getAttributes(CLI\HelpLinks::class);
-            if (!empty($attributes)) {
+            if ($attributes !== []) {
                 // Bail if this Listener has already run on this class.
                 if (str_contains($command->getHelp(), 'Help topics:')) {
                     continue;
                 }
-                /** @var \Drush\Attributes\HelpLinks $instance */
+                /** @var HelpLinks $instance */
                 $instance = $attributes[0]->newInstance();
                 $bullets = array_map(fn($case) => $case->consoleLink(), $instance->links);
                 $help = $command->getHelp();

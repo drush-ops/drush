@@ -201,7 +201,7 @@ class ConfigLocator
      */
     public function addPreflightConfigFiles(array $filepaths): self
     {
-        $this->addConfigPaths(self::PREFLIGHT_CONTEXT, (array) $filepaths);
+        $this->addConfigPaths(self::PREFLIGHT_CONTEXT, $filepaths);
         return $this;
     }
 
@@ -376,9 +376,7 @@ class ConfigLocator
         // In addition to the paths passed in to us (from --alias-path
         // commandline options), add some site-local locations.
         $siteroot_parents = array_map(
-            function ($dir) {
-                return dirname($dir);
-            },
+            dirname(...),
             $this->siteRoots
         );
         $base_dirs = array_filter(array_merge($this->siteRoots, $siteroot_parents, [$this->composerRoot]));
@@ -462,7 +460,7 @@ class ConfigLocator
     {
         $directories = ["$root/drush", dirname($root) . '/drush', "$root/sites/all/drush"];
 
-        return array_filter($directories, 'is_dir');
+        return array_filter($directories, is_dir(...));
     }
 
     /**

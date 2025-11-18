@@ -21,7 +21,7 @@ class OptionsetSshListener
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflection = new \ReflectionObject($code);
             $attributes = $reflection->getAttributes(CLI\OptionsetSsh::class);
-            if (empty($attributes)) {
+            if ($attributes === []) {
                 continue;
             }
             $command->addOption(name: 'ssh-options', mode: InputOption::VALUE_REQUIRED, description: 'A string appended to ssh command during rsync, sql:sync, etc.');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
+use Drush\Attributes\Formatter;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes as CLI;
@@ -36,7 +37,7 @@ final class FormatterListener
                 continue;
             }
 
-            /** @var \Drush\Attributes\Formatter $attribute */
+            /** @var Formatter $attribute */
             $attribute = $attributes[0]->newInstance();
             $configurationData = $this->getConfigurationData($reflectionObject);
             $formatterOptions = new FormatterOptions($configurationData, []);

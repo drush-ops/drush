@@ -472,10 +472,7 @@ final class SiteInstallCommand extends Command
     {
         // It is impossible to validate a recipe fully at this point because that
         // requires a container.
-        if (!is_dir($recipe) || !is_file($recipe . '/recipe.yml')) {
-            return false;
-        }
-        return true;
+        return is_dir($recipe) && is_file($recipe . '/recipe.yml');
     }
 
     protected function determineProfile($profile, $options): string|bool
@@ -490,8 +487,7 @@ final class SiteInstallCommand extends Command
                 throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
-            $profile = $config['profile'] ?? false;
-            return $profile;
+            return $config['profile'] ?? false;
         }
 
         if (empty($profile)) {

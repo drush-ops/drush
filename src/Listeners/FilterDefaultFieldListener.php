@@ -22,7 +22,7 @@ final class FilterDefaultFieldListener
             $reflectionObject = new \ReflectionObject($code);
             // Add the --filter option if the command has a FilterDefaultField attribute.
             $attributes = $reflectionObject->getAttributes(CLI\FilterDefaultField::class);
-            if (!empty($attributes)) {
+            if ($attributes !== []) {
                 $instance = $attributes[0]->newInstance();
                 $command->addOption('filter', null, InputOption::VALUE_REQUIRED, 'Filter output based on provided expression. Default field: ' . $instance->field);
             }

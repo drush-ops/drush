@@ -287,7 +287,7 @@ final class DrupalDependenciesCommands extends DrushCommands
         );
 
         foreach ($configTypeIds as $configTypeId) {
-            /** @var \Drupal\Core\Config\Entity\ConfigEntityInterface $config */
+            /** @var ConfigEntityInterface $config */
             foreach ($entityTypeManager->getStorage($configTypeId)->loadMultiple() as $config) {
                 $dependencies = $config->getDependencies();
                 $name = $config->getConfigDependencyName();

@@ -56,7 +56,7 @@ class ArgsPreprocessor
         }
 
         $optionsTable = $storage->optionsWithValues();
-        while (!empty($argv)) {
+        while ($argv !== []) {
             $opt = array_shift($argv);
 
             if ($opt == '--') {

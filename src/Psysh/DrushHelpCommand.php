@@ -36,7 +36,7 @@ class DrushHelpCommand extends BaseCommand
         ->setName('help')
         ->setAliases(['?'])
         ->setDefinition([
-        new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name', null),
+        new InputArgument('command_name', InputArgument::OPTIONAL, 'The command name'),
         ])
         ->setDescription('Show a list of commands. Type `help [foo]` for information about [foo].');
     }

@@ -11,7 +11,6 @@ use Drush\Commands\AutowireTrait;
 use Drush\Config\DrushConfig;
 use Drush\Exec\ExecTrait;
 use Drush\SiteAlias\ProcessManager;
-use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -65,7 +64,6 @@ final class RunserverCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new DrushStyle($input, $output);
         $uriArg = $input->getArgument('uri');
 
         $uri = $this->uri($uriArg, $input->getoptions());
@@ -177,7 +175,7 @@ final class RunserverCommand extends Command
         if (empty($uri)) {
             throw new \Exception('Invalid argument - should be in the "host:port/path" format, numeric (port only) or non-numeric (path only).');
         }
-        if (count($uri) == 1 && isset($uri['path'])) {
+        if (count($uri) === 1 && isset($uri['path'])) {
             if (is_numeric($uri['path'])) {
                 // Port only shorthand.
                 $uri['port'] = $uri['path'];

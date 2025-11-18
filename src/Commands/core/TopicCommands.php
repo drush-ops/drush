@@ -37,7 +37,7 @@ final class TopicCommands extends DrushCommands
     public function topic($topic_name): int
     {
         $application = Drush::getApplication();
-        $input = new ArrayInput([$topic_name], null);
+        $input = new ArrayInput([$topic_name]);
         return $application->run($input);
     }
 

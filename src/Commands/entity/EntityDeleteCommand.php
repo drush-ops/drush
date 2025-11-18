@@ -108,7 +108,6 @@ final class EntityDeleteCommand extends Command
     }
 
     /**
-     * @param string|null $ids
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
      */

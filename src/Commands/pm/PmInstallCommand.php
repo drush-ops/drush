@@ -57,7 +57,6 @@ final class PmInstallCommand extends Command
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
-        $todo_str = ['!list' => implode(', ', $todo)];
 
         if ($todo === []) {
             $this->logger->notice('Already installed: {list}', ['list' => implode(', ', $modules)]);

@@ -106,7 +106,7 @@ final class ConfigExportCommand extends Command
         $sync_directory = Settings::get('config_sync_directory');
 
         // Prepare the configuration storage for the export.
-        if ($sync_directory !== null && $destination_dir == Path::canonicalize($sync_directory)) {
+        if ($sync_directory !== null && $destination_dir === Path::canonicalize($sync_directory)) {
             $target_storage = $this->configStorageSync;
         } else {
             $target_storage = new FileStorage($destination_dir);
@@ -139,7 +139,7 @@ final class ConfigExportCommand extends Command
                 $this->logger->notice($preamble . $preview);
             }
 
-            if (!$io->confirm(sprintf('The .yml files in your export directory will be deleted and replaced with the active config.'), hint: sprintf('Target: %s', $destination_dir))) {
+            if (!$io->confirm('The .yml files in your export directory will be deleted and replaced with the active config.', hint: sprintf('Target: %s', $destination_dir))) {
                 throw new \Exception('Export cancelled by user.');
             }
 
