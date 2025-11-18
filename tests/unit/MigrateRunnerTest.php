@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Migrate;
 
-use Composer\Semver\Comparator;
+use Drupal\migrate\Plugin\MigrateIdMapInterface;
+use Composer\Autoload\ClassLoader;
 use Drupal\Core\Database\Database;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
@@ -128,7 +129,7 @@ class MigrateRunnerTest extends TestCase
     {
         $actualRows = [];
         $filteredIdMap->rewind();
-        /** @var \Drupal\migrate\Plugin\MigrateIdMapInterface $idMap */
+        /** @var MigrateIdMapInterface $idMap */
         $idMap = $filteredIdMap->getInnerIterator();
         while ($filteredIdMap->valid()) {
             $actualRows[] = array_merge($idMap->currentSource(), $idMap->currentDestination());
@@ -148,7 +149,7 @@ class MigrateRunnerTest extends TestCase
         }
 
         // Need to manually add the class loader info for the driver.
-        /** @var \Composer\Autoload\ClassLoader $loader */
+        /** @var ClassLoader $loader */
         $loader = require PHPUNIT_COMPOSER_INSTALL;
         $loader->addPsr4('Drupal\\sqlite\\', $this->webroot() . '/core/modules/sqlite/src');
 

@@ -31,7 +31,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
-use Traversable;
 
 #[AsCommand(
     name: self::NAME,

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use Drush\Application;
 use Drush\Commands\DrushCommands;
 use Drush\Drush;
@@ -52,7 +53,7 @@ class Runtime
     /**
      * Start up Drush
      */
-    protected function doRun(array $argv, ?\Symfony\Component\Console\Output\OutputInterface $output): int
+    protected function doRun(array $argv, ?OutputInterface $output): int
     {
         // Do the preflight steps
         [$preflightDidRedispatch, $exitStatus] = $this->preflight->preflight($argv);

@@ -20,7 +20,7 @@ class UserAbortExceptionTest extends TestCase
      */
     public function testUserAbortException(): never
     {
-        $this->expectException(\Drush\Exceptions\UserAbortException::class);
+        $this->expectException(UserAbortException::class);
         throw new UserAbortException('This is an exception');
     }
 
@@ -54,7 +54,7 @@ class UserAbortExceptionTest extends TestCase
         try {
             throw new \Exception('This is the original exception');
         } catch (\Throwable $e) {
-            $this->expectException(\Drush\Exceptions\UserAbortException::class);
+            $this->expectException(UserAbortException::class);
             // There really isn't any use-case for this, but our API allows it.
             throw new UserAbortException('Abort after failure', 1, $e);
         }
@@ -68,7 +68,7 @@ class UserAbortExceptionTest extends TestCase
         try {
             throw new \Exception('This is the original exception');
         } catch (\Exception $e) {
-            $this->expectException(\Drush\Exceptions\UserAbortException::class);
+            $this->expectException(UserAbortException::class);
             // There really isn't any use-case for this, but our API allows it.
             throw new UserAbortException('Abort after failure', 1, $e);
         } catch (\Throwable $e) {

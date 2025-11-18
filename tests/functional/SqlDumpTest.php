@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Commands\core\CacheCommands;
 use Drush\Commands\core\CacheRebuildCommands;
 use Drush\Commands\sql\SqlCommands;
 use Symfony\Component\Filesystem\Path;

@@ -10,7 +10,6 @@ use Drush\Preflight\PreflightLog;
 use Drush\Runtime\DependencyInjection;
 use Drush\Runtime\Runtime;
 use Drush\Symfony\BufferedConsoleOutput;
-use PHPUnit\Framework\TestResult;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Filesystem\Path;
 
@@ -24,7 +23,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class RuntimeController
 {
-    private static ?\Unish\Controllers\RuntimeController $instance = null;
+    private static ?RuntimeController $instance = null;
 
     /** @var Runtime */
     protected $runtime;
@@ -49,7 +48,7 @@ class RuntimeController
     {
     }
 
-    public static function instance()
+    public static function instance(): RuntimeController
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -62,7 +61,7 @@ class RuntimeController
         return $this->application != null;
     }
 
-    public function application($root, $argv)
+    public function application($root, array $argv)
     {
         $this->initializeRuntime($root, $argv);
         return $this->application;

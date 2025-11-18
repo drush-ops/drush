@@ -182,7 +182,7 @@ class DrupalBoot8 extends DrupalBoot
 
         // Default to the standard kernel.
         $kernel = Kernels::DRUPAL;
-        if ($annotationData instanceof \Consolidation\AnnotatedCommand\AnnotationData) {
+        if ($annotationData instanceof AnnotationData) {
             $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
         }
         $request = $this->getRequest();

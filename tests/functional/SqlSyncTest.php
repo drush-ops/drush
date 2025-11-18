@@ -7,7 +7,6 @@ namespace Unish;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
-use Drush\Commands\sql\sanitize\SanitizeCommand;
 use Drush\Commands\sql\sanitize\SanitizeCommands;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\sql\SqlSyncCommands;

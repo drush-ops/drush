@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql;
 
+use Consolidation\SiteAlias\SiteAliasInterface;
 use Drush\Config\DrushConfig;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
@@ -233,7 +234,7 @@ final class SqlSyncCommand extends Command
     /**
      * Import file into target.
      */
-    public function import($global_options, $target_dump_path, \Consolidation\SiteAlias\SiteAliasInterface $targetRecord): void
+    public function import($global_options, $target_dump_path, SiteAliasInterface $targetRecord): void
     {
         $this->logger->notice('Starting to import dump file onto target database.');
         $query_options = $global_options + [

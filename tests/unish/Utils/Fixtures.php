@@ -22,7 +22,7 @@ trait Fixtures
         return Path::join($this->fixturesDir(), '/sites/d' . $majorVersion);
     }
 
-    protected function environment($cwd = false): \Drush\Config\Environment
+    protected function environment($cwd = false): Environment
     {
         $fixturesDir = $this->fixturesDir();
         $home = $this->homeDir();

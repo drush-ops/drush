@@ -109,7 +109,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Create a config locator from All The Sources, for use in multiple tests.
      */
-    protected function createConfigLocator(bool $isLocal = false, $configPath = ''): \Drush\Config\ConfigLocator
+    protected function createConfigLocator(bool $isLocal = false, $configPath = ''): ConfigLocator
     {
         $configLocator = new ConfigLocator('TEST_', 'VARIANT');
         $configLocator->collectSources();

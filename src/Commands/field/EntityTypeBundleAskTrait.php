@@ -10,8 +10,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-use function t;
-
 /**
  * @property InputInterface $input
  * @property EntityTypeBundleInfoInterface $entityTypeBundleInfo

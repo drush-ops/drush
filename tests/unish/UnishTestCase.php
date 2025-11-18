@@ -7,7 +7,6 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
-use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Database\Database;
 use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
