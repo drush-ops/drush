@@ -50,7 +50,7 @@ class TestFixtureCommands extends DrushCommands
    * @command unit-eval
    * @bootstrap max
    */
-    public function drushUnitEval($code)
+    public function drushUnitEval(string $code)
     {
         return eval($code . ';');
     }
@@ -80,7 +80,7 @@ class TestFixtureCommands extends DrushCommands
    * Return options as function result.
    * @command unit-return-options
    */
-    public function drushUnitReturnOptions($arg = '', $options = ['x' => 'y', 'data' => [], 'format' => 'yaml'])
+    public function drushUnitReturnOptions($arg = '', array $options = ['x' => 'y', 'data' => [], 'format' => 'yaml']): array
     {
         unset($options['format']);
         return $options;
@@ -132,7 +132,7 @@ class TestFixtureCommands extends DrushCommands
      *
      * @see \Drush\Commands\core\CacheCommands::loadDrupalAutoloader()
      */
-    protected function loadDrupalAutoloader($drupal_root)
+    protected function loadDrupalAutoloader(string $drupal_root)
     {
         static $autoloader = false;
 

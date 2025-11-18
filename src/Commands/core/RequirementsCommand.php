@@ -120,7 +120,7 @@ final class RequirementsCommand extends Command
         return new RowsOfFields($rows ?? []);
     }
 
-    private function styleRow($content, $format, $severity): ?string
+    private function styleRow(string $content, $format, $severity): string
     {
         if (
             !in_array($format, [

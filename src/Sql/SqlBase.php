@@ -116,7 +116,7 @@ abstract class SqlBase implements ConfigAwareInterface
         }
     }
 
-    public static function getInstance($db_spec, $options): ?self
+    public static function getInstance(array $db_spec, $options): ?self
     {
         $driver = $db_spec['driver'];
         // Drush ships drivers for core database types, and modules/libraries
@@ -382,7 +382,7 @@ abstract class SqlBase implements ConfigAwareInterface
     /**
      * Show the query in debug mode and simulate mode
      */
-    protected function logQueryInDebugMode($query, $input_file_original): void
+    protected function logQueryInDebugMode(string $query, $input_file_original): void
     {
         // In --verbose mode, Drush::process() will show the call to mysql/psql/sqlite,
         // but the sql query itself is stored in a temp file and not displayed.

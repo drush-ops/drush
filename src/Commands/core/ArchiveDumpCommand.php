@@ -393,7 +393,7 @@ final class ArchiveDumpCommand extends Command
         $installedPackagesRelativePaths = array_unique(
             array_filter(
                 $installedPackagesRelativePaths,
-                fn($path): bool => '' !== $path && !str_starts_with($path, 'vendor')
+                fn(string $path): bool => '' !== $path && !str_starts_with($path, 'vendor')
             )
         );
         $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);

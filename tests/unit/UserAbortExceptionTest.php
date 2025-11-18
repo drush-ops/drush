@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * Tests the UserAbortException to ensure that it does not reference
  * anything that might break on older versions of PHP (e.g. \Throwable).
  */
-#[CoversClass(\Drush\Exceptions\UserAbortException::class)]
+#[CoversClass(UserAbortException::class)]
 #[Group('base')]
 class UserAbortExceptionTest extends TestCase
 {

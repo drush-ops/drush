@@ -475,7 +475,7 @@ final class SiteInstallCommand extends Command
         return is_dir($recipe) && is_file($recipe . '/recipe.yml');
     }
 
-    protected function determineProfile($profile, $options): string|bool
+    protected function determineProfile($profile, array $options): string|bool
     {
         // Try to get profile from existing config if not provided as an argument.
         // @todo Arguably Drupal core [$boot->getKernel()->getInstallProfile()] could do this - https://github.com/drupal/drupal/blob/8.6.x/core/lib/Drupal/Core/DrupalKernel.php#L1606 reads from DB storage but not file storage.
@@ -524,7 +524,7 @@ final class SiteInstallCommand extends Command
         return $profile;
     }
 
-    public function taskCallback($install_state): void
+    public function taskCallback(array $install_state): void
     {
         $this->logger->notice('Performed install task: {task}', ['task' => $install_state['active_task']]);
     }
@@ -597,7 +597,7 @@ final class SiteInstallCommand extends Command
      * Determine an appropriate site subdir name to use for the
      * provided uri.
      */
-    protected function getSitesSubdirFromUri($root, $uri)
+    protected function getSitesSubdirFromUri(string $root, $uri)
     {
         $dir = strtolower($uri);
         // Always accept simple uris (e.g. 'dev', 'stage', etc.)

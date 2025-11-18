@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\MigrateRunnerCommands;
 use Drupal\migrate\Plugin\MigrationInterface;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 
-#[CoversClass(\Drush\Commands\core\MigrateRunnerCommands::class)]
+#[CoversClass(MigrateRunnerCommands::class)]
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'handleMissingSourceRows')]
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'initProgressBar')]
 #[Group('commands')]

@@ -209,7 +209,7 @@ final class EntityCreateCommand extends Command
         }
     }
 
-    private function removePreamble(string $yaml, &$lines): void
+    private function removePreamble(string $yaml, array &$lines): void
     {
         $lines = explode("\n", $yaml);
         foreach ($lines as $index => $line) {

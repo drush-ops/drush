@@ -341,7 +341,7 @@ abstract class UnishTestCase extends TestCase
         return true;
     }
 
-    public static function recursiveCopy($src, $dst): void
+    public static function recursiveCopy(string $src, string $dst): void
     {
         $dir = opendir($src);
         self::mkdir($dst);
@@ -440,7 +440,7 @@ abstract class UnishTestCase extends TestCase
      *
      * @see drush_delete_dir_contents()
      */
-    public static function recursiveDeleteDirContents($dir, $force = false, $exclude = []): bool
+    public static function recursiveDeleteDirContents(string $dir, $force = false, $exclude = []): bool
     {
         $scandir = @scandir($dir);
         if (!is_array($scandir)) {
@@ -474,7 +474,7 @@ abstract class UnishTestCase extends TestCase
         return Path::join(self::webroot(), 'drush');
     }
 
-    public static function directoryCache($subdir = ''): string
+    public static function directoryCache(string $subdir = ''): string
     {
         return getenv('CACHE_PREFIX') . '/' . $subdir;
     }

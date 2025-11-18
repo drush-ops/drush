@@ -172,7 +172,7 @@ final class EditCommand extends Command
      * Determine which .bashrc file is best to use on this platform.
      *
      */
-    public static function findBashrc($home): string
+    public static function findBashrc(string $home): string
     {
         return $home . "/.bashrc";
     }

@@ -21,7 +21,7 @@ return RectorConfig::configure()
     ->withAttributesSets()
     ->withImportNames(importShortClasses: false, removeUnusedImports: true)
     ->withPreparedSets(deadCode: true, codeQuality: true)
-    ->withTypeCoverageLevel(50)
+    ->withTypeCoverageLevel(60)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,

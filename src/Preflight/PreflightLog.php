@@ -27,7 +27,7 @@ class PreflightLog
         return $this;
     }
 
-    public function log($message): void
+    public function log(string $message): void
     {
         if ($this->getDebug()) {
             $this->output->write(' [preflight] ' . $message . "\n");

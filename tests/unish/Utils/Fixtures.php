@@ -17,7 +17,7 @@ trait Fixtures
         return Path::join($this->fixturesDir(), 'home');
     }
 
-    protected function siteDir($majorVersion = '8'): string
+    protected function siteDir(string $majorVersion = '8'): string
     {
         return Path::join($this->fixturesDir(), '/sites/d' . $majorVersion);
     }
