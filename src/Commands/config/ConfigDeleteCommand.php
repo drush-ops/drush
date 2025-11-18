@@ -44,7 +44,7 @@ final class ConfigDeleteCommand extends Command
             ->addUsage("config:delete system.site page.front");
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->hasArgument('config_name') && empty($input->getArgument('config_name'))) {
             $io = new DrushStyle($input, $output);

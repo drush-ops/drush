@@ -40,7 +40,7 @@ final class GenerateCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument('generator', InputArgument::OPTIONAL, 'A generator name. Omit to pick from available Generators.')

@@ -50,7 +50,7 @@ final class ConfigGetCommand extends Command
             ->addUsage('config:get system.site');
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output)
+    protected function interact(InputInterface $input, OutputInterface $output): void
     {
         if ($input->hasArgument('config_name') && empty($input->getArgument('config_name'))) {
             $io = new DrushStyle($input, $output);

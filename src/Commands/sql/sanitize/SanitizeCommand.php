@@ -34,7 +34,7 @@ final class SanitizeCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $help = <<<HELP
 Commandfiles may add custom operations by implementing a Listener that subscribes to two events:

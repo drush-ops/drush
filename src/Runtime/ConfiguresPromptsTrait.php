@@ -23,10 +23,8 @@ trait ConfiguresPromptsTrait
 {
     /**
      * Configure the prompt fallbacks.
-     *
-     * @return void
      */
-    public function configurePrompts(InputInterface $input)
+    public function configurePrompts(InputInterface $input): void
     {
         Prompt::setOutput($this->output);
 

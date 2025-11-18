@@ -32,7 +32,7 @@ final class SqlDropCommand extends Command
 
     const string NAME = 'sql:drop';
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption(name: 'extra', mode: InputOption::VALUE_REQUIRED, description: 'Add custom options to the connect string (e.g. --extra=--skip-column-names)');

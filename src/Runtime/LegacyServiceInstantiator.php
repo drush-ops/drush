@@ -37,7 +37,7 @@ class LegacyServiceInstantiator
      *
      * @param array $serviceFiles List of drush.services.yml files
      */
-    public function loadServiceFiles(array $serviceFiles)
+    public function loadServiceFiles(array $serviceFiles): void
     {
         foreach ($serviceFiles as $serviceFile) {
             $serviceFileContents = '';
@@ -105,7 +105,7 @@ class LegacyServiceInstantiator
      *
      * @param array $services List of drush services
      */
-    public function instantiateServices(array $services)
+    public function instantiateServices(array $services): void
     {
         foreach ($services as $serviceName => $info) {
             // Skip legacy generators.
@@ -201,7 +201,7 @@ class LegacyServiceInstantiator
      * @param string $method Name of method to call
      * @param array $arguments Arguments to pass to class method
      */
-    public function call($object, $method, array $arguments)
+    public function call($object, $method, array $arguments): void
     {
         $resolved = $this->resolveArguments($arguments);
         if ($this->atLeastOneValue($resolved)) {

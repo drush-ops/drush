@@ -48,7 +48,7 @@ final class MigrateRunnerCommands extends DrushCommands
     /**
      * Provide a migration plugin manager.
      */
-    public function setMigrationPluginManager(MigrationPluginManagerInterface $migrationPluginManager)
+    public function setMigrationPluginManager(MigrationPluginManagerInterface $migrationPluginManager): void
     {
         $this->migrationPluginManager = $migrationPluginManager;
     }

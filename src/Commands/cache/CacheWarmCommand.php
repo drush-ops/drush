@@ -29,7 +29,7 @@ final class CacheWarmCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setHelp('Requires Drupal 11.2+. See https://www.drupal.org/node/3386853');

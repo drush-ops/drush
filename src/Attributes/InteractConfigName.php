@@ -22,7 +22,7 @@ class InteractConfigName
     ) {
     }
 
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $commandInfo->addAnnotation(ConfigCommands::INTERACT_CONFIG_NAME, $attribute->newInstance()->argumentName);
     }
