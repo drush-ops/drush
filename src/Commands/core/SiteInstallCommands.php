@@ -16,5 +16,5 @@ final class SiteInstallCommands extends DrushCommands
     use ExecTrait;
 
     #[Deprecated('Use SiteInstallCommand::NAME instead.')]
-    const INSTALL = 'site:install';
+    const string INSTALL = 'site:install';
 }

@@ -33,7 +33,7 @@ final class MigrateRollbackCommand extends Command
     use AutowireTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:rollback';
+    public const string NAME = 'migrate:rollback';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

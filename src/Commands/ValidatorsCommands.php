@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\Input;
 final class ValidatorsCommands
 {
     #[Deprecated('Use CLI/ValidateEntityLoad Attribute instead')]
-    const VALIDATE_ENTITY_LOAD = 'validate-entity-load';
+    const string VALIDATE_ENTITY_LOAD = 'validate-entity-load';
 
     /**
      * Validate that passed entity names are valid.

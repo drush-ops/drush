@@ -36,7 +36,7 @@ final class UserInformationCommand extends Command
     use FormatterTrait;
     use UserTrait;
 
-    public const NAME = 'user:information';
+    public const string NAME = 'user:information';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

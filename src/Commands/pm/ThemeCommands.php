@@ -9,7 +9,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class ThemeCommands
 {
     #[Deprecated(reason: 'Use ThemeInstallCommand::NAME')]
-    const INSTALL = 'theme:install';
+    const string INSTALL = 'theme:install';
     #[Deprecated(reason: 'Use ThemeUninstallCommand::NAME')]
-    const UNINSTALL = 'theme:uninstall';
+    const string UNINSTALL = 'theme:uninstall';
 }

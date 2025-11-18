@@ -33,7 +33,7 @@ final class QueueRunCommand extends Command
     use AutowireTrait;
     use QueueTrait;
 
-    const NAME = 'queue:run';
+    const string NAME = 'queue:run';
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,

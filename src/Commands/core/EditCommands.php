@@ -10,5 +10,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class EditCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use EditCommand::NAME')]
-    const EDIT = 'core:edit';
+    const string EDIT = 'core:edit';
 }

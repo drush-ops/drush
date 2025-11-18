@@ -30,7 +30,7 @@ final class UserRoleAddCommand extends Command
     use AutowireTrait;
     use UserTrait;
 
-    public const NAME = 'user:role:add';
+    public const string NAME = 'user:role:add';
 
     public function __construct(
         protected readonly LoggerInterface $logger,

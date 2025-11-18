@@ -50,7 +50,7 @@ final class SiteInstallCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'site:install';
+    public const string NAME = 'site:install';
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,

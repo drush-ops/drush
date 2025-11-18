@@ -27,7 +27,7 @@ final class ConfigDeleteCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'config:delete';
+    public const string NAME = 'config:delete';
 
     public function __construct(
         protected readonly ConfigFactoryInterface $configFactory,

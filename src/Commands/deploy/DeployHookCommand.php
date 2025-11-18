@@ -30,7 +30,7 @@ final class DeployHookCommand extends Command
     use AutowireTrait;
     use DeployTrait;
 
-    public const NAME = 'deploy:hook';
+    public const string NAME = 'deploy:hook';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,

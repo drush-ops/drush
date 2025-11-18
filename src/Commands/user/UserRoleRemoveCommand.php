@@ -30,7 +30,7 @@ final class UserRoleRemoveCommand extends Command
     use AutowireTrait;
     use UserTrait;
 
-    public const NAME = 'user:role:remove';
+    public const string NAME = 'user:role:remove';
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,

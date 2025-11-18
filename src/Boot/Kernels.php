@@ -18,21 +18,21 @@ final class Kernels
      *
      * @var string
      */
-    const DRUPAL = 'drupal';
+    const string DRUPAL = 'drupal';
 
     /**
      * The kernel that is used during database updates.
      *
      * @var string
      */
-    const UPDATE = 'update';
+    const string UPDATE = 'update';
 
     /**
      * The kernel that is used during site installation.
      *
      * @var string
      */
-    const INSTALLER = 'installer';
+    const string INSTALLER = 'installer';
 
     /**
      * Returns the available kernels.

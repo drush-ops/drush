@@ -20,9 +20,9 @@ final class FieldDefinitionCommands extends DrushCommands
 {
     use AutowireTrait;
 
-    const TYPES = 'field:types';
-    const WIDGETS = 'field:widgets';
-    const FORMATTERS = 'field:formatters';
+    const string TYPES = 'field:types';
+    const string WIDGETS = 'field:widgets';
+    const string FORMATTERS = 'field:formatters';
 
     public function __construct(
         private readonly FieldTypePluginManagerInterface $typePluginManager,

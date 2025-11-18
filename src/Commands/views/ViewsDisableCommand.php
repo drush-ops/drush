@@ -25,7 +25,7 @@ final class ViewsDisableCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'views:disable';
+    public const string NAME = 'views:disable';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager

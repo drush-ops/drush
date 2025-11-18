@@ -27,7 +27,7 @@ final class CoreGlobalOptionsCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'core:global-options';
+    public const string NAME = 'core:global-options';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

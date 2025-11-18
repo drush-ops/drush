@@ -42,7 +42,7 @@ final class ConfigExportCommand extends Command
     use FormatterTrait;
     use ExecTrait;
 
-    public const NAME = 'config:export';
+    public const string NAME = 'config:export';
 
     public function __construct(
         protected readonly ConfigManagerInterface $configManager,

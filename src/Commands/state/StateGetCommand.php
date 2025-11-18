@@ -28,7 +28,7 @@ final class StateGetCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'state:get';
+    public const string NAME = 'state:get';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

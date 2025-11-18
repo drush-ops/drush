@@ -59,14 +59,14 @@ final class ArchiveDumpCommand extends Command
         parent::__construct();
     }
 
-    private const COMPONENT_CODE = 'code';
-    private const COMPONENT_FILES = 'files';
-    private const COMPONENT_DATABASE = 'database';
-    private const SQL_DUMP_FILE_NAME = 'database.sql';
-    private const ARCHIVES_DIR_NAME = 'archives';
-    private const ARCHIVE_FILE_NAME = 'archive.tar';
-    private const MANIFEST_FORMAT_VERSION = '1.0';
-    private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
+    private const string COMPONENT_CODE = 'code';
+    private const string COMPONENT_FILES = 'files';
+    private const string COMPONENT_DATABASE = 'database';
+    private const string SQL_DUMP_FILE_NAME = 'database.sql';
+    private const string ARCHIVES_DIR_NAME = 'archives';
+    private const string ARCHIVE_FILE_NAME = 'archive.tar';
+    private const string MANIFEST_FORMAT_VERSION = '1.0';
+    private const string MANIFEST_FILE_NAME = 'MANIFEST.yml';
 
     protected function configure(): void
     {

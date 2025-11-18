@@ -38,7 +38,7 @@ final class EntitySaveCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'entity:save';
+    public const string NAME = 'entity:save';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,

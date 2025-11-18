@@ -13,7 +13,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class SanitizeCommands extends DrushCommands
 {
     #[Deprecated('This constant will soon move to a new class. Use the string value instead.')]
-    const SANITIZE = 'sql:sanitize';
+    const string SANITIZE = 'sql:sanitize';
     #[Deprecated('This constant will soon move to a new class. Use the string value instead.')]
-    const CONFIRMS = 'sql-sanitize-confirms';
+    const string CONFIRMS = 'sql-sanitize-confirms';
 }

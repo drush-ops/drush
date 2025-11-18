@@ -9,5 +9,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class SqlSyncCommands
 {
     #[Deprecated(reason: 'Use SqlSyncCommand::NAME')]
-    const SYNC = 'sql:sync';
+    const string SYNC = 'sql:sync';
 }

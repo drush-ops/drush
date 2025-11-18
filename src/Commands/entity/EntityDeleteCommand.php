@@ -29,7 +29,7 @@ final class EntityDeleteCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'entity:delete';
+    public const string NAME = 'entity:delete';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,

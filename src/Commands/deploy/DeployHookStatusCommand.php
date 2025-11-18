@@ -31,7 +31,7 @@ final class DeployHookStatusCommand extends Command
     use DeployTrait;
     use FormatterTrait;
 
-    public const NAME = 'deploy:hook-status';
+    public const string NAME = 'deploy:hook-status';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

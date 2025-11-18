@@ -43,7 +43,7 @@ final class MigrateFieldsSourceCommand extends Command
     use FormatterTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:fields-source';
+    public const string NAME = 'migrate:fields-source';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

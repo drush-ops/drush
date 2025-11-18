@@ -22,7 +22,7 @@ final class RoleCreateCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'role:create';
+    const string NAME = 'role:create';
 
     public function __construct()
     {

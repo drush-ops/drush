@@ -29,7 +29,7 @@ final class LanguageAddCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'language:add';
+    public const string NAME = 'language:add';
 
     public function __construct(
         protected readonly LanguageManagerInterface $languageManager,

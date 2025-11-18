@@ -33,7 +33,7 @@ final class SshCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'site:ssh';
+    public const string NAME = 'site:ssh';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,

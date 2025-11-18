@@ -24,7 +24,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
-    const BASE_OVERRIDE_CREATE = 'field:base-override-create';
+    const string BASE_OVERRIDE_CREATE = 'field:base-override-create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,

@@ -24,7 +24,7 @@ final class DrupalDirectoryCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'drupal:directory';
+    public const string NAME = 'drupal:directory';
 
     protected BackendPathEvaluator $pathEvaluator;
 

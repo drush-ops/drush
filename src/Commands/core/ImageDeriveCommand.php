@@ -28,7 +28,7 @@ final class ImageDeriveCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'image:derive';
+    public const string NAME = 'image:derive';
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,

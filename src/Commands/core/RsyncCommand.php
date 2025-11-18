@@ -43,7 +43,7 @@ final class RsyncCommand extends Command
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
      */
-    const NAME = 'core:rsync';
+    const string NAME = 'core:rsync';
 
     protected BackendPathEvaluator $pathEvaluator;
 

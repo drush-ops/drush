@@ -31,7 +31,7 @@ final class RunserverCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    const NAME = 'runserver';
+    const string NAME = 'runserver';
 
     protected $uri;
 

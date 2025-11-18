@@ -9,9 +9,9 @@ use JetBrains\PhpStorm\Deprecated;
 final class QueueCommands
 {
     #[Deprecated(reason: 'Use QueueRunCommand::NAME')]
-    const RUN = 'queue:run';
+    const string RUN = 'queue:run';
     #[Deprecated(reason: 'Use QueueListCommand::NAME')]
-    const LIST = 'queue:list';
+    const string LIST = 'queue:list';
     #[Deprecated(reason: 'Use QueueDeleteCommand::NAME')]
-    const DELETE = 'queue:delete';
+    const string DELETE = 'queue:delete';
 }

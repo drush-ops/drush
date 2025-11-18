@@ -30,7 +30,7 @@ final class QueueListCommand extends Command
     use FormatterTrait;
     use QueueTrait;
 
-    const NAME = 'queue:list';
+    const string NAME = 'queue:list';
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,

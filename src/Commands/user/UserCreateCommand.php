@@ -38,7 +38,7 @@ final class UserCreateCommand extends Command
     use FormatterTrait;
     use UserTrait;
 
-    public const NAME = 'user:create';
+    public const string NAME = 'user:create';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

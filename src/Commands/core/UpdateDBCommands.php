@@ -16,9 +16,9 @@ final class UpdateDBCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated('Moved. Use \Drush\Commands\core\UpdateDbCommand::NAME')]
-    const UPDATEDB = 'updatedb';
+    const string UPDATEDB = 'updatedb';
     #[Deprecated('Moved. Use \Drush\Commands\core\UpdateDbStatusCommand::NAME')]
-    const STATUS = 'updatedb:status';
+    const string STATUS = 'updatedb:status';
     #[Deprecated('Moved. Use \Drush\Commands\core\UpdateDbBatchProcessCommand::NAME')]
-    const BATCH_PROCESS = 'updatedb:batch-process';
+    const string BATCH_PROCESS = 'updatedb:batch-process';
 }

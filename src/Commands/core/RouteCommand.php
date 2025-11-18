@@ -29,7 +29,7 @@ final class RouteCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'core:route';
+    public const string NAME = 'core:route';
 
     public function __construct(
         protected readonly RouteProviderInterface $routeProvider,

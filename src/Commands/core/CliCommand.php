@@ -48,7 +48,7 @@ final class CliCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'php:cli';
+    public const string NAME = 'php:cli';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,

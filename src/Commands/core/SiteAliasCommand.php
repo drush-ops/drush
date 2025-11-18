@@ -32,7 +32,7 @@ final class SiteAliasCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    const NAME = 'site:alias';
+    const string NAME = 'site:alias';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

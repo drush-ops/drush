@@ -30,7 +30,7 @@ final class VersionCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'version';
+    public const string NAME = 'version';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

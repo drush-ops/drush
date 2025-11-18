@@ -29,7 +29,7 @@ final class BrowseCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    const NAME = 'browse';
+    const string NAME = 'browse';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,

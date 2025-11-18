@@ -37,7 +37,7 @@ final class EntityCreateCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    const NAME = 'entity:create';
+    const string NAME = 'entity:create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,

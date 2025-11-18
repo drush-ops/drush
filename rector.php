@@ -16,9 +16,10 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         // __DIR__ . '/tests',
     ])
-    ->withPhpSets(php82: true)
+    ->withPhpSets(php83: true)
     ->withImportNames(importNames: false, importShortClasses: false)
     ->withPreparedSets(deadCode: true, codeQuality: true)
+    ->withTypeCoverageLevel(9)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,
@@ -28,6 +29,7 @@ return RectorConfig::configure()
         SimplifyIfElseToTernaryRector::class,
         \Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector::class,
         NullToStrictStringFuncCallArgRector::class,
+        \Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector::class,
         \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPublicMethodParameterRector::class,
         \Rector\Php81\Rector\Array_\FirstClassCallableRector::class,
         \Rector\Strict\Rector\Empty_\DisallowedEmptyRuleFixerRector::class,

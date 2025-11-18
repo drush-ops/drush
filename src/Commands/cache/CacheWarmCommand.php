@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Version(version: '13.5')]
 final class CacheWarmCommand extends Command
 {
-    const NAME = 'cache:warm';
+    const string NAME = 'cache:warm';
 
     public function __construct(
         private readonly CachePreWarmerInterface $warmer,

@@ -23,7 +23,7 @@ final class CronCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'core:cron';
+    public const string NAME = 'core:cron';
 
     public function __construct(
         protected readonly CronInterface $cron,

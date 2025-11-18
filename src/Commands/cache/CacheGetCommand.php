@@ -36,7 +36,7 @@ final class CacheGetCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'cache:get';
+    public const string NAME = 'cache:get';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

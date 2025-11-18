@@ -36,7 +36,7 @@ final class ConfigStatusCommand extends Command
     use ConfigTrait;
     use FormatterTrait;
 
-    public const NAME = 'config:status';
+    public const string NAME = 'config:status';
 
     public function __construct(
         protected readonly ConfigFactoryInterface $configFactory,

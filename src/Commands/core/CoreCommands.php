@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class CoreCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use VersionCommand::NAME')]
-    const VERSION = 'version';
+    const string VERSION = 'version';
     #[Deprecated(reason: 'Use CoreGlobalOptionsCommand::NAME')]
-    const GLOBAL_OPTIONS = 'core:global-options';
+    const string GLOBAL_OPTIONS = 'core:global-options';
 }

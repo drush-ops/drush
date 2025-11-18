@@ -20,7 +20,7 @@ final class FieldInfoCommands extends DrushCommands
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
 
-    const INFO = 'field:info';
+    const string INFO = 'field:info';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,

@@ -37,7 +37,7 @@ final class MigrateImportCommand extends Command
     use AutowireTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:import';
+    public const string NAME = 'migrate:import';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

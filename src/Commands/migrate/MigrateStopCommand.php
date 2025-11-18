@@ -35,7 +35,7 @@ final class MigrateStopCommand extends Command
     use AutowireTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:stop';
+    public const string NAME = 'migrate:stop';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

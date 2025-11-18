@@ -21,7 +21,7 @@ final class StateDeleteCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'state:delete';
+    public const string NAME = 'state:delete';
 
     public function __construct(
         protected StateInterface $state

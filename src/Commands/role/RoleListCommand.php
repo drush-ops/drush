@@ -29,7 +29,7 @@ final class RoleListCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    const NAME = 'role:list';
+    const string NAME = 'role:list';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

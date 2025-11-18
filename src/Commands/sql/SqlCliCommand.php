@@ -33,7 +33,7 @@ final class SqlCliCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'sql:cli';
+    public const string NAME = 'sql:cli';
 
     public function __construct(
         protected readonly LoggerInterface $logger,

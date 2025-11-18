@@ -32,7 +32,7 @@ final class HelpCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    const NAME = 'help';
+    const string NAME = 'help';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

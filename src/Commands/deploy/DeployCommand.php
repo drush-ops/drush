@@ -33,7 +33,7 @@ final class DeployCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'deploy';
+    public const string NAME = 'deploy';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,
