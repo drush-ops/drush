@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drupal\Core\Extension\ThemeExtensionList;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Exceptions\UserAbortException;
 use Drush\Utils\StringUtils;
 
 final class ThemeCommands extends DrushCommands
@@ -20,10 +22,16 @@ final class ThemeCommands extends DrushCommands
     const UNINSTALL = 'theme:uninstall';
 
     public function __construct(
+        protected ConfigFactoryInterface $configFactory,
         protected ThemeInstallerInterface $themeInstaller,
         protected ThemeExtensionList $extensionListTheme,
     ) {
         parent::__construct();
+    }
+
+    public function getConfigFactory(): ConfigFactoryInterface
+    {
+        return $this->configFactory;
     }
 
     public function getThemeInstaller(): ThemeInstallerInterface
