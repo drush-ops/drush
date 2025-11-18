@@ -79,7 +79,7 @@ final class CoreGlobalOptionsCommand extends Command
                 'description' => $description,
             ];
         }
-        usort($rows, fn($a, $b) => strnatcmp($a['name'], $b['name']));
+        usort($rows, fn($a, $b): int => strnatcmp($a['name'], $b['name']));
 
         return new RowsOfFields($rows);
     }

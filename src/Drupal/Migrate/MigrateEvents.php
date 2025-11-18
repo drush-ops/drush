@@ -23,7 +23,6 @@ final class MigrateEvents
      *
      * @Event
      *
-     * @var string
      *
      * @todo Deprecate this event when #2952291 lands.
      *

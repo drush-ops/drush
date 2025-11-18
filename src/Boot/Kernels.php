@@ -15,22 +15,16 @@ final class Kernels
 {
     /**
      * The default kernel that is used on standard requests.
-     *
-     * @var string
      */
     const string DRUPAL = 'drupal';
 
     /**
      * The kernel that is used during database updates.
-     *
-     * @var string
      */
     const string UPDATE = 'update';
 
     /**
      * The kernel that is used during site installation.
-     *
-     * @var string
      */
     const string INSTALLER = 'installer';
 

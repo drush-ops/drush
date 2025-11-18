@@ -385,16 +385,16 @@ final class ArchiveDumpCommand extends Command
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
         // Remove path projects ('source' is empty for path projects)
-        $installedPackages = array_filter($installedPackages, fn($dependency) => !empty($dependency['source']));
+        $installedPackages = array_filter($installedPackages, fn($dependency): bool => !empty($dependency['source']));
         $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
-            fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
+            fn($path): string => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
             $installedPackagesPaths
         );
         $installedPackagesRelativePaths = array_unique(
             array_filter(
                 $installedPackagesRelativePaths,
-                fn($path) => '' !== $path && !str_starts_with($path, 'vendor')
+                fn($path): bool => '' !== $path && !str_starts_with($path, 'vendor')
             )
         );
         $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);
@@ -553,7 +553,7 @@ final class ArchiveDumpCommand extends Command
     private function getRegexpsForPaths(array $paths): array
     {
         return array_map(
-            fn($path) => sprintf('#^%s$#', trim($path)),
+            fn($path): string => sprintf('#^%s$#', trim($path)),
             $paths
         );
     }
