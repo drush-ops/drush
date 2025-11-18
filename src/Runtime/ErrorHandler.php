@@ -22,7 +22,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
         set_error_handler($this->errorHandler(...));
     }
 
-    public function errorHandler($errno, $message, $filename, $line)
+    public function errorHandler($errno, string $message, $filename, string $line)
     {
         // "error_reporting" is usually set in php.ini, but may be changed by
         // drush_errors_on() and drush_errors_off().

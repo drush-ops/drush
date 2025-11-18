@@ -34,7 +34,7 @@ class ListCommands extends DrushCommands
     #[CLI\Usage(name: 'drush list', description: 'List all commands.')]
     #[CLI\Usage(name: 'drush list --filter=devel_generate', description: 'Show only commands starting with devel-')]
     #[CLI\Usage(name: 'drush list --format=xml', description: 'List all commands in Symfony compatible xml format.')]
-    public function helpList($options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
+    public function helpList(array $options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
     {
         $application = Drush::getApplication();
         $all = $application->all();

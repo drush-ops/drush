@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drush\Commands\core\DrupalDependenciesCommands;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Drupal\Component\Utility\DeprecationHelper;
 
-#[CoversClass(\Drush\Commands\core\DrupalDependenciesCommands::class)]
+#[CoversClass(DrupalDependenciesCommands::class)]
 class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
     public function testModuleDependentOfModule(): void

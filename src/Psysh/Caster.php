@@ -20,7 +20,7 @@ class Caster
     /**
      * Casts \Drupal\Core\Entity\ContentEntityInterface classes.
      */
-    public static function castContentEntity(ContentEntityInterface $entity, $array, $stub, $isNested)
+    public static function castContentEntity(ContentEntityInterface $entity, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             $array[BaseCaster::PREFIX_VIRTUAL . 'translationLanguages'] = implode(', ', array_keys($entity->getTranslationLanguages()));
@@ -57,7 +57,7 @@ class Caster
     /**
      * Casts \Drupal\Core\Field\FieldItemListInterface classes.
      */
-    public static function castFieldItemList($list_item, $array, $stub, $isNested)
+    public static function castFieldItemList($list_item, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             foreach ($list_item as $delta => $item) {
@@ -71,7 +71,7 @@ class Caster
     /**
      * Casts \Drupal\Core\Field\FieldItemInterface classes.
      */
-    public static function castFieldItem($item, $array, $stub, $isNested)
+    public static function castFieldItem($item, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             $array[BaseCaster::PREFIX_VIRTUAL . 'value'] = $item->getValue();
@@ -83,7 +83,7 @@ class Caster
     /**
      * Casts \Drupal\Core\Config\Entity\ConfigEntityInterface classes.
      */
-    public static function castConfigEntity($entity, $array, $stub, $isNested)
+    public static function castConfigEntity($entity, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             foreach ($entity->toArray() as $property => $value) {
@@ -97,7 +97,7 @@ class Caster
     /**
      * Casts \Drupal\Core\Config\ConfigBase classes.
      */
-    public static function castConfig($config, $array, $stub, $isNested)
+    public static function castConfig($config, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             foreach ($config->get() as $property => $value) {
@@ -111,7 +111,7 @@ class Caster
     /**
      * Casts \Drupal\Component\DependencyInjection\Container classes.
      */
-    public static function castContainer($container, $array, $stub, $isNested)
+    public static function castContainer($container, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             $service_ids = $container->getServiceIds();
@@ -128,7 +128,7 @@ class Caster
     /**
      * Casts \Drupal\Component\Render\MarkupInterface classes.
      */
-    public static function castMarkup($markup, $array, $stub, $isNested)
+    public static function castMarkup($markup, array $array, $stub, $isNested): array
     {
         if (!$isNested) {
             $array[BaseCaster::PREFIX_VIRTUAL . 'markup'] = (string) $markup;

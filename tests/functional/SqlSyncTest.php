@@ -174,7 +174,7 @@ class SqlSyncTest extends CommandUnishTestCase
      * @param bool $should_contain
      *   Whether the field should contain the value. Defaults to false.
      */
-    public function assertUserFieldContents($field_name, string $value, $should_contain = false): void
+    public function assertUserFieldContents(string $field_name, string $value, $should_contain = false): void
     {
         $table = 'user__' . $field_name;
         $column = $field_name . '_value';

@@ -17,7 +17,7 @@ class LegacyPreflight
      * Include old code. It is an aspirational goal to remove or refactor
      * all of this into more modular, class-based code.
      */
-    public static function includeCode($drushBasePath): void
+    public static function includeCode(string $drushBasePath): void
     {
         // We still need preflight for drush_shutdown()
         require_once $drushBasePath . '/includes/preflight.inc';

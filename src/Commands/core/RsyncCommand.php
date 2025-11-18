@@ -106,7 +106,7 @@ final class RsyncCommand extends Command
         return self::SUCCESS;
     }
 
-    public function rsyncOptions($options, OutputInterface $output): string
+    public function rsyncOptions(array $options, OutputInterface $output): string
     {
         $verbose = $paths = '';
         // Process --include-paths and --exclude-paths options the same way

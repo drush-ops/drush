@@ -144,7 +144,7 @@ class HelpCLIFormatter implements FormatterInterface
         );
     }
 
-    public static function formatOptionDescription($option): string
+    public static function formatOptionDescription(array $option): string
     {
         $defaults = '';
         if (array_key_exists('defaults', $option)) {
@@ -158,7 +158,7 @@ class HelpCLIFormatter implements FormatterInterface
         return $option['description'] . $defaults;
     }
 
-    public static function formatArgumentName($argument)
+    public static function formatArgumentName(array $argument)
     {
         $element = $argument['name'];
         if (!$argument['is_required']) {
@@ -174,7 +174,7 @@ class HelpCLIFormatter implements FormatterInterface
         return $element;
     }
 
-    protected function cleanOptions(&$data): void
+    protected function cleanOptions(array &$data): void
     {
 
         if (array_key_exists('options', $data)) {

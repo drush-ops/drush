@@ -117,7 +117,7 @@ final class RunserverCommand extends Command
     /**
      * Determine the URI to use for this server.
      */
-    public function uri($uri, $options): array
+    public function uri($uri, array $options): array
     {
         $drush_default = [
             'host' => '127.0.0.1',

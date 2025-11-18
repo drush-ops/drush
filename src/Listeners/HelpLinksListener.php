@@ -28,7 +28,7 @@ final class HelpLinksListener
                 }
                 /** @var HelpLinks $instance */
                 $instance = $attributes[0]->newInstance();
-                $bullets = array_map(fn($case) => $case->consoleLink(), $instance->links);
+                $bullets = array_map(fn(\Drush\Command\HelpLinks $case) => $case->consoleLink(), $instance->links);
                 $help = $command->getHelp();
                 $help .= "\n\n" . self::bullets($bullets);
                 $command->setHelp($help);

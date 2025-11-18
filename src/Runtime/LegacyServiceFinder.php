@@ -85,7 +85,7 @@ class LegacyServiceFinder
      * @param string $module Module name
      * @param string $dir Full path to module base dir
      */
-    protected function findDefaultServicesFile($module, $dir)
+    protected function findDefaultServicesFile($module, string $dir)
     {
         $result = $dir . "/drush.services.yml";
         if (!file_exists($result)) {
@@ -140,7 +140,7 @@ class LegacyServiceFinder
      * @return string
      *   One discovered drush.service.yml file
      */
-    protected function findAppropriateServicesFile($module, $services, $dir): string
+    protected function findAppropriateServicesFile($module, $services, string $dir): string
     {
         $version = Drush::getVersion();
         $version = preg_replace('#-dev.*#', '', $version);

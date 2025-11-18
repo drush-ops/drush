@@ -384,7 +384,7 @@ class ServiceManager
         // particularly DrushCommands (our abstract base class).
         // n.b. we cannot simply use 'isInstantiable' here because
         // the constructor is typically protected when using a static create method
-        $serviceClasses = array_filter($serviceClasses, function ($class): bool {
+        $serviceClasses = array_filter($serviceClasses, function (string $class): bool {
             try {
                 $reflection = new \ReflectionClass($class);
             } catch (\Throwable) {

@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
 use Unish\TestSqlIdMap;
 
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateUtils::class, 'parseIdList')]
-#[CoversClass(\Drush\Drupal\Migrate\MigrateIdMapFilter::class)]
+#[CoversClass(MigrateIdMapFilter::class)]
 class MigrateRunnerTest extends TestCase
 {
     #[DataProvider('dataProviderParseIdList')]

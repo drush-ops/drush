@@ -100,7 +100,7 @@ final class RequirementsCommand extends Command
         $format = $input->getOption('format');
         foreach ($requirements as $key => $info) {
             // Adjust once Drupal 11.1- is unsupported.
-            $severity = array_key_exists('severity', $info) ? $info['severity'] : -1;
+            $severity = array_key_exists('severity', $info) && !is_null($info['severity']) ? $info['severity'] : -1;
             if (is_object($severity)) {
                 $severity = $severity->value;
             }
@@ -120,7 +120,7 @@ final class RequirementsCommand extends Command
         return new RowsOfFields($rows ?? []);
     }
 
-    private function styleRow($content, $format, $severity): ?string
+    private function styleRow(string $content, $format, $severity): string
     {
         if (
             !in_array($format, [

@@ -6,7 +6,7 @@ use Drush\Drush;
 
 class UnitBatchOperations
 {
-    public static function operate(&$context): void
+    public static function operate(array &$context): void
     {
         $context['message'] = "!!! ArrayObject does its job.";
 
