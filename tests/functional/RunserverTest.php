@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace functional;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\RunserverCommands;
 use Unish\CommandUnishTestCase;
 
 /**
  * Tests Runserver commands
- *
- * @group commands
  */
+#[Group('commands')]
 class RunserverTest extends CommandUnishTestCase
 {
     public function testRunserver(): void

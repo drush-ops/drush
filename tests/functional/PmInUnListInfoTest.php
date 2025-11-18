@@ -9,15 +9,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\pm\ThemeInstallCommand;
 use Drush\Commands\sql\SqlCommands;
 
-/**
- *  @group slow
- *  @group pm
- */
+#[Group('slow')]
+#[Group('pm')]
 class PmInUnListInfoTest extends CommandUnishTestCase
 {
     public function testEnDisUnList(): void

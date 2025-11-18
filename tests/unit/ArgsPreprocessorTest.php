@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Preflight;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
@@ -11,9 +12,7 @@ class ArgsPreprocessorTest extends TestCase
 {
     use Fixtures;
 
-    /**
-     * @dataProvider argTestValues
-     */
+    #[DataProvider('argTestValues')]
     public function testArgPreprocessor(
         array $argv,
         ?string $alias,

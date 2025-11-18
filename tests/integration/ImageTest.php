@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\ImageDeriveCommand;
 use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\pm\PmCommands;
@@ -11,9 +12,8 @@ use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
  * Tests image:flush and image:derive commands.
- *
- * @group commands
  */
+#[Group('commands')]
 class ImageTest extends UnishApplicationTesterTestCase
 {
     public function testImage(): void

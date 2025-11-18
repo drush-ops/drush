@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Sql\SqlTableSelectionTrait;
 use PHPUnit\Framework\TestCase;
 
 /**
-  * Unit tests for expandWildcardTables() and filterTables().
-  *
-  * @group base
-  * @group sql
-  */
+ * Unit tests for expandWildcardTables() and filterTables().
+ */
+#[Group('base')]
+#[Group('sql')]
 class ExpandWildcardTablesTest extends TestCase
 {
     use SqlTableSelectionTrait;

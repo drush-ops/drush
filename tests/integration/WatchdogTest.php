@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
 
-/**
- * @group commands
- */
+#[Group('commands')]
 class WatchdogTest extends UnishIntegrationTestCase
 {
     public function testWatchdogShow(): void

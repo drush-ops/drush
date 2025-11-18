@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\sql\SqlCommands;
@@ -11,10 +13,8 @@ use Drush\Commands\updatedb\UpdateDBCommand;
 use Drush\Commands\updatedb\UpdateDbStatusCommand;
 use Symfony\Component\Filesystem\Path;
 
-/**
- *  @group slow
- *  @group commands
- */
+#[Group('slow')]
+#[Group('commands')]
 class UpdateDBTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
@@ -55,9 +55,8 @@ class UpdateDBTest extends CommandUnishTestCase
 
     /**
      * Tests that the updatedb command reports failed updates properly.
-     *
-     * @dataProvider failedUpdateProvider
      */
+    #[DataProvider('failedUpdateProvider')]
     public function testFailedUpdate(int $last_successful_update, array $expected_status_report, array $expected_update_log_output): void
     {
         $this->setUpDrupal(1, true);

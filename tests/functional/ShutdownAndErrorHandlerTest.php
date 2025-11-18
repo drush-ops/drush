@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\DrushCommands;
 
 /**
  * Tests the Drush error handler.
- *
- * @group base
  */
+#[Group('base')]
 class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
 {
     /**

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Unish;
 
-/**
- * @group commands
- */
+use PHPUnit\Framework\Attributes\Group;
+
+#[Group('commands')]
 class StaticCreateFactoryCommandsTest extends CommandUnishTestCase
 {
     /**

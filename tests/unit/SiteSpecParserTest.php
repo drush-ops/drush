@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\SiteAlias;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
@@ -11,9 +12,7 @@ class SiteSpecParserTest extends TestCase
 {
     use Fixtures;
 
-    /**
-     * @dataProvider parserTestValues
-     */
+    #[DataProvider('parserTestValues')]
     public function testSiteSpecParser(
         string $spec,
         array $expected
@@ -40,17 +39,13 @@ class SiteSpecParserTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    /**
-     * @dataProvider validSiteSpecs
-     */
+    #[DataProvider('validSiteSpecs')]
     public function testValidSiteSpecs(string $spec): void
     {
         $this->isSpecValid($spec, true);
     }
 
-    /**
-     * @dataProvider invalidSiteSpecs
-     */
+    #[DataProvider('invalidSiteSpecs')]
     public function testInvalidSiteSpecs(string $spec): void
     {
         $this->isSpecValid($spec, false);

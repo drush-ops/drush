@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Drush\Preflight\ArgsRemapper;
 use PHPUnit\Framework\TestCase;
 
 /**
  * Tests the Arguments Remapper.
- *
- * @group base
  */
+#[Group('base')]
 class ArgsRemapperTest extends TestCase
 {
-    /**
-     * @covers argsRemapper::ArgsRemapper
-     * @dataProvider argsProvider
-     */
+    #[DataProvider('argsProvider')]
     public function testCommandAliases(array $argv, array $expected): void
     {
         $remapOptions = [];

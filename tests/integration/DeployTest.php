@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\config\ConfigExportCommand;
 use Drush\Commands\core\DeployCommands;
 
-/**
- * @group commands
- */
+#[Group('commands')]
 class DeployTest extends UnishIntegrationTestCase
 {
     /**

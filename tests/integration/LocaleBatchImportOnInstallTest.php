@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\Component\Serialization\Yaml;
 use Drush\Commands\config\ConfigCommands;
 use Drush\Commands\config\ConfigExportCommands;
@@ -15,11 +16,9 @@ use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @group locale
- * @group pm
- * @group config
- */
+#[Group('locale')]
+#[Group('pm')]
+#[Group('config')]
 class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
 {
     protected string $translationDir;

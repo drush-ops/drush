@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\SiteInstallCommands;
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\sql\SqlCommands;
 use Unish\Utils\Fixtures;
 
-/**
- * @group base
- * @group slow
- */
+#[Group('base')]
+#[Group('slow')]
 class SiteInstallTest extends CommandUnishTestCase
 {
     use Fixtures;

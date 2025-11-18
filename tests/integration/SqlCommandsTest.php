@@ -9,15 +9,14 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\sql\SqlCliCommand;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Sql\SqlBase;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @group commands
- * @group sql
- */
+#[Group('commands')]
+#[Group('sql')]
 class SqlCommandsTest extends UnishIntegrationTestCase
 {
     public function testSqlQuery(): void

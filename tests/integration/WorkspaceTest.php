@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use PHPUnit\Framework\Attributes\Group;
 use Drupal\node\Entity\NodeType;
 use Drupal\workspaces\Entity\Workspace;
 use Drupal\node\Entity\Node;
@@ -15,9 +16,8 @@ use Drush\Commands\pm\PmUninstallCommand;
 
 /**
  * Tests Workspace commands
- *
- * @group commands
  */
+#[Group('commands')]
 class WorkspaceTest extends UnishIntegrationTestCase
 {
     private WorkspaceManagerInterface $workspaceManager;
