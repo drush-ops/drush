@@ -384,7 +384,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     static&nbsp;<a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getInstance">getInstance</a>($db_spec, $options)
+                    <a href="#method_getInstance">getInstance</a>(array $db_spec, $options)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -499,7 +499,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>($query, $input_file_original)
+                    <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>(string $query, $input_file_original)
         
                                             <p><p>Show the query in debug mode and simulate mode</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -1453,7 +1453,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <h3 id="method_getInstance">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlBase.php#L119">at line 119</a></div>
         <code>        static            <a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>|null
-    <strong>getInstance</strong>($db_spec, $options)
+    <strong>getInstance</strong>(array $db_spec, $options)
         </code>
     </h3>
     <div class="details">    
@@ -1469,7 +1469,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$db_spec</td>
                 <td></td>
             </tr>
@@ -1932,7 +1932,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <h3 id="method_logQueryInDebugMode">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlBase.php#L385">at line 385</a></div>
         <code>            protected        void
-    <strong>logQueryInDebugMode</strong>($query, $input_file_original)
+    <strong>logQueryInDebugMode</strong>(string $query, $input_file_original)
         </code>
     </h3>
     <div class="details">    
@@ -1947,7 +1947,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$query</td>
                 <td></td>
             </tr>
