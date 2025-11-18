@@ -23,7 +23,7 @@ class SiteAliasFileLoaderTest extends TestCase
         $this->sut->addLoader('yml', $ymlLoader);
     }
 
-    public function testLoadSingleAliasFile()
+    public function testLoadSingleAliasFile(): void
     {
         $siteAliasFixtures = $this->fixturesDir() . '/sitealiases/single';
         $this->assertTrue(is_dir($siteAliasFixtures));
@@ -58,7 +58,7 @@ class SiteAliasFileLoaderTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/group');
@@ -94,7 +94,7 @@ class SiteAliasFileLoaderTest extends TestCase
         $this->assertFalse($result);
     }
 
-    public function testLoadAll()
+    public function testLoadAll(): void
     {
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 

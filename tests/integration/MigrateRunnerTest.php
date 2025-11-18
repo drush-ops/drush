@@ -344,9 +344,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
             'no-progress' => null,
         ]);
 
-        $importOutput = array_values(array_filter(array_map('trim', $this->getErrorOutputAsList()), function (string $line): bool {
-            return str_starts_with($line, '[notice]');
-        }));
+        $importOutput = array_values(array_filter(array_map(trim(...), $this->getErrorOutputAsList()), fn(string $line): bool => str_starts_with($line, '[notice]')));
 
         $this->assertCount(10, $importOutput);
         foreach ($importOutput as $delta => $outputLine) {
@@ -454,9 +452,6 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->progressBarAssertionHelper(false);
     }
 
-    /**
-     * @param bool $assertHasProgressBar
-     */
     protected function progressBarAssertionHelper(bool $assertHasProgressBar): void
     {
         static $expectedProgressBars = [

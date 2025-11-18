@@ -61,7 +61,7 @@ class TestFixtureCommands extends DrushCommands
    * @command unit-batch
    * @bootstrap max
    */
-    public function drushUnitBatch()
+    public function drushUnitBatch(): void
     {
         // Reduce php memory/time limits to test respawn.
         // TODO.
@@ -73,7 +73,7 @@ class TestFixtureCommands extends DrushCommands
             'finished' => '\Unish\Batch\UnitBatchOperations::finish',
         ];
         \batch_set($batch);
-        $result = \drush_backend_batch_process();
+        \drush_backend_batch_process();
     }
 
   /**
@@ -90,7 +90,7 @@ class TestFixtureCommands extends DrushCommands
    * Return original argv as function result.
    * @command unit-return-argv
    */
-    public function drushUnitReturnArgv(array $args)
+    public function drushUnitReturnArgv(array $args): array
     {
         return $args;
     }
@@ -104,7 +104,7 @@ class TestFixtureCommands extends DrushCommands
      * @command unit-invalidate-container
      * @bootstrap site
      */
-    public function drushUnitInvalidateContainer()
+    public function drushUnitInvalidateContainer(): void
     {
         $autoloader = $this->loadDrupalAutoloader(DRUPAL_ROOT);
         $request = Drush::bootstrap()->getRequest();

@@ -15,9 +15,9 @@ class SiteSpecParserTest extends TestCase
      * @dataProvider parserTestValues
      */
     public function testSiteSpecParser(
-        $spec,
-        $expected
-    ) {
+        string $spec,
+        array $expected
+    ): void {
 
         $root = $this->siteDir();
         $fixtureSite = '/' . basename($root);
@@ -43,7 +43,7 @@ class SiteSpecParserTest extends TestCase
     /**
      * @dataProvider validSiteSpecs
      */
-    public function testValidSiteSpecs($spec)
+    public function testValidSiteSpecs(string $spec): void
     {
         $this->isSpecValid($spec, true);
     }
@@ -51,7 +51,7 @@ class SiteSpecParserTest extends TestCase
     /**
      * @dataProvider invalidSiteSpecs
      */
-    public function testInvalidSiteSpecs($spec)
+    public function testInvalidSiteSpecs(string $spec): void
     {
         $this->isSpecValid($spec, false);
     }
@@ -64,7 +64,7 @@ class SiteSpecParserTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public static function validSiteSpecs()
+    public static function validSiteSpecs(): array
     {
         return [
             [ '/path/to/drupal#uri' ],
@@ -78,7 +78,7 @@ class SiteSpecParserTest extends TestCase
         ];
     }
 
-    public static function invalidSiteSpecs()
+    public static function invalidSiteSpecs(): array
     {
         return [
             [ 'uri' ],
@@ -92,7 +92,7 @@ class SiteSpecParserTest extends TestCase
         ];
     }
 
-    public static function parserTestValues()
+    public static function parserTestValues(): array
     {
         return [
             [

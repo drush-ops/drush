@@ -17,7 +17,7 @@ use Drush\Commands\sql\SqlCommands;
  */
 class SqlConnectTest extends CommandUnishTestCase
 {
-    public function testSqlConnect()
+    public function testSqlConnect(): void
     {
         $this->setUpDrupal(1, true);
         // Get the connection details with sql-connect and check its structure.

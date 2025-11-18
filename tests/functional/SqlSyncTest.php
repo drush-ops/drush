@@ -19,7 +19,7 @@ use Drush\Commands\sql\SqlSyncCommands;
  */
 class SqlSyncTest extends CommandUnishTestCase
 {
-    public function testSimulatedSqlSync()
+    public function testSimulatedSqlSync(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('On Windows, Paths mismatch and confuse rsync.');
@@ -47,8 +47,6 @@ class SqlSyncTest extends CommandUnishTestCase
             // @todo Ensure that shortcuts are normalized to long option names https://github.com/drush-ops/drush/pull/4515.
             'verbose' => null,
         ];
-
-        $expectedAliasPath = '--alias-path=__DIR__/resources/alias-fixtures';
 
         // Test simulated simple rsync remote-to-local
         $this->drush(SqlSyncCommands::SYNC, ['@synctest.remote', '@synctest.local'], $options, '@synctest.local');
@@ -88,7 +86,7 @@ class SqlSyncTest extends CommandUnishTestCase
         return $this->localSqlSync();
     }
 
-    public function localSqlSync()
+    public function localSqlSync(): void
     {
 
         $options = [
@@ -178,7 +176,7 @@ class SqlSyncTest extends CommandUnishTestCase
      * @param bool $should_contain
      *   Whether the field should contain the value. Defaults to false.
      */
-    public function assertUserFieldContents($field_name, $value, $should_contain = false)
+    public function assertUserFieldContents($field_name, string $value, $should_contain = false): void
     {
         $table = 'user__' . $field_name;
         $column = $field_name . '_value';

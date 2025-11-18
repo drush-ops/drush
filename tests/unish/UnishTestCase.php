@@ -216,7 +216,7 @@ abstract class UnishTestCase extends TestCase
                 fwrite(STDERR, $line);
                 break;
             default:
-                if ($type == 'notice') {
+                if ($type === 'notice') {
                     fwrite(STDERR, $line);
                 }
                 break;
@@ -236,7 +236,7 @@ abstract class UnishTestCase extends TestCase
 
     public static function isWindows(): bool
     {
-        return strtoupper(substr(PHP_OS, 0, 3)) == "WIN";
+        return strtoupper(substr(PHP_OS, 0, 3)) === "WIN";
     }
 
     /**
@@ -347,7 +347,7 @@ abstract class UnishTestCase extends TestCase
         $dir = opendir($src);
         self::mkdir($dst);
         while (false !== ( $file = readdir($dir))) {
-            if (( $file != '.' ) && ( $file != '..' )) {
+            if (( $file !== '.' ) && ( $file !== '..' )) {
                 if (is_dir($src . '/' . $file)) {
                     self::recursiveCopy($src . '/' . $file, $dst . '/' . $file);
                 } else {
@@ -449,7 +449,7 @@ abstract class UnishTestCase extends TestCase
         }
 
         foreach ($scandir as $item) {
-            if ($item == '.' || $item == '..') {
+            if ($item === '.' || $item === '..') {
                 continue;
             }
             if (in_array($item, $exclude)) {
@@ -580,7 +580,6 @@ EOT;
      * Test if current Drupal is >= a target version.
      *
      * @param string $version2
-     * @return bool
      */
     public function isDrupalGreaterThanOrEqualTo($version2): bool
     {

@@ -22,13 +22,13 @@ class QueueTest extends UnishIntegrationTestCase
         parent::setUp();
 
         // Enable woot module, which contains a queue worker that throws a RequeueException.
-        $this->drush(PmCommands::INSTALL, [self::WOOT], ['yes' => true], null, '', self::EXIT_SUCCESS);
+        $this->drush(PmCommands::INSTALL, [self::WOOT], ['yes' => true], null, '');
     }
 
     /**
    * Tests the RequeueException.
    */
-    public function testRequeueException()
+    public function testRequeueException(): void
     {
         // Start with empty queue.
         $this->drush(QueueCommands::DELETE, ['woot_requeue_exception']);
@@ -62,7 +62,7 @@ class QueueTest extends UnishIntegrationTestCase
   /**
    * Tests that CustomExceptions do not hold up the queue. Also queue:run, queue:list, queue:delete
    */
-    public function testCustomExceptionAndCommands()
+    public function testCustomExceptionAndCommands(): void
     {
         // Start with empty queue.
         $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);

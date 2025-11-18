@@ -29,7 +29,7 @@ class RsyncTest extends CommandUnishTestCase
     /**
      * Test drush rsync --simulate.
      */
-    public function testRsyncSimulated()
+    public function testRsyncSimulated(): void
     {
         $options = [
             'uri' => 'OMIT',
@@ -47,7 +47,7 @@ class RsyncTest extends CommandUnishTestCase
         $this->assertStringContainsString($expected, $this->getSimplifiedErrorOutput());
     }
 
-    public function testRsyncPathAliases()
+    public function testRsyncPathAliases(): void
     {
         $aliases = $this->getAliases();
         $source_alias = array_shift($aliases);
@@ -95,7 +95,7 @@ class RsyncTest extends CommandUnishTestCase
    * This tests the non-optimized code path. The optimized code path (direct
    * call to Drush API functions rather than an `exec`) has not been implemented.
    */
-    public function testRsyncAndPercentFiles()
+    public function testRsyncAndPercentFiles(): void
     {
         $site = current($this->getAliases());
         $options['simulate'] = null;

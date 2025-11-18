@@ -18,7 +18,7 @@ class ArgsRemapperTest extends TestCase
      * @covers argsRemapper::ArgsRemapper
      * @dataProvider argsProvider
      */
-    public function testCommandAliases($argv, $expected)
+    public function testCommandAliases(array $argv, array $expected): void
     {
         $remapOptions = [];
         $remapCommandAliases = [
@@ -33,7 +33,7 @@ class ArgsRemapperTest extends TestCase
     /**
      * Provides arguments for ::ArgsRemapper
      */
-    public static function argsProvider()
+    public static function argsProvider(): array
     {
         return [
             [

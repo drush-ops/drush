@@ -18,7 +18,7 @@ class ModuleDrushCommandTest extends CommandUnishTestCase
     /**
      * Tests command info alter.
      */
-    public function testDrushCommandsInModule()
+    public function testDrushCommandsInModule(): void
     {
         $this->setUpDrupal(1, true);
         // Commands in the woot module should not be available yet,

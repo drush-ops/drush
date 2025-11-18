@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class SiteAliasNameTest extends TestCase
 {
-    public function testSiteAliasName()
+    public function testSiteAliasName(): void
     {
         // Test an ambiguous sitename or env alias.
         $name = SiteAliasName::parse('@simple');

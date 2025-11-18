@@ -6,7 +6,7 @@ use Drush\Drush;
 
 class UnitBatchOperations
 {
-    public static function operate(&$context)
+    public static function operate(&$context): void
     {
         $context['message'] = "!!! ArrayObject does its job.";
 
@@ -20,7 +20,7 @@ class UnitBatchOperations
         $context['finished'] = 1;
     }
 
-    public static function finish($success, $results, $operations)
+    public static function finish($success, $results, $operations): void
     {
         Drush::logger()->success("Result count is " . count($results));
     }

@@ -24,8 +24,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class RuntimeController
 {
-    /** @var RuntimeController */
-    private static $instance;
+    private static ?\Unish\Controllers\RuntimeController $instance = null;
 
     /** @var Runtime */
     protected $runtime;
@@ -52,13 +51,13 @@ class RuntimeController
 
     public static function instance()
     {
-        if (!static::$instance) {
-            static::$instance = new self();
+        if (!self::$instance) {
+            self::$instance = new self();
         }
-        return static::$instance;
+        return self::$instance;
     }
 
-    public function initialized()
+    public function initialized(): bool
     {
         return $this->application != null;
     }
@@ -96,7 +95,7 @@ class RuntimeController
         return $this->loader;
     }
 
-    protected function initializeRuntime($root, $argv)
+    protected function initializeRuntime($root, array $argv)
     {
         // Create our objects
         $loader = $this->loader();

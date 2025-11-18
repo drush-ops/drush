@@ -34,7 +34,7 @@ class LocaleTest extends UnishIntegrationTestCase
         $this->drush(PmCommands::UNINSTALL, ['language', 'locale']);
     }
 
-    public function testLocaleExport()
+    public function testLocaleExport(): void
     {
         // Export standard translations.
         $this->drush(LocaleCommands::EXPORT, ['nl'], ['types' => 'not-customized']);
@@ -60,7 +60,7 @@ class LocaleTest extends UnishIntegrationTestCase
         $this->assertGettextTranslation('Something untranslated', '');
     }
 
-    public function testLocaleImport()
+    public function testLocaleImport(): void
     {
         // Import without override.
         $this->drush(SqlCommands::QUERY, ["UPDATE locales_target SET translation = 'NO Drush Empty Module'"]);

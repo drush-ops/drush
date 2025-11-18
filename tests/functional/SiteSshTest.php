@@ -17,7 +17,7 @@ class SiteSshTest extends CommandUnishTestCase
     /**
      * Test drush ssh --simulate. No additional bash passed.
      */
-    public function testInteractive()
+    public function testInteractive(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('TTY mode not supported on Windows.');
@@ -35,7 +35,7 @@ class SiteSshTest extends CommandUnishTestCase
     /**
      * Test drush ssh --simulate 'time && date'.
      */
-    public function testNonInteractive()
+    public function testNonInteractive(): void
     {
         $options = [
             'simulate' => true,
@@ -49,7 +49,7 @@ class SiteSshTest extends CommandUnishTestCase
     /**
     * Test drush ssh with multiple arguments (preferred form).
     */
-    public function testSshMultipleArgs()
+    public function testSshMultipleArgs(): void
     {
         $options = [
             'simulate' => true,
@@ -63,7 +63,7 @@ class SiteSshTest extends CommandUnishTestCase
     /**
      * Test with single arg and --cd option.
      */
-    public function testSshSingleArgs()
+    public function testSshSingleArgs(): void
     {
         $options = [
             'simulate' => true,

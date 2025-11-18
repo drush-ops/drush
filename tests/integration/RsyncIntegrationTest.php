@@ -17,7 +17,7 @@ class RsyncIntegrationTest extends UnishIntegrationTestCase
     /**
      * Test drush rsync --simulate.
      */
-    public function testRsyncSimulated()
+    public function testRsyncSimulated(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('rsync paths may not contain colons on Windows.');
@@ -49,7 +49,7 @@ class RsyncIntegrationTest extends UnishIntegrationTestCase
         $this->assertErrorOutputContains($expected);
     }
 
-    public function testRsyncSimulatedWithSelfAlias()
+    public function testRsyncSimulatedWithSelfAlias(): void
     {
         $options = [
             'simulate' => true,

@@ -50,7 +50,7 @@ $return = $user->save();
  * @param $bundle
  *   The entity bundle. E.g., article.
  */
-function create_field($field_name, $field_type, $entity_type, $bundle)
+function create_field($field_name, $field_type, $entity_type, $bundle): void
 {
     $field_storage = FieldStorageConfig::create([
     'field_name' => $field_name,

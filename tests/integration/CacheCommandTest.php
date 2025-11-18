@@ -13,7 +13,7 @@ use Drush\Commands\core\CacheCommands;
  */
 class CacheCommandTest extends UnishIntegrationTestCase
 {
-    public function testCacheGet()
+    public function testCacheGet(): void
     {
         if ($this->isDrupalGreaterThanOrEqualTo('9.1.0@alpha')) {
             $this->markTestSkipped('Cache bins not working the same in Drupal 9.1+');
@@ -28,7 +28,7 @@ class CacheCommandTest extends UnishIntegrationTestCase
         $this->drush(CacheCommands::GET, ['test-failure-cid'], ['format' => 'json'], self::EXIT_ERROR);
     }
 
-    public function testCacheSet()
+    public function testCacheSet(): void
     {
         if ($this->isDrupalGreaterThanOrEqualTo('9.1.0@alpha')) {
             $this->markTestSkipped('Cache bins not working the same in Drupal 9.1+');

@@ -53,14 +53,14 @@ class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
         $this->drush(LanguageCommands::ADD, ['nl']);
     }
 
-    public function testBatchImportTranslationsOnInstall()
+    public function testBatchImportTranslationsOnInstall(): void
     {
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
         $this->drush(WatchdogCommands::SHOW);
         $this->assertStringContainsString('Translations imported:', $this->getSimplifiedOutput());
     }
 
-    public function testBatchImportTranslationsOnConfigImport()
+    public function testBatchImportTranslationsOnConfigImport(): void
     {
         $this->drush(ConfigExportCommands::EXPORT);
 

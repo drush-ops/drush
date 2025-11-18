@@ -21,7 +21,7 @@ class MulitsiteContainerTest extends CommandUnishTestCase
         }
     }
 
-    public function testMultisiteContainer()
+    public function testMultisiteContainer(): void
     {
         $conf_dir = $this->webroot() . '/sites/dev';
         // Ensure a custom module in a site can't be removed from the container

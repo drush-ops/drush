@@ -20,7 +20,7 @@ class ExpandWildcardTablesTest extends TestCase
   /**
    * Tests \Drush\Sql\SqlTableSelectionTrait
    */
-    public function testExpandWildcardTables()
+    public function testExpandWildcardTables(): void
     {
         // Array of tables to search for.
         $wildcard_input = [
@@ -50,7 +50,7 @@ class ExpandWildcardTablesTest extends TestCase
   /**
    * Tests \Drush\Sql\SqlTableSelectionTrait
    */
-    public function testFilterTables()
+    public function testFilterTables(): void
     {
         // Array of tables to search for.
         $wildcard_input = [

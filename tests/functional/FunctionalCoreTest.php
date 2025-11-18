@@ -22,7 +22,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         }
     }
 
-    public function testSiteSelectionViaCwd()
+    public function testSiteSelectionViaCwd(): void
     {
         $this->markTestSkipped("Drush 12.x no longer supports site selection via cwd");
 
@@ -41,7 +41,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         }
     }
 
-    public function testOptionsUri()
+    public function testOptionsUri(): void
     {
         // Test whether a URI in a config file resolves correctly, and test
         // various URI values for their expected Site URI and path.
@@ -81,7 +81,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         }
     }
 
-    public function testOptionsUriRequestUrl()
+    public function testOptionsUriRequestUrl(): void
     {
         // Test whether a URI in a config file resolves correctly, and test
         // various URI values for their expected Site URI and path.
@@ -122,7 +122,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
     }
 
 
-    public function testRecursiveConfigLoading()
+    public function testRecursiveConfigLoading(): void
     {
         // Put a yml file in the drush folder.
         $drush_config_file = Path::join($this->webrootSlashDrush(), 'drush.yml');
@@ -179,7 +179,7 @@ class FunctionalCoreTest extends CommandUnishTestCase
         $this->assertEquals($test_uri, $output['uri']);
     }
 
-    public function testSiteSpecificConfigLoading()
+    public function testSiteSpecificConfigLoading(): void
     {
         $sandbox = $this->getSandbox();
 

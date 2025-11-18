@@ -26,7 +26,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
     #[CLI\Version(version: '11.0')]
-    public function myEcho($one, $two = '', $flip = false)
+    public function myEcho($one, $two = '', $flip = false): string
     {
         if ($flip) {
             return "{$two}{$one}";
@@ -39,7 +39,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Argument(name: 'args', description: 'Any number of arguments separated by spaces.')]
     #[CLI\Option(name: 'flip', description: 'Whether or not the second parameter should come first in the result.')]
     #[CLI\Usage(name: 'bet alpha --flip', description: 'Concatenate "alpha" and "bet".')]
-    public function improvedEcho(array $args, $flip = false)
+    public function improvedEcho(array $args, $flip = false): string
     {
         if ($flip) {
             $args = array_reverse($args);
@@ -57,7 +57,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[CLI\Option(name: 'negate', description: 'Whether or not the result should be negated.')]
     #[CLI\Option(name: 'color', description: 'What color are you feeling.', suggestedValues: ['red', 'blue', 'green'])]
     #[CLI\Usage(name: '2 2 --negate', description: 'Add two plus two and then negate.')]
-    public function testArithmatic($one, $two = 2, $negate = false, $color = self::REQ)
+    public function testArithmatic($one, $two = 2, $negate = false, $color = self::REQ): string
     {
         $result = $one + $two;
         if ($negate) {
@@ -72,7 +72,7 @@ class ExampleAttributesCommands extends DrushCommands
     // Declare a hook with a target.
     #[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: self::ARITHMATIC)]
     #[CLI\Help(description: 'Add a text after test:arithmatic command')]
-    public function postArithmatic()
+    public function postArithmatic(): void
     {
         $this->output->writeln('HOOKED');
     }
@@ -89,7 +89,7 @@ class ExampleAttributesCommands extends DrushCommands
     #[DR\ValidatePhpExtensions(extensions: ['json'])]
     #[DR\ValidateModulesEnabled(modules: ['user'])]
     #[DR\ValidatePermissions(argName: 'permissions')]
-    public function validateStuff($permissions, $paths, $roleName)
+    public function validateStuff($permissions, $paths, $roleName): string
     {
         return 'Validators are happy';
     }

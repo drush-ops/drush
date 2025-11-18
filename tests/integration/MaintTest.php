@@ -13,7 +13,7 @@ use Drush\Commands\core\MaintCommands;
  */
 class MaintTest extends UnishIntegrationTestCase
 {
-    public function testMaint()
+    public function testMaint(): void
     {
         $this->drush(MaintCommands::SET, ['1']);
         $this->drush(MaintCommands::GET);
