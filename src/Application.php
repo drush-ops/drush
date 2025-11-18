@@ -135,7 +135,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Return the framework uri selected by the user.
      */
-    public function getUri()
+    public function getUri(): string|false
     {
         if (!$this->bootstrapManager) {
             return 'default';
@@ -204,7 +204,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Look up a command. Bootstrap further if necessary.
      */
-    protected function bootstrapAndFind($name)
+    protected function bootstrapAndFind($name): \Symfony\Component\Console\Command\Command|\Drush\Command\RemoteCommandProxy
     {
         try {
             return parent::find($name);
