@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
+use Drupal\Core\Extension\MissingDependencyException;
 use Drupal\Core\Extension\ThemeInstallerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
@@ -18,7 +20,8 @@ final class ThemeCommands extends DrushCommands
     const UNINSTALL = 'theme:uninstall';
 
     public function __construct(
-        protected ThemeInstallerInterface $themeInstaller
+        protected ThemeInstallerInterface $themeInstaller,
+        protected ThemeExtensionList $extensionListTheme,
     ) {
         parent::__construct();
     }
@@ -26,6 +29,11 @@ final class ThemeCommands extends DrushCommands
     public function getThemeInstaller(): ThemeInstallerInterface
     {
         return $this->themeInstaller;
+    }
+
+    public function getExtensionListTheme(): ThemeExtensionList
+    {
+        return $this->extensionListTheme;
     }
 
     /**
@@ -36,6 +44,15 @@ final class ThemeCommands extends DrushCommands
     public function install(array $themes): void
     {
         $themes = StringUtils::csvToArray($themes);
+        $todo = $this->addInstallDependencies($themes);
+        $todo_str = ['!list' => implode(', ', $todo)];
+        if (!empty($todo)) {
+            $this->output()->writeln(dt('The following module(s) will be installed: !list', $todo_str));
+            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+                throw new UserAbortException();
+            }
+        }
+
         if (!$this->getThemeInstaller()->install($themes, true)) {
             throw new \Exception('Unable to install themes.');
         }
@@ -54,5 +71,38 @@ final class ThemeCommands extends DrushCommands
         // allow exceptions to bubble.
         $this->getThemeInstaller()->uninstall($themes);
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
+    }
+
+    public function addInstallDependencies($themes): array
+    {
+        $theme_data = $this->getExtensionListTheme()->reset()->getList();
+        $theme_list  = array_combine($themes, $themes);
+        if ($missing_themes = array_diff_key($theme_list, $theme_data)) {
+            // One or more of the given themes doesn't exist.
+            throw new MissingDependencyException(sprintf('Unable to install themes %s due to missing themes %s.', implode(', ', $theme_list), implode(', ', $missing_themes)));
+        }
+        $extension_config = $this->getConfigFactory()->getEditable('core.extension');
+        $installed_modules = $extension_config->get('module') ?: [];
+
+        // Copied from \Drupal\Core\Extension\ModuleInstaller::install
+        // Add dependencies to the list. The new modules will be processed as
+        // the while loop continues.
+        foreach (array_keys($theme_list) as $theme) {
+            foreach (array_keys($theme_data[$theme]->requires) as $dependency) {
+                if (!isset($theme_data[$dependency])) {
+                    // The dependency does not exist.
+                    throw new MissingDependencyException("Unable to install themes: theme '$theme' is missing its dependency module $dependency.");
+                }
+
+                // Skip already installed modules.
+                if (!isset($theme_list[$dependency]) && !isset($installed_modules[$dependency])) {
+                    $theme_list[$dependency] = $dependency;
+                }
+            }
+        }
+
+        // Remove already installed modules.
+        $todo = array_diff_key($theme_list, $installed_modules);
+        return $todo;
     }
 }
