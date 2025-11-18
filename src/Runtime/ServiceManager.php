@@ -229,7 +229,7 @@ class ServiceManager
         return array_filter($classes, function (string $class): bool {
             try {
                 $reflectionClass = new \ReflectionClass($class);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 return false;
             }
             return $reflectionClass->isSubclassOf(BaseGenerator::class)
@@ -387,7 +387,7 @@ class ServiceManager
         $serviceClasses = array_filter($serviceClasses, function ($class) {
             try {
                 $reflection = new \ReflectionClass($class);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
                 return false;
             }
             return !$reflection->isAbstract();
@@ -504,7 +504,7 @@ class ServiceManager
                 $bootstrap = $attributes[0]->newInstance();
                 return $bootstrap->level;
             }
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
         }
         return null;
     }

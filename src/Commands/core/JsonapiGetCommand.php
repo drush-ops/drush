@@ -30,7 +30,7 @@ final class JsonapiGetCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'jn:get';
+    public const string NAME = 'jn:get';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

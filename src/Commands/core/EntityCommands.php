@@ -14,7 +14,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     use StdinAwareTrait;
 
     #[Deprecated(reason: 'Use EntityDeleteCommand::NAME')]
-    const DELETE = 'entity:delete';
+    const string DELETE = 'entity:delete';
     #[Deprecated(reason: 'Use EntitySaveCommand::NAME')]
-    const SAVE = 'entity:save';
+    const string SAVE = 'entity:save';
 }

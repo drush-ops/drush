@@ -27,7 +27,7 @@ final class CoreGlobalOptionsCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'core:global-options';
+    public const string NAME = 'core:global-options';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
@@ -79,9 +79,7 @@ final class CoreGlobalOptionsCommand extends Command
                 'description' => $description,
             ];
         }
-        usort($rows, function ($a, $b) {
-            return strnatcmp($a['name'], $b['name']);
-        });
+        usort($rows, fn($a, $b): int => strnatcmp($a['name'], $b['name']));
 
         return new RowsOfFields($rows);
     }

@@ -36,7 +36,7 @@ final class UserInformationCommand extends Command
     use FormatterTrait;
     use UserTrait;
 
-    public const NAME = 'user:information';
+    public const string NAME = 'user:information';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
@@ -101,7 +101,7 @@ final class UserInformationCommand extends Command
         }
 
         $result = new RowsOfFields($outputs);
-        $result->addRendererFunction([$this, 'renderRolesCell']);
+        $result->addRendererFunction($this->renderRolesCell(...));
         return $result;
     }
 

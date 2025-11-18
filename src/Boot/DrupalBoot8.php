@@ -265,9 +265,9 @@ class DrupalBoot8 extends DrupalBoot
         // Robo::register to add any commands, as that is the point where the
         // alteration will happen.
         foreach ($commandInfoAlterers as $altererHandler) {
-            $altererHandler = $this->serviceManager->commandFromInvokable($altererHandler);
-            $commandFactory->addCommandInfoAlterer($altererHandler);
-            $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($altererHandler)]));
+            $handler = $this->serviceManager->commandFromInvokable($altererHandler);
+            $commandFactory->addCommandInfoAlterer($handler);
+            $this->logger->debug(dt('Commands are potentially altered in !class.', ['!class' => get_class($handler)]));
         }
 
         // Register the Drush Symfony Console commands found in Drush services
@@ -282,7 +282,7 @@ class DrupalBoot8 extends DrupalBoot
         $drushServicesCommandHandlers = $legacyServiceInstantiator->taggedServices('drush.command');
         foreach ($drushServicesCommandHandlers as $commandHandler) {
             $this->serviceManager->inflect($drushContainer, $commandHandler);
-            $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => get_class($commandHandler)]));
+            $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => $commandHandler::class]));
             Robo::register($application, $commandHandler);
         }
 

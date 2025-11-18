@@ -56,7 +56,7 @@ trait FormatterTrait
         if (!$source instanceof \ArrayObject) {
             return $data;
         }
-        $sourceClass = get_class($source);
+        $sourceClass = $source::class;
 
         return new $sourceClass($data);
     }

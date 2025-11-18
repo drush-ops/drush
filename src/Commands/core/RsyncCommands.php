@@ -17,5 +17,5 @@ final class RsyncCommands extends DrushCommands
      * @see validate().
      */
     #[Deprecated(reason: 'Moved', replacement: RsyncCommand::NAME)]
-    const RSYNC = 'core:rsync';
+    const string RSYNC = 'core:rsync';
 }

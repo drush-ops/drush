@@ -35,7 +35,7 @@ final class LanguageInfoCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'language:info';
+    public const string NAME = 'language:info';
 
     public function __construct(
         protected readonly LanguageManagerInterface $languageManager,

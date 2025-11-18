@@ -34,7 +34,7 @@ class ValidatePermissionsListener
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(ValidatePermissions::class);
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return;
         }
         /** @var ValidatePermissions $instance */

@@ -32,7 +32,7 @@ class ValidateFileExistsListener
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(ValidateFileExists::class);
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return;
         }
         /** @var ValidateFileExists $instance */

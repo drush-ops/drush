@@ -13,5 +13,5 @@ final class ThemeDevCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated('Use ThemeDevCommand::NAME')]
-    const DEV = 'theme:dev';
+    const string DEV = 'theme:dev';
 }

@@ -84,7 +84,7 @@ final class WatchdogListCommand extends Command
         $type = $input->getOption('type');
         $extended = $input->getOption('extended');
 
-        $where = $this->where($type, $severity, $substring, 'AND', null);
+        $where = $this->where($type, $severity, $substring, 'AND');
         $query = $this->connection->select('watchdog', 'w')
             ->range(0, $count)
             ->fields('w')
@@ -100,7 +100,7 @@ final class WatchdogListCommand extends Command
             $table[$row->wid] = (array)$row;
         }
 
-        if (empty($table)) {
+        if ($table === []) {
             $this->logger->notice('No log messages available.');
         }
 

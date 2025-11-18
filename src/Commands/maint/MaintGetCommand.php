@@ -22,7 +22,7 @@ final class MaintGetCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'maint:get';
+    public const string NAME = 'maint:get';
 
     public function __construct(
         protected readonly StateInterface $state

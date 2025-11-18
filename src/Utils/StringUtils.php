@@ -24,8 +24,8 @@ final class StringUtils
         // Step 4: array_map(...) trims extra whitespace from each item
         // (handles csv strings with extra whitespace, e.g. 'a, b, c')
         //
-        $args = is_array($args) ? implode(',', array_map('strval', $args)) : (string) $args;
-        return array_map('trim', array_filter(explode(',', $args)));
+        $args = is_array($args) ? implode(',', array_map(strval(...), $args)) : (string) $args;
+        return array_map(trim(...), array_filter(explode(',', $args)));
     }
 
     /**
@@ -52,7 +52,7 @@ final class StringUtils
         $replace = [];
         foreach ($context as $key => $val) {
             if (!is_array($val) && (!is_object($val) || method_exists($val, '__toString'))) {
-                $replace[static::interpolationKey($key)] = $val;
+                $replace[self::interpolationKey($key)] = $val;
             }
         }
 

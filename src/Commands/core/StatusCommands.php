@@ -13,5 +13,5 @@ use Drush\Commands\DrushCommands;
 final class StatusCommands extends DrushCommands
 {
     #[Deprecated('Use StatusCommand::NAME')]
-    const STATUS = 'core:status';
+    const string STATUS = 'core:status';
 }

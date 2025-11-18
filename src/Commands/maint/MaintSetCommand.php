@@ -23,7 +23,7 @@ final class MaintSetCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'maint:set';
+    public const string NAME = 'maint:set';
 
     public function __construct(
         protected readonly StateInterface $state

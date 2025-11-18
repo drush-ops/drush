@@ -23,12 +23,11 @@ final class MigrateEvents
      *
      * @Event
      *
-     * @var string
      *
      * @todo Deprecate this event when #2952291 lands.
      *
      * @see https://www.drupal.org/project/drupal/issues/2952291
      * @see \Drush\Drupal\Migrate\MigratePrepareRowEvent
      */
-    const DRUSH_MIGRATE_PREPARE_ROW = 'drush.migrate_runner.prepare_row';
+    const string DRUSH_MIGRATE_PREPARE_ROW = 'drush.migrate_runner.prepare_row';
 }

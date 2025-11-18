@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
+use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Database\Connection;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -97,7 +98,7 @@ final class WatchdogTailCommand extends Command
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
     {
         if ($input->mustSuggestOptionValuesFor('severity') || $input->mustSuggestOptionValuesFor('severity-min')) {
-            $suggestions->suggestValues(array_keys(\Drupal\Core\Logger\RfcLogLevel::getLevels()));
+            $suggestions->suggestValues(array_keys(RfcLogLevel::getLevels()));
         }
         if ($input->mustSuggestOptionValuesFor('type')) {
             $suggestions->suggestValues(self::messageTypes());

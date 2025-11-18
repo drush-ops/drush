@@ -14,23 +14,23 @@ use Drush\Commands\DrushCommands;
  */
 final class DocsCommands extends DrushCommands
 {
-    const README = 'docs:readme';
-    const BISECT = 'docs:bisect';
-    const CONFIGURATION = 'docs:configuration';
-    const HOOKS = 'docs:hooks';
-    const CONFIG_EXPORTING = 'docs:config:exporting';
-    const OUTPUT_FORMATS_FILTERS = 'docs:output-formats-filters';
-    const ALIASES = 'docs:aliases';
-    const SCRIPT = 'docs:script';
-    const BOOTSTRAP = 'docs:bootstrap';
-    const CRON = 'docs:cron';
-    const COMMANDS = 'docs:commands';
-    const GENERATORS = 'docs:generators';
-    const MIGRATE = 'docs:migrate';
-    const EXAMPLE_SYNC_VIA_HTTP = 'docs:example-sync-via-http';
-    const POLICY = 'docs:policy';
-    const DEPLOY = 'docs:deploy';
-    const DRUPAL_DEPENDENCIES = 'docs:drupal-dependencies';
+    const string README = 'docs:readme';
+    const string BISECT = 'docs:bisect';
+    const string CONFIGURATION = 'docs:configuration';
+    const string HOOKS = 'docs:hooks';
+    const string CONFIG_EXPORTING = 'docs:config:exporting';
+    const string OUTPUT_FORMATS_FILTERS = 'docs:output-formats-filters';
+    const string ALIASES = 'docs:aliases';
+    const string SCRIPT = 'docs:script';
+    const string BOOTSTRAP = 'docs:bootstrap';
+    const string CRON = 'docs:cron';
+    const string COMMANDS = 'docs:commands';
+    const string GENERATORS = 'docs:generators';
+    const string MIGRATE = 'docs:migrate';
+    const string EXAMPLE_SYNC_VIA_HTTP = 'docs:example-sync-via-http';
+    const string POLICY = 'docs:policy';
+    const string DEPLOY = 'docs:deploy';
+    const string DRUPAL_DEPENDENCIES = 'docs:drupal-dependencies';
 
     /**
      * README.md

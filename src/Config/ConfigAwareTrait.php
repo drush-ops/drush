@@ -19,7 +19,7 @@ trait ConfigAwareTrait
     public function getConfig(): DrushConfig
     {
         $return = $this->parentGetConfig();
-        assert($return instanceof DrushConfig, 'Expected DrushConfig, got ' . get_class($return) . '.');
+        assert($return instanceof DrushConfig, 'Expected DrushConfig, got ' . $return::class . '.');
         return $return;
     }
 }

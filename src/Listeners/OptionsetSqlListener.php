@@ -21,7 +21,7 @@ class OptionsetSqlListener
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflection = new \ReflectionObject($code);
             $attributes = $reflection->getAttributes(CLI\OptionsetSql::class);
-            if (empty($attributes)) {
+            if ($attributes === []) {
                 continue;
             }
             $command->addOption('database', '', InputOption::VALUE_REQUIRED, 'The DB connection key if using multiple connections in settings.php.', 'default');

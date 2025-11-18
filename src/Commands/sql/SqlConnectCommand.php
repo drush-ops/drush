@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[CLI\Bootstrap(level: DrupalBootLevels::CONFIGURATION)]
 final class SqlConnectCommand extends Command
 {
-    public const NAME = 'sql:connect';
+    public const string NAME = 'sql:connect';
 
     protected function configure(): void
     {

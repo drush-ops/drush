@@ -433,7 +433,7 @@ class Drush
                     continue;
                 }
                 $optionNamesFromCommandline[$key] = Drush::getApplication()->get($command_name)->getDefinition()->shortcutToName($name);
-            } catch (InvalidArgumentException $e) {
+            } catch (InvalidArgumentException) {
                 // Do nothing. It's expected.
             }
         }

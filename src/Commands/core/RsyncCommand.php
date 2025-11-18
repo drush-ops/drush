@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Consolidation\Config\Config;
 use Consolidation\SiteAlias\HostPath;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Consolidation\SiteProcess\Util\Escape;
@@ -42,7 +43,7 @@ final class RsyncCommand extends Command
      * These are arguments after the aliases and paths have been evaluated.
      * @see validate().
      */
-    const NAME = 'core:rsync';
+    const string NAME = 'core:rsync';
 
     protected BackendPathEvaluator $pathEvaluator;
 
@@ -145,7 +146,7 @@ final class RsyncCommand extends Command
         // options into the alias config context so that we pick up
         // things like ssh-options.
         if ($aliasRecord->isRemote()) {
-            assert($aliasConfigContext instanceof \Consolidation\Config\Config);
+            assert($aliasConfigContext instanceof Config);
             $aliasConfigContext->combine($aliasRecord->export());
         }
 

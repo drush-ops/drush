@@ -34,7 +34,7 @@ final class EditCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'core:edit';
+    public const string NAME = 'core:edit';
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,
@@ -76,7 +76,7 @@ final class EditCommand extends Command
         }
 
         $editor = self::getEditor($options['editor'] ?? null);
-        if (count($all) == 1) {
+        if (count($all) === 1) {
             $filepath = current($all);
         } else {
             $choice = $io->choice(dt("Choose a file to edit"), $all);
@@ -99,7 +99,7 @@ final class EditCommand extends Command
     public function load($headers = true): array
     {
         $php_header = $rcs_header = $aliases_header = $drupal_header = $bash_header = $drupal = [];
-        $php = $this->phpIniFiles();
+        $php = self::phpIniFiles();
         if ($php !== []) {
             if ($headers) {
                 $php_header = ['phpini' => '-- PHP ini files --'];

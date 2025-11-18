@@ -49,7 +49,7 @@ final class ConfigImportCommand extends Command
     use AutowireTrait;
     use ConfigTrait;
 
-    public const NAME = 'config:import';
+    public const string NAME = 'config:import';
 
     public function __construct(
         protected readonly ConfigManagerInterface $configManager,

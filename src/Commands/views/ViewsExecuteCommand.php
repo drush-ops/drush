@@ -28,7 +28,7 @@ final class ViewsExecuteCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'views:execute';
+    public const string NAME = 'views:execute';
 
     public function __construct(
         protected RendererInterface $renderer

@@ -30,7 +30,7 @@ final class SqlDropCommand extends Command
 {
     use ExecTrait;
 
-    const NAME = 'sql:drop';
+    const string NAME = 'sql:drop';
 
     protected function configure()
     {

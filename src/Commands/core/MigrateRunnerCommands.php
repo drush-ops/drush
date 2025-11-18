@@ -19,19 +19,19 @@ final class MigrateRunnerCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated(reason: 'Use MigrateStatusCommand::NAME')]
-    const STATUS = 'migrate:status';
+    const string STATUS = 'migrate:status';
     #[Deprecated(reason: 'Use MigrateImportCommand::NAME')]
-    const IMPORT = 'migrate:import';
+    const string IMPORT = 'migrate:import';
     #[Deprecated(reason: 'Use MigrateRollbackCommand::NAME')]
-    const ROLLBACK = 'migrate:rollback';
+    const string ROLLBACK = 'migrate:rollback';
     #[Deprecated(reason: 'Use MigrateStopCommand::NAME')]
-    const STOP = 'migrate:stop';
+    const string STOP = 'migrate:stop';
     #[Deprecated(reason: 'Use MigrateResetStatusCommand::NAME')]
-    const RESET_STATUS = 'migrate:reset-status';
+    const string RESET_STATUS = 'migrate:reset-status';
     #[Deprecated(reason: 'Use MigrateMessagesCommand::NAME')]
-    const MESSAGES = 'migrate:messages';
+    const string MESSAGES = 'migrate:messages';
     #[Deprecated(reason: 'Use MigrateFieldsSourceCommand::NAME')]
-    const FIELDS_SOURCE = 'migrate:fields-source';
+    const string FIELDS_SOURCE = 'migrate:fields-source';
 
     protected ?MigrationPluginManagerInterface $migrationPluginManager = null;
 

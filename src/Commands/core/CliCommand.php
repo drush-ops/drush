@@ -48,7 +48,7 @@ final class CliCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'php:cli';
+    public const string NAME = 'php:cli';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,
@@ -164,9 +164,7 @@ final class CliCommand extends Command
             }
         }
 
-        return array_map(function ($command) {
-            return new DrushCommand($command);
-        }, $commands);
+        return array_map(fn($command): \Drush\Psysh\DrushCommand => new DrushCommand($command), $commands);
     }
 
     /**
@@ -225,9 +223,7 @@ final class CliCommand extends Command
             $file_name = "drupal-site-$site_suffix";
         }
 
-        $full_path = "$cli_directory/$file_name";
-
-        return $full_path;
+        return "$cli_directory/$file_name";
     }
 
     /**

@@ -178,7 +178,7 @@ class LegacyServiceFinder
      * @return string[]
      *   List of paths to all modules' .info.yml files.
      */
-    protected function getModuleFileNames()
+    protected function getModuleFileNames(): array
     {
         $modules = $this->moduleHandler->getModuleList();
         $moduleFilenames = [];

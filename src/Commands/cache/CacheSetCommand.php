@@ -25,7 +25,7 @@ final class CacheSetCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'cache:set';
+    public const string NAME = 'cache:set';
 
     public function __construct(
         private readonly CacheFactoryInterface $cacheFactory,

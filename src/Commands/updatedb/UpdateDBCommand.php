@@ -40,7 +40,7 @@ final class UpdateDBCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'updatedb';
+    const string NAME = 'updatedb';
 
     /**
      * Note - can't inject @database since a method below is static.
@@ -277,7 +277,6 @@ final class UpdateDBCommand extends Command
         \Drupal::moduleHandler()->loadInclude($module, 'install');
 
         $ret = [];
-        $update_hook_registry = \Drupal::service('update.update_hook_registry');
         $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
         if ($equivalent_update instanceof EquivalentUpdate) {
             $ret['results']['query'] = $equivalent_update->toSkipMessage();
@@ -432,7 +431,6 @@ final class UpdateDBCommand extends Command
      */
     public static function updateFinished(bool $success, array $results, array $operations): void
     {
-        $a = 1;
         // No longer used. Flush moved to \Drush\Commands\core\UpdateDBCommands::updatedb.
     }
 

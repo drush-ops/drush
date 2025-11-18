@@ -18,7 +18,7 @@ use Consolidation\SiteAlias\SiteSpecParser;
 class ArgsPreprocessor
 {
     protected ?SiteSpecParser $specParser;
-    protected ?ArgsRemapper $remapper;
+    protected ?ArgsRemapper $remapper = null;
 
     /**
      * ArgsPreprocessor constructor
@@ -56,7 +56,7 @@ class ArgsPreprocessor
         }
 
         $optionsTable = $storage->optionsWithValues();
-        while (!empty($argv)) {
+        while ($argv !== []) {
             $opt = array_shift($argv);
 
             if ($opt == '--') {
@@ -76,7 +76,7 @@ class ArgsPreprocessor
                 $sawArg = true;
             }
 
-            list($methodName, $value, $acceptsValueFromNextArg) = $this->findMethodForOptionWithValues($optionsTable, $opt);
+            [$methodName, $value, $acceptsValueFromNextArg] = $this->findMethodForOptionWithValues($optionsTable, $opt);
             if ($methodName) {
                 if (!isset($value) && $acceptsValueFromNextArg && static::nextCouldBeValue($argv)) {
                     $value = array_shift($argv);

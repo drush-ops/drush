@@ -9,7 +9,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class SiteCommands
 {
     #[Deprecated(reason: 'Use SiteSetCommand::NAME')]
-    const SET = 'site:set';
+    const string SET = 'site:set';
     #[Deprecated(reason: 'Use SiteAliasCommand::NAME')]
-    const ALIAS = 'site:alias';
+    const string ALIAS = 'site:alias';
 }

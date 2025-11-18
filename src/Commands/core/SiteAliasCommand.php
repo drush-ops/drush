@@ -32,7 +32,7 @@ final class SiteAliasCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    const NAME = 'site:alias';
+    const string NAME = 'site:alias';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
@@ -88,9 +88,7 @@ final class SiteAliasCommand extends Command
     protected function siteAliasExportList(array $aliasList): array
     {
         return array_map(
-            function ($aliasRecord) {
-                return $aliasRecord->export();
-            },
+            fn($aliasRecord) => $aliasRecord->export(),
             $aliasList
         );
     }

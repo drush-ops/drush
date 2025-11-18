@@ -40,11 +40,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     use LoggerAwareTrait;
     use ConfigAwareTrait;
 
-    protected ?BootstrapManager $bootstrapManager;
-    protected ?SiteAliasManager $aliasManager;
-    protected ?RedispatchHook $redispatchHook;
-    protected ?TildeExpansionHook $tildeExpansionHook;
-    protected ?ServiceManager $serviceManager;
+    protected ?BootstrapManager $bootstrapManager = null;
+    protected ?SiteAliasManager $aliasManager = null;
+    protected ?RedispatchHook $redispatchHook = null;
+    protected ?TildeExpansionHook $tildeExpansionHook = null;
+    protected ?ServiceManager $serviceManager = null;
 
     /**
      * Add global options to the Application and their default values to Config.
@@ -371,7 +371,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
-        if (empty($attributes) && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
+        if ($attributes === [] && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
             $this->redispatchHook->redispatchIfRemote($input);
         }
     }

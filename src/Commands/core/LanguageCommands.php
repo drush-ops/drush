@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class LanguageCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use LanguageAddCommand::NAME')]
-    const ADD = 'language:add';
+    const string ADD = 'language:add';
     #[Deprecated(reason: 'Use LanguageInfoCommand::NAME')]
-    const INFO = 'language:info';
+    const string INFO = 'language:info';
 }

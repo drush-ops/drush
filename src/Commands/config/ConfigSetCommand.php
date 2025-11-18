@@ -28,7 +28,7 @@ final class ConfigSetCommand extends Command
     use AutowireTrait;
     use ConfigNameTrait;
 
-    public const NAME = 'config:set';
+    public const string NAME = 'config:set';
 
     public function __construct(
         protected readonly ConfigFactoryInterface $configFactory,

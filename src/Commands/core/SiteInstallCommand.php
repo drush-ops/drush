@@ -50,7 +50,7 @@ final class SiteInstallCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'site:install';
+    public const string NAME = 'site:install';
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,
@@ -136,7 +136,7 @@ final class SiteInstallCommand extends Command
                     // Do some install booting to get basic services available.
                     $additional = $input->getArgument('recipeOrProfile');
                     $recipeOrProfile = array_shift($additional) ?: '';
-                    list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $input->getOptions());
+                    [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $input->getOptions());
                     require_once $this->bootstrapManager->getRoot() . '/core/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
                     $install_state['parameters']['profile'] = $profile ?? '';
@@ -313,7 +313,7 @@ final class SiteInstallCommand extends Command
         $recipeOrProfile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ($additional as $arg) {
-            list($key, $value) = explode('=', $arg, 2);
+            [$key, $value] = explode('=', $arg, 2);
 
             // Allow for numeric and NULL values to be passed in.
             if (is_numeric($value)) {
@@ -327,7 +327,7 @@ final class SiteInstallCommand extends Command
         $options = $input->getOptions();
 
         $this->serverGlobals($this->bootstrapManager->getUri());
-        list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $options);
+        [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $options);
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
         // Was giving error during validate() so its here for now.
@@ -399,7 +399,7 @@ final class SiteInstallCommand extends Command
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
+            drush_op('install_drupal', $this->autoloader, $settings, $this->taskCallback(...));
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]), $e->getCode(), $e);
@@ -472,10 +472,7 @@ final class SiteInstallCommand extends Command
     {
         // It is impossible to validate a recipe fully at this point because that
         // requires a container.
-        if (!is_dir($recipe) || !is_file($recipe . '/recipe.yml')) {
-            return false;
-        }
-        return true;
+        return is_dir($recipe) && is_file($recipe . '/recipe.yml');
     }
 
     protected function determineProfile($profile, $options): string|bool
@@ -490,8 +487,7 @@ final class SiteInstallCommand extends Command
                 throw new \Exception(dt('Existing configuration directory @config does not contain a core.extension.yml file.', ['@config' => $config_directory]));
             }
             $config = $source_storage->read('core.extension');
-            $profile = $config['profile'] ?? false;
-            return $profile;
+            return $config['profile'] ?? false;
         }
 
         if (empty($profile)) {

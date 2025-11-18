@@ -14,13 +14,11 @@ class MigrateUtils
      *
      * IDs are delimited by comma. Each ID consists in one are many ID columns,
      * separated by a colon (":").
-     *
-     * @param string|null $idlist
      */
     public static function parseIdList(?string $idlist): array
     {
         $idlist = array_filter(str_getcsv((string) $idlist, escape: '\\'));
-        array_walk($idlist, function (string &$value) {
+        array_walk($idlist, function (string &$value): void {
             $value = str_getcsv(trim($value), ':', escape: '\\');
         });
         return $idlist;

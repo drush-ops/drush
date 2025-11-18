@@ -123,7 +123,7 @@ final class FsUtils
         $dir = $fs->tempnam($parent, $subdir ?? 'drush');
         unlink($dir);
         $fs->mkdir($dir);
-        static::registerForDeletion($dir);
+        self::registerForDeletion($dir);
         return $dir;
     }
 
@@ -135,12 +135,12 @@ final class FsUtils
      */
     public static function registerForDeletion(string $dir)
     {
-        if (!isset(static::$deletionList)) {
-            static::$deletionList = [];
-            register_shutdown_function([static::class, 'cleanup']);
+        if (!isset(self::$deletionList)) {
+            self::$deletionList = [];
+            register_shutdown_function([self::class, 'cleanup']);
         }
 
-        static::$deletionList[] = $dir;
+        self::$deletionList[] = $dir;
     }
 
     /**
@@ -148,15 +148,15 @@ final class FsUtils
      */
     public static function cleanup()
     {
-        if (!isset(static::$deletionList)) {
+        if (!isset(self::$deletionList)) {
             return;
         }
 
         $fs = new Filesystem();
-        foreach (static::$deletionList as $dir) {
+        foreach (self::$deletionList as $dir) {
             try {
                 $fs->remove($dir);
-            } catch (\Exception $e) {
+            } catch (\Exception) {
               // No action taken if someone already deleted the directory
             }
         }

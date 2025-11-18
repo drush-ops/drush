@@ -40,7 +40,7 @@ final class ConfigPullCommand extends Command
     use ConfigTrait;
     use FormatterTrait;
 
-    const NAME = 'config:pull';
+    const string NAME = 'config:pull';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,

@@ -9,5 +9,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class RunserverCommands
 {
     #[Deprecated(reason: 'Use RunserverCommand::NAME')]
-    const RUNSERVER = 'runserver';
+    const string RUNSERVER = 'runserver';
 }

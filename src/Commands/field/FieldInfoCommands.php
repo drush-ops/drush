@@ -20,7 +20,7 @@ final class FieldInfoCommands extends DrushCommands
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
 
-    const INFO = 'field:info';
+    const string INFO = 'field:info';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -65,10 +65,10 @@ final class FieldInfoCommands extends DrushCommands
         'format' => 'table',
     ]): RowsOfFields
     {
-        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
+        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
         $this->validateBundle($entityType, $bundle);
 
         $fieldDefinitions = $this->entityTypeManager

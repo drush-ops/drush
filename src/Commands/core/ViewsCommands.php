@@ -9,13 +9,13 @@ use JetBrains\PhpStorm\Deprecated;
 final class ViewsCommands
 {
     #[Deprecated(reason: 'Use ViewsDevCommand::NAME')]
-    const DEV = 'views:dev';
+    const string DEV = 'views:dev';
     #[Deprecated(reason: 'Use ViewsExecuteCommand::NAME')]
-    const EXECUTE = 'views:execute';
+    const string EXECUTE = 'views:execute';
     #[Deprecated(reason: 'Use ViewsListCommand::NAME')]
-    const LIST = 'views:list';
+    const string LIST = 'views:list';
     #[Deprecated(reason: 'Use ViewsEnableCommand::NAME')]
-    const ENABLE = 'views:enable';
+    const string ENABLE = 'views:enable';
     #[Deprecated(reason: 'Use ViewsDisableCommand::NAME')]
-    const DISABLE = 'views:disable';
+    const string DISABLE = 'views:disable';
 }

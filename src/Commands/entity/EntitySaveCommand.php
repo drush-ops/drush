@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\entity;
 
+use Drupal\Core\Entity\ContentEntityStorageInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
@@ -37,7 +38,7 @@ final class EntitySaveCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'entity:save';
+    public const string NAME = 'entity:save';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,
@@ -108,7 +109,7 @@ final class EntitySaveCommand extends Command
             $chunks = array_chunk($result, (int) $options['chunks'], true);
             $io->progressStart(count($chunks));
             foreach ($chunks as $chunk) {
-                drush_op([$this, 'doSave'], $entity_type, $chunk, $action, $state);
+                drush_op($this->doSave(...), $entity_type, $chunk, $action, $state);
                 $io->progressAdvance();
             }
             $io->progressFinish();
@@ -140,7 +141,7 @@ final class EntitySaveCommand extends Command
         $is_revisionable = $this->entityTypeManager->getDefinition($entity_type)->isRevisionable();
         foreach ($entities as $entity) {
             if ($is_revisionable) {
-                /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
+                /** @var ContentEntityStorageInterface $storage */
                 $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
                 $entity = $storage->createRevision($entity, true);
             }
@@ -157,7 +158,7 @@ final class EntitySaveCommand extends Command
                 $message = 'State transitioned to ' . $state;
             }
             if ($action) {
-                if (!is_a($entity, EntityPublishedInterface::class)) {
+                if (!$entity instanceof EntityPublishedInterface) {
                     throw new \InvalidArgumentException(dt('!bundle !id does not support publish/unpublish.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
                 }
                 if ($action === 'publish') {
@@ -175,7 +176,7 @@ final class EntitySaveCommand extends Command
                 $entity->setRevisionCreationTime($this->time->getRequestTime());
                 $entity->setRevisionUserId($this->currentUser->id());
             }
-            if (is_a($entity, EntityChangedInterface::class)) {
+            if ($entity instanceof EntityChangedInterface) {
                 $entity->setChangedTime($this->time->getRequestTime());
             }
             $entity->save();
@@ -183,7 +184,6 @@ final class EntitySaveCommand extends Command
     }
 
     /**
-     * @param string|null $ids
      * @throws InvalidPluginDefinitionException
      * @throws PluginNotFoundException
      */

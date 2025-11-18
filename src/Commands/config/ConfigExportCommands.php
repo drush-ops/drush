@@ -10,5 +10,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class ConfigExportCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use ConfigExportCommand::NAME')]
-    const EXPORT = 'config:export';
+    const string EXPORT = 'config:export';
 }

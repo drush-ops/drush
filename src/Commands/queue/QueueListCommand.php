@@ -30,7 +30,7 @@ final class QueueListCommand extends Command
     use FormatterTrait;
     use QueueTrait;
 
-    const NAME = 'queue:list';
+    const string NAME = 'queue:list';
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,
@@ -55,7 +55,7 @@ final class QueueListCommand extends Command
             $result[$name] = [
                 'queue' => $name,
                 'items' => $q->numberOfItems(),
-                'class' => get_class($q),
+                'class' => $q::class,
             ];
         }
         return new RowsOfFields($result);

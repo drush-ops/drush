@@ -10,7 +10,6 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -40,7 +39,7 @@ final class ViewsListCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'views:list';
+    public const string NAME = 'views:list';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
@@ -73,7 +72,6 @@ final class ViewsListCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
     {
-        $io = new DrushStyle($input, $output);
         $nameOption = $input->getOption('name');
         $tagsOption = $input->getOption('tags');
         $statusOption = $input->getOption('status');
@@ -102,7 +100,7 @@ final class ViewsListCommand extends Command
         foreach ($views as $view) {
             // If options were specified, check that first mismatch push the loop to the
             // next view.
-            if ($with_name && !stristr($view->id(), $name[0])) {
+            if ($with_name && !stristr($view->id(), (string) $name[0])) {
                 continue;
             }
             if ($with_tags && !in_array($view->get('tag'), $tags)) {

@@ -57,7 +57,6 @@ final class PmInstallCommand extends Command
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
         $todo = $this->addInstallDependencies($modules);
-        $todo_str = ['!list' => implode(', ', $todo)];
 
         if ($todo === []) {
             $this->logger->notice('Already installed: {list}', ['list' => implode(', ', $modules)]);
@@ -82,9 +81,7 @@ final class PmInstallCommand extends Command
         $moduleData = $this->extensionListModule->getList();
         foreach ($todo as $moduleName) {
             $links = $this->getModuleLinks($moduleData[$moduleName]);
-            $links = array_map(function ($link) {
-                return sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText());
-            }, $links);
+            $links = array_map(fn($link) => sprintf('<href=%s>%s</>', $link->getUrl()->setAbsolute()->toString(), $link->getText()), $links);
 
             if ($links) {
                 $this->logger->notice('Module links: {list}', ['list' => implode(', ', $links)]);

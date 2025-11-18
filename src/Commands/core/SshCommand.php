@@ -33,7 +33,7 @@ final class SshCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'site:ssh';
+    public const string NAME = 'site:ssh';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager,
@@ -68,7 +68,7 @@ final class SshCommand extends Command
             $ttyOption = true;
         }
 
-        if ((count($code) == 1)) {
+        if ((count($code) === 1)) {
             $code = [Shell::preEscaped($code[0])];
         }
 

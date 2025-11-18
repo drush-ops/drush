@@ -26,7 +26,7 @@ final class RoleDeleteCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'role:delete';
+    const string NAME = 'role:delete';
 
     public function __construct()
     {

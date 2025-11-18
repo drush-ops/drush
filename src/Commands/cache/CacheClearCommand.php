@@ -36,8 +36,8 @@ final class CacheClearCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'cache:clear';
-    public const EVENT_CLEAR = 'cache-clear';
+    public const string NAME = 'cache:clear';
+    public const string EVENT_CLEAR = 'cache-clear';
 
     public function __construct(
         private readonly CacheFactoryInterface $cacheFactory,
@@ -129,14 +129,14 @@ final class CacheClearCommand extends Command
     public function getTypes(): array
     {
         $types = [
-            'theme-registry' => [$this, 'clearThemeRegistry'],
-            'router' => [$this, 'clearRouter'],
-            'css-js' => [$this, 'clearCssJs'],
-            'render' => [$this, 'clearRender'],
-            'plugin' => [$this, 'clearPlugin'],
-            'bin' => [$this, 'clearBins'],
-            'container' => [$this, 'clearContainer'],
-            'views' => [$this, 'clearViews'],
+            'theme-registry' => $this->clearThemeRegistry(...),
+            'router' => $this->clearRouter(...),
+            'css-js' => $this->clearCssJs(...),
+            'render' => $this->clearRender(...),
+            'plugin' => $this->clearPlugin(...),
+            'bin' => $this->clearBins(...),
+            'container' => $this->clearContainer(...),
+            'views' => $this->clearViews(...),
         ];
 
         // Listeners may customize $types as desired.

@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\Input;
 final class ValidatorsCommands
 {
     #[Deprecated('Use CLI/ValidateEntityLoad Attribute instead')]
-    const VALIDATE_ENTITY_LOAD = 'validate-entity-load';
+    const string VALIDATE_ENTITY_LOAD = 'validate-entity-load';
 
     /**
      * Validate that passed entity names are valid.
@@ -29,7 +29,7 @@ final class ValidatorsCommands
     #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, selector: self::VALIDATE_ENTITY_LOAD)]
     public function validateEntityLoad(CommandData $commandData)
     {
-        list($entity_type, $arg_name) = explode(' ', $commandData->annotationData()->get(self::VALIDATE_ENTITY_LOAD, null));
+        [$entity_type, $arg_name] = explode(' ', $commandData->annotationData()->get(self::VALIDATE_ENTITY_LOAD, null));
         $names = StringUtils::csvToArray($commandData->input()->getArgument($arg_name));
         $loaded = \Drupal::entityTypeManager()->getStorage($entity_type)->loadMultiple($names);
         if ($missing = array_diff($names, array_keys($loaded))) {

@@ -59,14 +59,14 @@ final class ArchiveDumpCommand extends Command
         parent::__construct();
     }
 
-    private const COMPONENT_CODE = 'code';
-    private const COMPONENT_FILES = 'files';
-    private const COMPONENT_DATABASE = 'database';
-    private const SQL_DUMP_FILE_NAME = 'database.sql';
-    private const ARCHIVES_DIR_NAME = 'archives';
-    private const ARCHIVE_FILE_NAME = 'archive.tar';
-    private const MANIFEST_FORMAT_VERSION = '1.0';
-    private const MANIFEST_FILE_NAME = 'MANIFEST.yml';
+    private const string COMPONENT_CODE = 'code';
+    private const string COMPONENT_FILES = 'files';
+    private const string COMPONENT_DATABASE = 'database';
+    private const string SQL_DUMP_FILE_NAME = 'database.sql';
+    private const string ARCHIVES_DIR_NAME = 'archives';
+    private const string ARCHIVE_FILE_NAME = 'archive.tar';
+    private const string MANIFEST_FORMAT_VERSION = '1.0';
+    private const string MANIFEST_FILE_NAME = 'MANIFEST.yml';
 
     protected function configure(): void
     {
@@ -385,18 +385,16 @@ final class ArchiveDumpCommand extends Command
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
         // Remove path projects ('source' is empty for path projects)
-        $installedPackages = array_filter($installedPackages, function ($dependency) {
-            return !empty($dependency['source']);
-        });
+        $installedPackages = array_filter($installedPackages, fn($dependency): bool => !empty($dependency['source']));
         $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
-            fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
+            fn($path): string => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
             $installedPackagesPaths
         );
         $installedPackagesRelativePaths = array_unique(
             array_filter(
                 $installedPackagesRelativePaths,
-                fn($path) => '' !== $path && !str_starts_with($path, 'vendor')
+                fn($path): bool => '' !== $path && !str_starts_with($path, 'vendor')
             )
         );
         $excludeDirs = array_merge($excludeDirs, $installedPackagesRelativePaths);
@@ -555,7 +553,7 @@ final class ArchiveDumpCommand extends Command
     private function getRegexpsForPaths(array $paths): array
     {
         return array_map(
-            fn($path) => sprintf('#^%s$#', trim($path)),
+            fn($path): string => sprintf('#^%s$#', trim($path)),
             $paths
         );
     }

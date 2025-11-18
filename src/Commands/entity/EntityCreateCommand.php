@@ -37,7 +37,7 @@ final class EntityCreateCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    const NAME = 'entity:create';
+    const string NAME = 'entity:create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -164,7 +164,7 @@ final class EntityCreateCommand extends Command
             if ($field_name == 'uid') {
                 $default_value = $options['uid'];
             } elseif ($default = $instance->getDefaultValue($entity)) {
-                if (count($default) == 1 && (count($default[0]) == 1)) {
+                if (count($default) === 1 && (count($default[0]) === 1)) {
                     // var_export converts boolean to "true".
                     $default_value = var_export(reset($default[0]), true);
                     ;
@@ -174,7 +174,7 @@ final class EntityCreateCommand extends Command
             $lines[] = "$field_name: $default_value" . $suffix;
         }
         // Append comment as needed, using padding.
-        $max_len = max(array_map('strlen', $lines));
+        $max_len = max(array_map(strlen(...), $lines));
         foreach ($lines as $key => $line) {
             if ($comments[$key]) {
                 $lines[$key] = str_pad($line, $max_len + 1) . '# ' . implode(', ', $comments[$key]);

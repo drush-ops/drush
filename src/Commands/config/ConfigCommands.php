@@ -28,18 +28,18 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     use StdinAwareTrait;
     use ExecTrait;
 
-    const INTERACT_CONFIG_NAME = 'interact-config-name';
-    const VALIDATE_CONFIG_NAME = 'validate-config-name';
+    const string INTERACT_CONFIG_NAME = 'interact-config-name';
+    const string VALIDATE_CONFIG_NAME = 'validate-config-name';
     #[Deprecated(reason: 'Use ConfigGetCommand::NAME')]
-    const GET = 'config:get';
+    const string GET = 'config:get';
     #[Deprecated(replacement: ConfigSetCommand::NAME)]
-    const SET = 'config:set';
+    const string SET = 'config:set';
     #[Deprecated(reason: 'Use ConfigEditCommand::NAME')]
-    const EDIT = 'config:edit';
+    const string EDIT = 'config:edit';
     #[Deprecated(reason: 'Use ConfigDeleteCommand::NAME')]
-    const DELETE = 'config:delete';
+    const string DELETE = 'config:delete';
     #[Deprecated(reason: 'Use ConfigStatusCommand::NAME')]
-    const STATUS = 'config:status';
+    const string STATUS = 'config:status';
 
     public function getConfigFactory(): ConfigFactoryInterface
     {

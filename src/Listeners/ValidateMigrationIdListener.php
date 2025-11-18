@@ -39,11 +39,10 @@ class ValidateMigrationIdListener
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
         $attributes = $reflection->getAttributes(ValidateMigrationId::class);
-        if (empty($attributes)) {
+        if ($attributes === []) {
             return;
         }
-        /** @var ValidateMigrationId $instance */
-        $instance = $attributes[0]->newInstance();
+        $attributes[0]->newInstance();
         // $argName = $commandData->annotationData()->get('validate-migration-id') ?: 'migrationId';
         $migrationId = $event->getInput()->getArgument('migrationId');
         if (!$this->migrationPluginManager->hasDefinition($migrationId)) {

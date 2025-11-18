@@ -36,7 +36,7 @@ class Caster
                     $value = self::handleReferences($value, $fieldItemList, $fieldStorageDefinition);
                 }
                 // Truncate long values.
-                array_walk_recursive($value, function (&$x) {
+                array_walk_recursive($value, function (&$x): void {
                     if (is_string($x) && strlen($x) > 200) {
                         $x = Unicode::truncate($x, 80, false, true);
                     }
@@ -44,7 +44,7 @@ class Caster
                 // Collapse single value'd field values.
                 if (count($value[0] ?? []) === 1) {
                     // Filter out non-strings.
-                    $to_implode = array_filter(array_column($value, array_keys($value[0])[0]), fn ($v) => is_string($v));
+                    $to_implode = array_filter(array_column($value, array_keys($value[0])[0]), is_string(...));
                     $value = implode(', ', $to_implode);
                 }
                 $array[$key] = $value;
@@ -118,7 +118,7 @@ class Caster
             sort($service_ids);
             foreach ($service_ids as $service_id) {
                 $service = $container->get($service_id);
-                $array[BaseCaster::PREFIX_VIRTUAL . $service_id] = is_object($service) ? get_class($service) : $service;
+                $array[BaseCaster::PREFIX_VIRTUAL . $service_id] = is_object($service) ? $service::class : $service;
             }
         }
 

@@ -24,7 +24,7 @@ final class StateSetCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'state:set';
+    public const string NAME = 'state:set';
 
     public function __construct(
         protected StateInterface $state
@@ -64,7 +64,7 @@ final class StateSetCommand extends Command
         // If the value is a string (usual case, unless we are called from code),
         // then format the input.
         if (is_string($value)) {
-            $value = $this->format($value, $inputFormat);
+            $value = self::format($value, $inputFormat);
         }
 
         $this->state->set($key, $value);

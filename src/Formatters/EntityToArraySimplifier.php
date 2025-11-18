@@ -18,7 +18,7 @@ class EntityToArraySimplifier implements SimplifyToArrayInterface
 
     public function canSimplify(\ReflectionClass $dataType): bool
     {
-        return interface_exists('Drupal\Core\Entity\EntityInterface', false) && $dataType->implementsInterface('\Drupal\Core\Entity\EntityInterface');
+        return interface_exists(\Drupal\Core\Entity\EntityInterface::class, false) && $dataType->implementsInterface(\Drupal\Core\Entity\EntityInterface::class);
     }
 
     public function simplifyToArray($structuredData, FormatterOptions $options): array

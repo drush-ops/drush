@@ -55,7 +55,7 @@ final class MigrateMessagesCommand extends Command
     use FormatterTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:messages';
+    public const string NAME = 'migrate:messages';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

@@ -23,7 +23,7 @@ final class CacheTagsCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'cache:tags';
+    public const string NAME = 'cache:tags';
 
     public function __construct(
         private readonly CacheTagsInvalidatorInterface $invalidator,

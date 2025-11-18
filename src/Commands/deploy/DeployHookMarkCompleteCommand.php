@@ -24,7 +24,7 @@ final class DeployHookMarkCompleteCommand extends Command
 {
     use DeployTrait;
 
-    public const NAME = 'deploy:mark-complete';
+    public const string NAME = 'deploy:mark-complete';
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {

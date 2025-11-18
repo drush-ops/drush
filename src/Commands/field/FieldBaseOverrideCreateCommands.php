@@ -24,7 +24,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
-    const BASE_OVERRIDE_CREATE = 'field:base-override-create';
+    const string BASE_OVERRIDE_CREATE = 'field:base-override-create';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -60,10 +60,10 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
         'show-machine-names' => InputOption::VALUE_OPTIONAL,
     ]): void
     {
-        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
+        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
         $this->validateBundle($entityType, $bundle);
 
         $fieldName = $this->input->getOption('field-name') ?? $this->askFieldName($entityType);

@@ -22,7 +22,7 @@ final class FieldBaseInfoCommands extends DrushCommands
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
 
-    const BASE_INFO = 'field:base-info';
+    const string BASE_INFO = 'field:base-info';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -67,7 +67,7 @@ final class FieldBaseInfoCommands extends DrushCommands
         'format' => 'table',
     ]): RowsOfFields
     {
-        $this->input->setArgument('entityType', $entityType = $entityType ?? $this->askEntityType());
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
         $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);

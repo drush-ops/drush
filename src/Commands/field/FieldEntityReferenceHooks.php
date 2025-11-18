@@ -81,7 +81,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
                 $referencedBundles = $this->askReferencedBundles($targetType);
             }
 
-            if (!empty($referencedBundles)) {
+            if ($referencedBundles !== []) {
                 $targetBundles = array_combine($referencedBundles, $referencedBundles);
             }
         }

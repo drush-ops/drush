@@ -59,9 +59,7 @@ final class PmUninstallCommand extends Command
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
 
-        $installed_modules = array_filter($modules, function ($module) {
-            return $this->moduleHandler->moduleExists($module);
-        });
+        $installed_modules = array_filter($modules, $this->moduleHandler->moduleExists(...));
         if ($installed_modules === []) {
             throw new \Exception(sprintf('The following module(s) are not installed: %s. No modules to uninstall.', implode(', ', $modules)));
         }
@@ -98,7 +96,7 @@ final class PmUninstallCommand extends Command
             if ($validation_reasons = $this->moduleInstaller->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $reasons) {
                     foreach ($reasons as $reason) {
-                        $list[] = "$module: " . (string)$reason;
+                        $list[] = "$module: " . $reason;
                     }
                 }
                 throw new \Exception(implode("\n", $list));

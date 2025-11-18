@@ -13,5 +13,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class LoginCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use UserLoginCommand::NAME')]
-    const LOGIN = 'user:login';
+    const string LOGIN = 'user:login';
 }

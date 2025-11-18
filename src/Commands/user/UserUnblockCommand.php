@@ -25,7 +25,7 @@ final class UserUnblockCommand extends Command
     use AutowireTrait;
     use UserTrait;
 
-    public const NAME = 'user:unblock';
+    public const string NAME = 'user:unblock';
 
     public function __construct(
         protected DateFormatterInterface $dateFormatter,

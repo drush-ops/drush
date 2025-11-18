@@ -36,7 +36,7 @@ final class TwigUnusedCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'twig:unused';
+    public const string NAME = 'twig:unused';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

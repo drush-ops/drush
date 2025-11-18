@@ -10,5 +10,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class ConfigImportCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use ConfigImportCommand::NAME')]
-    const IMPORT = 'config:import';
+    const string IMPORT = 'config:import';
 }

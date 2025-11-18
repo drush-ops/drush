@@ -26,7 +26,7 @@ final class QueueDeleteCommand extends Command
     use AutowireTrait;
     use QueueTrait;
 
-    const NAME = 'queue:delete';
+    const string NAME = 'queue:delete';
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,

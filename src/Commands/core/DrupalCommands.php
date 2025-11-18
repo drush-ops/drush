@@ -20,9 +20,9 @@ final class DrupalCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated(reason: 'Use CronCommand::NAME')]
-    const CRON = 'core:cron';
+    const string CRON = 'core:cron';
     #[Deprecated(reason: 'Use RequirementsCommand::NAME')]
-    const REQUIREMENTS = 'core:requirements';
+    const string REQUIREMENTS = 'core:requirements';
     #[Deprecated(reason: 'Use RouteCommand::NAME')]
-    const ROUTE = 'core:route';
+    const string ROUTE = 'core:route';
 }

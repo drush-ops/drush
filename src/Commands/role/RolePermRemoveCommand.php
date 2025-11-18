@@ -33,7 +33,7 @@ final class RolePermRemoveCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'role:perm:remove';
+    const string NAME = 'role:perm:remove';
 
     public function __construct(
         private readonly ProcessManager $processManager,

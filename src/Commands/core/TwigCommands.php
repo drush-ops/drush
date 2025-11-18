@@ -13,7 +13,7 @@ final class TwigCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated('Use TwigCompileCommand::NAME instead.')]
-    const COMPILE = 'twig:compile';
+    const string COMPILE = 'twig:compile';
     #[Deprecated('Use TwigUnusedCommand::UNUSED instead.')]
-    const UNUSED = 'twig:unused';
+    const string UNUSED = 'twig:unused';
 }

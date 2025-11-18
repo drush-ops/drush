@@ -9,11 +9,11 @@ use JetBrains\PhpStorm\Deprecated;
 
 final class MaintCommands extends DrushCommands
 {
-    const KEY = 'system.maintenance_mode';
+    const string KEY = 'system.maintenance_mode';
     #[Deprecated(reason: 'Use MaintGetCommand::NAME')]
-    const GET = 'maint:get';
+    const string GET = 'maint:get';
     #[Deprecated(reason: 'Use MaintSetCommand::NAME')]
-    const SET = 'maint:set';
+    const string SET = 'maint:set';
     #[Deprecated(reason: 'Use MaintStatusCommand::NAME')]
-    const STATUS = 'maint:status';
+    const string STATUS = 'maint:status';
 }
