@@ -17,9 +17,6 @@ class DrushDrupalFinder
 
     /**
      * Get the Drupal root.
-     *
-     * @return string|bool
-     *   The path to the Drupal root, if it was discovered. False otherwise.
      */
     public function getDrupalRoot(): string|false
     {
