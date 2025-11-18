@@ -26,8 +26,7 @@ class MigrateMissingSourceRowsEvent extends Event
          * Values representing the destination IDs.
          */
         protected array $destinationIds
-    )
-    {
+    ) {
     }
 
     /**
