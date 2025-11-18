@@ -11,7 +11,7 @@ use Drush\Commands\DrushCommands;
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class OptionsetTableSelection
 {
-    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo)
+    public static function handle(\ReflectionAttribute $attribute, CommandInfo $commandInfo): void
     {
         $commandInfo->addOption('skip-tables-key', 'A key in the $skip_tables array. @see [Drush config](../using-drush-configuration.md)', [], DrushCommands::REQ);
         $commandInfo->addOption('structure-tables-key', 'A key in the $structure_tables array. @see [Drush config](../using-drush-configuration.md)', [], DrushCommands::REQ);

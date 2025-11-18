@@ -58,7 +58,7 @@ class LegacyServiceFinder
      * @param string $module Module name
      * @param string $filename Full path to modules .info.yml file
      */
-    protected function addModuleDrushServiceProvider($module, $filename)
+    protected function addModuleDrushServiceProvider(string $module, $filename)
     {
         $serviceYmlPath = $this->findModuleDrushServiceProvider($module, dirname($filename));
         $this->addDrushServiceProvider("_drush.$module", $serviceYmlPath);
@@ -140,7 +140,7 @@ class LegacyServiceFinder
      * @return string
      *   One discovered drush.service.yml file
      */
-    protected function findAppropriateServicesFile($module, $services, $dir)
+    protected function findAppropriateServicesFile($module, $services, $dir): string
     {
         $version = Drush::getVersion();
         $version = preg_replace('#-dev.*#', '', $version);

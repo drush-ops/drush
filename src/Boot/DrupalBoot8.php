@@ -182,7 +182,7 @@ class DrupalBoot8 extends DrupalBoot
 
         // Default to the standard kernel.
         $kernel = Kernels::DRUPAL;
-        if (!empty($annotationData)) {
+        if ($annotationData instanceof \Consolidation\AnnotatedCommand\AnnotationData) {
             $kernel = $annotationData->get('kernel', Kernels::DRUPAL);
         }
         $request = $this->getRequest();
@@ -323,7 +323,7 @@ class DrupalBoot8 extends DrupalBoot
      * We now set various contexts that we determined and confirmed to be valid.
      * Additionally we load an optional drush.yml file in the site directory.
      */
-    public function bootstrapDrupalSite(BootstrapManager $manager)
+    public function bootstrapDrupalSite(BootstrapManager $manager): void
     {
         $this->bootstrapDoDrupalSite($manager);
     }

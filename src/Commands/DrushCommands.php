@@ -107,7 +107,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      * Persist commandData for use in primary command callback. Used by 'topic' commands.
      */
     #[CLI\Hook(type: HookManager::PRE_COMMAND_HOOK, target: '*')]
-    public function preHook(CommandData $commandData)
+    public function preHook(CommandData $commandData): void
     {
         $this->commandData = $commandData;
     }

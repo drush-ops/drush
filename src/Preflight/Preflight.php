@@ -28,11 +28,6 @@ use Symfony\Component\HttpKernel\Kernel;
 class Preflight
 {
     /**
-     * @var Environment $environment
-     */
-    protected $environment;
-
-    /**
      * @var PreflightVerify
      */
     protected $verify;
@@ -42,10 +37,7 @@ class Preflight
      */
     protected $configLocator;
 
-    /**
-     * @var DrushDrupalFinder
-     */
-    protected $drupalFinder;
+    protected \Drush\DrupalFinder\DrushDrupalFinder $drupalFinder;
 
     /**
      * @var PreflightArgs
@@ -65,12 +57,11 @@ class Preflight
     /**
      * Preflight constructor
      */
-    public function __construct(Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
+    public function __construct(protected \Drush\Config\Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
     {
-        $this->environment = $environment;
         $this->verify = $verify ?: new PreflightVerify();
-        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $environment->getConfigFileVariant());
-        $this->drupalFinder = new DrushDrupalFinder($environment);
+        $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $this->environment->getConfigFileVariant());
+        $this->drupalFinder = new DrushDrupalFinder($this->environment);
         $this->logger = $preflightLog ?: new PreflightLog();
     }
 
@@ -156,7 +147,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv): PreflightArgs
+    public function preflightArgs(array $argv): PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());
@@ -321,7 +312,7 @@ class Preflight
      * Find the Drupal root of the preferred Drupal site (the one
      * that shares the `vendor` directory with Drush).
      */
-    protected function preferredSite()
+    protected function preferredSite(): string
     {
         $root = $this->drupalFinder()->getDrupalRoot();
 

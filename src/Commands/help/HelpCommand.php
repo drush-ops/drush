@@ -41,7 +41,7 @@ final class HelpCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addArgument(name: 'command_name', mode: InputArgument::REQUIRED, description: 'A command name')
@@ -56,7 +56,7 @@ final class HelpCommand extends Command
         return Command::SUCCESS;
     }
 
-    public function doExecute(InputInterface $input, OutputInterface $output): HelpDocument
+    public function doExecute(InputInterface $input, OutputInterface $output): \Drush\Commands\help\DrushHelpDocument
     {
         $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
 

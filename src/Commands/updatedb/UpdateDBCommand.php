@@ -55,7 +55,7 @@ final class UpdateDBCommand extends Command
         parent::__construct();
     }
 
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption('cache-clear', mode: InputOption::VALUE_REQUIRED, description: 'Clear caches upon completion.', default: '1');

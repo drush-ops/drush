@@ -17,9 +17,9 @@ return RectorConfig::configure()
         // __DIR__ . '/tests',
     ])
     ->withPhpSets(php83: true)
-    ->withImportNames(importNames: false, importShortClasses: false)
+    ->withImportNames(importNames: false, importShortClasses: true)
     ->withPreparedSets(deadCode: true, codeQuality: true)
-    ->withTypeCoverageLevel(9)
+    ->withTypeCoverageLevel(50)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,

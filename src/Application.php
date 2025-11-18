@@ -49,7 +49,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Add global options to the Application and their default values to Config.
      */
-    public function configureGlobalOptions()
+    public function configureGlobalOptions(): void
     {
         // Symfony 6.1+ has a --debug option for its completion command.
         if ($this->getDefinition()->hasOption('--debug')) {
@@ -97,37 +97,37 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             );
     }
 
-    public function bootstrapManager()
+    public function bootstrapManager(): ?\Drush\Boot\BootstrapManager
     {
         return $this->bootstrapManager;
     }
 
-    public function setBootstrapManager(BootstrapManager $bootstrapManager)
+    public function setBootstrapManager(BootstrapManager $bootstrapManager): void
     {
         $this->bootstrapManager = $bootstrapManager;
     }
 
-    public function aliasManager()
+    public function aliasManager(): ?\Consolidation\SiteAlias\SiteAliasManager
     {
         return $this->aliasManager;
     }
 
-    public function setAliasManager($aliasManager)
+    public function setAliasManager(?\Consolidation\SiteAlias\SiteAliasManager $aliasManager): void
     {
         $this->aliasManager = $aliasManager;
     }
 
-    public function setRedispatchHook(RedispatchHook $redispatchHook)
+    public function setRedispatchHook(RedispatchHook $redispatchHook): void
     {
         $this->redispatchHook = $redispatchHook;
     }
 
-    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook)
+    public function setTildeExpansionHook(TildeExpansionHook $tildeExpansionHook): void
     {
         $this->tildeExpansionHook = $tildeExpansionHook;
     }
 
-    public function setServiceManager(ServiceManager $serviceManager)
+    public function setServiceManager(ServiceManager $serviceManager): void
     {
         $this->serviceManager = $serviceManager;
     }
@@ -135,7 +135,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Return the framework uri selected by the user.
      */
-    public function getUri()
+    public function getUri(): string|false
     {
         if (!$this->bootstrapManager) {
             return 'default';
@@ -147,7 +147,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * If the user did not explicitly select a site URI,
      * then pick an appropriate site from the cwd.
      */
-    public function refineUriSelection($cwd)
+    public function refineUriSelection($cwd): void
     {
         if (!$this->bootstrapManager || !$this->aliasManager) {
             return;
@@ -204,7 +204,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Look up a command. Bootstrap further if necessary.
      */
-    protected function bootstrapAndFind($name)
+    protected function bootstrapAndFind(string $name): \Symfony\Component\Console\Command\Command|\Drush\Command\RemoteCommandProxy
     {
         try {
             return parent::find($name);
@@ -309,7 +309,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      * Configure the application object and register all of the commandfiles
      * available in the search paths provided via Preflight
      */
-    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath, ClassLoader $classLoader)
+    public function configureAndRegisterCommands(InputInterface $input, OutputInterface $output, $commandfileSearchpath, ClassLoader $classLoader): void
     {
         // Symfony will call this method for us in run() (it will be
         // called again), but we want to call it up-front, here, so that

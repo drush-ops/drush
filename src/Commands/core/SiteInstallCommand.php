@@ -454,7 +454,7 @@ final class SiteInstallCommand extends Command
      * valid, we will pass it through to Drupal and let the system tell us
      * if it is not allowed.
      */
-    protected function isValidProfileName(string $profile)
+    protected function isValidProfileName(string $profile): int|false
     {
         return preg_match('/^[a-z][a-z0-9_]*$/', $profile);
     }

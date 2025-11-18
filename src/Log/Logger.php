@@ -31,7 +31,7 @@ class Logger extends RoboLogger
         parent::__construct($output);
     }
 
-    public function log($level, $message, array $context = []): void
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         // Append timer and memory values.
         if (Drush::debug()) {

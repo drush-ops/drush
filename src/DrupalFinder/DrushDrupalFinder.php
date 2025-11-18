@@ -17,11 +17,8 @@ class DrushDrupalFinder
 
     /**
      * Get the Drupal root.
-     *
-     * @return string|bool
-     *   The path to the Drupal root, if it was discovered. False otherwise.
      */
-    public function getDrupalRoot()
+    public function getDrupalRoot(): string|false
     {
         $core = InstalledVersions::getInstallPath('drupal/core');
         return $core ? Path::canonicalize(realpath(dirname($core))) : false;
@@ -29,22 +26,16 @@ class DrushDrupalFinder
 
     /**
      * Get the Composer root.
-     *
-     * @return string|bool
-     *   The path to the Composer root, if it was discovered. False otherwise.
      */
-    public function getComposerRoot()
+    public function getComposerRoot(): string
     {
         return dirname($this->getVendorDir());
     }
 
     /**
      * Get the vendor path.
-     *
-     * @return string|bool
-     *   The path to the vendor directory, if it was found. False otherwise.
      */
-    public function getVendorDir()
+    public function getVendorDir(): string
     {
         return Path::canonicalize(realpath($this->environment->vendorPath()));
     }

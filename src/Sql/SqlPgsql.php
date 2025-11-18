@@ -16,7 +16,7 @@ class SqlPgsql extends SqlBase
 
     private ?string $password_file = null;
 
-    private function createPasswordFile()
+    private function createPasswordFile(): ?string
     {
         $dbSpec = $this->getDbSpec();
         if (null == ($this->getPasswordFile()) && isset($dbSpec['password'])) {

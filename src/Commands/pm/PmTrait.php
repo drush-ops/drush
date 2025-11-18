@@ -72,7 +72,7 @@ trait PmTrait
         return $todo;
     }
 
-    public function addUninstallDependencies($modules)
+    public function addUninstallDependencies($modules): false|array
     {
         // Get all module data so we can find dependencies and sort.
         $module_data = $this->extensionListModule->reset()->getList();

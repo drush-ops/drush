@@ -19,7 +19,7 @@ class BackendPathEvaluator
      *
      * @param HostPath $path The host and path to evaluate aliases on.
      */
-    public function evaluate(HostPath $path)
+    public function evaluate(HostPath $path): void
     {
         $resolvedPath = $this->resolve($path);
         if (!$resolvedPath) {
