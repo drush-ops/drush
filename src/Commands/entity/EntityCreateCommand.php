@@ -110,7 +110,7 @@ final class EntityCreateCommand extends Command
             if (!$violations->count()) {
                 break;
             }
-            $this->removePreamble($yaml, $lines);
+            $this->removePreamble($yaml);
 
             // Switch needed to overcome Content Moderation constraint.
             if ($options['uid']) {
@@ -119,7 +119,7 @@ final class EntityCreateCommand extends Command
             foreach ($violations as $violation) {
                 $messages[] = "# {$violation->getPropertyPath()}: {$violation->getMessage()}";
             }
-            file_put_contents($path, "# Violations:\n" . implode("\n", $messages) . "\n" . implode("\n", $lines));
+            file_put_contents($path, "# Violations:\n" . implode("\n", $messages) . "\n" . $yaml);
         } while (true);
         $entity->save();
         return $entity->toUrl('canonical', ['absolute' => true])->toString();
@@ -209,7 +209,7 @@ final class EntityCreateCommand extends Command
         }
     }
 
-    private function removePreamble(string $yaml, array &$lines): void
+    private function removePreamble(string $yaml): void
     {
         $lines = explode("\n", $yaml);
         foreach ($lines as $index => $line) {
