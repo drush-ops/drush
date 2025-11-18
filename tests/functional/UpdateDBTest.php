@@ -21,7 +21,7 @@ class UpdateDBTest extends CommandUnishTestCase
 
     protected ?string $pathPostUpdate = null;
 
-    public function testUpdateDBStatus()
+    public function testUpdateDBStatus(): void
     {
         $this->setUpDrupal(1, true);
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
@@ -58,7 +58,7 @@ class UpdateDBTest extends CommandUnishTestCase
      *
      * @dataProvider failedUpdateProvider
      */
-    public function testFailedUpdate($last_successful_update, $expected_status_report, $expected_update_log_output)
+    public function testFailedUpdate(int $last_successful_update, array $expected_status_report, array $expected_update_log_output): void
     {
         $this->setUpDrupal(1, true);
         $options = [
@@ -70,7 +70,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
 
         // Force re-run of woot_update_8101().
-        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'), $options);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", ' . $last_successful_update . ')'], $options);
 
         // Force re-run of the post-update woot_post_update_failing().
         $this->forcePostUpdate('woot_post_update_failing', $options);
@@ -89,7 +89,7 @@ class UpdateDBTest extends CommandUnishTestCase
     /**
      * Data provider for ::testFailedUpdate().
      */
-    public static function failedUpdateProvider()
+    public static function failedUpdateProvider(): array
     {
         return [
             [
@@ -137,7 +137,7 @@ class UpdateDBTest extends CommandUnishTestCase
     /**
      * Tests that a failed post-update is handled correctly.
      */
-    public function testFailedPostUpdate()
+    public function testFailedPostUpdate(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('See https://github.com/consolidation/site-process/pull/27');
@@ -150,7 +150,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8104().
-        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'], $options);
 
         // Force re-run of post-update hooks.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -177,7 +177,7 @@ class UpdateDBTest extends CommandUnishTestCase
      * @see https://github.com/drush-ops/drush/issues/3193
      * @see https://www.drupal.org/project/drupal/issues/2863986
      */
-    public function testUpdateModuleWithServiceDependency()
+    public function testUpdateModuleWithServiceDependency(): void
     {
         $root = $this->webroot();
 
@@ -237,7 +237,7 @@ YAML_FRAGMENT;
     /**
      * Tests that updates and post-updated can be executed successfully.
      */
-    public function testSuccessfulUpdate()
+    public function testSuccessfulUpdate(): void
     {
         $this->setUpDrupal(1, true);
         $options = [
@@ -246,7 +246,7 @@ YAML_FRAGMENT;
         $this->drush(PmCommands::INSTALL, ['woot'], $options);
 
         // Force re-run of woot_update_8104() which is expected to be completed successfully.
-        $this->drush(PhpCommands::EVAL, array('Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'), $options);
+        $this->drush(PhpCommands::EVAL, ['Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8103)'], $options);
 
         // Force re-run of post-update hooks which are expected to be completed successfully.
         $this->forcePostUpdate('woot_post_update_a', $options);
@@ -267,7 +267,7 @@ YAML_FRAGMENT;
     /**
      * Tests the output on batch update.
      */
-    public function testBatchUpdateLogMessages()
+    public function testBatchUpdateLogMessages(): void
     {
         $options = [
             'yes' => null,
@@ -309,7 +309,7 @@ POST_UPDATE;
     /**
      * Tests installing modules with entity type definitions via update hooks.
      */
-    public function testEnableModuleViaUpdate()
+    public function testEnableModuleViaUpdate(): void
     {
         $options = [
             'yes' => null,
@@ -334,7 +334,7 @@ POST_UPDATE;
     /**
      * Tests installing modules with entity type definitions via post-update hooks.
      */
-    public function testEnableModuleViaPostUpdate()
+    public function testEnableModuleViaPostUpdate(): void
     {
         $options = [
             'yes' => null,

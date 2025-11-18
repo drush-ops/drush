@@ -170,7 +170,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         }
 
         // Remove NULLs
-        $cmd = array_filter($cmd, 'strlen');
+        $cmd = array_filter($cmd, strlen(...));
 
         return $cmd;
     }

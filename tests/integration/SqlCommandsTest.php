@@ -20,7 +20,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class SqlCommandsTest extends UnishIntegrationTestCase
 {
-    public function testSqlQuery()
+    public function testSqlQuery(): void
     {
 
         // @todo Ensure SQL dumps can be imported via sql:cli via stdin.
@@ -30,7 +30,7 @@ class SqlCommandsTest extends UnishIntegrationTestCase
         $this->assertContains('sqlcli', $tables);
     }
 
-    public function testSqlCli()
+    public function testSqlCli(): void
     {
         // @todo Ensure SQL dumps *cannot* be imported via sql:cli via stdin.
         $this->drush(SqlCliCommand::NAME, [], ['file' => Path::join(__DIR__, 'resources/sqlcli.sql')], self::EXIT_ERROR);

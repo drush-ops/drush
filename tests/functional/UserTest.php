@@ -28,7 +28,7 @@ class UserTest extends CommandUnishTestCase
         }
     }
 
-    public function testBlockUnblock()
+    public function testBlockUnblock(): void
     {
         $uid = 2;
 
@@ -67,7 +67,7 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals(1, $output['user_status'], 'User (mail) is unblocked.');
     }
 
-    public function testUserRole()
+    public function testUserRole(): void
     {
         $uid = 2;
         // First, create the role since we use testing install profile.
@@ -114,7 +114,7 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals($expected, array_values($output['roles']), 'User (mail) removed test role.');
     }
 
-    public function testUserPassword()
+    public function testUserPassword(): void
     {
         $newpass = 'newpass';
         $name = self::NAME;
@@ -132,13 +132,13 @@ class UserTest extends CommandUnishTestCase
         $this->drush(UserLoginCommand::NAME, [], [], '@none', null, self::EXIT_ERROR);
     }
 
-    public function testUserLogin()
+    public function testUserLogin(): void
     {
         // Check user-login
         $user_login_options = ['simulate' => null];
         // Collect full logs.
         $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['debug' => null]);
-        $logOutput = $this->getErrorOutput();
+        $this->getErrorOutput();
         $url = parse_url($this->getOutput());
         $this->assertStringContainsString('/user/reset/1', $url['path'], 'Login returned a reset URL for uid 1 by default');
         // Check specific user with a path argument.
@@ -171,7 +171,7 @@ class UserTest extends CommandUnishTestCase
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
     }
 
-    public function testUserCancel()
+    public function testUserCancel(): void
     {
         CreateEntityType::createContentEntity($this);
         $this->drush(PmCommands::INSTALL, ['text,unish_article']);
@@ -194,7 +194,7 @@ class UserTest extends CommandUnishTestCase
         // $this->assertEquals('', $this->getOutput());
     }
 
-    public function userCreate()
+    public function userCreate(): void
     {
         $this->drush(UserCommands::CREATE, [self::NAME], ['password' => 'password', 'mail' => self::MAIL]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);

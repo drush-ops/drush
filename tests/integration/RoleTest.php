@@ -25,7 +25,7 @@ class RoleTest extends UnishIntegrationTestCase
         $instance = Settings::getInstance();
         $all = $instance->getAll();
         $all['extension_discovery_scan_tests'] = true;
-        $instance = new Settings($all);
+        new Settings($all);
         $this->drush(PmCommands::INSTALL, [self::USER_FORM_TEST]);
     }
 
@@ -33,7 +33,7 @@ class RoleTest extends UnishIntegrationTestCase
     /**
      * Create, edit, block, and cancel users.
      */
-    public function testRole()
+    public function testRole(): void
     {
         $this->drush(RoleCommands::LIST);
         $output = $this->getOutput();
@@ -81,7 +81,7 @@ class RoleTest extends UnishIntegrationTestCase
         $instance = Settings::getInstance();
         $all = $instance->getAll();
         $all['extension_discovery_scan_tests'] = false;
-        $instance = new Settings($all);
+        new Settings($all);
         parent::tearDown();
     }
 }

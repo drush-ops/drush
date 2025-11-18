@@ -16,7 +16,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  */
 class ImageTest extends UnishApplicationTesterTestCase
 {
-    public function testImage()
+    public function testImage(): void
     {
         $this->drush(PmCommands::INSTALL, ['image'], ['yes' => null]);
         // Should not be needed. Something prior removed all wrappers. Possibly will be fixed by  https://www.drupal.org/project/drupal/issues/3416735
@@ -47,7 +47,7 @@ class ImageTest extends UnishApplicationTesterTestCase
         $applicationTester = new ApplicationTester($this->getApplication());
         $applicationTester->run([ImageFlushCommand::NAME, 'style-names' => $style_name]);
         $applicationTester->assertCommandIsSuccessful();
-        $output = $applicationTester->getDisplay();
+        $applicationTester->getDisplay();
         $this->assertFileDoesNotExist($thumbnail);
         // @todo note stdin testing documented at https://github.com/symfony/symfony/issues/37835
 

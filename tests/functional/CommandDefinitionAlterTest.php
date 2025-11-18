@@ -17,7 +17,7 @@ class CommandDefinitionAlterTest extends CommandUnishTestCase
     /**
      * Tests Console Definition Event Listener.
      */
-    public function testCommandDefinitionAlter()
+    public function testCommandDefinitionAlter(): void
     {
         $this->setUpDrupal(1, true);
         $this->drush(PmCommands::INSTALL, ['woot']);

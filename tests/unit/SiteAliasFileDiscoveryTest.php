@@ -22,7 +22,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
         $this->sut = new SiteAliasFileDiscovery();
     }
 
-    public function testSearchForSingleAliasFile()
+    public function testSearchForSingleAliasFile(): void
     {
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
@@ -31,7 +31,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
         $this->assertBasename('single.site.yml', $path);
     }
 
-    public function testSearchForMissingSingleAliasFile()
+    public function testSearchForMissingSingleAliasFile(): void
     {
         $this->sut->addSearchLocation($this->fixturesDir() . '/sitealiases/single');
 
@@ -56,9 +56,7 @@ class SiteAliasFileDiscoveryTest extends TestCase
         }
 
         $result = array_map(
-            function ($item) {
-                return basename(dirname($item)) . '/' . basename($item);
-            },
+            fn($item) => basename(dirname($item)) . '/' . basename($item),
             $result
         );
 

@@ -15,12 +15,12 @@ class SiteSetTest extends CommandUnishTestCase
     /**
      * Test functionality of site set.
      */
-    public function testSiteSet()
+    public function testSiteSet(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('Site-set not currently available on Windows.');
         }
-        $sites = $this->setUpDrupal(2, true);
+        $this->setUpDrupal(2, true);
         $site_aliases = $this->getAliases();
         $this->assertCount(2, $site_aliases);
 

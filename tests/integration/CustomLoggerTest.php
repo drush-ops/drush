@@ -8,7 +8,7 @@ use Drush\Commands\core\CoreCommands;
 
 class CustomLoggerTest extends UnishIntegrationTestCase
 {
-    public function testCustomLogger()
+    public function testCustomLogger(): void
     {
         // Uses standard Drush logger.
         $this->drush(CoreCommands::VERSION, [], ['debug' => true]);

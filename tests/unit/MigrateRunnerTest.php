@@ -18,9 +18,6 @@ class MigrateRunnerTest extends TestCase
     /**
      * @covers \Drush\Drupal\Migrate\MigrateUtils::parseIdList
      * @dataProvider dataProviderParseIdList
-     *
-     * @param string $idList
-     * @param array $expected
      */
     public function testParseIdList(string $idList, array $expected): void
     {
@@ -59,10 +56,6 @@ class MigrateRunnerTest extends TestCase
     /**
      * @covers \Drush\Drupal\Migrate\MigrateIdMapFilter
      * @dataProvider dataProviderMigrateIdMapFilter
-     *
-     * @param array $sourceIdList
-     * @param array $destinationIdList
-     * @param array $expectedRows
      */
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
@@ -71,7 +64,7 @@ class MigrateRunnerTest extends TestCase
         $migrationManager = $this->createMock(MigrationPluginManagerInterface::class);
         $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
         $db = $this->getDatabaseConnection();
-        require_once 'TestSqlIdMap.php';
+        require_once __DIR__ . '/TestSqlIdMap.php';
         $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher, $migrationManager);
 
         $filteredIdMap = new MigrateIdMapFilter($idMap, $sourceIdList, $destinationIdList);
@@ -178,11 +171,10 @@ class MigrateRunnerTest extends TestCase
         $insert = $connection->insert($table)->fields($fields);
         $mapTableData = $this->getMapTableData();
 
-        $mapTableData = array_map(function (array $row): array {
+        $mapTableData = array_map(fn(array $row): array =>
             // Add missing column values.
-            return array_merge([''], $row, [0, 0, time(), '']);
-        }, $mapTableData);
-        array_walk($mapTableData, [$insert, 'values']);
+            array_merge([''], $row, [0, 0, time(), '']), $mapTableData);
+        array_walk($mapTableData, $insert->values(...));
         $insert->execute();
 
         return $connection;
@@ -193,9 +185,6 @@ class MigrateRunnerTest extends TestCase
         return Path::join(Path::canonicalize(dirname(__DIR__, 2)), 'sut');
     }
 
-    /**
-     * @return array
-     */
     protected function getMapTableSchema(): array
     {
         return [

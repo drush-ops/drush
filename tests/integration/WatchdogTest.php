@@ -13,7 +13,7 @@ use Drush\Commands\pm\PmCommands;
  */
 class WatchdogTest extends UnishIntegrationTestCase
 {
-    public function testWatchdogShow()
+    public function testWatchdogShow(): void
     {
         $this->drush(PmCommands::INSTALL, ['dblog']);
         $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
@@ -64,7 +64,7 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('Alert', $output);
     }
 
-    public function testWatchdogDelete()
+    public function testWatchdogDelete(): void
     {
         // Test deleting all messages.
         $this->drush(WatchdogCommands::DELETE, ['all'], ['yes' => true]);
@@ -143,7 +143,7 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->showAll();
     }
 
-    private function showAll()
+    private function showAll(): void
     {
         // Helper (debug) function to show all watchdog messages.
         static $count;

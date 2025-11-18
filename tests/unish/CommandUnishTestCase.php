@@ -56,9 +56,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
      * @return Process
      *   A Symfony Process object.
      */
-    public function drushBackground(string $command, array $args = [], array $options = [], $site_specification = null, $cd = null, $suffix = null, $env = [])
+    public function drushBackground(string $command, array $args = [], array $options = [], ?string $site_specification = null, ?string $cd = null, ?string $suffix = null, ?array $env = [])
     {
-        list($cmd, ) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
+        [$cmd, ] = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix);
         return $this->startExecute(explode(' ', $cmd), $cd, $env);
     }
 
@@ -84,7 +84,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
       */
     public function drush(string $command, array $args = [], array $options = [], ?string $site_specification = null, ?string $cd = null, int $expected_return = self::EXIT_SUCCESS, ?string $suffix = null, array $env = []): void
     {
-        list($cmd, $coverage_file) = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix, $cd);
+        [$cmd, $coverage_file] = $this->prepareDrushCommand($command, $args, $options, $site_specification, $suffix, $cd);
         $env['COLUMNS'] = '9999';
         $this->execute($cmd, $expected_return, $cd, $env);
 
@@ -125,15 +125,15 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 $value = (string) $value;
                 if (in_array($key, $global_option_list)) {
                     unset($options[$key]);
-                    if ($key == 'uri' && $value == 'OMIT') {
+                    if ($key == 'uri' && $value === 'OMIT') {
                         continue;
                     }
-                    $dashes = strlen($key) == 1 ? '-' : '--';
-                    $equals = strlen($key) == 1 ? '' : '=';
+                    $dashes = strlen($key) === 1 ? '-' : '--';
+                    $equals = strlen($key) === 1 ? '' : '=';
                     if (!isset($value)) {
                         $cmd[] = "$dashes$key";
                     } else {
-                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg((string)$value);
+                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
                     }
                 }
             }
@@ -173,8 +173,8 @@ abstract class CommandUnishTestCase extends UnishTestCase
                 $values = [$values];
             }
             foreach ($values as $value) {
-                $dashes = strlen($key) == 1 ? '-' : '--';
-                $equals = strlen($key) == 1 ? '' : '=';
+                $dashes = strlen($key) === 1 ? '-' : '--';
+                $equals = strlen($key) === 1 ? '' : '=';
                 if (!isset($value)) {
                     $cmd[] = "$dashes$key";
                 } else {
@@ -244,7 +244,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
 
     public function pathsToSimplify(): array
     {
-        $basedir = dirname(dirname(__DIR__));
+        $basedir = dirname(__DIR__, 2);
 
         return [
 

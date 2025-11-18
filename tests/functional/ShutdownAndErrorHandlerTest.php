@@ -18,7 +18,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
      * Check to see if the shutdown function is working
      * if request exits abruptly (e.g. page redirect)
      */
-    public function testShutdownFunctionAbruptExit()
+    public function testShutdownFunctionAbruptExit(): void
     {
         // Run some garbage php with a syntax error.
         $this->drush(PhpCommands::EVAL, ['exit(0);'], [], null, null, DrushCommands::EXIT_FAILURE);
@@ -31,7 +31,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
      * and the exit code is passed through when script exits
      * with a specific exit code.
      */
-    public function testShutdownFunctionExitCodePassedThrough()
+    public function testShutdownFunctionExitCodePassedThrough(): void
     {
         // script command passes along an exit code nicely for our purposes.
         $this->drush(PhpCommands::SCRIPT, ['exit.php'], ['script-path' => __DIR__ . '/resources'], null, null, 123);
@@ -43,10 +43,10 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
      * Check to see if the shutdown function is working
      * if request exits due to a PHP problem such as a syntax error
      */
-    public function testShutdownFunctionPHPError()
+    public function testShutdownFunctionPHPError(): void
     {
         // Run some garbage php with a syntax error.
-        $this->drush(PhpCommands::EVAL, ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
+        $this->drush(PhpCommands::EVAL, ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION === 5 ? 255 : DrushCommands::EXIT_FAILURE);
 
         $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
     }
@@ -54,7 +54,7 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     /**
      * Check to see if the error handler is using correct error level (info).
      */
-    public function testErrorHandler()
+    public function testErrorHandler(): void
     {
         // Access a missing array element
         $this->drush(PhpCommands::EVAL, ['$a = []; print $a["b"];']);

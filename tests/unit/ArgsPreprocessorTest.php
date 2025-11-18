@@ -15,15 +15,15 @@ class ArgsPreprocessorTest extends TestCase
      * @dataProvider argTestValues
      */
     public function testArgPreprocessor(
-        $argv,
-        $alias,
-        $selectedSite,
-        $configPath,
-        $aliasPath,
-        $commandPath,
-        $isLocal,
-        $unprocessedArgs
-    ) {
+        array $argv,
+        ?string $alias,
+        ?string $selectedSite,
+        array $configPath,
+        array $aliasPath,
+        array $commandPath,
+        ?bool $isLocal,
+        string $unprocessedArgs
+    ): void {
 
 
         $argProcessor = new ArgsPreprocessor();
@@ -38,7 +38,7 @@ class ArgsPreprocessorTest extends TestCase
         $this->assertEquals($aliasPath, $preflightArgs->aliasPaths());
     }
 
-    public static function argTestValues()
+    public static function argTestValues(): array
     {
         return [
             [

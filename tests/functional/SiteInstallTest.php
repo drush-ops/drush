@@ -21,7 +21,7 @@ class SiteInstallTest extends CommandUnishTestCase
     /**
      * Test functionality of installing a site with a database prefix.
      */
-    public function testSiteInstallPrefix()
+    public function testSiteInstallPrefix(): void
     {
         if ($this->dbDriver() === 'sqlite') {
             $this->markTestSkipped('SQLite do not prefix tables, it prefixes DB storage files');
@@ -44,7 +44,7 @@ class SiteInstallTest extends CommandUnishTestCase
     /**
      * Test functionality of attempting to install a profile that does not exist.
      */
-    public function testSiteInstallNoSuchProfile()
+    public function testSiteInstallNoSuchProfile(): void
     {
         $this->drush(SiteInstallCommands::INSTALL, ['no_such_profile'], ['no-interaction' => null], null, null, self::EXIT_ERROR);
         $error_output = $this->getErrorOutput();
@@ -54,7 +54,7 @@ class SiteInstallTest extends CommandUnishTestCase
     /**
      * Test functionality of attempting to install a recipe that does not exist.
      */
-    public function testSiteInstallNoSuchRecipe()
+    public function testSiteInstallNoSuchRecipe(): void
     {
         $this->drush(SiteInstallCommands::INSTALL, ['core/recipes/no-such-recipe'], ['no-interaction' => null], null, null, self::EXIT_ERROR);
         $error_output = $this->getErrorOutput();
@@ -64,7 +64,7 @@ class SiteInstallTest extends CommandUnishTestCase
     /**
      * Test functionality of attempting to install a recipe on a version of Drupal that does not support them.
      */
-    public function testSiteInstallRecipesNotSupported()
+    public function testSiteInstallRecipesNotSupported(): void
     {
         if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
             $this->markTestSkipped('We can only test the recipes requirement check on versions prior to Drupal 10.3.0.');
@@ -83,7 +83,7 @@ class SiteInstallTest extends CommandUnishTestCase
     /**
      * Test functionality of installing a site with a recipe.
      */
-    public function testSiteInstallRecipe()
+    public function testSiteInstallRecipe(): void
     {
         if (!$this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
             $this->markTestSkipped('Recipes require Drupal 10.3.0 or later.');

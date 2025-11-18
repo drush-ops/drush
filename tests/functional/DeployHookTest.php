@@ -18,7 +18,7 @@ class DeployHookTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
-    public function testDeployHooks()
+    public function testDeployHooks(): void
     {
 
         $this->setUpDrupal(1, true);
@@ -61,7 +61,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringNotContainsString('Finished performing deploy hooks.', $this->getErrorOutput());
     }
 
-    public function testSkipDeployHooks()
+    public function testSkipDeployHooks(): void
     {
         $this->setUpDrupal(1, true);
         $this->drush(PmCommands::INSTALL, ['woot'], ['yes' => null]);
@@ -99,7 +99,7 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[]', $this->getOutput());
     }
 
-    public function testDeployHooksInModuleWithDeployInName()
+    public function testDeployHooksInModuleWithDeployInName(): void
     {
         $this->setUpDrupal(1, true);
         $options = [

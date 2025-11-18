@@ -26,7 +26,7 @@ class ConfigPullTest extends CommandUnishTestCase
   /*
    * Make sure a change propagates using config-pull+config-import.
    */
-    public function testConfigPull()
+    public function testConfigPull(): void
     {
         if ($this->isWindows()) {
             $this->markTestSkipped('rsync paths may not contain colons on Windows.');
@@ -39,7 +39,7 @@ class ConfigPullTest extends CommandUnishTestCase
         $destination = $aliases['dev'];
         // Make UUID match.
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'uuid'], $options, $source);
-        list($name, $uuid) = explode(' ', $this->getOutput());
+        [$name, $uuid] = explode(' ', $this->getOutput());
         $this->drush(ConfigSetCommand::NAME, ['system.site', 'uuid', $uuid], $options, $destination);
 
         $this->drush(ConfigSetCommand::NAME, ['system.site', 'name', 'testConfigPull'], $options, $source);
@@ -49,7 +49,7 @@ class ConfigPullTest extends CommandUnishTestCase
         $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
 
         // Test that custom target dir works
-        $target = Path::join($this->getSandbox(), __CLASS__);
+        $target = Path::join($this->getSandbox(), self::class);
         $this->recursiveDelete($target);
         $this->mkdir($target);
         $this->drush(ConfigPullCommand::NAME, [$source, "$destination:$target"], $options);

@@ -9,7 +9,7 @@ use Drush\Commands\pm\PmCommands;
 
 class FieldDefinitionTest extends UnishIntegrationTestCase
 {
-    public function testFieldDefinition()
+    public function testFieldDefinition(): void
     {
         $this->drush(FieldDefinitionCommands::TYPES, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();

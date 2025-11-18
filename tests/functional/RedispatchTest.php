@@ -17,14 +17,14 @@ class RedispatchTest extends CommandUnishTestCase
      *  - A remote host is recognized in site specification.
      *  - Generates expected ssh command.
      */
-    public function testDispatchUsingAlias()
+    public function testDispatchUsingAlias(): void
     {
         $options = ['uri' => 'OMIT', 'alias-path' => Path::join(__DIR__, 'resources/alias-fixtures'), 'simulate' => null];
         $this->drush(StatusCommand::NAME, [], $options, '@example.live');
         $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=example www-admin@service-provider.com '/example/path/to/drush --no-interaction core:status --uri=https://example.com'", $this->getSimplifiedErrorOutput());
     }
 
-    public function testNonExistentCommand()
+    public function testNonExistentCommand(): void
     {
         // Assure that arguments and options are passed along to a command thats not recognized locally.
         $this->drush('non-existent-command', ['foo'], ['bar' => 'baz', 'simulate' => null], 'user@server/path/to/drupal#sitename');

@@ -41,7 +41,7 @@ class ConfigTest extends CommandUnishTestCase
     /**
      * @todo If this becomes an integration test, add test for stdin handling.
      */
-    public function testConfigGetSet()
+    public function testConfigGetSet(): void
     {
         // Simple value
         $this->drush(ConfigSetCommand::NAME, ['system.site', 'name', 'config_test']);
@@ -72,7 +72,7 @@ class ConfigTest extends CommandUnishTestCase
         $this->assertSame(5, $output['weight']);
     }
 
-    public function testConfigExportImportStatusExistingConfig()
+    public function testConfigExportImportStatusExistingConfig(): void
     {
         $system_site_yml = $this->getConfigSyncDir() . '/system.site.yml';
 
@@ -112,7 +112,7 @@ XML
 
         // Test the --existing-config option for site:install.
         $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
-        $drupal_version = $this->getOutputRaw();
+        $this->getOutputRaw();
         $contents = file_get_contents($system_site_yml);
         $contents = preg_replace('/front: .*/', 'front: unish existing', $contents);
         file_put_contents($system_site_yml, $contents);
@@ -126,14 +126,14 @@ XML
         $contents = preg_replace('/front: .*/', 'front: unish partial', $contents);
         $partial_path = self::getSandbox() . '/partial';
         $this->mkdir($partial_path);
-        $contents = file_put_contents($partial_path . '/system.site.yml', $contents);
+        file_put_contents($partial_path . '/system.site.yml', $contents);
         $this->drush(ConfigImportCommands::IMPORT, [], ['partial' => null, 'source' => $partial_path]);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish partial', $page['front'], '--partial was successfully imported.');
     }
 
-    public function testConfigImport()
+    public function testConfigImport(): void
     {
         $options = [
             'include' => __DIR__,
@@ -192,7 +192,7 @@ YAML_FRAGMENT;
         $this->drush(PhpCommands::EVAL, ['Drupal::service("drush_empty_module.service");']);
     }
 
-    protected function getConfigSyncDir()
+    protected function getConfigSyncDir(): string
     {
         $this->drush(StatusCommand::NAME, [], ['format' => 'json', 'fields' => 'config-sync']);
         return $this->webroot() . '/' . $this->getOutputFromJSON('config-sync');

@@ -14,14 +14,14 @@ use Unish\CommandUnishTestCase;
  */
 class RunserverTest extends CommandUnishTestCase
 {
-    public function testRunserver()
+    public function testRunserver(): void
     {
         $this->markTestSkipped('@todo this test has not yet passed.');
 
         $child_process = $this->drushBackground(RunserverCommands::RUNSERVER, ['8888']);
         $pid = $child_process->getPid();
         // Kill the web server when phpunit ends.
-        register_shutdown_function(function () use ($pid) {
+        register_shutdown_function(function () use ($pid): void {
             $this->log(sprintf('%s - Killing process with ID %d', date('r'), $pid), 'info');
             exec('kill ' . $pid);
         });

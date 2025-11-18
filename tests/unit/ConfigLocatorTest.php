@@ -18,7 +18,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Test a config locator initialized only with data from the fixture's environment
      */
-    public function testOnlyEnvironmentData()
+    public function testOnlyEnvironmentData(): void
     {
         $configLocator = new ConfigLocator('TEST_');
         $configLocator->addEnvironment($this->environment());
@@ -29,7 +29,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Test a comprehensive load of all default fixture data.
      */
-    public function testLoadAll()
+    public function testLoadAll(): void
     {
         $configLocator = $this->createConfigLocator();
 
@@ -54,7 +54,7 @@ class ConfigLocatorTest extends TestCase
      * context, "global" means anything that is not site-local, including the
      * configuration file in the user's home directory, etc.
      */
-    public function testLocalMode()
+    public function testLocalMode(): void
     {
         $configLocator = $this->createConfigLocator(true);
 
@@ -73,14 +73,12 @@ class ConfigLocatorTest extends TestCase
         $this->assertEquals('A site-specific setting', $config->get('test.site'));
     }
 
-    public function testAliasPaths()
+    public function testAliasPaths(): void
     {
         $configLocator = $this->createConfigLocator();
         $aliasPaths = $configLocator->getSiteAliasPaths(['/home/user/aliases'], $this->environment());
         $aliasPaths = array_map(
-            function ($item) {
-                return str_replace(Path::canonicalize(dirname(__DIR__)), '', $item);
-            },
+            fn($item) => str_replace(Path::canonicalize(dirname(__DIR__)), '', $item),
             $aliasPaths
         );
         sort($aliasPaths);
@@ -92,7 +90,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Test an env var supersedes user's configuration file.
      */
-    public function testEnvVar()
+    public function testEnvVar(): void
     {
         $configLocator = $this->createConfigLocator();
 
@@ -111,7 +109,7 @@ class ConfigLocatorTest extends TestCase
     /**
      * Create a config locator from All The Sources, for use in multiple tests.
      */
-    protected function createConfigLocator($isLocal = false, $configPath = '')
+    protected function createConfigLocator(bool $isLocal = false, $configPath = ''): \Drush\Config\ConfigLocator
     {
         $configLocator = new ConfigLocator('TEST_', 'VARIANT');
         $configLocator->collectSources();

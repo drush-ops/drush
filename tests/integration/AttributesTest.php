@@ -19,7 +19,7 @@ class AttributesTest extends UnishIntegrationTestCase
     private ExampleAttributesCommands $commandFileInstance;
     private AnnotatedCommandFactory $commandFactory;
 
-    public function testAttributes()
+    public function testAttributes(): void
     {
         $options = [];
 
@@ -46,9 +46,9 @@ class AttributesTest extends UnishIntegrationTestCase
         $this->drush('validatestuff', ['access content', $sandbox, 'authenticated'], $options, self::EXIT_SUCCESS);
     }
 
-    public function testCompletion()
+    public function testCompletion(): void
     {
-        if (!class_exists('\Symfony\Component\Console\Completion\Output\FishCompletionOutput')) {
+        if (!class_exists(\Symfony\Component\Console\Completion\Output\FishCompletionOutput::class)) {
             $this->markTestSkipped('Symfony Console 6.2+ needed for rest this test.');
         }
 

@@ -20,9 +20,9 @@ use Drush\Commands\sql\SqlCommands;
  */
 class PmInUnListInfoTest extends CommandUnishTestCase
 {
-    public function testEnDisUnList()
+    public function testEnDisUnList(): void
     {
-        $sites = $this->setUpDrupal(1, true);
+        $this->setUpDrupal(1, true);
 
         // Test that pm-list lists uninstalled modules.
         $this->drush(PmCommands::LIST, [], ['no-core' => null, 'status' => 'disabled']);
@@ -55,7 +55,7 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->assertStringContainsString('dependent1', $out);
 
         $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
-        $drupal_version = $this->getOutputRaw();
+        $this->getOutputRaw();
 
         // Test the testing install profile theme is installed.
         $active_theme = 'stark';

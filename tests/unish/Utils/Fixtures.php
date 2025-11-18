@@ -7,22 +7,22 @@ use Symfony\Component\Filesystem\Path;
 
 trait Fixtures
 {
-    protected function fixturesDir()
+    protected function fixturesDir(): string
     {
-        return Path::join(dirname(dirname(__DIR__)), 'fixtures');
+        return Path::join(dirname(__DIR__, 2), 'fixtures');
     }
 
-    protected function homeDir()
+    protected function homeDir(): string
     {
         return Path::join($this->fixturesDir(), 'home');
     }
 
-    protected function siteDir($majorVersion = '8')
+    protected function siteDir($majorVersion = '8'): string
     {
         return Path::join($this->fixturesDir(), '/sites/d' . $majorVersion);
     }
 
-    protected function environment($cwd = false)
+    protected function environment($cwd = false): \Drush\Config\Environment
     {
         $fixturesDir = $this->fixturesDir();
         $home = $this->homeDir();

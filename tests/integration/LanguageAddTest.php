@@ -18,7 +18,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
         $this->drush(PmCommands::INSTALL, ['language'], ['yes' => true]);
     }
 
-    public function testLanguageInfoAdd()
+    public function testLanguageInfoAdd(): void
     {
         $this->drush(LanguageCommands::INFO);
         $this->assertStringContainsString('English (en)', $this->getSimplifiedOutput());
@@ -30,7 +30,7 @@ class LanguageAddTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('French (fr)', $this->getSimplifiedOutput());
     }
 
-    public function testLanguageAddWithTranslations()
+    public function testLanguageAddWithTranslations(): void
     {
         $info_yml = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.info.yml');
         if (!str_contains(file_get_contents($info_yml), 'project:') || $this->isWindows()) {

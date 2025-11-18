@@ -15,7 +15,7 @@ class DeployTest extends UnishIntegrationTestCase
     /**
      * A simple test since all the sub-commands are tested elsewhere.
      */
-    public function testDeploy()
+    public function testDeploy(): void
     {
         // Prep a config directory that will be imported later.
         $this->drush(ConfigExportCommand::NAME, [], ['yes' => null]);

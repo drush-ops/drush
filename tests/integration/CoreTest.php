@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
  */
 class CoreTest extends UnishIntegrationTestCase
 {
-    public function testCoreRequirements()
+    public function testCoreRequirements(): void
     {
         $options = [
             'ignore' => 'cron,http requests,update,coverage_core,update_core,trusted_host_patterns', // no network access when running in tests, so ignore these
@@ -40,7 +40,7 @@ class CoreTest extends UnishIntegrationTestCase
         }
     }
 
-    public function testDrupalDirectory()
+    public function testDrupalDirectory(): void
     {
         $root = $this->webroot();
         $sitewide = $this->drupalSitewideDirectory();
@@ -69,7 +69,7 @@ class CoreTest extends UnishIntegrationTestCase
         $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }
 
-    public function testRoute()
+    public function testRoute(): void
     {
         $this->drush(DrupalCommands::ROUTE, [], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
