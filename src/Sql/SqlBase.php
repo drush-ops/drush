@@ -305,7 +305,7 @@ abstract class SqlBase implements ConfigAwareInterface
      * @return bool
      *   TRUE on success, FALSE on failure
      */
-    public function query(string $query, $input_file = null, $result_file = ''): ?bool
+    public function query(string $query, $input_file = null, ?string $result_file = ''): ?bool
     {
         if (!Drush::simulate()) {
             return $this->alwaysQuery($query, $input_file, $result_file);

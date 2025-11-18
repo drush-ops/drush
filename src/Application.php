@@ -112,7 +112,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         return $this->aliasManager;
     }
 
-    public function setAliasManager($aliasManager): void
+    public function setAliasManager(?\Consolidation\SiteAlias\SiteAliasManager $aliasManager): void
     {
         $this->aliasManager = $aliasManager;
     }
@@ -204,7 +204,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Look up a command. Bootstrap further if necessary.
      */
-    protected function bootstrapAndFind($name): \Symfony\Component\Console\Command\Command|\Drush\Command\RemoteCommandProxy
+    protected function bootstrapAndFind(string $name): \Symfony\Component\Console\Command\Command|\Drush\Command\RemoteCommandProxy
     {
         try {
             return parent::find($name);

@@ -218,7 +218,7 @@ EOT;
         }
     }
 
-    protected static function appendPreamble($command, $root): string
+    protected static function appendPreamble($command, string $root): string
     {
         $path = '';
         if ($command instanceof AnnotatedCommand) {

@@ -147,7 +147,7 @@ class Preflight
      * Arguments and options not used during preflight will be processed
      * with an ArgvInput.
      */
-    public function preflightArgs($argv): PreflightArgs
+    public function preflightArgs(array $argv): PreflightArgs
     {
         $argProcessor = new ArgsPreprocessor();
         $remapper = new ArgsRemapper($this->remapOptions(), $this->remapCommandAliases());

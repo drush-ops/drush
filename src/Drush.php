@@ -119,7 +119,7 @@ class Drush
     /**
      * Sets a new global container.
      */
-    public static function setContainer($container): void
+    public static function setContainer(\Psr\Container\ContainerInterface $container): void
     {
         Robo::setContainer($container);
     }

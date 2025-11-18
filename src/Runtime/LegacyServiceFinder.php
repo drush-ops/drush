@@ -58,7 +58,7 @@ class LegacyServiceFinder
      * @param string $module Module name
      * @param string $filename Full path to modules .info.yml file
      */
-    protected function addModuleDrushServiceProvider($module, $filename)
+    protected function addModuleDrushServiceProvider(string $module, $filename)
     {
         $serviceYmlPath = $this->findModuleDrushServiceProvider($module, dirname($filename));
         $this->addDrushServiceProvider("_drush.$module", $serviceYmlPath);

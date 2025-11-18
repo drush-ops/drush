@@ -385,7 +385,7 @@ final class ArchiveDumpCommand extends Command
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
         // Remove path projects ('source' is empty for path projects)
-        $installedPackages = array_filter($installedPackages, fn($dependency): bool => !empty($dependency['source']));
+        $installedPackages = array_filter($installedPackages, fn(array $dependency): bool => !empty($dependency['source']));
         $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
             fn($path): string => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
@@ -492,7 +492,7 @@ final class ArchiveDumpCommand extends Command
                     $path,
                     FilesystemIterator::SKIP_DOTS
                 ),
-                function ($file) use ($excludes, $path) {
+                function ($file) use ($excludes, $path): bool {
                     $localFileName = str_replace($path, '', (string)$file);
                     $localFileName = str_replace('\\', '/', $localFileName);
                     $localFileName = trim($localFileName, '\/');

@@ -13,7 +13,7 @@ use Symfony\Component\Filesystem\Path;
 final class FsUtils
 {
     // @var null|string[] List of directories to delete
-    private static $deletionList;
+    private static ?array $deletionList = null;
 
     /**
      * Return path to the backup directory.
@@ -171,7 +171,7 @@ final class FsUtils
      *   Path to the specified backup directory.
      * @throws \Exception
      */
-    public static function prepareBackupDir($subdir = null): string
+    public static function prepareBackupDir(?string $subdir = null): string
     {
         $fs = new Filesystem();
         $backup_dir = self::getBackupDir($subdir);

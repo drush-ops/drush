@@ -233,7 +233,7 @@ final class SqlSyncCommand extends Command
     /**
      * Import file into target.
      */
-    public function import($global_options, $target_dump_path, $targetRecord): void
+    public function import($global_options, $target_dump_path, \Consolidation\SiteAlias\SiteAliasInterface $targetRecord): void
     {
         $this->logger->notice('Starting to import dump file onto target database.');
         $query_options = $global_options + [
