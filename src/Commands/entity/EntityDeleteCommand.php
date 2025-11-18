@@ -29,7 +29,7 @@ final class EntityDeleteCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'entity:delete';
+    public const string NAME = 'entity:delete';
 
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,
@@ -82,7 +82,7 @@ final class EntityDeleteCommand extends Command
             $chunks = array_chunk($result, (int) $options['chunks'], true);
             $io->progressStart(count($chunks));
             foreach ($chunks as $chunk) {
-                drush_op([$this, 'doDelete'], $entity_type, $chunk);
+                drush_op($this->doDelete(...), $entity_type, $chunk);
                 $io->progressAdvance();
             }
             $io->progressFinish();

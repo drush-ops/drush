@@ -35,7 +35,7 @@ final class PhpScriptCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'php:script';
+    public const string NAME = 'php:script';
 
     public function __construct(
         protected readonly BootstrapManager $bootstrapManager,

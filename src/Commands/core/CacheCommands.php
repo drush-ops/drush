@@ -13,15 +13,15 @@ use JetBrains\PhpStorm\Deprecated;
 final class CacheCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use CacheGetCommand::NAME')]
-    const GET = 'cache:get';
+    const string GET = 'cache:get';
     #[Deprecated(reason: 'Use CacheTagsCommand::NAME')]
-    const TAGS = 'cache:tags';
+    const string TAGS = 'cache:tags';
     #[Deprecated(reason: 'Use CacheClearCommand::NAME')]
-    const CLEAR = 'cache:clear';
+    const string CLEAR = 'cache:clear';
     #[Deprecated(reason: 'Use CacheSetCommand::NAME')]
-    const SET = 'cache:set';
+    const string SET = 'cache:set';
     #[Deprecated(reason: 'Use CacheRebuildCommand::NAME')]
-    const REBUILD = 'cache:rebuild';
+    const string REBUILD = 'cache:rebuild';
     #[Deprecated(reason: 'Use CacheClearCommand::EVENT_CLEAR')]
-    const EVENT_CLEAR = 'cache-clear';
+    const string EVENT_CLEAR = 'cache-clear';
 }

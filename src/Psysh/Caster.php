@@ -36,7 +36,7 @@ class Caster
                     $value = self::handleReferences($value, $fieldItemList, $fieldStorageDefinition);
                 }
                 // Truncate long values.
-                array_walk_recursive($value, function (&$x) {
+                array_walk_recursive($value, function (&$x): void {
                     if (is_string($x) && strlen($x) > 200) {
                         $x = Unicode::truncate($x, 80, false, true);
                     }

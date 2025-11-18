@@ -25,7 +25,7 @@ final class ViewsEnableCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'views:enable';
+    public const string NAME = 'views:enable';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager

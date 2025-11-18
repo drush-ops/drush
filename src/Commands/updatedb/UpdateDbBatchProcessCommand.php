@@ -30,7 +30,7 @@ final class UpdateDbBatchProcessCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'updatedb:batch-process';
+    public const string NAME = 'updatedb:batch-process';
 
     protected function configure()
     {

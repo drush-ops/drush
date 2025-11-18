@@ -145,17 +145,17 @@ class MigrateExecutable extends MigrateExecutableBase
         // - The migration source plugin is configured to skip count.
         $this->exposeProgressBar = $options['progress'] && !$this->feedback && empty($migration->getSourceConfiguration()['skip_count']);
 
-        $this->listeners[MigrateEvents::MAP_SAVE] = [$this, 'onMapSave'];
-        $this->listeners[MigrateEvents::PRE_IMPORT] = [$this, 'onPreImport'];
-        $this->listeners[MigrateEvents::POST_IMPORT] = [$this, 'onPostImport'];
-        $this->listeners[MigrateEvents::MAP_DELETE] = [$this, 'onMapDelete'];
-        $this->listeners[MigrateEvents::PRE_ROLLBACK] = [$this, 'onPreRollback'];
-        $this->listeners[MigrateEvents::POST_ROLLBACK] = [$this, 'onPostRollback'];
-        $this->listeners[MigrateEvents::PRE_ROW_SAVE] = [$this, 'onPreRowSave'];
-        $this->listeners[MigrateEvents::POST_ROW_SAVE] = [$this, 'onPostRowSave'];
-        $this->listeners[MigrateEvents::POST_ROW_DELETE] = [$this, 'onPostRowDelete'];
-        $this->listeners[MigrateRunnerEvents::DRUSH_MIGRATE_PREPARE_ROW] = [$this, 'onPrepareRow'];
-        $this->listeners[MigrateMissingSourceRowsEvent::class] = [$this, 'onMissingSourceRows'];
+        $this->listeners[MigrateEvents::MAP_SAVE] = $this->onMapSave(...);
+        $this->listeners[MigrateEvents::PRE_IMPORT] = $this->onPreImport(...);
+        $this->listeners[MigrateEvents::POST_IMPORT] = $this->onPostImport(...);
+        $this->listeners[MigrateEvents::MAP_DELETE] = $this->onMapDelete(...);
+        $this->listeners[MigrateEvents::PRE_ROLLBACK] = $this->onPreRollback(...);
+        $this->listeners[MigrateEvents::POST_ROLLBACK] = $this->onPostRollback(...);
+        $this->listeners[MigrateEvents::PRE_ROW_SAVE] = $this->onPreRowSave(...);
+        $this->listeners[MigrateEvents::POST_ROW_SAVE] = $this->onPostRowSave(...);
+        $this->listeners[MigrateEvents::POST_ROW_DELETE] = $this->onPostRowDelete(...);
+        $this->listeners[MigrateRunnerEvents::DRUSH_MIGRATE_PREPARE_ROW] = $this->onPrepareRow(...);
+        $this->listeners[MigrateMissingSourceRowsEvent::class] = $this->onMissingSourceRows(...);
 
         $eventDispatcher = $this->getEventDispatcher();
         assert($eventDispatcher instanceof EventDispatcherInterface);

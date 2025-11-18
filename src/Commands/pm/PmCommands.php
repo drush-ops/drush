@@ -9,9 +9,9 @@ use JetBrains\PhpStorm\Deprecated;
 final class PmCommands
 {
     #[Deprecated(reason: 'Use PmInstallCommand::NAME')]
-    const INSTALL = 'pm:install';
+    const string INSTALL = 'pm:install';
     #[Deprecated(reason: 'Use PmUninstallCommand::NAME')]
-    const UNINSTALL = 'pm:uninstall';
+    const string UNINSTALL = 'pm:uninstall';
     #[Deprecated(reason: 'Use PmListCommand::NAME')]
-    const LIST = 'pm:list';
+    const string LIST = 'pm:list';
 }

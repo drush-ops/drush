@@ -17,5 +17,5 @@ final class DrupalDirectoryCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated(reason: 'Use DrupalDirectoryCommand::NAME')]
-    const DIRECTORY = 'drupal:directory';
+    const string DIRECTORY = 'drupal:directory';
 }

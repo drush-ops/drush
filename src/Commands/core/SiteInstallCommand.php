@@ -50,7 +50,7 @@ final class SiteInstallCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'site:install';
+    public const string NAME = 'site:install';
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,
@@ -399,7 +399,7 @@ final class SiteInstallCommand extends Command
         // This can lead to an exit() in Drupal. See install_display_output() (e.g. config validation failure).
         // @todo Get Drupal to not call that function when on the CLI.
         try {
-            drush_op('install_drupal', $this->autoloader, $settings, [$this, 'taskCallback']);
+            drush_op('install_drupal', $this->autoloader, $settings, $this->taskCallback(...));
         } catch (AlreadyInstalledException $e) {
             if ($sql && !$this->programExists($sql->command())) {
                 throw new \Exception(dt('Drush was unable to drop all tables because `@program` was not found, and therefore Drupal threw an AlreadyInstalledException. Ensure `@program` is available in your PATH.', ['@program' => $sql->command()]), $e->getCode(), $e);

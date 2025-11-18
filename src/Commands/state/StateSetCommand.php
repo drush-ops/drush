@@ -24,7 +24,7 @@ final class StateSetCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'state:set';
+    public const string NAME = 'state:set';
 
     public function __construct(
         protected StateInterface $state

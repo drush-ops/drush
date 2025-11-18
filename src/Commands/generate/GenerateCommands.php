@@ -10,5 +10,5 @@ use Drush\Commands\DrushCommands;
 final class GenerateCommands extends DrushCommands
 {
     #[Deprecated('Use GenerateCommand::NAME')]
-    const GENERATE = 'generate';
+    const string GENERATE = 'generate';
 }

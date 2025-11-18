@@ -26,7 +26,7 @@ final class DeployHookBatchProcessCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'deploy:batch-process';
+    public const string NAME = 'deploy:batch-process';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

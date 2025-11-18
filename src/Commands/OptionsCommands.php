@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
  */
 final class OptionsCommands
 {
-    const REQ = InputOption::VALUE_REQUIRED;
+    const int REQ = InputOption::VALUE_REQUIRED;
 
     /**
      * @deprecated Use \Drush\Attributes\OptionsetGetEditor attribute instead.

@@ -27,7 +27,7 @@ final class SqlQueryCommand extends Command
 {
     use ExecTrait;
 
-    public const NAME = 'sql:query';
+    public const string NAME = 'sql:query';
 
     protected function configure(): void
     {

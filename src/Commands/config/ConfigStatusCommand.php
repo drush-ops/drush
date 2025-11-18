@@ -36,7 +36,7 @@ final class ConfigStatusCommand extends Command
     use ConfigTrait;
     use FormatterTrait;
 
-    public const NAME = 'config:status';
+    public const string NAME = 'config:status';
 
     public function __construct(
         protected readonly ConfigFactoryInterface $configFactory,
@@ -98,7 +98,7 @@ final class ConfigStatusCommand extends Command
         if ($state) {
             $allowed_states = explode(',', $state);
             if (!in_array('Any', $allowed_states)) {
-                $config_list = array_filter($config_list, fn($state) => in_array($state, $allowed_states));
+                $config_list = array_filter($config_list, fn($state): bool => in_array($state, $allowed_states));
             }
         }
 

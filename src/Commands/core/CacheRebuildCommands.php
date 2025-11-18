@@ -16,5 +16,5 @@ final class CacheRebuildCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated(reason: 'Use CacheRebuildCommand::NAME')]
-    const REBUILD = 'cache:rebuild';
+    const string REBUILD = 'cache:rebuild';
 }

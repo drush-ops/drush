@@ -22,7 +22,7 @@ final class FieldBaseInfoCommands extends DrushCommands
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
 
-    const BASE_INFO = 'field:base-info';
+    const string BASE_INFO = 'field:base-info';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,

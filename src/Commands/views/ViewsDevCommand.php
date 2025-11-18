@@ -23,7 +23,7 @@ final class ViewsDevCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'views:dev';
+    public const string NAME = 'views:dev';
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory

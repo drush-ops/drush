@@ -28,7 +28,7 @@ final class PhpEvalCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'php:eval';
+    public const string NAME = 'php:eval';
 
     public function __construct(
         protected readonly BootstrapManager $bootstrapManager,

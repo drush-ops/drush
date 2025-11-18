@@ -10,5 +10,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class DeployCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use DeployCommand::NAME')]
-    const DEPLOY = 'deploy';
+    const string DEPLOY = 'deploy';
 }

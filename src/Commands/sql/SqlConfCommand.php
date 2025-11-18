@@ -32,7 +32,7 @@ final class SqlConfCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'sql:conf';
+    public const string NAME = 'sql:conf';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

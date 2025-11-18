@@ -19,7 +19,7 @@ class ErrorHandler implements LoggerAwareInterface, HandlerInterface
 
     public function installHandler(): void
     {
-        set_error_handler([$this, 'errorHandler']);
+        set_error_handler($this->errorHandler(...));
     }
 
     public function errorHandler($errno, $message, $filename, $line)

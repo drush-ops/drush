@@ -16,5 +16,5 @@ use Drush\Boot\DrupalBootLevels;
 final class JsonapiCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use JsonapiGetCommand::NAME')]
-    const GET = 'jn:get';
+    const string GET = 'jn:get';
 }

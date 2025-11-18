@@ -34,7 +34,7 @@ final class EditCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'core:edit';
+    public const string NAME = 'core:edit';
 
     public function __construct(
         private readonly BootstrapManager $bootstrapManager,

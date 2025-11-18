@@ -39,7 +39,7 @@ final class ViewsListCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'views:list';
+    public const string NAME = 'views:list';
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,

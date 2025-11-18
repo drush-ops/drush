@@ -36,7 +36,7 @@ final class SqlDumpCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'sql:dump';
+    public const string NAME = 'sql:dump';
 
     public function __construct(
         protected BootstrapManager $bootstrapManager,

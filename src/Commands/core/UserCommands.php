@@ -9,19 +9,19 @@ use JetBrains\PhpStorm\Deprecated;
 final class UserCommands
 {
     #[Deprecated(reason: 'Use UserInformationCommand::NAME')]
-    const INFORMATION = 'user:information';
+    const string INFORMATION = 'user:information';
     #[Deprecated(reason: 'Use UserBlockCommand::NAME')]
-    const BLOCK = 'user:block';
+    const string BLOCK = 'user:block';
     #[Deprecated(reason: 'Use UserUnblockCommand::NAME')]
-    const UNBLOCK = 'user:unblock';
+    const string UNBLOCK = 'user:unblock';
     #[Deprecated(reason: 'Use UserRoleAddCommand::NAME')]
-    const ROLE_ADD = 'user:role:add';
+    const string ROLE_ADD = 'user:role:add';
     #[Deprecated(reason: 'Use UserRoleRemoveCommand::NAME')]
-    const ROLE_REMOVE = 'user:role:remove';
+    const string ROLE_REMOVE = 'user:role:remove';
     #[Deprecated(reason: 'Use UserCreateCommand::NAME')]
-    const CREATE = 'user:create';
+    const string CREATE = 'user:create';
     #[Deprecated(reason: 'Use UserCancelCommand::NAME')]
-    const CANCEL = 'user:cancel';
+    const string CANCEL = 'user:cancel';
     #[Deprecated(reason: 'Use UserPasswordCommand::NAME')]
-    const PASSWORD = 'user:password';
+    const string PASSWORD = 'user:password';
 }

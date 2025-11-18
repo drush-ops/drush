@@ -33,7 +33,7 @@ final class MigrateRollbackCommand extends Command
     use AutowireTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:rollback';
+    public const string NAME = 'migrate:rollback';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]
@@ -92,7 +92,7 @@ final class MigrateRollbackCommand extends Command
             foreach ($migrations as $migration) {
                 $executable = new MigrateExecutable($migration, $this->getMigrateMessage(), $output, $executableOptions);
                 // drush_op() provides --simulate support.
-                drush_op([$executable, 'rollback']);
+                drush_op($executable->rollback(...));
             }
         }
 

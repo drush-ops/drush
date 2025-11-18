@@ -25,7 +25,7 @@ final class UserBlockCommand extends Command
     use AutowireTrait;
     use UserTrait;
 
-    public const NAME = 'user:block';
+    public const string NAME = 'user:block';
 
     public function __construct(
         protected readonly LoggerInterface $logger,

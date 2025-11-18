@@ -9,5 +9,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class SshCommands
 {
     #[Deprecated(reason: 'Use SshCommand::NAME')]
-    const SSH = 'site:ssh';
+    const string SSH = 'site:ssh';
 }

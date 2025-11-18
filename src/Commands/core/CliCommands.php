@@ -10,5 +10,5 @@ use JetBrains\PhpStorm\Deprecated;
 final class CliCommands extends DrushCommands
 {
     #[Deprecated(reason: 'Use PhpCliCommand::NAME')]
-    const PHP = 'php:cli';
+    const string PHP = 'php:cli';
 }

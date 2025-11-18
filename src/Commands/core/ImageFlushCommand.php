@@ -27,7 +27,7 @@ final class ImageFlushCommand extends Command
 {
     use AutowireTrait;
 
-    public const NAME = 'image:flush';
+    public const string NAME = 'image:flush';
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,

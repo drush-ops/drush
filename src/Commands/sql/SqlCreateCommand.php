@@ -31,7 +31,7 @@ final class SqlCreateCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    public const NAME = 'sql:create';
+    public const string NAME = 'sql:create';
 
     public function __construct(
         protected DrushConfig $drushConfig,

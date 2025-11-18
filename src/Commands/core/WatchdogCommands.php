@@ -9,13 +9,13 @@ use JetBrains\PhpStorm\Deprecated;
 final class WatchdogCommands
 {
     #[Deprecated(reason: 'Use WatchdogShowCommand::NAME')]
-    const SHOW = 'watchdog:show';
+    const string SHOW = 'watchdog:show';
     #[Deprecated(reason: 'Use WatchdogListCommand::NAME')]
-    const LIST = 'watchdog:list';
+    const string LIST = 'watchdog:list';
     #[Deprecated(reason: 'Use WatchdogTailCommand::NAME')]
-    const TAIL = 'watchdog:tail';
+    const string TAIL = 'watchdog:tail';
     #[Deprecated(reason: 'Use WatchdogDeleteCommand::NAME')]
-    const DELETE = 'watchdog:delete';
+    const string DELETE = 'watchdog:delete';
     #[Deprecated(reason: 'Use WatchdogShowOneCommand::NAME')]
-    const SHOW_ONE = 'watchdog:show-one';
+    const string SHOW_ONE = 'watchdog:show-one';
 }

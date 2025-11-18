@@ -26,7 +26,7 @@ final class FieldDeleteCommands extends DrushCommands
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
-    const DELETE = 'field:delete';
+    const string DELETE = 'field:delete';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,

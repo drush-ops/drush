@@ -34,7 +34,7 @@ final class ConfigEditCommand extends Command
     use AutowireTrait;
     use ExecTrait;
 
-    const NAME = 'config:edit';
+    const string NAME = 'config:edit';
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory,

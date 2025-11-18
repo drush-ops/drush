@@ -13,11 +13,11 @@ final class DeployHookCommands extends DrushCommands
     use AutowireTrait;
 
     #[Deprecated(reason: 'Use DeployHookStatusCommand::NAME')]
-    const HOOK_STATUS = 'deploy:hook-status';
+    const string HOOK_STATUS = 'deploy:hook-status';
     #[Deprecated(reason: 'Use DeployHookCommand::NAME')]
-    const HOOK = 'deploy:hook';
+    const string HOOK = 'deploy:hook';
     #[Deprecated(reason: 'Use DeployHookBatchProcessCommand::NAME')]
-    const BATCH_PROCESS = 'deploy:batch-process';
+    const string BATCH_PROCESS = 'deploy:batch-process';
     #[Deprecated(reason: 'Use DeployHookMarkCompleteCommand::NAME')]
-    const MARK_COMPLETE = 'deploy:mark-complete';
+    const string MARK_COMPLETE = 'deploy:mark-complete';
 }

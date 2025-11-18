@@ -35,7 +35,7 @@ final class MigrateResetStatusCommand extends Command
     use AutowireTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:reset-status';
+    public const string NAME = 'migrate:reset-status';
 
     public function __construct(
         #[Autowire(service: 'keyvalue')]

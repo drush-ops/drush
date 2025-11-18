@@ -40,7 +40,7 @@ final class UpdateDBCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'updatedb';
+    const string NAME = 'updatedb';
 
     /**
      * Note - can't inject @database since a method below is static.

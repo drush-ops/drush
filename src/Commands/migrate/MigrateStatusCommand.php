@@ -49,7 +49,7 @@ final class MigrateStatusCommand extends Command
     use FormatterTrait;
     use MigrateRunnerTrait;
 
-    public const NAME = 'migrate:status';
+    public const string NAME = 'migrate:status';
 
     public function __construct(
         protected readonly DateFormatterInterface $dateFormatter,

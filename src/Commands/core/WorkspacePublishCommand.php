@@ -24,7 +24,7 @@ final class WorkspacePublishCommand extends Command
 {
     use AutowireTrait;
 
-    const NAME = 'workspace:publish';
+    const string NAME = 'workspace:publish';
 
     protected ?WorkspaceOperationFactory $workspacesOperationFactory = null;
 

@@ -25,9 +25,9 @@ use Symfony\Component\Console\Input\InputOption;
  */
 final class DrupalDependenciesCommands extends DrushCommands
 {
-    public const WHY_MODULE = 'why:module';
-    public const WHY_CONFIG = 'why:config';
-    private const CIRCULAR_REFERENCE = '***circular***';
+    public const string WHY_MODULE = 'why:module';
+    public const string WHY_CONFIG = 'why:config';
+    private const string CIRCULAR_REFERENCE = '***circular***';
 
     /**
      * List of dependents grouped by dependency.

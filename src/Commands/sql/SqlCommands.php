@@ -16,17 +16,17 @@ final class SqlCommands extends DrushCommands implements StdinAwareInterface
     use StdinAwareTrait;
 
     #[Deprecated(reason: 'Moved', replacement: SqlConfCommand::NAME)]
-    const CONF = 'sql:conf';
+    const string CONF = 'sql:conf';
     #[Deprecated(reason: 'Moved', replacement: SqlConnectCommand::NAME)]
-    const CONNECT = 'sql:connect';
+    const string CONNECT = 'sql:connect';
     #[Deprecated(reason: 'Moved', replacement: SqlCreateCommand::NAME)]
-    const CREATE = 'sql:create';
+    const string CREATE = 'sql:create';
     #[Deprecated(reason: 'Moved', replacement: SqlDropCommand::NAME)]
-    const DROP = 'sql:drop';
+    const string DROP = 'sql:drop';
     #[Deprecated(reason: 'Moved', replacement: SqlCliCommand::NAME)]
-    const CLI = 'sql:cli';
+    const string CLI = 'sql:cli';
     #[Deprecated(reason: 'Moved', replacement: SqlQueryCommand::NAME)]
-    const QUERY = 'sql:query';
+    const string QUERY = 'sql:query';
     #[Deprecated(reason: 'Moved', replacement: SqlDumpCommand::NAME)]
-    const DUMP = 'sql:dump';
+    const string DUMP = 'sql:dump';
 }

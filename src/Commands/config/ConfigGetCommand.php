@@ -31,7 +31,7 @@ final class ConfigGetCommand extends Command
     use ConfigNameTrait;
     use FormatterTrait;
 
-    public const NAME = 'config:get';
+    public const string NAME = 'config:get';
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory,

@@ -38,7 +38,7 @@ final class RequirementsCommand extends Command
     use AutowireTrait;
     use FormatterTrait;
 
-    public const NAME = 'core:requirements';
+    public const string NAME = 'core:requirements';
 
     public function __construct(
         protected readonly ModuleHandlerInterface $moduleHandler,
