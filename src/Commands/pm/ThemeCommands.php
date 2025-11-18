@@ -95,6 +95,15 @@ final class ThemeCommands extends DrushCommands
         $this->logger()->success(dt('Successfully uninstalled theme: !list', ['!list' => implode(', ', $themes)]));
     }
 
+    /**
+     * Returns a list of modules and themes to be installed.
+     * 
+     * @param array $themes
+     *   List of themes to install
+     * 
+     * @return array
+     *   List of themes and modules that need to be installed.
+     */
     public function addInstallDependencies($themes): array
     {
         $theme_data = $this->getExtensionListTheme()->reset()->getList();
