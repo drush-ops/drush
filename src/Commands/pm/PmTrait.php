@@ -56,8 +56,7 @@ trait PmTrait
                         $list[$dependency] = $dependency;
                     }
                 }
-            }
-            else {
+            } else {
                 $modules = $data[$item]->module_dependencies;
                 foreach (array_keys($modules) as $dependency) {
                     // Skip already installed modules.
