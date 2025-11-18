@@ -6,6 +6,7 @@ namespace Drush\Commands\pm;
 
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeInstallerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 use Drush\Commands\AutowireTrait;
 use Drush\Exceptions\UserAbortException;
 use Drush\Style\DrushStyle;
@@ -31,6 +32,7 @@ final class ThemeInstallCommand extends Command
     public function __construct(
         private readonly ThemeInstallerInterface $themeInstaller,
         private readonly ModuleInstallerInterface $moduleInstaller,
+        private readonly ThemeExtensionList $extensionListTheme,
     ) {
         parent::__construct();
     }
@@ -51,8 +53,8 @@ final class ThemeInstallCommand extends Command
         $todo = $this->addInstallDependencies($themes, 'themes');
         $todo_str = ['!list' => implode(', ', $todo)];
         if (!empty($todo)) {
-            $this->output()->writeln(dt('The following module(s) and themes(s) will be installed: !list', $todo_str));
-            if (!$this->io()->confirm(dt('Do you want to continue?'))) {
+            $output->writeln(dt('The following module(s) and themes(s) will be installed: !list', $todo_str));
+            if (!$io->confirm(dt('Do you want to continue?'))) {
                 throw new UserAbortException();
             }
 

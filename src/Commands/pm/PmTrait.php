@@ -34,7 +34,7 @@ trait PmTrait
         $list  = array_combine($projects, $projects);
         if ($missing = array_diff_key($list, $data)) {
             // One or more of the given modules/themes doesn't exist.
-            throw new MissingDependencyException(sprintf('Unable to install %s %s due to missing %s %s.', $type, implode(', ', $module_list), $type, implode(', ', $missing_modules)));
+            throw new MissingDependencyException(sprintf('Unable to install %s %s due to missing %s %s.', $type, implode(', ', $list), $type, implode(', ', $missing)));
         }
 
         $extension_config = $this->configFactory->getEditable('core.extension');
