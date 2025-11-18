@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Drupal\Migrate\MigrateExecutable | Drush API %version%</title>
+    <title>Drush\Drupal\Migrate\MigrateExecutable | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>MigrateExecutable</strong>        extends <abbr title="Drupal\migrate\MigrateExecutable">MigrateExecutable</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php">View source</a>)
+    <strong>MigrateExecutable</strong>        extends <abbr title="Drupal\migrate\MigrateExecutable">MigrateExecutable</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php">View source</a>)
 </p>
 
         
@@ -99,15 +99,6 @@
             <h2>Properties</h2>
 
             <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_output">
-                                        protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$output</td>
-                <td class="last"><p>The Symfony console output.</p></td>
-                <td></td>
-            </tr>
                     <tr>
                 <td class="type" id="property_saveCounters">
                                         protected                                        array
@@ -527,7 +518,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L118">at line 118</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L113">at line 113</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration, <abbr title="Drupal\migrate\MigrateMessageInterface">MigrateMessageInterface</abbr> $message, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, array $options = [])
         </code>
@@ -575,7 +566,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_onMapSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L180">at line 180</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L173">at line 173</a></div>
         <code>                    void
     <strong>onMapSave</strong>(<abbr title="Drupal\migrate\Event\MigrateMapSaveEvent">MigrateMapSaveEvent</abbr> $event)
         </code>
@@ -617,7 +608,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_onMapDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L200">at line 200</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L193">at line 193</a></div>
         <code>                    void
     <strong>onMapDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateMapDeleteEvent">MigrateMapDeleteEvent</abbr> $event)
         </code>
@@ -659,7 +650,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_onPreImport">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L212">at line 212</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L205">at line 205</a></div>
         <code>                    void
     <strong>onPreImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         </code>
@@ -701,7 +692,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_handleMissingSourceRows">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L237">at line 237</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L230">at line 230</a></div>
         <code>            protected        void
     <strong>handleMissingSourceRows</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -765,7 +756,7 @@ the<code>--delete</code> option has been passed.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_onMissingSourceRows">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L269">at line 269</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L262">at line 262</a></div>
         <code>                    void
     <strong>onMissingSourceRows</strong>(<a href="../../../Drush/Drupal/Migrate/MigrateMissingSourceRowsEvent.html"><abbr title="Drush\Drupal\Migrate\MigrateMissingSourceRowsEvent">MigrateMissingSourceRowsEvent</abbr></a> $event)
         </code>
@@ -810,7 +801,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPostImport">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L298">at line 298</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L291">at line 291</a></div>
         <code>                    void
     <strong>onPostImport</strong>(<abbr title="Drupal\migrate\Event\MigrateImportEvent">MigrateImportEvent</abbr> $event)
         </code>
@@ -852,7 +843,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_importFeedbackMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L311">at line 311</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L304">at line 304</a></div>
         <code>            protected        void
     <strong>importFeedbackMessage</strong>(bool $done = true)
         </code>
@@ -894,7 +885,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPreRollback">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L362">at line 362</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L355">at line 355</a></div>
         <code>                    void
     <strong>onPreRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         </code>
@@ -936,7 +927,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPostRollback">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L373">at line 373</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L366">at line 366</a></div>
         <code>                    void
     <strong>onPostRollback</strong>(<abbr title="Drupal\migrate\Event\MigrateRollbackEvent">MigrateRollbackEvent</abbr> $event)
         </code>
@@ -978,7 +969,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_rollbackFeedbackMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L391">at line 391</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L384">at line 384</a></div>
         <code>            protected        void
     <strong>rollbackFeedbackMessage</strong>(bool $done = true)
         </code>
@@ -1020,7 +1011,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPreRowSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L420">at line 420</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L413">at line 413</a></div>
         <code>                    void
     <strong>onPreRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePreRowSaveEvent">MigratePreRowSaveEvent</abbr> $event)
         </code>
@@ -1062,7 +1053,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPostRowSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L436">at line 436</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L429">at line 429</a></div>
         <code>                    void
     <strong>onPostRowSave</strong>(<abbr title="Drupal\migrate\Event\MigratePostRowSaveEvent">MigratePostRowSaveEvent</abbr> $event)
         </code>
@@ -1104,7 +1095,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPostRowDelete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L447">at line 447</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L440">at line 440</a></div>
         <code>                    void
     <strong>onPostRowDelete</strong>(<abbr title="Drupal\migrate\Event\MigrateRowDeleteEvent">MigrateRowDeleteEvent</abbr> $event)
         </code>
@@ -1146,7 +1137,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_onPrepareRow">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L463">at line 463</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L456">at line 456</a></div>
         <code>                    void
     <strong>onPrepareRow</strong>(<a href="../../../Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a> $event)
         </code>
@@ -1197,7 +1188,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getIdMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L498">at line 498</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L491">at line 491</a></div>
         <code>            protected        <a href="../../../Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a>
     <strong>getIdMap</strong>()
         </code>
@@ -1229,7 +1220,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getCreatedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L509">at line 509</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L502">at line 502</a></div>
         <code>                    int
     <strong>getCreatedCount</strong>()
         </code>
@@ -1261,7 +1252,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getUpdatedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L517">at line 517</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L510">at line 510</a></div>
         <code>                    int
     <strong>getUpdatedCount</strong>()
         </code>
@@ -1293,7 +1284,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getIgnoredCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L525">at line 525</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L518">at line 518</a></div>
         <code>                    int
     <strong>getIgnoredCount</strong>()
         </code>
@@ -1325,7 +1316,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getFailedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L533">at line 533</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L526">at line 526</a></div>
         <code>                    int
     <strong>getFailedCount</strong>()
         </code>
@@ -1357,7 +1348,7 @@ the destination object deletion, even the <code>--delete</code> option was passe
             </div>
                     <div class="method-item">
                     <h3 id="method_getProcessedCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L544">at line 544</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L537">at line 537</a></div>
         <code>                    int
     <strong>getProcessedCount</strong>()
         </code>
@@ -1390,7 +1381,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_getRollbackCount">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L555">at line 555</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L548">at line 548</a></div>
         <code>                    int
     <strong>getRollbackCount</strong>()
         </code>
@@ -1422,7 +1413,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_resetCounters">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L563">at line 563</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L556">at line 556</a></div>
         <code>            protected        void
     <strong>resetCounters</strong>()
         </code>
@@ -1454,7 +1445,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_initProgressBar">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L577">at line 577</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L570">at line 570</a></div>
         <code>            protected        void
     <strong>initProgressBar</strong>(<abbr title="Drupal\migrate\Plugin\MigrationInterface">MigrationInterface</abbr> $migration)
         </code>
@@ -1496,7 +1487,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_updateProgressBar">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L593">at line 593</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L586">at line 586</a></div>
         <code>                    void
     <strong>updateProgressBar</strong>()
         </code>
@@ -1528,7 +1519,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_progressFinish">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L603">at line 603</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L596">at line 596</a></div>
         <code>                    void
     <strong>progressFinish</strong>()
         </code>
@@ -1560,7 +1551,7 @@ on stubs created as side effects, not on the primary item being imported.</p></p
             </div>
                     <div class="method-item">
                     <h3 id="method_unregisterListeners">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Migrate/MigrateExecutable.php#L615">at line 615</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Migrate/MigrateExecutable.php#L608">at line 608</a></div>
         <code>                    void
     <strong>unregisterListeners</strong>()
         </code>
