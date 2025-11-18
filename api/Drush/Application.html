@@ -317,7 +317,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_setAliasManager">setAliasManager</a>($aliasManager)
+                    <a href="#method_setAliasManager">setAliasManager</a>(<abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null $aliasManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -358,7 +358,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\string|false">string|false</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getUri">getUri</a>()
@@ -411,10 +411,10 @@ then pick an appropriate site from the cwd.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_bootstrapAndFind">bootstrapAndFind</a>($name)
+                    <a href="#method_bootstrapAndFind">bootstrapAndFind</a>(string $name)
         
                                             <p><p>Look up a command. Bootstrap further if necessary.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -901,7 +901,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <h3 id="method_setAliasManager">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L115">at line 115</a></div>
         <code>                    void
-    <strong>setAliasManager</strong>($aliasManager)
+    <strong>setAliasManager</strong>(<abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null $aliasManager)
         </code>
     </h3>
     <div class="details">    
@@ -917,7 +917,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null</td>
                 <td>$aliasManager</td>
                 <td></td>
             </tr>
@@ -1072,7 +1072,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_getUri">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L138">at line 138</a></div>
-        <code>                    
+        <code>                    <abbr title="Drush\string|false">string|false</abbr>
     <strong>getUri</strong>()
         </code>
     </h3>
@@ -1085,6 +1085,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\string|false">string|false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1267,8 +1276,8 @@ then pick an appropriate site from the cwd.</p></p>
                     <div class="method-item">
                     <h3 id="method_bootstrapAndFind">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L207">at line 207</a></div>
-        <code>            protected        
-    <strong>bootstrapAndFind</strong>($name)
+        <code>            protected        <abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr>
+    <strong>bootstrapAndFind</strong>(string $name)
         </code>
     </h3>
     <div class="details">    
@@ -1283,13 +1292,22 @@ then pick an appropriate site from the cwd.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$name</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

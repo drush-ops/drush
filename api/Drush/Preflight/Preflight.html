@@ -240,7 +240,7 @@ aliases with their longhand equivalents.</p></p>                </div>
                     <a href="../../Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_preflightArgs">preflightArgs</a>($argv)
+                    <a href="#method_preflightArgs">preflightArgs</a>(array $argv)
         
                                             <p><p>Preprocess the args, removing any @sitealias that may be present.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -313,7 +313,7 @@ settings, paths and so on into it.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    string
                 </div>
                 <div class="col-md-8">
                     <a href="#method_preferredSite">preferredSite</a>()
@@ -602,7 +602,7 @@ aliases with their longhand equivalents.</p></p>                <p><p>This shoul
                     <h3 id="method_preflightArgs">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/Preflight.php#L150">at line 150</a></div>
         <code>                    <a href="../../Drush/Preflight/PreflightArgs.html"><abbr title="Drush\Preflight\PreflightArgs">PreflightArgs</abbr></a>
-    <strong>preflightArgs</strong>($argv)
+    <strong>preflightArgs</strong>(array $argv)
         </code>
     </h3>
     <div class="details">    
@@ -618,7 +618,7 @@ with an ArgvInput.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$argv</td>
                 <td></td>
             </tr>
@@ -862,7 +862,7 @@ settings, paths and so on into it.</p></p>
                     <div class="method-item">
                     <h3 id="method_preferredSite">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/Preflight.php#L315">at line 315</a></div>
-        <code>            protected        
+        <code>            protected        string
     <strong>preferredSite</strong>()
         </code>
     </h3>
@@ -876,6 +876,15 @@ that shares the <code>vendor</code> directory with Drush).</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

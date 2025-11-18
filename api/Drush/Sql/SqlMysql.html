@@ -506,7 +506,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     bool|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_query">query</a>(string $query, $input_file = null, $result_file = &#039;&#039;)
+                    <a href="#method_query">query</a>(string $query, $input_file = null, string|null $result_file = &#039;&#039;)
         
                                             <p><p>Execute a SQL query. Respect simulate mode.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_query">
@@ -770,7 +770,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;<abbr title="Drush\Sql\SqlMysql|Drush\Sql\SqlMariaDB">SqlMariaDB</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_make">make</a>(array $dbSpec, array $options)
@@ -1958,7 +1958,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_query">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlBase.php#L308">at line 308</a></div>
         <code>                    bool|null
-    <strong>query</strong>(string $query, $input_file = null, $result_file = &#039;&#039;)
+    <strong>query</strong>(string $query, $input_file = null, string|null $result_file = &#039;&#039;)
         </code>
     </h3>
     <div class="details">    
@@ -1984,7 +1984,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                 <td><p>A path to a file containing the SQL to be executed.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string|null</td>
                 <td>$result_file</td>
                 <td><p>A path to save query results to. Can be drush_bit_bucket() if desired.</p></td>
             </tr>
@@ -2957,7 +2957,7 @@ default browser could not be found.</p></td>
                     <div class="method-item">
                     <h3 id="method_make">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L22">at line 22</a></div>
-        <code>        static            
+        <code>        static            <abbr title="Drush\Sql\SqlMysql|Drush\Sql\SqlMariaDB">SqlMariaDB</abbr>
     <strong>make</strong>(array $dbSpec, array $options)
         </code>
     </h3>
@@ -2985,6 +2985,15 @@ default browser could not be found.</p></td>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Sql\SqlMysql|Drush\Sql\SqlMariaDB">SqlMariaDB</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             

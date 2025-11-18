@@ -103,6 +103,11 @@
                     <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
                 <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
             </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/pm/PmTrait.html"><abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a>    </div>
+                <div class="col-md-6"></div>
+            </div>
             </div>
     
             <h2>Constants</h2>    <table class="table table-condensed">
@@ -118,13 +123,68 @@
             </table>
 
     
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_configFactory">
+                                        protected                                        <abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$configFactory</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#property_configFactory">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_extensionListModule">
+                                        protected                                        <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr>
+                                                                                
+                                    </td>
+                <td>$extensionListModule</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#property_extensionListModule">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_moduleHandler">
+                                        protected                                        <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$moduleHandler</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#property_moduleHandler">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_permissionHandler">
+                                        protected                                        <abbr title="Drupal\user\PermissionHandlerInterface">PermissionHandlerInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$permissionHandler</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#property_permissionHandler">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_extensionListTheme">
+                                        protected                                        <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr>
+                                                                                
+                                    </td>
+                <td>$extensionListTheme</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#property_extensionListTheme">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></td>
+            </tr>
+            </table>
+
     
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
@@ -135,10 +195,57 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addInstallDependencies">addInstallDependencies</a>($projects, $type = &#039;modules&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#method_addInstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Commands\pm\false|array">false|array</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_addUninstallDependencies">addUninstallDependencies</a>($modules)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#method_addUninstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_extensionStatus">extensionStatus</a>($extension)
+        
+                                            <p><p>Calculate an extension status based on current status and schema version.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#method_extensionStatus">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getModuleLinks">getModuleLinks</a>(<abbr title="Drupal\Core\Extension\Extension">Extension</abbr> $module)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/pm/PmTrait.html#method_getModuleLinks">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Extension\ThemeInstallerInterface">ThemeInstallerInterface</abbr> $themeInstaller)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ThemeInstallerInterface">ThemeInstallerInterface</abbr> $themeInstaller, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $extensionListTheme)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -176,7 +283,7 @@
                     <h3 id="method_create">
         <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
 <abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
-        <code>        static            
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
     <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
@@ -199,6 +306,15 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -207,10 +323,11 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L28">at line 28</a></div>
-        <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Extension\ThemeInstallerInterface">ThemeInstallerInterface</abbr> $themeInstaller)
+                    <h3 id="method_addInstallDependencies">
+        <div class="location">in <a href="../../../Drush/Commands/pm/PmTrait.html#method_addInstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmTrait.php#L26">at line 26</a></div>
+        <code>                    array
+    <strong>addInstallDependencies</strong>($projects, $type = &#039;modules&#039;)
         </code>
     </h3>
     <div class="details">    
@@ -226,8 +343,202 @@
 
                     <table class="table table-condensed">
                     <tr>
+                <td></td>
+                <td>$projects</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$type</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_addUninstallDependencies">
+        <div class="location">in <a href="../../../Drush/Commands/pm/PmTrait.html#method_addUninstallDependencies">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmTrait.php#L75">at line 75</a></div>
+        <code>                    <abbr title="Drush\Commands\pm\false|array">false|array</abbr>
+    <strong>addUninstallDependencies</strong>($modules)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$modules</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Commands\pm\false|array">false|array</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_extensionStatus">
+        <div class="location">in <a href="../../../Drush/Commands/pm/PmTrait.html#method_extensionStatus">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmTrait.php#L114">at line 114</a></div>
+        <code>                    string
+    <strong>extensionStatus</strong>($extension)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Calculate an extension status based on current status and schema version.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$extension</td>
+                <td><p>Object of a single extension info.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td><p>Status. Values: enabled|disabled.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getModuleLinks">
+        <div class="location">in <a href="../../../Drush/Commands/pm/PmTrait.html#method_getModuleLinks">
+<abbr title="Drush\Commands\pm\PmTrait">PmTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmTrait.php#L119">at line 119</a></div>
+        <code>            protected        array
+    <strong>getModuleLinks</strong>(<abbr title="Drupal\Core\Extension\Extension">Extension</abbr> $module)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\Extension">Extension</abbr></td>
+                <td>$module</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L33">at line 33</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ThemeInstallerInterface">ThemeInstallerInterface</abbr> $themeInstaller, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $extensionListTheme)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr></td>
+                <td>$configFactory</td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td><abbr title="Drupal\Core\Extension\ThemeInstallerInterface">ThemeInstallerInterface</abbr></td>
                 <td>$themeInstaller</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr></td>
+                <td>$moduleInstaller</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr></td>
+                <td>$extensionListTheme</td>
                 <td></td>
             </tr>
             </table>
@@ -242,7 +553,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_configure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L42">at line 42</a></div>
         <code>            protected        void
     <strong>configure</strong>()
         </code>
@@ -275,7 +586,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/ThemeInstallCommand.php#L48">at line 48</a></div>
         <code>            protected        int
     <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
