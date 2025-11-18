@@ -86,7 +86,7 @@ final class FieldDeleteCommands extends DrushCommands
         }
 
         if (!$options['all-bundles']) {
-            $this->input->setArgument('bundle', $bundle = $bundle ?? $this->askBundle());
+            $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
             $this->validateBundle($entityType, $bundle);
 
             /** @var FieldConfig[] $results */
@@ -184,9 +184,7 @@ final class FieldDeleteCommands extends DrushCommands
         }
 
         if ($fieldName = $this->input->getOption('field-name')) {
-            $bundleInfo = array_filter($bundleInfo, function (string $bundle) use ($entityTypeId, $fieldName) {
-                return $this->entityTypeManager->getStorage('field_config')->load("$entityTypeId.$bundle.$fieldName");
-            }, ARRAY_FILTER_USE_KEY);
+            $bundleInfo = array_filter($bundleInfo, fn(string $bundle) => $this->entityTypeManager->getStorage('field_config')->load("$entityTypeId.$bundle.$fieldName"), ARRAY_FILTER_USE_KEY);
         }
 
         if (!$bundleEntityType && count($bundleInfo) === 1) {

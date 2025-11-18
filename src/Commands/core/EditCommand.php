@@ -99,7 +99,7 @@ final class EditCommand extends Command
     public function load($headers = true): array
     {
         $php_header = $rcs_header = $aliases_header = $drupal_header = $bash_header = $drupal = [];
-        $php = $this->phpIniFiles();
+        $php = self::phpIniFiles();
         if ($php !== []) {
             if ($headers) {
                 $php_header = ['phpini' => '-- PHP ini files --'];

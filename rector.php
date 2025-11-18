@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Rector\CodeQuality\Rector\Array_\CallableThisArrayToAnonymousFunctionRector;
 use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
 use Rector\CodeQuality\Rector\If_\CombineIfRector;
@@ -10,25 +9,17 @@ use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
 use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\Config\RectorConfig;
-use Rector\Php81\Rector\ClassConst\FinalizePublicClassConstantRector;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
-use Rector\Set\ValueObject\SetList;
 
-return static function (RectorConfig $config): void {
-    $config->importNames();
-    $config->importShortClasses(false);
-
-    $config->paths([
+return RectorConfig::configure()
+    ->withPaths([
         __DIR__ . '/src',
-    ]);
-
-    $config->sets([
-        SetList::CODE_QUALITY,
-        SetList::PHP_82,
-        SetList::DEAD_CODE
-    ]);
-
-    $config->skip([
+        // __DIR__ . '/tests',
+    ])
+    ->withPhpSets(php82: true)
+    ->withImportNames(importNames: false, importShortClasses: false)
+    ->withPreparedSets(deadCode: true, codeQuality: true)
+    ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
@@ -44,4 +35,3 @@ return static function (RectorConfig $config): void {
         \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPrivateMethodRector::class,
         \Rector\DeadCode\Rector\Foreach_\RemoveUnusedForeachKeyRector::class
     ]);
-};

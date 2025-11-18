@@ -136,7 +136,7 @@ final class SiteInstallCommand extends Command
                     // Do some install booting to get basic services available.
                     $additional = $input->getArgument('recipeOrProfile');
                     $recipeOrProfile = array_shift($additional) ?: '';
-                    list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $input->getOptions());
+                    [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $input->getOptions());
                     require_once $this->bootstrapManager->getRoot() . '/core/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
                     $install_state['parameters']['profile'] = $profile ?? '';
@@ -313,7 +313,7 @@ final class SiteInstallCommand extends Command
         $recipeOrProfile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ($additional as $arg) {
-            list($key, $value) = explode('=', $arg, 2);
+            [$key, $value] = explode('=', $arg, 2);
 
             // Allow for numeric and NULL values to be passed in.
             if (is_numeric($value)) {
@@ -327,7 +327,7 @@ final class SiteInstallCommand extends Command
         $options = $input->getOptions();
 
         $this->serverGlobals($this->bootstrapManager->getUri());
-        list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $options);
+        [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $options);
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
         // Was giving error during validate() so its here for now.

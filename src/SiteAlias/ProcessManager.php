@@ -123,7 +123,7 @@ class ProcessManager extends ConsolidationProcessManager
     public function siteProcess(SiteAliasInterface $siteAlias, $args = [], $options = [], $optionsPassedAsArgs = []): ProcessBase
     {
         $process = parent::siteProcess($siteAlias, $args, $options, $optionsPassedAsArgs);
-        return $this->configureProcess($process);
+        return static::configureProcess($process);
     }
 
     /**
@@ -143,7 +143,7 @@ class ProcessManager extends ConsolidationProcessManager
     public function process($commandline, $cwd = null, ?array $env = null, $input = null, $timeout = 60): ProcessBase
     {
         $process = parent::process($commandline, $cwd, $env, $input, $timeout);
-        return $this->configureProcess($process);
+        return static::configureProcess($process);
     }
 
     /**
@@ -157,7 +157,7 @@ class ProcessManager extends ConsolidationProcessManager
     public function shell($command, $cwd = null, ?array $env = null, $input = null, $timeout = 60): ProcessBase
     {
         $process = parent::shell($command, $cwd, $env, $input, $timeout);
-        return $this->configureProcess($process);
+        return static::configureProcess($process);
     }
 
     /**

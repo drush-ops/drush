@@ -100,7 +100,7 @@ final class ViewsListCommand extends Command
         foreach ($views as $view) {
             // If options were specified, check that first mismatch push the loop to the
             // next view.
-            if ($with_name && !stristr($view->id(), $name[0])) {
+            if ($with_name && !stristr($view->id(), (string) $name[0])) {
                 continue;
             }
             if ($with_tags && !in_array($view->get('tag'), $tags)) {

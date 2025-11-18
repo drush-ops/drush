@@ -137,10 +137,10 @@ class StatusCommand extends Command
                         } elseif (isset($db_spec['host'])) {
                             $status_table['db-hostname'] = $db_spec['host'];
                         }
-                        $status_table['db-username'] = isset($db_spec['username']) ? $db_spec['username'] : null;
-                        $status_table['db-password'] = isset($db_spec['password']) ? $db_spec['password'] : null;
-                        $status_table['db-name'] = isset($db_spec['database']) ? $db_spec['database'] : null;
-                        $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
+                        $status_table['db-username'] = $db_spec['username'] ?? null;
+                        $status_table['db-password'] = $db_spec['password'] ?? null;
+                        $status_table['db-name'] = $db_spec['database'] ?? null;
+                        $status_table['db-port'] = $db_spec['port'] ?? null;
                     }
                     if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                         $status_table['install-profile'] = \Drupal::installProfile();
@@ -151,7 +151,7 @@ class StatusCommand extends Command
                             }
                         }
                     }
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     // Don't worry be happy.
                 }
             }
@@ -227,7 +227,7 @@ class StatusCommand extends Command
                     try {
                         $paths["%config-sync"] = Settings::get('config_sync_directory');
                         $paths["%config"] = Settings::get('config_sync_directory');
-                    } catch (\Exception $e) {
+                    } catch (\Exception) {
                         // Nothing to do.
                     }
                 }

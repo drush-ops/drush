@@ -164,9 +164,7 @@ final class CliCommand extends Command
             }
         }
 
-        return array_map(function ($command) {
-            return new DrushCommand($command);
-        }, $commands);
+        return array_map(fn($command) => new DrushCommand($command), $commands);
     }
 
     /**

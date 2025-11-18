@@ -15,14 +15,13 @@ use Symfony\Component\Filesystem\Path;
  */
 class Environment
 {
-    protected string $homeDir;
     protected string $originalCwd;
     protected string $etcPrefix = '';
     protected string $sharePrefix = '';
     protected string $drushBasePath;
     protected string $vendorDir;
 
-    protected ?string $docPrefix;
+    protected ?string $docPrefix = null;
     protected string $configFileVariant;
 
     protected ClassLoader $loader;
@@ -34,9 +33,8 @@ class Environment
      * @param string $cwd The current working directory at the time Drush was called.
      * @param string $autoloadFile Path to the autoload.php file.
      */
-    public function __construct(string $homeDir, string $cwd, string $autoloadFile)
+    public function __construct(protected string $homeDir, string $cwd, string $autoloadFile)
     {
-        $this->homeDir = $homeDir;
         $this->originalCwd = Path::canonicalize(FsUtils::realpath($cwd));
         $this->drushBasePath = Path::canonicalize(dirname(__DIR__, 2));
         $this->vendorDir = FsUtils::realpath(dirname($autoloadFile));
@@ -122,7 +120,7 @@ class Environment
                 'cwd' => $this->cwd(),
                 'home' => $this->homeDir(),
                 'user' => $this->getUsername(),
-                'is-windows' => $this->isWindows(),
+                'is-windows' => static::isWindows(),
                 'tmp' => $this->getTmp(),
             ],
             // These values are available as global options, and
@@ -385,7 +383,7 @@ class Environment
         }
 
         // The env variables below must match the variables in example.prompt.sh
-        $tmp = getenv('TMPDIR') ? getenv('TMPDIR') : '/tmp';
+        $tmp = getenv('TMPDIR') ?: '/tmp';
         $username = $this->getUsername();
 
         return "$tmp/drush-env-{$username}/{$filename_prefix}" . $shell_pid;

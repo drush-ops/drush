@@ -124,14 +124,14 @@ final class MigrateStatusCommand extends Command
                             break;
                         case 'total':
                             $sourceRowsCount = $this->getMigrationSourceRowsCount($migration);
-                            $row[$field] = $sourceRowsCount !== null ? $sourceRowsCount : dt('N/A');
+                            $row[$field] = $sourceRowsCount ?? dt('N/A');
                             break;
                         case 'needing_update':
                             $row[$field] = $this->getMigrationNeedingUpdateCount($migration);
                             break;
                         case 'unprocessed':
                             $unprocessedCount = $this->getMigrationUnprocessedCount($migration);
-                            $row[$field] = $unprocessedCount !== null ? $unprocessedCount : dt('N/A');
+                            $row[$field] = $unprocessedCount ?? dt('N/A');
                             break;
                         case 'imported':
                             $importedCount = $this->getMigrationImportedCount($migration);
@@ -139,7 +139,7 @@ final class MigrateStatusCommand extends Command
                                 // Next migration.
                                 continue 2;
                             }
-                            $sourceRowsCount = $sourceRowsCount ?? $this->getMigrationSourceRowsCount($migration);
+                            $sourceRowsCount ??= $this->getMigrationSourceRowsCount($migration);
                             if ($sourceRowsCount > 0 && $importedCount > 0) {
                                 $importedCount .= ' (' . round(($importedCount / $sourceRowsCount) * 100, 1) . '%)';
                             }

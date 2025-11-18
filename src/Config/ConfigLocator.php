@@ -43,8 +43,6 @@ class ConfigLocator
 
     protected $configFilePaths = [];
 
-    protected $configFileVariant;
-
     protected $processedConfigPaths = [];
 
     /*
@@ -92,9 +90,8 @@ class ConfigLocator
     /**
      * ConfigLocator constructor
      */
-    public function __construct($envPrefix = '', $configFileVariant = '')
+    public function __construct($envPrefix = '', protected $configFileVariant = '')
     {
-        $this->configFileVariant = $configFileVariant;
         $this->config = new DrushConfig();
 
         // Add placeholders to establish priority. We add
@@ -381,9 +378,7 @@ class ConfigLocator
         );
         $base_dirs = array_filter(array_merge($this->siteRoots, $siteroot_parents, [$this->composerRoot]));
         $site_local_paths = array_map(
-            function ($item) {
-                return Path::join($item, '/drush/sites');
-            },
+            fn($item) => Path::join($item, '/drush/sites'),
             array_unique($base_dirs)
         );
 
@@ -481,9 +476,7 @@ class ConfigLocator
     public function expandCandidates($candidates, $prefix): array
     {
         $additional = array_map(
-            function ($item) use ($prefix) {
-                return $prefix . $item;
-            },
+            fn($item) => $prefix . $item,
             $candidates
         );
         return array_merge($candidates, $additional);

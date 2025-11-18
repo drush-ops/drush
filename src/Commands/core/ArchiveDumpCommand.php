@@ -385,9 +385,7 @@ final class ArchiveDumpCommand extends Command
         $composerInfoRaw = $process->getOutput();
         $installedPackages = json_decode($composerInfoRaw, true)['installed'] ?? [];
         // Remove path projects ('source' is empty for path projects)
-        $installedPackages = array_filter($installedPackages, function ($dependency) {
-            return !empty($dependency['source']);
-        });
+        $installedPackages = array_filter($installedPackages, fn($dependency) => !empty($dependency['source']));
         $installedPackagesPaths = array_filter(array_column($installedPackages, 'path'));
         $installedPackagesRelativePaths = array_map(
             fn($path) => ltrim(str_replace([$this->getComposerRoot()], '', $path), '/'),
