@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drupal\Core\Extension\ThemeExtensionList;
