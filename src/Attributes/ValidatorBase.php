@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Attributes;
 
-use Consolidation\AnnotatedCommand\Attributes\AttributeInterface;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Drush;

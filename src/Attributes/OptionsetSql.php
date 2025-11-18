@@ -7,7 +7,6 @@ namespace Drush\Attributes;
 use Attribute;
 use Consolidation\AnnotatedCommand\Parser\CommandInfo;
 use Drush\Commands\DrushCommands;
-use JetBrains\PhpStorm\Deprecated;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]
 class OptionsetSql

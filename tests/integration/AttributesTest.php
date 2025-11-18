@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Symfony\Component\Console\Completion\Output\FishCompletionOutput;
 use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Custom\Library\Drush\Commands\ExampleAttributesCommands;
 use Symfony\Component\Console\Tester\CommandCompletionTester;
@@ -48,7 +49,7 @@ class AttributesTest extends UnishIntegrationTestCase
 
     public function testCompletion(): void
     {
-        if (!class_exists(\Symfony\Component\Console\Completion\Output\FishCompletionOutput::class)) {
+        if (!class_exists(FishCompletionOutput::class)) {
             $this->markTestSkipped('Symfony Console 6.2+ needed for rest this test.');
         }
 

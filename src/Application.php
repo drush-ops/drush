@@ -97,7 +97,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
             );
     }
 
-    public function bootstrapManager(): ?\Drush\Boot\BootstrapManager
+    public function bootstrapManager(): ?BootstrapManager
     {
         return $this->bootstrapManager;
     }
@@ -107,12 +107,12 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $this->bootstrapManager = $bootstrapManager;
     }
 
-    public function aliasManager(): ?\Consolidation\SiteAlias\SiteAliasManager
+    public function aliasManager(): ?SiteAliasManager
     {
         return $this->aliasManager;
     }
 
-    public function setAliasManager(?\Consolidation\SiteAlias\SiteAliasManager $aliasManager): void
+    public function setAliasManager(?SiteAliasManager $aliasManager): void
     {
         $this->aliasManager = $aliasManager;
     }
@@ -204,7 +204,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     /**
      * Look up a command. Bootstrap further if necessary.
      */
-    protected function bootstrapAndFind(string $name): \Symfony\Component\Console\Command\Command|\Drush\Command\RemoteCommandProxy
+    protected function bootstrapAndFind(string $name): Command|RemoteCommandProxy
     {
         try {
             return parent::find($name);

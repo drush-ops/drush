@@ -3,7 +3,6 @@
 namespace Drush\Commands\field;
 
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
-use Drupal\Core\Entity\Display\EntityDisplayInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

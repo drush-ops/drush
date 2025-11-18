@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Runtime;
 
+use Psr\Container\ContainerInterface;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
 use Consolidation\Config\ConfigInterface;
@@ -17,7 +18,6 @@ use Drush\Application;
 use Drush\Boot\BootstrapHook;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBoot8;
-use Drush\Cache\CommandCache;
 use Drush\Command\DrushCommandInfoAlterer;
 use Drush\Command\GlobalOptionsEventListener;
 use Drush\Config\DrushConfig;
@@ -30,7 +30,6 @@ use Drush\Log\Logger;
 use Drush\SiteAlias\ProcessManager;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
-use League\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Robo\Robo;
@@ -77,7 +76,7 @@ class DependencyInjection
         // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
         Robo::configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
-        $container->add(\Psr\Container\ContainerInterface::class, 'container'); // For autowiring
+        $container->add(ContainerInterface::class, 'container'); // For autowiring
 
         // Store the container in the \Drush object
         Drush::setContainer($container);
@@ -171,7 +170,7 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', [self::PROCESS_MANAGER]);
     }
 
-    protected function alterServicesForDrush(\Psr\Container\ContainerInterface $container, Application $application, InputInterface $input, OutputInterface $output): void
+    protected function alterServicesForDrush(ContainerInterface $container, Application $application, InputInterface $input, OutputInterface $output): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());

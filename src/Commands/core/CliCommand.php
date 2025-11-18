@@ -164,7 +164,7 @@ final class CliCommand extends Command
             }
         }
 
-        return array_map(fn($command): \Drush\Psysh\DrushCommand => new DrushCommand($command), $commands);
+        return array_map(fn($command): DrushCommand => new DrushCommand($command), $commands);
     }
 
     /**

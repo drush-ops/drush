@@ -37,7 +37,7 @@ class Preflight
      */
     protected $configLocator;
 
-    protected \Drush\DrupalFinder\DrushDrupalFinder $drupalFinder;
+    protected DrushDrupalFinder $drupalFinder;
 
     /**
      * @var PreflightArgs
@@ -57,7 +57,7 @@ class Preflight
     /**
      * Preflight constructor
      */
-    public function __construct(protected \Drush\Config\Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
+    public function __construct(protected Environment $environment, $verify = null, $configLocator = null, $preflightLog = null)
     {
         $this->verify = $verify ?: new PreflightVerify();
         $this->configLocator = $configLocator ?: new ConfigLocator('DRUSH_', $this->environment->getConfigFileVariant());

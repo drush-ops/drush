@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Formatters;
 
+use Drupal\Core\Entity\EntityInterface;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\Transformations\SimplifyToArrayInterface;
 
@@ -18,7 +19,7 @@ class EntityToArraySimplifier implements SimplifyToArrayInterface
 
     public function canSimplify(\ReflectionClass $dataType): bool
     {
-        return interface_exists(\Drupal\Core\Entity\EntityInterface::class, false) && $dataType->implementsInterface(\Drupal\Core\Entity\EntityInterface::class);
+        return interface_exists(EntityInterface::class, false) && $dataType->implementsInterface(EntityInterface::class);
     }
 
     public function simplifyToArray($structuredData, FormatterOptions $options): array

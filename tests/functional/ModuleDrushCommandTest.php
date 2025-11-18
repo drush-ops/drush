@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\pm\PmCommands;
-use Symfony\Component\Filesystem\Path;
 
 /**
  * @group commands

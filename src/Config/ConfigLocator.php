@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Config;
 
+use Consolidation\Config\ConfigInterface;
 use Consolidation\Config\Loader\ConfigLoader;
 use Consolidation\Config\Loader\ConfigProcessor;
 use Consolidation\Config\Util\EnvConfig;
@@ -206,7 +207,7 @@ class ConfigLocator
      * Take any configuration from the active alias record, and add it
      * to our configuration.
      */
-    public function addAliasConfig(\Consolidation\Config\ConfigInterface $aliasConfig): self
+    public function addAliasConfig(ConfigInterface $aliasConfig): self
     {
         $this->config->addContext(self::ALIAS_CONTEXT, $aliasConfig);
         return $this;

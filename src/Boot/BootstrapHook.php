@@ -15,7 +15,7 @@ use Consolidation\AnnotatedCommand\AnnotationData;
  */
 class BootstrapHook implements InitializeHookInterface
 {
-    public function __construct(protected \Drush\Boot\BootstrapManager $bootstrapManager)
+    public function __construct(protected BootstrapManager $bootstrapManager)
     {
     }
 
