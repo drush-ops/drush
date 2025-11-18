@@ -32,7 +32,7 @@ final class ThemeInstallCommand extends Command
     public function __construct(
         private readonly ThemeInstallerInterface $themeInstaller,
         private readonly ModuleInstallerInterface $moduleInstaller,
-        private readonly ThemeExtensionList $extensionListTheme,
+        protected ThemeExtensionList $extensionListTheme,
     ) {
         parent::__construct();
     }
