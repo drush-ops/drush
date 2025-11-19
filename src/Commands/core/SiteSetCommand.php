@@ -64,11 +64,7 @@ final class SiteSetCommand extends Command
         if ($filename) {
             $last_site_filename = $this->drushConfig->get('runtime.site-file-previous');
             if ($site === '-') {
-                if (file_exists($last_site_filename)) {
-                    $site = file_get_contents($last_site_filename);
-                } else {
-                    $site = '@none';
-                }
+                $site = file_exists($last_site_filename) ? file_get_contents($last_site_filename) : '@none';
             }
             if ($site == '@self') {
                 // TODO: Add a method of SiteAliasManager to find a local

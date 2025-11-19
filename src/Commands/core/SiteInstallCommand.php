@@ -420,7 +420,7 @@ final class SiteInstallCommand extends Command
     /**
      * Determine if the passed parameter is a recipe directory, or a profile name.
      */
-    protected function determineRecipeOrProfile($recipeOrProfile, $options): array
+    protected function determineRecipeOrProfile($recipeOrProfile, array $options): array
     {
         // Check for recipe relative to Drupal root
         if ($this->validateRecipe($recipeOrProfile)) {

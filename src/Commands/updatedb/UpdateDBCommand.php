@@ -95,11 +95,7 @@ final class UpdateDBCommand extends Command
             if (!$io->confirm(dt('Do you wish to run the specified pending updates?'))) {
                 throw new UserAbortException();
             }
-            if ($this->drushConfig->simulate()) {
-                $success = true;
-            } else {
-                $success = $this->updateBatch();
-            }
+            $success = $this->drushConfig->simulate() ? true : $this->updateBatch();
 
             if ($success) {
                 $io->success('Finished performing updates.');

@@ -413,11 +413,7 @@ class MigrateExecutable extends MigrateExecutableBase
     public function onPreRowSave(MigratePreRowSaveEvent $event): void
     {
         $idMap = $event->getRow()->getIdMap();
-        if (!empty($idMap['destid1'])) {
-            $this->preExistingItem = true;
-        } else {
-            $this->preExistingItem = false;
-        }
+        $this->preExistingItem = !empty($idMap['destid1']);
     }
 
     /**

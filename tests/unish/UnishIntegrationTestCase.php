@@ -132,11 +132,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
                     if ($key == 'uri' && $value == 'OMIT') {
                         continue;
                     }
-                    if (!isset($value)) {
-                        $cmd[] = "--$key";
-                    } else {
-                        $cmd[] = "--$key=" . $value;
-                    }
+                    $cmd[] = isset($value) ? "--$key=" . $value : "--$key";
                 }
             }
         }
@@ -161,11 +157,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
                 $values = [$values];
             }
             foreach ($values as $value) {
-                if (!isset($value) || $value === true) {
-                    $cmd[] = "--$key";
-                } else {
-                    $cmd[] = "--$key=" . $value;
-                }
+                $cmd[] = !isset($value) || $value === true ? "--$key" : "--$key=" . $value;
             }
         }
 
