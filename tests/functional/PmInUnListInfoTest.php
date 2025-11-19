@@ -11,6 +11,7 @@ namespace Unish;
 
 use Drush\Commands\core\StatusCommands;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\pm\ThemeCommands;
 use Drush\Commands\sql\SqlCommands;
 
 /**

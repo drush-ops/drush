@@ -97,10 +97,10 @@ final class ThemeCommands extends DrushCommands
 
     /**
      * Returns a list of modules and themes to be installed.
-     * 
+     *
      * @param array $themes
      *   List of themes to install
-     * 
+     *
      * @return array
      *   List of themes and modules that need to be installed.
      */
