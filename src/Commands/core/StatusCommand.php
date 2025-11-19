@@ -218,11 +218,7 @@ class StatusCommand extends Command
                 } else {
                     $paths['%modules'] = ltrim($site_wide . '/modules', '/');
                 }
-                if (is_dir($themes_path = $site_root . '/themes')) {
-                    $paths['%themes'] = $themes_path;
-                } else {
-                    $paths['%themes'] = ltrim($site_wide . '/themes', '/');
-                }
+                $paths['%themes'] = is_dir($themes_path = $site_root . '/themes') ? $themes_path : ltrim($site_wide . '/themes', '/');
                 if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                     try {
                         $paths["%config-sync"] = Settings::get('config_sync_directory');

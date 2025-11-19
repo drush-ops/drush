@@ -130,11 +130,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
                     }
                     $dashes = strlen($key) === 1 ? '-' : '--';
                     $equals = strlen($key) === 1 ? '' : '=';
-                    if (!isset($value)) {
-                        $cmd[] = "$dashes$key";
-                    } else {
-                        $cmd[] = "$dashes$key$equals" . self::escapeshellarg($value);
-                    }
+                    $cmd[] = isset($value) ? "$dashes$key$equals" . self::escapeshellarg($value) : "$dashes$key";
                 }
             }
         }

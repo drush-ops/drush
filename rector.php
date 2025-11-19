@@ -6,7 +6,6 @@ use Rector\CodeQuality\Rector\Foreach_\UnusedForeachValueToArrayKeysRector;
 use Rector\CodeQuality\Rector\Identical\StrlenZeroToIdenticalEmptyStringRector;
 use Rector\CodeQuality\Rector\If_\CombineIfRector;
 use Rector\CodeQuality\Rector\If_\ExplicitBoolCompareRector;
-use Rector\CodeQuality\Rector\If_\SimplifyIfElseToTernaryRector;
 use Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector;
 use Rector\Config\RectorConfig;
 use Rector\Php81\Rector\FuncCall\NullToStrictStringFuncCallArgRector;
@@ -16,19 +15,17 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         __DIR__ . '/tests',
     ])
-    ->withPhpSets(php83: true)
+    ->withPhpSets()
     ->withParallel()
     ->withAttributesSets()
     ->withImportNames(importShortClasses: false, removeUnusedImports: true)
-    ->withPreparedSets(deadCode: true, codeQuality: true)
-    ->withTypeCoverageLevel(60)
+    ->withPreparedSets(deadCode: true, codeQuality: true, typeDeclarations: true)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,
         IssetOnPropertyObjectToPropertyExistsRector::class,
         CombineIfRector::class,
         UnusedForeachValueToArrayKeysRector::class,
-        SimplifyIfElseToTernaryRector::class,
         \Rector\CodeQuality\Rector\ClassMethod\ExplicitReturnNullRector::class,
         NullToStrictStringFuncCallArgRector::class,
         \Rector\Php83\Rector\ClassMethod\AddOverrideAttributeToOverriddenMethodsRector::class,
