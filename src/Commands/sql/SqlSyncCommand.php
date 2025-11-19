@@ -193,7 +193,10 @@ final class SqlSyncCommand extends Command
         // Determine path/to/dump on target.
         if ($options['target-dump']) {
             $target_dump_path = $options['target-dump'];
-        } elseif (!$sourceRecord->isRemote() && !$targetRecord->isRemote()) {
+        } elseif (
+            !$sourceRecord->isRemote() && !$targetRecord->isRemote()
+            && (!$targetRecord->has('kubectl') && !$sourceRecord->has('kubectl'))
+        ) {
             $target_dump_path = $source_dump_path;
             $do_rsync = false;
         } else {

@@ -92,11 +92,73 @@ final class RsyncCommand extends Command
 
         $rsync_options = $this->rsyncOptions($input->getOptions(), $output);
         $parameters = array_merge([$rsync_options], $input->getArgument('extra'));
-        $parameters[] = Escape::shellArg($sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash());
-        $parameters[] = Escape::shellArg($targetEvaluatedPath->fullyQualifiedPath());
 
-        $ssh_options = $this->drushConfig->get('ssh.options', '');
-        $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
+        $source_alias = $this->sourceEvaluatedPath->getSiteAlias();
+        $target_alias = $this->targetEvaluatedPath->getSiteAlias();
+        $remote_kube_alias = $source_alias->has('kubectl.namespace') ? $source_alias : ($target_alias->has('kubectl.namespace') ? $target_alias : null);
+        if ($remote_kube_alias) {
+            $kubectl_namespace = $remote_kube_alias->get('kubectl.namespace', '');
+            $kubectl_container = $remote_kube_alias->get('kubectl.container', '');
+            $kubectl_resource = $remote_kube_alias->get('kubectl.resource', '');
+
+            // Build kubectl base command
+            $kubectl_base = "kubectl --namespace=$kubectl_namespace";
+
+            // Determine the pod/resource and container to use
+            if (!empty($kubectl_resource)) {
+                // Resource format is typically "deploy/name" or "pod/name"
+                // We can exec directly into a deployment or pod resource
+                $resource_target = $kubectl_resource;
+                $container_flag = !empty($kubectl_container) ? " -c $kubectl_container" : "";
+            } elseif (!empty($kubectl_container)) {
+                // If only container is specified, find the first pod and use the container
+                $resource_target = "\$(kubectl --namespace=$kubectl_namespace get pods -o jsonpath='{.items[0].metadata.name}')";
+                $container_flag = " -c $kubectl_container";
+            } else {
+                // No resource or container specified, use first pod
+                $resource_target = "\$(kubectl --namespace=$kubectl_namespace get pods -o jsonpath='{.items[0].metadata.name}')";
+                $container_flag = "";
+            }
+
+            // For kubernetes, we can't use rsync directly. Instead, use tar for transfer.
+            if ($source_alias->has('kubectl.namespace')) {
+                // Source is remote (kubectl), target is local
+                $source_path = rtrim($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '/');
+                $target_path = rtrim($this->targetEvaluatedPath->fullyQualifiedPath(), '/');
+                $source_dir = dirname($source_path);
+                $source_file = basename($source_path);
+                $target_dir = dirname($target_path);
+
+                // Ensure target directory exists
+                if (!is_dir($target_dir)) {
+                    mkdir($target_dir, 0755, true);
+                }
+
+                $exec = "$kubectl_base exec -i $resource_target$container_flag -- tar cf - -C " . Escape::shellArg($source_dir) . " " . Escape::shellArg($source_file) . " | tar xf - -C " . Escape::shellArg($target_dir);
+                $this->logger()->debug("Kubectl rsync command: $exec");
+            } elseif ($target_alias->has('kubectl.namespace')) {
+                // Source is local, target is remote (kubectl)
+                $source_path = rtrim($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash(), '/');
+                $target_path = rtrim($this->targetEvaluatedPath->fullyQualifiedPath(), '/');
+                $source_dir = dirname($source_path);
+                $source_file = basename($source_path);
+                $target_dir = dirname($target_path);
+
+                // Build the complete command with proper pipes
+                $exec = "$kubectl_base exec -i $resource_target$container_flag -- mkdir -p " . Escape::shellArg($target_dir) . " && " .
+                        "tar cf - -C " . Escape::shellArg($source_dir) . " " . Escape::shellArg($source_file) . " | " .
+                        "$kubectl_base exec -i $resource_target$container_flag -- tar xf - -C " . Escape::shellArg($target_dir);
+                $this->logger()->debug("Kubectl rsync command: $exec");
+            } else {
+                throw new \Exception("Invalid kubectl configuration for rsync");
+            }
+        } else {
+            $ssh_options = $this->getConfig()->get('ssh.options', '');
+            $parameters[] = Escape::shellArg($this->sourceEvaluatedPath->fullyQualifiedPathPreservingTrailingSlash());
+            $parameters[] = Escape::shellArg($this->targetEvaluatedPath->fullyQualifiedPath());
+            $exec = "rsync -e 'ssh $ssh_options'" . ' ' . implode(' ', array_filter($parameters));
+        }
+
         $process = $this->processManager->shell($exec);
         $process->run($process->showRealtime());
 
