@@ -6,7 +6,7 @@ namespace Drush\SiteAlias;
 
 use PHPUnit\Framework\TestCase;
 
-class SiteAliasNameTest extends TestCase
+final class SiteAliasNameTest extends TestCase
 {
     public function testSiteAliasName(): void
     {
@@ -15,7 +15,7 @@ class SiteAliasNameTest extends TestCase
         $this->assertFalse($name->hasSitename());
         $this->assertTrue($name->hasEnv());
         $this->assertEquals('simple', $name->env());
-        $this->assertEquals('@self.simple', (string)$name);
+        $this->assertSame('@self.simple', (string)$name);
 
         // Test a non-ambiguous sitename.env alias.
         $name = SiteAliasName::parse('@site.env');
@@ -23,7 +23,7 @@ class SiteAliasNameTest extends TestCase
         $this->assertTrue($name->hasEnv());
         $this->assertEquals('site', $name->sitename());
         $this->assertEquals('env', $name->env());
-        $this->assertEquals('@site.env', (string)$name);
+        $this->assertSame('@site.env', (string)$name);
 
         // Test an invalid alias
         $name = SiteAliasName::parse('!site.env');

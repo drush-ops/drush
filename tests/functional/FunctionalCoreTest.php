@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Yaml;
  * Tests for core commands.
  */
 #[Group('commands')]
-class FunctionalCoreTest extends CommandUnishTestCase
+final class FunctionalCoreTest extends CommandUnishTestCase
 {
     public function setup(): void
     {
@@ -36,8 +36,8 @@ class FunctionalCoreTest extends CommandUnishTestCase
             $this->drush(StatusCommand::NAME, [], $options, null, $conf_dir);
             $output = $this->getOutput();
             $output = preg_replace('#  *#', ' ', $output);
-            $this->assertStringContainsString('Database : Connected', $output);
-            $this->assertStringContainsString("Site path : sites/$uri", $output);
+            $this->assertStringContainsString('Database : Connected', (string) $output);
+            $this->assertStringContainsString("Site path : sites/$uri", (string) $output);
         }
     }
 

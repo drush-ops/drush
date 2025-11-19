@@ -17,7 +17,7 @@ use Drush\Commands\sql\SqlCommands;
 
 #[Group('slow')]
 #[Group('pm')]
-class PmInUnListInfoTest extends CommandUnishTestCase
+final class PmInUnListInfoTest extends CommandUnishTestCase
 {
     public function testEnDisUnList(): void
     {
@@ -65,7 +65,7 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $path = '/admin/config/development/drush_empty_module';
         $this->drush(SqlCommands::QUERY, ["SELECT path FROM $table WHERE path = '$path';"]);
         $list = $this->getOutputAsList();
-        $this->assertTrue(in_array($path, $list), 'Cache was cleared after modules were enabled');
+        $this->assertContains($path, $list, 'Cache was cleared after modules were enabled');
 
         // Test pm-list filtering.
         $this->drush(PmCommands::LIST, [], ['package' => 'Core']);
@@ -75,11 +75,11 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         // Check output fields in pm:list
         $this->drush(PmCommands::LIST, [], ['fields' => '*', 'format' => 'json']);
         $extensionProperties = $this->getOutputFromJSON();
-        $this->assertTrue(isset($extensionProperties['drush_empty_module']));
-        $this->assertEquals($extensionProperties['drush_empty_module']['project'], 'drush_empty_module');
-        $this->assertEquals($extensionProperties['drush_empty_module']['package'], 'Other');
-        $this->assertEquals($extensionProperties['drush_empty_module']['status'], 'Enabled');
-        $this->assertEquals($extensionProperties['drush_empty_module']['type'], 'module');
+        $this->assertArrayHasKey('drush_empty_module', $extensionProperties);
+        $this->assertEquals('drush_empty_module', $extensionProperties['drush_empty_module']['project']);
+        $this->assertEquals('Other', $extensionProperties['drush_empty_module']['package']);
+        $this->assertEquals('Enabled', $extensionProperties['drush_empty_module']['status']);
+        $this->assertEquals('module', $extensionProperties['drush_empty_module']['type']);
 
         // Test uninstall of installed module.
         $this->drush(PmCommands::UNINSTALL, ['drush_empty_module']);

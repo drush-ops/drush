@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 #[CoversClass(UserAbortException::class)]
 #[Group('base')]
-class UserAbortExceptionTest extends TestCase
+final class UserAbortExceptionTest extends TestCase
 {
     public function testUserAbortException(): never
     {
@@ -37,7 +37,7 @@ class UserAbortExceptionTest extends TestCase
             $abort = new UserAbortException('Abort after failure', 1, $e);
         }
 
-        $this->assertEquals('This is an exception', $abort->getMessage());
+        $this->assertSame('This is an exception', $abort->getMessage());
     }
 
     /**

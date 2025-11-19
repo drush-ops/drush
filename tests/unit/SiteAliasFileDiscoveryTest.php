@@ -8,7 +8,7 @@ use Consolidation\SiteAlias\SiteAliasFileDiscovery;
 use PHPUnit\Framework\TestCase;
 use Unish\Utils\Fixtures;
 
-class SiteAliasFileDiscoveryTest extends TestCase
+final class SiteAliasFileDiscoveryTest extends TestCase
 {
     use Fixtures;
 

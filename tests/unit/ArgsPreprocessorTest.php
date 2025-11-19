@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
-class ArgsPreprocessorTest extends TestCase
+final class ArgsPreprocessorTest extends TestCase
 {
     use Fixtures;
 
@@ -30,334 +30,315 @@ class ArgsPreprocessorTest extends TestCase
         $preflightArgs->setHomeDir($this->environment()->homeDir());
         $argProcessor->parse($argv, $preflightArgs);
 
-        $this->assertEquals($unprocessedArgs, implode(',', $preflightArgs->args()));
+        $this->assertSame($unprocessedArgs, implode(',', $preflightArgs->args()));
         $this->assertEquals($alias, $preflightArgs->alias());
         $this->assertEquals($selectedSite, $preflightArgs->selectedSite());
         $this->assertEquals($configPath, $preflightArgs->configPaths());
         $this->assertEquals($aliasPath, $preflightArgs->aliasPaths());
     }
 
-    public static function argTestValues(): array
+    public static function argTestValues(): \Iterator
     {
-        return [
+        yield [
             [
-                [
-                    'drush',
-                    '@alias',
-                    'status',
-                    'version',
-                ],
-
+                'drush',
                 '@alias',
-                null,
-                [],
-                [],
-                [],
-                null,
-                'drush,status,version',
+                'status',
+                'version',
             ],
 
+            '@alias',
+            null,
+            [],
+            [],
+            [],
+            null,
+            'drush,status,version',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    '#multisite',
-                    'status',
-                    'version',
-                ],
-
+                'drush',
                 '#multisite',
-                null,
-                [],
-                [],
-                [],
-                null,
-                'drush,status,version',
+                'status',
+                'version',
             ],
 
+            '#multisite',
+            null,
+            [],
+            [],
+            [],
+            null,
+            'drush,status,version',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'user@server/path',
-                    'status',
-                    'version',
-                ],
-
+                'drush',
                 'user@server/path',
-                null,
-                [],
-                [],
-                [],
-                null,
-                'drush,status,version',
+                'status',
+                'version',
             ],
 
+            'user@server/path',
+            null,
+            [],
+            [],
+            [],
+            null,
+            'drush,status,version',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'rsync',
-                    '@from',
-                    '@to',
-                    '--delete',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                [],
-                null,
-                'drush,rsync,@from,@to,--delete',
+                'drush',
+                'rsync',
+                '@from',
+                '@to',
+                '--delete',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            [],
+            null,
+            'drush,rsync,@from,@to,--delete',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    '--root',
-                    '/path/to/drupal',
-                    'status',
-                    '--verbose',
-                ],
-
-                null,
+                'drush',
+                '--root',
                 '/path/to/drupal',
-                [],
-                [],
-                [],
-                null,
-                'drush,status,--verbose',
+                'status',
+                '--verbose',
             ],
 
+            null,
+            '/path/to/drupal',
+            [],
+            [],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    '--root=/path/to/drupal',
-                    'status',
-                    '--verbose',
-                ],
-
-                null,
-                '/path/to/drupal',
-                [],
-                [],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                '--root=/path/to/drupal',
+                'status',
+                '--verbose',
             ],
 
+            null,
+            '/path/to/drupal',
+            [],
+            [],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--config',
-                    '/path/to/config',
-                ],
-
-                null,
-                null,
-                ['/path/to/config'],
-                [],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--config',
+                '/path/to/config',
             ],
 
+            null,
+            null,
+            ['/path/to/config'],
+            [],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--config=/path/to/config',
-                ],
-
-                null,
-                null,
-                ['/path/to/config'],
-                [],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--config=/path/to/config',
             ],
 
+            null,
+            null,
+            ['/path/to/config'],
+            [],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--config=/path/to/config',
-                    '--config=/other/path/to/config',
-                ],
-
-                null,
-                null,
-                ['/path/to/config','/other/path/to/config'],
-                [],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--config=/path/to/config',
+                '--config=/other/path/to/config',
             ],
 
+            null,
+            null,
+            ['/path/to/config','/other/path/to/config'],
+            [],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--alias-path',
-                    '/path/to/aliases',
-                ],
-
-                null,
-                null,
-                [],
-                ['/path/to/aliases'],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--alias-path',
+                '/path/to/aliases',
             ],
 
+            null,
+            null,
+            [],
+            ['/path/to/aliases'],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--alias-path=/path/to/aliases',
-                ],
-
-                null,
-                null,
-                [],
-                ['/path/to/aliases'],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--alias-path=/path/to/aliases',
             ],
 
+            null,
+            null,
+            [],
+            ['/path/to/aliases'],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--alias-path=/path/to/aliases',
-                    '--alias-path=/other/path/to/aliases',
-                ],
-
-                null,
-                null,
-                [],
-                ['/path/to/aliases','/other/path/to/aliases'],
-                [],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--alias-path=/path/to/aliases',
+                '--alias-path=/other/path/to/aliases',
             ],
 
+            null,
+            null,
+            [],
+            ['/path/to/aliases','/other/path/to/aliases'],
+            [],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--include',
-                    '/path/to/commands',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                ['path/to/commands'],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--include',
+                '/path/to/commands',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            ['path/to/commands'],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--include=/path/to/commands',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                ['path/to/commands'],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--include=/path/to/commands',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            ['path/to/commands'],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--include=/path/to/commands',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                ['path/to/commands'],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--include=/path/to/commands',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            ['path/to/commands'],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--include=/path/to/commands',
-                    '--include=/other/path/to/commands',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                ['path/to/commands','/other/path/to/commands'],
-                null,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--include=/path/to/commands',
+                '--include=/other/path/to/commands',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            ['path/to/commands','/other/path/to/commands'],
+            null,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    'status',
-                    '--verbose',
-                    '--local',
-                ],
-
-                null,
-                null,
-                [],
-                [],
-                [],
-                true,
-                'drush,status,--verbose',
+                'drush',
+                'status',
+                '--verbose',
+                '--local',
             ],
 
+            null,
+            null,
+            [],
+            [],
+            [],
+            true,
+            'drush,status,--verbose',
+        ];
+        yield [
             [
-                [
-                    'drush',
-                    '@alias',
-                    'status',
-                    '--verbose',
-                    '--local',
-                    '--alias-path=/path/to/aliases',
-                    '--config=/path/to/config',
-                    '--root=/path/to/drupal',
-                    '--include=/path/to/commands',
-                ],
-
+                'drush',
                 '@alias',
-                '/path/to/drupal',
-                ['/path/to/config'],
-                ['/path/to/aliases'],
-                ['path/to/commands'],
-                true,
-                'drush,status,--verbose',
+                'status',
+                '--verbose',
+                '--local',
+                '--alias-path=/path/to/aliases',
+                '--config=/path/to/config',
+                '--root=/path/to/drupal',
+                '--include=/path/to/commands',
             ],
+
+            '@alias',
+            '/path/to/drupal',
+            ['/path/to/config'],
+            ['/path/to/aliases'],
+            ['path/to/commands'],
+            true,
+            'drush,status,--verbose',
         ];
     }
 }

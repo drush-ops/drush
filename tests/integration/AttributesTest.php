@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Path;
  * Tests commands defined using PHP 8+ attributes.
  */
 #[Group('commands')]
-class AttributesTest extends UnishIntegrationTestCase
+final class AttributesTest extends UnishIntegrationTestCase
 {
     private ExampleAttributesCommands $commandFileInstance;
     private AnnotatedCommandFactory $commandFactory;

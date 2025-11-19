@@ -10,7 +10,7 @@ use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
 
 #[Group('commands')]
-class WatchdogTest extends UnishIntegrationTestCase
+final class WatchdogTest extends UnishIntegrationTestCase
 {
     public function testWatchdogShow(): void
     {
@@ -71,7 +71,7 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
         $this->drush(WatchdogCommands::SHOW, [], ['format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('[]', $output);
+        $this->assertSame('[]', $output);
 
         // Create messages.
         $eval1 = "\\Drupal::logger('other')->info('Scrub');";
@@ -138,7 +138,7 @@ class WatchdogTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('All watchdog messages have been deleted', $output);
         $this->drush(WatchdogCommands::SHOW, [], ['format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('[]', $output);
+        $this->assertSame('[]', $output);
         $this->showAll();
     }
 

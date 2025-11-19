@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Path;
 #[Group('locale')]
 #[Group('pm')]
 #[Group('config')]
-class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
+final class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
 {
     protected string $translationDir;
 

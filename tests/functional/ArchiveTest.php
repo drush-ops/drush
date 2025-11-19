@@ -12,7 +12,7 @@ use Unish\Utils\FSUtils;
 #[Group('slow')]
 #[Group('commands')]
 #[Group('archive')]
-class ArchiveTest extends CommandUnishTestCase
+final class ArchiveTest extends CommandUnishTestCase
 {
     use FSUtils;
 
@@ -64,7 +64,7 @@ class ArchiveTest extends CommandUnishTestCase
             ])
         );
         $actualArchivePath = Path::canonicalize($this->getOutput());
-        $this->assertEquals($this->archivePath, $actualArchivePath);
+        $this->assertSame($this->archivePath, $actualArchivePath);
 
         // Validate database credentials are present in settings.php file.
         $this->drush(

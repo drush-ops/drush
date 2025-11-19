@@ -7,7 +7,7 @@ namespace Unish;
 use Drush\Commands\field\FieldDefinitionCommands;
 use Drush\Commands\pm\PmCommands;
 
-class FieldDefinitionTest extends UnishIntegrationTestCase
+final class FieldDefinitionTest extends UnishIntegrationTestCase
 {
     public function testFieldDefinition(): void
     {

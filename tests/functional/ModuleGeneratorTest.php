@@ -9,7 +9,7 @@ use Drush\Commands\generate\GenerateCommands;
 use Drush\Commands\pm\PmCommands;
 
 #[Group('commands')]
-class ModuleGeneratorTest extends CommandUnishTestCase
+final class ModuleGeneratorTest extends CommandUnishTestCase
 {
     /**
      * Tests that generators provided by modules are registered.

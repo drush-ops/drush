@@ -9,7 +9,7 @@ use Drush\Commands\core\StatusCommand;
 use Symfony\Component\Filesystem\Path;
 
 #[Group('base')]
-class RedispatchTest extends CommandUnishTestCase
+final class RedispatchTest extends CommandUnishTestCase
 {
     /**
      * Covers the following origin responsibilities.

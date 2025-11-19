@@ -15,7 +15,7 @@ use Drush\Commands\sql\SqlCommands;
  */
 #[Group('commands')]
 #[Group('sql')]
-class SqlConnectTest extends CommandUnishTestCase
+final class SqlConnectTest extends CommandUnishTestCase
 {
     public function testSqlConnect(): void
     {

@@ -10,7 +10,7 @@ use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-class LanguageAddTest extends UnishIntegrationTestCase
+final class LanguageAddTest extends UnishIntegrationTestCase
 {
     protected function setup(): void
     {

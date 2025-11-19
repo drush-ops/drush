@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Path;
 #[Group('commands')]
 #[Group('sql')]
 #[Group('slow')]
-class SqlDumpTest extends CommandUnishTestCase
+final class SqlDumpTest extends CommandUnishTestCase
 {
   /**
    * Test that a dump file is created successfully.
@@ -49,7 +49,7 @@ class SqlDumpTest extends CommandUnishTestCase
             $this->drush(SqlCommands::DUMP, [], array_merge($options, [], ['extra-dump' => '--skip-add-drop-table']));
             $this->assertFileExists($full_dump_file_path);
             $full_dump_file = file_get_contents($full_dump_file_path);
-            $this->assertStringNotContainsString('DROP TABLE IF EXISTS', $full_dump_file);
+            $this->assertStringNotContainsString('DROP TABLE IF EXISTS', (string) $full_dump_file);
         }
 
 
@@ -58,9 +58,9 @@ class SqlDumpTest extends CommandUnishTestCase
         $this->assertFileExists($full_dump_file_path);
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
-        $this->assertStringContainsString('menu_tree', $full_dump_file);
+        $this->assertStringContainsString('menu_tree', (string) $full_dump_file);
         // Test skip-files-list and wildcard expansion.
-        $this->assertStringNotContainsString('CREATE TABLE `key_value', $full_dump_file);
+        $this->assertStringNotContainsString('CREATE TABLE `key_value', (string) $full_dump_file);
         // Next, set up an alias file and run a couple of simulated
         // tests to see if options are propagated correctly.
         // Control: insure options are not set when not specified
@@ -71,10 +71,10 @@ class SqlDumpTest extends CommandUnishTestCase
         $full_dump_file = file_get_contents($full_dump_file_path);
         // Test that we have sane contents.
         $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `menu_tree' : 'CREATE TABLE public.menu_tree';
-        $this->assertStringContainsString($expected, $full_dump_file);
+        $this->assertStringContainsString($expected, (string) $full_dump_file);
         // Test absence of skip-files-list.
         $expected = $this->dbDriver() == 'mysql' ? 'CREATE TABLE `key_value' : 'CREATE TABLE public.key_value';
-        $this->assertStringContainsString($expected, $full_dump_file);
+        $this->assertStringContainsString($expected, (string) $full_dump_file);
 
     // @todo Aliases to local sites are no longer supported. Throw exception?
     //    $aliasPath = self::getSandbox() . '/aliases';

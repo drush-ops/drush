@@ -12,7 +12,7 @@ use Drush\Commands\core\RsyncCommands;
  *   Tests for rsync command
  */
 #[Group('commands')]
-class RsyncIntegrationTest extends UnishIntegrationTestCase
+final class RsyncIntegrationTest extends UnishIntegrationTestCase
 {
     /**
      * Test drush rsync --simulate.

@@ -13,7 +13,7 @@ use Drush\Commands\pm\PmCommands;
 
 #[Group('slow')]
 #[Group('commands')]
-class DeployHookTest extends CommandUnishTestCase
+final class DeployHookTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 

@@ -12,7 +12,7 @@ use Drush\Commands\core\SshCommands;
  *   Tests for SSHCommands
  */
 #[Group('commands')]
-class SiteSshTest extends CommandUnishTestCase
+final class SiteSshTest extends CommandUnishTestCase
 {
     /**
      * Test drush ssh --simulate. No additional bash passed.

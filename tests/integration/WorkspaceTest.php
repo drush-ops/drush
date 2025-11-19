@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\Group;
 use Drupal\node\Entity\NodeType;
 use Drupal\workspaces\Entity\Workspace;
 use Drupal\node\Entity\Node;
-use Drupal\workspaces\WorkspaceManagerInterface;
 use Drush\Commands\core\WorkspacePublishCommand;
 use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\pm\PmInstallCommand;
@@ -18,15 +17,13 @@ use Drush\Commands\pm\PmUninstallCommand;
  * Tests Workspace commands
  */
 #[Group('commands')]
-class WorkspaceTest extends UnishIntegrationTestCase
+final class WorkspaceTest extends UnishIntegrationTestCase
 {
-    private WorkspaceManagerInterface $workspaceManager;
-
     protected function setUp(): void
     {
         parent::setUp();
         $this->drush(PmInstallCommand::NAME, ['workspaces', 'node'], ['yes' => true]);
-        $this->workspaceManager = \Drupal::service('workspaces.manager');
+        $workspaceManager = \Drupal::service('workspaces.manager');
 
         // Create article content type if it doesn't exist
         $node_types = \Drupal::entityTypeManager()->getStorage('node_type')->loadMultiple();
@@ -51,7 +48,7 @@ class WorkspaceTest extends UnishIntegrationTestCase
 
         // Set the stage workspace as active and create content in it
         $stage_workspace = $workspace_storage->load('stage');
-        $this->workspaceManager->setActiveWorkspace($stage_workspace);
+        $workspaceManager->setActiveWorkspace($stage_workspace);
 
         // Create a sample node in the workspace context
         $node = Node::create([

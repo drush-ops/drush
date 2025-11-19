@@ -6,7 +6,7 @@ namespace Unish;
 
 use Drush\Commands\core\CoreCommands;
 
-class CustomLoggerTest extends UnishIntegrationTestCase
+final class CustomLoggerTest extends UnishIntegrationTestCase
 {
     public function testCustomLogger(): void
     {

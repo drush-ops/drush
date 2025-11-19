@@ -14,7 +14,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  * Tests image:flush and image:derive commands.
  */
 #[Group('commands')]
-class ImageTest extends UnishApplicationTesterTestCase
+final class ImageTest extends UnishApplicationTesterTestCase
 {
     public function testImage(): void
     {

@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
 
 #[Group('commands')]
 #[Group('sql')]
-class SqlCommandsTest extends UnishIntegrationTestCase
+final class SqlCommandsTest extends UnishIntegrationTestCase
 {
     public function testSqlQuery(): void
     {

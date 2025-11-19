@@ -12,7 +12,7 @@ use Unish\CommandUnishTestCase;
  * Tests Runserver commands
  */
 #[Group('commands')]
-class RunserverTest extends CommandUnishTestCase
+final class RunserverTest extends CommandUnishTestCase
 {
     public function testRunserver(): void
     {
@@ -27,6 +27,6 @@ class RunserverTest extends CommandUnishTestCase
         });
         sleep(3);
         $file = file_get_contents('http://localhost:8888');
-        $this->assertStringContainsString('Choose language', $file);
+        $this->assertStringContainsString('Choose language', (string) $file);
     }
 }

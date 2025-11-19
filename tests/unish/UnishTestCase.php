@@ -44,24 +44,18 @@ abstract class UnishTestCase extends TestCase
 
     private static ?string $usergroup = null;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    protected function setUp(): void
     {
-        parent::__construct($name, $data, $dataName);
-
         // We read from env then globals then default to mysql.
         self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?? 'mysql://root:@127.0.0.1');
-
         // require_once __DIR__ . '/unish.inc';
         // list($unish_tmp, $unish_sandbox, $unish_drush_dir) = \unishGetPaths();
         $unish_sandbox = Path::join(dirname(__DIR__, 2), 'sandbox');
         self::mkdir($unish_sandbox);
         $unish_cache = Path::join($unish_sandbox, 'cache');
-
         self::$drush = Path::join(self::getComposerRoot(), 'drush');
-
         self::$sandbox = $unish_sandbox;
         self::$usergroup = $GLOBALS['UNISH_USERGROUP'] ?? null;
-
         self::setEnv(['CACHE_PREFIX' => $unish_cache]);
         $home = $unish_sandbox . '/home';
         self::setEnv(['HOME' => $home]);

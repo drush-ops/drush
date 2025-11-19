@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\Group;
  * Tests the Drush Batch subsystem.
  */
 #[Group('base')]
-class BatchTest extends CommandUnishTestCase
+final class BatchTest extends CommandUnishTestCase
 {
     public function testBatch(): void
     {

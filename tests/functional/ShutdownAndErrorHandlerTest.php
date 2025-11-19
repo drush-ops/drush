@@ -12,7 +12,7 @@ use Drush\Commands\DrushCommands;
  * Tests the Drush error handler.
  */
 #[Group('base')]
-class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
+final class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
 {
     /**
      * Check to see if the shutdown function is working

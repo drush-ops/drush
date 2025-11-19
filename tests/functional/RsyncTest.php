@@ -13,7 +13,7 @@ use Drush\Commands\core\RsyncCommands;
  */
 #[Group('commands')]
 #[Group('slow')]
-class RsyncTest extends CommandUnishTestCase
+final class RsyncTest extends CommandUnishTestCase
 {
     public function setup(): void
     {

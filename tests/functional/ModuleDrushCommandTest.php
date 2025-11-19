@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\pm\PmCommands;
 
 #[Group('commands')]
-class ModuleDrushCommandTest extends CommandUnishTestCase
+final class ModuleDrushCommandTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 

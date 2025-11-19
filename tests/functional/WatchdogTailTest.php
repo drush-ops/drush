@@ -14,7 +14,7 @@ use Drush\Commands\pm\PmCommands;
 #[Group('commands')]
 #[Group('watchdog')]
 #[Group('slow')]
-class WatchdogTailTest extends CommandUnishTestCase
+final class WatchdogTailTest extends CommandUnishTestCase
 {
     /**
      * Test that watchdog tail works.

@@ -15,7 +15,7 @@ use Drush\Commands\sql\SqlSyncCommands;
 #[Group('slow')]
 #[Group('commands')]
 #[Group('sql')]
-class SqlSyncTest extends CommandUnishTestCase
+final class SqlSyncTest extends CommandUnishTestCase
 {
     public function testSimulatedSqlSync(): void
     {

@@ -9,7 +9,7 @@ use Drush\Commands\core\SiteCommands;
 
 #[Group('base')]
 #[Group('slow')]
-class SiteSetTest extends CommandUnishTestCase
+final class SiteSetTest extends CommandUnishTestCase
 {
     /**
      * Test functionality of site set.

@@ -13,7 +13,7 @@ use Unish\Utils\Fixtures;
 
 #[Group('base')]
 #[Group('slow')]
-class SiteInstallTest extends CommandUnishTestCase
+final class SiteInstallTest extends CommandUnishTestCase
 {
     use Fixtures;
 

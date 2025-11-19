@@ -11,7 +11,7 @@ use Unish\Utils\Fixtures;
 /**
  * Test the config loader. Also exercises the EnvironmentConfigLoader.
  */
-class ConfigLocatorTest extends TestCase
+final class ConfigLocatorTest extends TestCase
 {
     use Fixtures;
 
@@ -35,10 +35,10 @@ class ConfigLocatorTest extends TestCase
 
         $sources = $configLocator->sources();
         //$this->assertEquals('environment', $sources['env']['cwd']);
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drush.yml', Path::canonicalize($sources['test']['system']));
-        $this->assertEquals($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', Path::canonicalize($sources['test']['variant']));
-        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
-        $this->assertEquals($this->fixturesDir() . '/sites/d8/drush/drush.yml', Path::canonicalize($sources['test']['site']));
+        $this->assertSame($this->fixturesDir() . '/etc/drush/drush.yml', Path::canonicalize($sources['test']['system']));
+        $this->assertSame($this->fixturesDir() . '/etc/drush/drushVARIANT.yml', Path::canonicalize($sources['test']['variant']));
+        $this->assertSame($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
+        $this->assertSame($this->fixturesDir() . '/sites/d8/drush/drush.yml', Path::canonicalize($sources['test']['site']));
 
         $config = $configLocator->config();
 
@@ -84,7 +84,7 @@ class ConfigLocatorTest extends TestCase
         sort($aliasPaths);
 
         $expected = ['/fixtures/sites/d8/drush/sites', '/fixtures/sites/drush/sites', '/home/user/aliases'];
-        $this->assertEquals($expected, $aliasPaths);
+        $this->assertSame($expected, $aliasPaths);
     }
 
     /**
@@ -95,7 +95,7 @@ class ConfigLocatorTest extends TestCase
         $configLocator = $this->createConfigLocator();
 
         $sources = $configLocator->sources();
-        $this->assertEquals($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
+        $this->assertSame($this->fixturesDir() . '/home/.drush/drush.yml', Path::canonicalize($sources['test']['home']));
 
         $config = $configLocator->config();
         $this->assertEquals('A user-specific setting', $config->get('test.home'));

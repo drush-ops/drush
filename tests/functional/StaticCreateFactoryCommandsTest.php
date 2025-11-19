@@ -7,7 +7,7 @@ namespace Unish;
 use PHPUnit\Framework\Attributes\Group;
 
 #[Group('commands')]
-class StaticCreateFactoryCommandsTest extends CommandUnishTestCase
+final class StaticCreateFactoryCommandsTest extends CommandUnishTestCase
 {
     /**
      * Tests that commands provided by custom libraries with static `create` methods.

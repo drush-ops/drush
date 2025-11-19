@@ -17,7 +17,7 @@ use Symfony\Component\Filesystem\Path;
 #[Group('commands')]
 #[Group('slow')]
 #[Group('config')]
-class ConfigPullTest extends CommandUnishTestCase
+final class ConfigPullTest extends CommandUnishTestCase
 {
     public function setup(): void
     {
@@ -47,7 +47,7 @@ class ConfigPullTest extends CommandUnishTestCase
         $this->drush(ConfigPullCommand::NAME, [$source, $destination], $options);
         $this->drush(ConfigImportCommand::NAME, [], $options, $destination);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'name'], $options, $source);
-        $this->assertEquals("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
+        $this->assertSame("'system.site:name': testConfigPull", $this->getOutput(), 'Config was successfully pulled.');
 
         // Test that custom target dir works
         $target = Path::join($this->getSandbox(), self::class);

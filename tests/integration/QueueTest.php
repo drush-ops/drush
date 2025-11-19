@@ -10,11 +10,11 @@ use Drush\Commands\core\QueueCommands;
 use Drush\Commands\pm\PmCommands;
 
 #[Group('commands')]
-class QueueTest extends UnishIntegrationTestCase
+final class QueueTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
-    const WOOT = 'woot';
+    const string WOOT = 'woot';
 
     public function setUp(): void
     {

@@ -19,7 +19,7 @@ return RectorConfig::configure()
     ->withParallel()
     ->withAttributesSets()
     ->withImportNames(importShortClasses: false, removeUnusedImports: true)
-    ->withPreparedSets(deadCode: true, codeQuality: true, typeDeclarations: true)
+    ->withPreparedSets(phpunitCodeQuality: true, deadCode: true, codeQuality: true, typeDeclarations: true)
     ->withSkip([
         StrlenZeroToIdenticalEmptyStringRector::class,
         ExplicitBoolCompareRector::class,

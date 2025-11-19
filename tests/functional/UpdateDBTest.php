@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Path;
 
 #[Group('slow')]
 #[Group('commands')]
-class UpdateDBTest extends CommandUnishTestCase
+final class UpdateDBTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
@@ -88,47 +88,45 @@ class UpdateDBTest extends CommandUnishTestCase
     /**
      * Data provider for ::testFailedUpdate().
      */
-    public static function failedUpdateProvider(): array
+    public static function failedUpdateProvider(): \Iterator
     {
-        return [
+        yield [
+            // The last successfully completed update. This means that the
+            // updates starting with woot_update_8101() will be performed in
+            // the test.
+            8100,
+            // The expected status report that will be output before the
+            // test is initiated.
             [
-                // The last successfully completed update. This means that the
-                // updates starting with woot_update_8101() will be performed in
-                // the test.
-                8100,
-                // The expected status report that will be output before the
-                // test is initiated.
-                [
-                    'woot     8104        hook_update_n',
-                    'woot     failing     post-update',
-                ],
-                [
-                    '[notice] Update started: woot_update_8101',
-                    'This is the exception message thrown in woot_update_8102',
-                    'Update failed: woot_update_8102',
-                    'Update aborted by: woot_update_8102',
-                    'Finished performing updates.',
-                ],
+                'woot     8104        hook_update_n',
+                'woot     failing     post-update',
             ],
             [
-                // The last successfully completed update. This means that the
-                // updates starting with woot_update_8103() will be performed in
-                // the test.
-                8102,
-                // The expected status report that will be output before the
-                // test is initiated.
-                [
-                    'woot     8103        hook_update_n',
-                    'woot     8104        hook_update_n',
-                    'woot     failing     post-update',
-                ],
-                [
-                    'Update started: woot_update_8103',
-                    'Call to undefined function non_existing_function()',
-                    'Update failed: woot_update_8103',
-                    'Update aborted by: woot_update_8103',
-                    'Finished performing updates.',
-                ],
+                '[notice] Update started: woot_update_8101',
+                'This is the exception message thrown in woot_update_8102',
+                'Update failed: woot_update_8102',
+                'Update aborted by: woot_update_8102',
+                'Finished performing updates.',
+            ],
+        ];
+        yield [
+            // The last successfully completed update. This means that the
+            // updates starting with woot_update_8103() will be performed in
+            // the test.
+            8102,
+            // The expected status report that will be output before the
+            // test is initiated.
+            [
+                'woot     8103        hook_update_n',
+                'woot     8104        hook_update_n',
+                'woot     failing     post-update',
+            ],
+            [
+                'Update started: woot_update_8103',
+                'Call to undefined function non_existing_function()',
+                'Update failed: woot_update_8103',
+                'Update aborted by: woot_update_8103',
+                'Finished performing updates.',
             ],
         ];
     }

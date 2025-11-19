@@ -12,7 +12,7 @@ use Unish\Utils\FSUtils;
 #[Group('slow')]
 #[Group('commands')]
 #[Group('archive')]
-class ArchiveSymlinkTest extends CommandUnishTestCase
+final class ArchiveSymlinkTest extends CommandUnishTestCase
 {
     use FSUtils;
 

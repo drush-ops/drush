@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'handleMissingSourceRows')]
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateExecutable::class, 'initProgressBar')]
 #[Group('commands')]
-class MigrateRunnerTest extends UnishIntegrationTestCase
+final class MigrateRunnerTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
@@ -64,13 +64,13 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // Tag: tag1. The first line contains the tag.
         $this->assertEquals('Tag: tag1', $output[0]['id']);
         // When using --tag, the migration IDs are indented, so we trim().
-        $this->assertEquals('test_migration', trim($output[1]['id']));
-        $this->assertEquals('test_migration_tagged', trim($output[2]['id']));
+        $this->assertSame('test_migration', trim($output[1]['id']));
+        $this->assertSame('test_migration_tagged', trim($output[2]['id']));
         // There's an empty row after each tag group.
         $this->assertNull($output[3]['id']);
         // Tag: tag2
         $this->assertEquals('Tag: tag2', $output[4]['id']);
-        $this->assertEquals('test_migration_tagged', trim($output[5]['id']));
+        $this->assertSame('test_migration_tagged', trim($output[5]['id']));
         $this->assertNull($output[6]['id']);
 
         // Check that invalid migration IDs are reported.
@@ -172,7 +172,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->drush('migrate:import', ['test_migration_tagged,test_migration_untagged'], ['execute-dependencies' => null]);
         foreach (['test_migration_tagged', 'test_migration_untagged'] as $migration_id) {
             $occurrences = substr_count($this->getErrorOutput(), "done with '$migration_id'");
-            $this->assertEquals(1, $occurrences);
+            $this->assertSame(1, $occurrences);
         }
     }
 
@@ -208,7 +208,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertSame('2 (4%)', $this->getOutputFromJSON(0)['imported']);
         $this->assertSame(48, $this->getOutputFromJSON(0)['unprocessed']);
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
-        $this->assertEquals(['Item 12', 'Item 29'], $this->getOutputAsList());
+        $this->assertSame(['Item 12', 'Item 29'], $this->getOutputAsList());
     }
 
     public function testMissingSourceRows(): void
@@ -260,13 +260,13 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', (string) $output[0]['message']);
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertStringContainsString('ID 9 should fail', $output[1]['message']);
+        $this->assertStringContainsString('ID 9 should fail', (string) $output[1]['message']);
         $this->assertEquals(1, $output[2]['level']);
-        $this->assertStringContainsString('ID 17 should fail', $output[2]['message']);
+        $this->assertStringContainsString('ID 17 should fail', (string) $output[2]['message']);
         $this->assertSame('17', $output[2]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
 
@@ -283,7 +283,7 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', (string) $output[0]['message']);
 
         // Three valid IDs, two with data, one without, and one invalid ID.
         $this->drush('migrate:messages', ['test_migration'], ['format' => 'json', 'idlist' => '1,2,9,100']);
@@ -293,11 +293,11 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertEquals(1, $output[0]['level']);
         $this->assertSame('2', $output[0]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertStringContainsString('ID 2 should fail', $output[0]['message']);
+        $this->assertStringContainsString('ID 2 should fail', (string) $output[0]['message']);
         $this->assertEquals(1, $output[1]['level']);
         $this->assertSame('9', $output[1]['source_ids']);
         $this->assertEmpty($output[0]['destination_ids']);
-        $this->assertStringContainsString('ID 9 should fail', $output[1]['message']);
+        $this->assertStringContainsString('ID 9 should fail', (string) $output[1]['message']);
 
         $this->drush('migrate:fields-source', ['test_migration'], ['format' => 'json']);
         $output = $this->getOutputFromJSON();

@@ -194,7 +194,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertEquals($expected, $output);
+        $this->assertSame($expected, $output);
     }
 
     /**
@@ -215,7 +215,7 @@ abstract class UnishIntegrationTestCase extends UnishTestCase
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertStringContainsString($expected, $output);
+        $this->assertStringContainsString($expected, (string) $output);
     }
 
     public function setupDrupal($num_sites = 1, $install = false, $options = []): array

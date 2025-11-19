@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  * Tests the Arguments Remapper.
  */
 #[Group('base')]
-class ArgsRemapperTest extends TestCase
+final class ArgsRemapperTest extends TestCase
 {
     #[DataProvider('argsProvider')]
     public function testCommandAliases(array $argv, array $expected): void
@@ -31,13 +31,11 @@ class ArgsRemapperTest extends TestCase
     /**
      * Provides arguments for ::ArgsRemapper
      */
-    public static function argsProvider(): array
+    public static function argsProvider(): \Iterator
     {
-        return [
-            [
-                ['en', 'en'],
-                ['pm:enable', 'en'],
-            ],
+        yield [
+            ['en', 'en'],
+            ['pm:enable', 'en'],
         ];
     }
 }

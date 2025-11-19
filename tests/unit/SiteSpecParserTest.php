@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Unish\Utils\Fixtures;
 use PHPUnit\Framework\TestCase;
 
-class SiteSpecParserTest extends TestCase
+final class SiteSpecParserTest extends TestCase
 {
     use Fixtures;
 
@@ -59,115 +59,100 @@ class SiteSpecParserTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public static function validSiteSpecs(): array
+    public static function validSiteSpecs(): \Iterator
     {
-        return [
-            [ '/path/to/drupal#uri' ],
-            [ 'user@server/path/to/drupal#uri' ],
-            [ 'user.name@example.com/path/to/drupal#uri' ],
-            [ 'user@server/path/to/drupal' ],
-            [ 'user@example.com/path/to/drupal' ],
-            [ 'user@server#uri' ],
-            [ 'user@example.com#uri' ],
-            [ '#uri' ],
-        ];
+        yield [ '/path/to/drupal#uri' ];
+        yield [ 'user@server/path/to/drupal#uri' ];
+        yield [ 'user.name@example.com/path/to/drupal#uri' ];
+        yield [ 'user@server/path/to/drupal' ];
+        yield [ 'user@example.com/path/to/drupal' ];
+        yield [ 'user@server#uri' ];
+        yield [ 'user@example.com#uri' ];
+        yield [ '#uri' ];
     }
 
-    public static function invalidSiteSpecs(): array
+    public static function invalidSiteSpecs(): \Iterator
     {
-        return [
-            [ 'uri' ],
-            [ '@/#' ],
-            [ 'user@#uri' ],
-            [ '@server/path/to/drupal#uri' ],
-            [ 'user@server/path/to/drupal#' ],
-            [ 'user@server/path/to/drupal#uri!' ],
-            [ 'user@server/path/to/drupal##uri' ],
-            [ 'user#server/path/to/drupal#uri' ],
-        ];
+        yield [ 'uri' ];
+        yield [ '@/#' ];
+        yield [ 'user@#uri' ];
+        yield [ '@server/path/to/drupal#uri' ];
+        yield [ 'user@server/path/to/drupal#' ];
+        yield [ 'user@server/path/to/drupal#uri!' ];
+        yield [ 'user@server/path/to/drupal##uri' ];
+        yield [ 'user#server/path/to/drupal#uri' ];
     }
 
-    public static function parserTestValues(): array
+    public static function parserTestValues(): \Iterator
     {
-        return [
+        yield [
+            'user@server/path#somemultisite',
             [
-                'user@server/path#somemultisite',
-                [
-                    'user' => 'user',
-                    'host' => 'server',
-                    'root' => '/path',
-                    'uri' => 'somemultisite',
-                ],
+                'user' => 'user',
+                'host' => 'server',
+                'root' => '/path',
+                'uri' => 'somemultisite',
             ],
-
+        ];
+        yield [
+            'user.name@example.com/path#somemultisite',
             [
-                'user.name@example.com/path#somemultisite',
-                [
-                    'user' => 'user.name',
-                    'host' => 'example.com',
-                    'root' => '/path',
-                    'uri' => 'somemultisite',
-                ],
+                'user' => 'user.name',
+                'host' => 'example.com',
+                'root' => '/path',
+                'uri' => 'somemultisite',
             ],
-
+        ];
+        yield [
+            'user@server/path',
             [
-                'user@server/path',
-                [
-                    'user' => 'user',
-                    'host' => 'server',
-                    'root' => '/path',
-                    'uri' => 'default',
-                ],
+                'user' => 'user',
+                'host' => 'server',
+                'root' => '/path',
+                'uri' => 'default',
             ],
-
+        ];
+        yield [
+            'user.name@example.com/path',
             [
-                'user.name@example.com/path',
-                [
-                    'user' => 'user.name',
-                    'host' => 'example.com',
-                    'root' => '/path',
-                    'uri' => 'default',
-                ],
+                'user' => 'user.name',
+                'host' => 'example.com',
+                'root' => '/path',
+                'uri' => 'default',
             ],
-
+        ];
+        yield [
+            '/fixtures#mymultisite',
             [
-                '/fixtures#mymultisite',
-                [
-                    'root' => '/fixtures',
-                    'uri' => 'mymultisite',
-                ],
+                'root' => '/fixtures',
+                'uri' => 'mymultisite',
             ],
-
+        ];
+        yield [
+            '#mymultisite',
             [
-                '#mymultisite',
-                [
-                    'root' => '/fixtures',
-                    'uri' => 'mymultisite',
-                ],
+                'root' => '/fixtures',
+                'uri' => 'mymultisite',
             ],
-
+        ];
+        yield [
+            '/fixtures#somemultisite',
             [
-                '/fixtures#somemultisite',
-                [
-                ],
             ],
-
+        ];
+        yield [
+            '/path#somemultisite',
             [
-                '/path#somemultisite',
-                [
-                ],
             ],
-
+        ];
+        yield [
+            '/path#mymultisite',
             [
-                '/path#mymultisite',
-                [
-                ],
             ],
-
+        ];
+        yield [
+            '#somemultisite',
             [
-                '#somemultisite',
-                [
-                ],
             ],
         ];
     }

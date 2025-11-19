@@ -15,7 +15,7 @@ use Symfony\Component\Filesystem\Path;
  * Tests for core commands.
  */
 #[Group('commands')]
-class CoreTest extends UnishIntegrationTestCase
+final class CoreTest extends UnishIntegrationTestCase
 {
     public function testCoreRequirements(): void
     {
@@ -25,7 +25,7 @@ class CoreTest extends UnishIntegrationTestCase
         // Verify that there are no severity 2 items in the status report
         $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['severity' => '2', 'format' => 'json']);
         $output = $this->getOutput();
-        $this->assertEquals('[]', $output);
+        $this->assertSame('[]', $output);
 
         // Verify the severity of some checks
         $this->drush(DrupalCommands::REQUIREMENTS, [], $options + ['format' => 'json', 'fields' => 'sid']);
@@ -51,22 +51,22 @@ class CoreTest extends UnishIntegrationTestCase
 
         $this->drush(DrupalDirectoryCommands::DIRECTORY, ['%files']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/sites/default/files'), $output);
+        $this->assertSame(Path::join($root, '/sites/default/files'), $output);
 
         $this->drush(DrupalDirectoryCommands::DIRECTORY, ['%modules']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, $sitewide . '/modules'), $output);
+        $this->assertSame(Path::join($root, $sitewide . '/modules'), $output);
 
         $this->drush(PmCommands::INSTALL, ['drush_empty_module'], ['yes' => true]);
         $this->drush(ThemeCommands::INSTALL, ['drush_empty_theme']);
 
         $this->drush(DrupalDirectoryCommands::DIRECTORY, ['drush_empty_module']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/modules/unish/drush_empty_module'), $output);
+        $this->assertSame(Path::join($root, '/modules/unish/drush_empty_module'), $output);
 
         $this->drush(DrupalDirectoryCommands::DIRECTORY, ['drush_empty_theme']);
         $output = $this->getOutput();
-        $this->assertEquals(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
+        $this->assertSame(Path::join($root, '/themes/unish/drush_empty_theme'), $output);
     }
 
     public function testRoute(): void

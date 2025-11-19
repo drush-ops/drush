@@ -9,7 +9,7 @@ use Drush\Commands\config\ConfigExportCommand;
 use Drush\Commands\core\DeployCommands;
 
 #[Group('commands')]
-class DeployTest extends UnishIntegrationTestCase
+final class DeployTest extends UnishIntegrationTestCase
 {
     /**
      * A simple test since all the sub-commands are tested elsewhere.

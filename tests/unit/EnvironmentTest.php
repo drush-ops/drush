@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  * The code tested here is pretty trivial; this test suite also serves
  * the dual purpose of testing that the fixture data is reasonable.
  */
-class EnvironmentTest extends TestCase
+final class EnvironmentTest extends TestCase
 {
     use Fixtures;
 

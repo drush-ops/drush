@@ -9,11 +9,11 @@ use Drush\Commands\core\CoreCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\pm\PmCommands;
 
-class RoleTest extends UnishIntegrationTestCase
+final class RoleTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;
 
-    const USER_FORM_TEST = 'user_form_test';
+    const string USER_FORM_TEST = 'user_form_test';
 
     public function setup(): void
     {
@@ -53,19 +53,19 @@ class RoleTest extends UnishIntegrationTestCase
         $perm = 'cancel other accounts';
         $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertFalse(in_array($perm, $role['perms']));
+        $this->assertNotContains($perm, $role['perms']);
 
         // Now grant that perm to foo.
         $this->drush(RoleCommands::PERM_ADD, [$rid, 'cancel other accounts']);
         $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertTrue(in_array($perm, $role['perms']));
+        $this->assertContains($perm, $role['perms']);
 
         // Now remove the perm from foo.
         $this->drush(RoleCommands::PERM_REMOVE, [$rid, 'cancel other accounts']);
         $this->drush(RoleCommands::LIST, [], ['format' => 'json']);
         $role = $this->getOutputFromJSON($rid);
-        $this->assertFalse(in_array($perm, $role['perms']));
+        $this->assertNotContains($perm, $role['perms']);
 
         // Delete the foo role
         $this->drush(RoleCommands::DELETE, [$rid]);

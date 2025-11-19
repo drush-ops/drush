@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Unish;
 
 use Drush\TestTraits\CliTestTrait;
@@ -235,7 +237,7 @@ abstract class CommandUnishTestCase extends UnishTestCase
         if (!empty($filter)) {
             $output = preg_replace($filter, '', $output);
         }
-        $this->assertEquals($expected, $output);
+        $this->assertSame($expected, $output);
     }
 
     public function pathsToSimplify(): array

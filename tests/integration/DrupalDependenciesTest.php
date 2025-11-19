@@ -9,7 +9,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use Drupal\Component\Utility\DeprecationHelper;
 
 #[CoversClass(DrupalDependenciesCommands::class)]
-class DrupalDependenciesTest extends UnishIntegrationTestCase
+final class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
     public function testModuleDependentOfModule(): void
     {

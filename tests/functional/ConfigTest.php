@@ -24,7 +24,7 @@ use Symfony\Component\Filesystem\Path;
  */
 #[Group('commands')]
 #[Group('config')]
-class ConfigTest extends CommandUnishTestCase
+final class ConfigTest extends CommandUnishTestCase
 {
     use TestModuleHelperTrait;
 
@@ -46,12 +46,12 @@ class ConfigTest extends CommandUnishTestCase
         // Simple value
         $this->drush(ConfigSetCommand::NAME, ['system.site', 'name', 'config_test']);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'name']);
-        $this->assertEquals("'system.site:name': config_test", $this->getOutput());
+        $this->assertSame("'system.site:name': config_test", $this->getOutput());
 
         // Nested value
         $this->drush(ConfigSetCommand::NAME, ['system.site', 'page.front', 'llama']);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page.front']);
-        $this->assertEquals("'system.site:page.front': llama", $this->getOutput());
+        $this->assertSame("'system.site:page.front': llama", $this->getOutput());
 
         // Simple sequence value
         $this->drush(ConfigSetCommand::NAME, ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
@@ -93,7 +93,7 @@ class ConfigTest extends CommandUnishTestCase
         $this->drush(ConfigImportCommand::NAME);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertStringContainsString('unish', $page['front'], 'Config was successfully imported.');
+        $this->assertStringContainsString('unish', (string) $page['front'], 'Config was successfully imported.');
 
         // Test status of identical configuration, in different formatters.
         $expected_output = [
@@ -119,7 +119,7 @@ XML
         $this->installDrupal('dev', true, ['existing-config' => true], false);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertStringContainsString('unish existing', $page['front'], 'Existing config was successfully imported during site:install.');
+        $this->assertStringContainsString('unish existing', (string) $page['front'], 'Existing config was successfully imported during site:install.');
 
         // Similar, but this time via --partial option.
         $contents = file_get_contents($system_site_yml);
@@ -130,7 +130,7 @@ XML
         $this->drush(ConfigImportCommands::IMPORT, [], ['partial' => null, 'source' => $partial_path]);
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page'], ['format' => 'json']);
         $page = $this->getOutputFromJSON('system.site:page');
-        $this->assertStringContainsString('unish partial', $page['front'], '--partial was successfully imported.');
+        $this->assertStringContainsString('unish partial', (string) $page['front'], '--partial was successfully imported.');
     }
 
     public function testConfigImport(): void

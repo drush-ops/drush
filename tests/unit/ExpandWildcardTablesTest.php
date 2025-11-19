@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 #[Group('base')]
 #[Group('sql')]
-class ExpandWildcardTablesTest extends TestCase
+final class ExpandWildcardTablesTest extends TestCase
 {
     use SqlTableSelectionTrait;
 
@@ -44,7 +44,7 @@ class ExpandWildcardTablesTest extends TestCase
         $expanded_db_tables = $this->expandWildcardTables($wildcard_input, $db_tables);
         // We expect all but the last table to match.
         array_pop($db_tables);
-        $this->assertEquals($db_tables, $expanded_db_tables);
+        $this->assertSame($db_tables, $expanded_db_tables);
     }
 
   /**
@@ -74,6 +74,6 @@ class ExpandWildcardTablesTest extends TestCase
         ];
 
         $actual_result = $this->filterTables($wildcard_input, $db_tables);
-        $this->assertEquals($expected_result, $actual_result);
+        $this->assertSame($expected_result, $actual_result);
     }
 }

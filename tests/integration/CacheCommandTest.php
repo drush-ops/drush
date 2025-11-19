@@ -11,7 +11,7 @@ use Drush\Commands\core\CacheCommands;
  * Cache command testing.
  */
 #[Group('commands')]
-class CacheCommandTest extends UnishIntegrationTestCase
+final class CacheCommandTest extends UnishIntegrationTestCase
 {
     public function testCacheGet(): void
     {

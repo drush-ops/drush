@@ -10,7 +10,7 @@ use Drush\Commands\core\LocaleCommands;
 use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
-class LocaleTest extends UnishIntegrationTestCase
+final class LocaleTest extends UnishIntegrationTestCase
 {
     /**
      * File name of Gettext PO source file.

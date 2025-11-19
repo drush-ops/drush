@@ -17,7 +17,7 @@ use Drush\Commands\pm\PmCommands;
 use Symfony\Component\Filesystem\Path;
 
 #[Group('commands')]
-class FieldTest extends CommandUnishTestCase
+final class FieldTest extends CommandUnishTestCase
 {
     public function setup(): void
     {
@@ -134,6 +134,6 @@ class FieldTest extends CommandUnishTestCase
         $this->drush(ConfigGetCommand::NAME, ['core.base_field_override.user.user.name'], ['format' => 'json']);
         $json = $this->getOutputFromJSON();
         $this->assertSame('Handle', $json['label']);
-        $this->assertSame(true, $json['required']);
+        $this->assertTrue($json['required']);
     }
 }

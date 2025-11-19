@@ -18,7 +18,7 @@ use Unish\TestSqlIdMap;
 
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateUtils::class, 'parseIdList')]
 #[CoversClass(MigrateIdMapFilter::class)]
-class MigrateRunnerTest extends TestCase
+final class MigrateRunnerTest extends TestCase
 {
     #[DataProvider('dataProviderParseIdList')]
     public function testParseIdList(string $idList, array $expected): void
@@ -29,29 +29,27 @@ class MigrateRunnerTest extends TestCase
     /**
      * Data provider for testBuildIdList.
      */
-    public static function dataProviderParseIdList(): array
+    public static function dataProviderParseIdList(): \Iterator
     {
-        return [
-          'empty' => [
-            '',
-            [],
-          ],
-          'single simple ID' => [
-            '223',
-            [['223']],
-          ],
-          'single ID with delimiters' => [
-            '"223,3425"',
-            [['223,3425']],
-          ],
-          'multiple IDs' => [
-            '1, 2 ,33,777,4',
-            [['1'], ['2'], ['33'], ['777'], ['4']],
-          ],
-          'multiple with multiple columns' => [
-            '1:foo,235:bar, 543:"x:o"',
-            [['1', 'foo'], ['235', 'bar'], ['543', 'x:o']],
-          ],
+        yield 'empty' => [
+          '',
+          [],
+        ];
+        yield 'single simple ID' => [
+          '223',
+          [['223']],
+        ];
+        yield 'single ID with delimiters' => [
+          '"223,3425"',
+          [['223,3425']],
+        ];
+        yield 'multiple IDs' => [
+          '1, 2 ,33,777,4',
+          [['1'], ['2'], ['33'], ['777'], ['4']],
+        ];
+        yield 'multiple with multiple columns' => [
+          '1:foo,235:bar, 543:"x:o"',
+          [['1', 'foo'], ['235', 'bar'], ['543', 'x:o']],
         ];
     }
 
@@ -59,9 +57,9 @@ class MigrateRunnerTest extends TestCase
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
         $migration = $this->createMock(MigrationInterface::class);
-        $migration->expects($this->any())->method('id')->willReturn('foo');
+        $migration->method('id')->willReturn('foo');
         $migrationManager = $this->createMock(MigrationPluginManagerInterface::class);
-        $eventDispatcher = $this->getMockBuilder(EventDispatcherInterface::class)->getMock();
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $db = $this->getDatabaseConnection();
         require_once __DIR__ . '/TestSqlIdMap.php';
         $idMap = new TestSqlIdMap($db, [], 'sql', [], $migration, $eventDispatcher, $migrationManager);
@@ -73,52 +71,50 @@ class MigrateRunnerTest extends TestCase
     /**
      * Data provider for testMigrateIdMapFilter.
      */
-    public static function dataProviderMigrateIdMapFilter(): array
+    public static function dataProviderMigrateIdMapFilter(): \Iterator
     {
-        return [
-          'no filter' => [
-            [],
-            [],
-            self::getMapTableData(),
+        yield 'no filter' => [
+          [],
+          [],
+          self::getMapTableData(),
+        ];
+        yield 'filter only on source' => [
+          [
+            [1, 'foo'],
+            [68900, 'at'],
           ],
-          'filter only on source' => [
-            [
-              [1, 'foo'],
-              [68900, 'at'],
-            ],
-            [],
-            [
-              [1, 'foo', 'bar', 99],
-              [68900, 'at', 'park', 1046],
-            ],
+          [],
+          [
+            [1, 'foo', 'bar', 99],
+            [68900, 'at', 'park', 1046],
           ],
-          'filter only on destination' => [
-            [],
-            [
-              ['bar', 99],
-              ['dictate', 1045],
-              ['wrong', 34033],
-            ],
-            [
-              [1, 'foo', 'bar', 99],
-              [366, 'monopoly', 'dictate', 1045],
-              [324, 'melon', 'wrong', 34033],
-            ],
+        ];
+        yield 'filter only on destination' => [
+          [],
+          [
+            ['bar', 99],
+            ['dictate', 1045],
+            ['wrong', 34033],
           ],
-          'filter on both' => [
-            [
-              [1, 'foo'],
-              [324, 'melon'],
-            ],
-            [
-              ['bar', 99],
-              ['dictate', 1045],
-              ['wrong', 34033],
-            ],
-            [
-              [1, 'foo', 'bar', 99],
-              [324, 'melon', 'wrong', 34033],
-            ],
+          [
+            [1, 'foo', 'bar', 99],
+            [366, 'monopoly', 'dictate', 1045],
+            [324, 'melon', 'wrong', 34033],
+          ],
+        ];
+        yield 'filter on both' => [
+          [
+            [1, 'foo'],
+            [324, 'melon'],
+          ],
+          [
+            ['bar', 99],
+            ['dictate', 1045],
+            ['wrong', 34033],
+          ],
+          [
+            [1, 'foo', 'bar', 99],
+            [324, 'melon', 'wrong', 34033],
           ],
         ];
     }

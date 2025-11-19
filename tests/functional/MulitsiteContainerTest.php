@@ -12,7 +12,7 @@ use Drush\Commands\pm\PmCommands;
  * Tests for core commands.
  */
 #[Group('commands')]
-class MulitsiteContainerTest extends CommandUnishTestCase
+final class MulitsiteContainerTest extends CommandUnishTestCase
 {
     public function setup(): void
     {

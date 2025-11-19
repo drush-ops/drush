@@ -7,7 +7,7 @@ namespace Unish;
 use PHPUnit\Framework\Attributes\Group;
 
 #[Group('commands')]
-class CustomLibraryCommandsAndGeneratorsTest extends UnishIntegrationTestCase
+final class CustomLibraryCommandsAndGeneratorsTest extends UnishIntegrationTestCase
 {
     /**
      * Tests that commands provided by custom libraries are registered.

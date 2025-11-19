@@ -14,10 +14,10 @@ use Symfony\Component\Filesystem\Path;
 
 #[Group('slow')]
 #[Group('commands')]
-class UserTest extends CommandUnishTestCase
+final class UserTest extends CommandUnishTestCase
 {
-    const NAME = 'example';
-    const MAIL = 'example@example.com';
+    const string NAME = 'example';
+    const string MAIL = 'example@example.com';
 
     public function setup(): void
     {
@@ -75,42 +75,42 @@ class UserTest extends CommandUnishTestCase
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User has test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User has test role.');
 
         // user-remove-role
         $this->drush(UserCommands::ROLE_REMOVE, ['test role', self::NAME]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User removed test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User removed test role.');
 
         // user-add-role by uid.
         $this->drush(UserCommands::ROLE_ADD, ['test role'], ['uid' => $uid]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User (id) has test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User (id) has test role.');
 
         // user-remove-role by uid
         $this->drush(UserCommands::ROLE_REMOVE, ['test role'], ['uid' => $uid]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User (id) removed test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User (id) removed test role.');
 
         // user-add-role by mail.
         $this->drush(UserCommands::ROLE_ADD, ['test role'], ['mail' => self::MAIL]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated', 'test role'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User (mail) has test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User (mail) has test role.');
 
         // user-remove-role by mail.
         $this->drush(UserCommands::ROLE_REMOVE, ['test role'], ['mail' => self::MAIL]);
         $this->drush(UserCommands::INFORMATION, [self::NAME], ['format' => 'json']);
         $output = $this->getOutputFromJSON($uid);
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values($output['roles']), 'User (mail) removed test role.');
+        $this->assertSame($expected, array_values($output['roles']), 'User (mail) removed test role.');
     }
 
     public function testUserPassword(): void
@@ -203,6 +203,6 @@ class UserTest extends CommandUnishTestCase
         $this->assertEquals(self::NAME, $output['name']);
         $this->assertEquals(1, $output['user_status'], 'Newly created user is Active.');
         $expected = ['authenticated'];
-        $this->assertEquals($expected, array_values($output['roles']), 'Newly created user has one role.');
+        $this->assertSame($expected, array_values($output['roles']), 'Newly created user has one role.');
     }
 }
