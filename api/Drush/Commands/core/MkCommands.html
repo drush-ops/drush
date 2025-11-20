@@ -138,7 +138,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+                    <a href="#method___construct">__construct</a>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -312,7 +312,7 @@
                 <div class="col-md-8">
                     <a href="#method_cliTextToMarkdown">cliTextToMarkdown</a>(string $text)
         
-                                            <p><p>Convert text like <info>foo</info> to <em>foo</em>.</p></p>                </div>
+                                            <p><p>Convert text like <info>foo</info> to <em>foo</em>. Also convert to Markdown links.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -397,9 +397,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L36">at line 36</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L37">at line 37</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
+    <strong>__construct</strong>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
     </h3>
     <div class="details">    
@@ -414,6 +414,11 @@
                             <h4>Parameters</h4>
 
                     <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
+                <td>$bootstrapManager</td>
+                <td></td>
+            </tr>
                     <tr>
                 <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
                 <td>$logger</td>
@@ -431,7 +436,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L43">at line 43</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L45">at line 45</a></div>
         <code>            protected        int
     <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -479,7 +484,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_createAnnotatedCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L73">at line 73</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L75">at line 75</a></div>
         <code>                    array
     <strong>createAnnotatedCommands</strong>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application_generate, <abbr title="Symfony\Component\Console\Application">Application</abbr> $application_drush)
         </code>
@@ -526,7 +531,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendPostAmble">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L99">at line 99</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L101">at line 101</a></div>
         <code>        static    protected        string
     <strong>appendPostAmble</strong>()
         </code>
@@ -559,7 +564,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendAliases">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L108">at line 108</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L110">at line 110</a></div>
         <code>        static    protected        string
     <strong>appendAliases</strong>($command)
         </code>
@@ -602,7 +607,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendTopics">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L120">at line 120</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L122">at line 122</a></div>
         <code>        static    protected        string
     <strong>appendTopics</strong>(<a href="../../../Consolidation/AnnotatedCommand/AnnotatedCommand.html"><abbr title="Consolidation\AnnotatedCommand\AnnotatedCommand">AnnotatedCommand</abbr></a> $command, string $dir_commands)
         </code>
@@ -650,7 +655,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L151">at line 151</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L153">at line 153</a></div>
         <code>        static    protected        string
     <strong>appendOptions</strong>($command)
         </code>
@@ -693,7 +698,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendOptionsGlobal">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L172">at line 172</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L174">at line 174</a></div>
         <code>        static    protected        string
     <strong>appendOptionsGlobal</strong>($application)
         </code>
@@ -736,7 +741,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendArguments">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L189">at line 189</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L191">at line 191</a></div>
         <code>        static    protected        string
     <strong>appendArguments</strong>($command)
         </code>
@@ -779,7 +784,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendUsages">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L202">at line 202</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L204">at line 204</a></div>
         <code>        static    protected        string
     <strong>appendUsages</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command)
         </code>
@@ -822,7 +827,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_appendPreamble">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L221">at line 221</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L223">at line 223</a></div>
         <code>        static    protected        string
     <strong>appendPreamble</strong>($command, string $root)
         </code>
@@ -870,7 +875,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_writeYml">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L255">at line 255</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L257">at line 257</a></div>
         <code>            protected        void
     <strong>writeYml</strong>(array $nav_commands, array $nav_generators, array $map_commands, array $map_generators, string $dest)
         </code>
@@ -933,7 +938,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_writeAllMd">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L271">at line 271</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L273">at line 273</a></div>
         <code>            protected        void
     <strong>writeAllMd</strong>(array $pages_all, string $destination_path, string $title)
         </code>
@@ -986,7 +991,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_prepare">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L295">at line 295</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L297">at line 297</a></div>
         <code>            protected        void
     <strong>prepare</strong>($destination)
         </code>
@@ -1028,7 +1033,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_argToArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L310">at line 310</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L312">at line 312</a></div>
         <code>        static            <abbr title="Drush\Commands\core\iterable">iterable</abbr>
     <strong>argToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $arg)
         </code>
@@ -1070,7 +1075,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_optionToArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L324">at line 324</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L326">at line 326</a></div>
         <code>        static            <abbr title="Drush\Commands\core\iterable">iterable</abbr>
     <strong>optionToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $opt)
         </code>
@@ -1112,7 +1117,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_cliTextToMarkdown">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L342">at line 342</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L344">at line 344</a></div>
         <code>        static            string
     <strong>cliTextToMarkdown</strong>(string $text)
         </code>
@@ -1122,7 +1127,7 @@
             
 
         <div class="method-description">
-                            <p><p>Convert text like <info>foo</info> to <em>foo</em>.</p></p>                        
+                            <p><p>Convert text like <info>foo</info> to <em>foo</em>. Also convert to Markdown links.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -1154,7 +1159,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_writeContentFilesAndBuildNavAndBuildRedirectMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L350">at line 350</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L354">at line 354</a></div>
         <code>                    array
     <strong>writeContentFilesAndBuildNavAndBuildRedirectMap</strong>(array $namespaced, string $destination, string $dir_root, string $destination_path)
         </code>
@@ -1211,7 +1216,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getRedirectMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L394">at line 394</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L398">at line 398</a></div>
         <code>            protected        array
     <strong>getRedirectMap</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command, string $destination)
         </code>
@@ -1259,7 +1264,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getFilename">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L410">at line 410</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkCommands.php#L414">at line 414</a></div>
         <code>                    string
     <strong>getFilename</strong>(string $name)
         </code>
