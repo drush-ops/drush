@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Boot\BootstrapManager;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
@@ -34,6 +35,7 @@ final class MkCommands extends Command
     const string NAME = 'mk:docs';
 
     public function __construct(
+        protected BootstrapManager $bootstrapManager,
         protected readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -42,13 +44,13 @@ final class MkCommands extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $dir_root = Drush::bootstrapManager()->getComposerRoot();
+        $dir_root = $this->bootstrapManager->getComposerRoot();
 
         $destination = 'commands';
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
-        $application = Drush::getApplication();
-        $all = $application->all();
+        $this->logger->debug('Writing to {path}', ['path' => $destination_path]);
+        $all = $this->getApplication()->all();
         $namespaced = ListCommands::categorize($all);
         [$nav_commands, $pages_commands, $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_commands, $destination_path, 'All commands');
@@ -58,7 +60,7 @@ final class MkCommands extends Command
         $this->prepare($destination_path);
         $container = Drush::getContainer();
         $application_generate = (new ApplicationFactory($container, $this->logger))->create();
-        $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
+        $all = $this->createAnnotatedCommands($application_generate, $this->getApplication());
         $namespaced = ListCommands::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_generators, $destination_path, 'All generators');
@@ -337,11 +339,13 @@ EOT;
     }
 
     /**
-     * Convert text like <info>foo</info> to *foo*.
+     * Convert text like <info>foo</info> to *foo*. Also convert to Markdown links.
      */
     public static function cliTextToMarkdown(string $text): string
     {
-        return str_replace(['<info>', '</info>'], '*', $text);
+        $text = str_replace(['<info>', '</info>'], '*', $text);
+        $text = preg_replace('/<href=([^>]+)>([^<]+)<\/>/', '[$2]($1)', $text);
+        return $text;
     }
 
     /**
