@@ -117,7 +117,6 @@ EOT;
             'ssl_key' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_KEY : PDO::MYSQL_ATTR_SSL_KEY),
             'ssl_verify_server_cert' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT : PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT),
         ];
-        var_dump($attribs);
 
         if (!empty($dbSpec['pdo'][$attribs['ssl_ca']])) {
             $parameters['ssl-ca'] = $dbSpec['pdo'][$attribs['ssl_ca']];
