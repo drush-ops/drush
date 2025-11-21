@@ -6,6 +6,7 @@ namespace Drush\Commands\core;
 
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
+use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
@@ -242,11 +243,8 @@ description: {$command->getDescription()}
 
 EOT;
         $body .= "# {$command->getName()}\n\n";
-        if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
-            $body .= ":octicons-tag-24: $version+\n\n";
-        } elseif (str_starts_with($command->getName(), 'yaml:')) {
-            $body .= ":octicons-tag-24: 12.0+\n\n";
-        }
+        $body .= self::getVersion($command);
+
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
             if ($command->getHelp()) {
@@ -254,6 +252,26 @@ EOT;
             }
         }
         return $body;
+    }
+
+    protected static function getVersion(Command $command): ?string
+    {
+        $return = null;
+        if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
+            $return = ":octicons-tag-24: $version+\n\n";
+        } elseif (str_starts_with($command->getName(), 'yaml:')) {
+            $return = ":octicons-tag-24: 12.0+\n\n";
+        } elseif ($command instanceof Command) {
+            // Support invokable commands (Symfony Console 7.4+).
+            $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+            $reflectionObject = new \ReflectionObject($code);
+            $attributes = $reflectionObject->getAttributes(CLI\Version::class);
+            if ($attributes !== []) {
+                $instance = $attributes[0]->newInstance();
+                $return = ":octicons-tag-24: $instance->version+\n\n";
+            }
+        }
+        return $return;
     }
 
     protected function writeYml(array $nav_commands, array $nav_generators, array $map_commands, array $map_generators, string $dest): void
