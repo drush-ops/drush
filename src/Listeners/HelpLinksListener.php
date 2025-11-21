@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
-use Drush\Attributes\HelpLinks;
 use Drush\Attributes as CLI;
+use Drush\Attributes\HelpLinks;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
@@ -38,6 +38,6 @@ final class HelpLinksListener
 
     public static function bullets(array $links): string
     {
-        return "Help topics:\n" . implode("\n", $links);
+        return "Help topics:\n\n" . implode("\n", $links);
     }
 }

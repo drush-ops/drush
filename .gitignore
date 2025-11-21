@@ -31,3 +31,6 @@ sut/drush/sites/synctest.site.yml
 
 # Code tools
 .claude
+
+# mkdocs
+.cache
