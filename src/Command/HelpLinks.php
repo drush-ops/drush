@@ -2,6 +2,8 @@
 
 namespace Drush\Command;
 
+use Drush\Drush;
+
 enum HelpLinks
 {
     case Aliases;
@@ -24,8 +26,8 @@ enum HelpLinks
             self::Aliases => new ConsoleLink('site-aliases', 'Creating site aliases for running Drush on remote sites'),
             self::Deploy => new ConsoleLink('deploy', 'Deploy command for Drupal.'),
             self::DrushConfiguration => new ConsoleLink('using-drush-configuration', 'Drush configuration'),
-            self::Policy => new ConsoleLink('examples/PolicyCommands.php', 'Example policy file'),
-            self::ConfigExporting => new ConsoleLink('config-exporting', 'Example policy file'),
+            self::Policy => new ConsoleLink('examples/PolicyListener.php', 'Example policy file'),
+            self::ConfigExporting => new ConsoleLink('config-exporting', 'Drupal config export instructions, including customizing config by environment.'),
             self::Repl => new ConsoleLink('repl', 'Drush\'s PHP Shell'),
             self::Cron => new ConsoleLink('cron', 'Crontab instructions for running your Drupal cron tasks via `drush cron`.'),
             self::Migrate => new ConsoleLink('migrate', 'Defining and running migrations.'),
@@ -40,8 +42,9 @@ enum HelpLinks
     /**
      * A base URL for help links.
      */
-    public static function getDocsUrlBase($branch = 'latest'): string
+    public static function getDocsUrlBase(): string
     {
+        $branch = Drush::getMajorVersion() . '.x';
         return "https://www.drush.org/$branch";
     }
 
@@ -51,6 +54,6 @@ enum HelpLinks
     public function consoleLink(): string
     {
         $link = $this->getConsoleLink();
-        return sprintf('* <href=%s/%s>%s</>', self::getDocsUrlBase(), $link->path, $link->text);
+        return sprintf('  * <href=%s/%s>%s</>', self::getDocsUrlBase(), $link->path, $link->text);
     }
 }

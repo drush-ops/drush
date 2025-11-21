@@ -7,6 +7,7 @@ namespace Drush\Commands\core;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Boot\BootstrapManager;
+use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
@@ -50,6 +51,7 @@ final class MkCommands extends Command
         $destination_path = Path::join($dir_root, 'docs', $destination);
         $this->prepare($destination_path);
         $this->logger->debug('Writing to {path}', ['path' => $destination_path]);
+        $this->getApplication()->get('completion')->setHidden(true);
         $all = $this->getApplication()->all();
         $namespaced = ListCommands::categorize($all);
         [$nav_commands, $pages_commands, $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
@@ -344,7 +346,11 @@ EOT;
     public static function cliTextToMarkdown(string $text): string
     {
         $text = str_replace(['<info>', '</info>'], '*', $text);
-        $text = preg_replace('/<href=([^>]+)>([^<]+)<\/>/', '[$2]($1)', $text);
+        // If we need to separate the texts from the URLs
+        // preg_match_all('/<href=([^>]+)>([^<]+)<\/>/', $text, $matches);
+        $text = preg_replace('/<href=([^>]+)>([^<]+)<\/>/', '[$2]($1.md)', $text);
+        // Strip the baseUrl and let mkdocs make relative links.
+        $text = str_replace(HelpLinks::getDocsUrlBase(), '..', $text);
         return $text;
     }
 
