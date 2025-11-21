@@ -404,7 +404,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     static&nbsp;<a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>|null
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getInstance">getInstance</a>($db_spec, $options)
+                    <a href="#method_getInstance">getInstance</a>(array $db_spec, $options)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -528,7 +528,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>($query, $input_file_original)
+                    <a href="#method_logQueryInDebugMode">logQueryInDebugMode</a>(string $query, $input_file_original)
         
                                             <p><p>Show the query in debug mode and simulate mode</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Sql/SqlBase.html#method_logQueryInDebugMode">
@@ -1578,7 +1578,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_getInstance">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlBase.php#L119">at line 119</a></div>
         <code>        static            <a href="../../Drush/Sql/SqlBase.html"><abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a>|null
-    <strong>getInstance</strong>($db_spec, $options)
+    <strong>getInstance</strong>(array $db_spec, $options)
         </code>
     </h3>
     <div class="details">    
@@ -1594,7 +1594,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>array</td>
                 <td>$db_spec</td>
                 <td></td>
             </tr>
@@ -1868,7 +1868,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_dumpCmd">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L199">at line 199</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L209">at line 209</a></div>
         <code>                    string
     <strong>dumpCmd</strong>($table_selection)
         </code>
@@ -2066,7 +2066,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
         <div class="location">in <a href="../../Drush/Sql/SqlBase.html#method_logQueryInDebugMode">
 <abbr title="Drush\Sql\SqlBase">SqlBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlBase.php#L385">at line 385</a></div>
         <code>            protected        void
-    <strong>logQueryInDebugMode</strong>($query, $input_file_original)
+    <strong>logQueryInDebugMode</strong>(string $query, $input_file_original)
         </code>
     </h3>
     <div class="details">    
@@ -2081,7 +2081,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$query</td>
                 <td></td>
             </tr>
@@ -2111,7 +2111,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_silent">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L138">at line 138</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L148">at line 148</a></div>
         <code>                    string|null
     <strong>silent</strong>()
         </code>
@@ -2267,7 +2267,7 @@ True if successful, FALSE if failed.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_createdbSql">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L143">at line 143</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L153">at line 153</a></div>
         <code>                    string
     <strong>createdbSql</strong>(string $dbname, bool $quoted = false)
         </code>
@@ -2394,7 +2394,7 @@ TRUE or FALSE depending on success.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_dbExists">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L174">at line 174</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L184">at line 184</a></div>
         <code>                    bool
     <strong>dbExists</strong>()
         </code>
@@ -2503,7 +2503,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_listTables">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L180">at line 180</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L190">at line 190</a></div>
         <code>                    array
     <strong>listTables</strong>()
         </code>
@@ -2535,7 +2535,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_listTablesQuoted">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L190">at line 190</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L200">at line 200</a></div>
         <code>                    array
     <strong>listTablesQuoted</strong>()
         </code>
