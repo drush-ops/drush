@@ -87,7 +87,7 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:8.3
+      - image: wodby/php:8.4
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
