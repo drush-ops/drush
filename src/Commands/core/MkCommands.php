@@ -263,6 +263,7 @@ EOT;
             $return = ":octicons-tag-24: 12.0+\n\n";
         } elseif ($command instanceof Command) {
             // Support invokable commands (Symfony Console 7.4+).
+            // @phpstan-ignore function.alreadyNarrowedType
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);
             $attributes = $reflectionObject->getAttributes(CLI\Version::class);
