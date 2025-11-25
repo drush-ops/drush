@@ -23,6 +23,7 @@ use Drush\SiteAlias\ProcessManager;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use RuntimeException;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -58,7 +59,8 @@ final class UpdateDBCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('cache-clear', mode: InputOption::VALUE_REQUIRED, description: 'Clear caches upon completion.', default: '1');
+            ->addOption('cache-clear', mode: InputOption::VALUE_REQUIRED, description: 'Clear caches upon completion.', default: '1')
+            ->addOption('force', mode: InputOption::VALUE_NONE, description: 'Report requirements errors, but don\'t stop processing.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -78,10 +80,8 @@ final class UpdateDBCommand extends Command
         // update_fix_compatibility();
 
         // Check requirements before updating.
-        if (!$this->updateCheckRequirements()) {
-            if (!$io->confirm(dt('Requirements check reports errors. Do you wish to continue?'))) {
-                throw new UserAbortException();
-            }
+        if (!$this->updateCheckRequirements() && !$input->getOption('force')) {
+            throw new RuntimeException('Requirements check reports errors. Use --force to bypass.');
         }
 
         $status_options = ['strict' => 0];
