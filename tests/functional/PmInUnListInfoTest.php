@@ -48,7 +48,7 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $out = $this->getOutput();
         $this->assertStringContainsString('drush_empty_module', $out);
 
-        // Test theme:install enables a theme, and pm:list verifies the dependencies were installed too.
+        // Test theme:install enables a theme, and pm:list verifies that the dependencies were installed too.
         $this->drush(ThemeCommands::INSTALL, ['drush_theme_with_dependency']);
         $this->drush(PmCommands::LIST, [], ['status' => 'enabled']);
         $out = $this->getOutput();
