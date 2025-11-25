@@ -104,6 +104,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
     #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
     #[CLI\Usage(name: 'field:create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
     #[CLI\Usage(name: 'field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
+    #[CLI\Usage(name: 'field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html', description: 'Create a formatted text field.')]
     #[CLI\Complete(method_name_or_callable: 'complete')]
     #[CLI\Version(version: '11.0')]
     public function fieldCreate(?string $entityType = null, ?string $bundle = null, array $options = [
