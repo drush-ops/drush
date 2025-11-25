@@ -21,6 +21,7 @@ sut/*
 !sut/drush
 sut/drush/sites/*test.site.yml
 !sut/modules
+!sut/themes
 sut/modules/contrib
 /sandbox/
 .env
