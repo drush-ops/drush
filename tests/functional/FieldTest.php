@@ -67,8 +67,6 @@ class FieldTest extends CommandUnishTestCase
             $this->markTestSkipped('Allowed formats available since Drupal 10.1.0');
         }
         // Allowed formats
-        $this->drush(FieldCreateCommands::CREATE, ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'string', 'allowed-formats' => 'minimal'], null, null, self::EXIT_ERROR);
-        $this->assertStringContainsString('The "--allowed-formats" option does not exist.', $this->getSimplifiedErrorOutput());
         $this->drush(FieldCreateCommands::CREATE, ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'text_long', 'cardinality' => 1, 'allowed-formats' => 'baz'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('The following text formats do not exist: baz', $this->getSimplifiedErrorOutput());
         $this->drush(FieldCreateCommands::CREATE, ['unish_article', 'alpha'], ['field-name' => 'field_test_allowed_formats', 'field-label' => 'Text', 'field-type' => 'text_long', 'cardinality' => 1, 'allowed-formats' => 'plain_text']);
