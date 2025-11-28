@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\field;
 
+use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
@@ -10,7 +11,9 @@ use Drupal\Core\Field\FieldDefinitionInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 final class FieldEntityReferenceHooks extends DrushCommands
 {
@@ -22,6 +25,24 @@ final class FieldEntityReferenceHooks extends DrushCommands
         protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         protected EntityFieldManagerInterface $entityFieldManager,
     ) {
+    }
+
+    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'field:create')]
+    public function hookOption(Command $command, AnnotationData $annotationData): void
+    {
+        $command->addOption(
+            'target-type',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'The target entity type for the entity reference field.',
+        );
+
+        $command->addOption(
+            'target-bundle',
+            '',
+            InputOption::VALUE_OPTIONAL,
+            'The target bundle for the entity reference field.',
+        );
     }
 
     #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-storage')]
