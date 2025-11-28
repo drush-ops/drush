@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Application | Drush API 13</title>
+    <title>Drush\Application | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Application</strong>        extends <abbr title="Symfony\Component\Console\Application">Application</abbr>        implements        <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../Robo/Contract/ConfigAwareInterface.html"><abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php">View source</a>)
+    <strong>Application</strong>        extends <abbr title="Symfony\Component\Console\Application">Application</abbr>        implements        <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../Robo/Contract/ConfigAwareInterface.html"><abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php">View source</a>)
 </p>
 
         
@@ -271,7 +271,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_configureGlobalOptions">configureGlobalOptions</a>()
@@ -281,7 +281,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Drush\Boot\BootstrapManager">BootstrapManager</abbr>|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_bootstrapManager">bootstrapManager</a>()
@@ -292,7 +292,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setBootstrapManager">setBootstrapManager</a>(<a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
@@ -303,7 +303,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null
                 </div>
                 <div class="col-md-8">
                     <a href="#method_aliasManager">aliasManager</a>()
@@ -314,10 +314,10 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_setAliasManager">setAliasManager</a>($aliasManager)
+                    <a href="#method_setAliasManager">setAliasManager</a>(<abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null $aliasManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -325,7 +325,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setRedispatchHook">setRedispatchHook</a>(<a href="../Drush/Runtime/RedispatchHook.html"><abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr></a> $redispatchHook)
@@ -336,7 +336,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setTildeExpansionHook">setTildeExpansionHook</a>(<a href="../Drush/Runtime/TildeExpansionHook.html"><abbr title="Drush\Runtime\TildeExpansionHook">TildeExpansionHook</abbr></a> $tildeExpansionHook)
@@ -347,7 +347,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_setServiceManager">setServiceManager</a>(<a href="../Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a> $serviceManager)
@@ -358,7 +358,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Drush\string|false">string|false</abbr>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getUri">getUri</a>()
@@ -368,7 +368,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_refineUriSelection">refineUriSelection</a>($cwd)
@@ -411,10 +411,10 @@ then pick an appropriate site from the cwd.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    <abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_bootstrapAndFind">bootstrapAndFind</a>($name)
+                    <a href="#method_bootstrapAndFind">bootstrapAndFind</a>(string $name)
         
                                             <p><p>Look up a command. Bootstrap further if necessary.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -443,7 +443,7 @@ immediately; the command will not run, and no hooks will be called.</p></p>     
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    
+                    void
                 </div>
                 <div class="col-md-8">
                     <a href="#method_configureAndRegisterCommands">configureAndRegisterCommands</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $commandfileSearchpath, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader)
@@ -493,7 +493,7 @@ available in the search paths provided via Preflight</p></p>                </di
                     <div class="method-item">
                     <h3 id="method_setConfig">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_setConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L22">at line 22</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L22">at line 22</a></div>
         <code>                    $this
     <strong>setConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
         </code>
@@ -536,7 +536,7 @@ available in the search paths provided via Preflight</p></p>                </di
                     <div class="method-item">
                     <h3 id="method_getConfig">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L34">at line 34</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L34">at line 34</a></div>
         <code>                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
     <strong>getConfig</strong>()
         </code>
@@ -569,7 +569,7 @@ available in the search paths provided via Preflight</p></p>                </di
                     <div class="method-item">
                     <h3 id="method_configPrefix">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L47">at line 47</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L47">at line 47</a></div>
         <code>        static    protected        string
     <strong>configPrefix</strong>()
         </code>
@@ -605,7 +605,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_configClassIdentifier">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L52">at line 52</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L52">at line 52</a></div>
         <code>        static    protected        
     <strong>configClassIdentifier</strong>($classname)
         </code>
@@ -640,7 +640,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_configPostfix">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L60">at line 60</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L60">at line 60</a></div>
         <code>        static    protected        
     <strong>configPostfix</strong>()
         </code>
@@ -665,7 +665,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_configure">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_configure">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L84">at line 84</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L84">at line 84</a></div>
         <code>        static            
     <strong>configure</strong>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
         </code>
@@ -710,7 +710,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_getConfigValue">
         <div class="location">in <a href="../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L98">at line 98</a></div>
+<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L98">at line 98</a></div>
         <code>            protected        mixed|null
     <strong>getConfigValue</strong>(string $key, mixed|null $default = null)
         </code>
@@ -758,8 +758,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_configureGlobalOptions">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L52">at line 52</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L52">at line 52</a></div>
+        <code>                    void
     <strong>configureGlobalOptions</strong>()
         </code>
     </h3>
@@ -772,6 +772,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -781,8 +790,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L100">at line 100</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L100">at line 100</a></div>
+        <code>                    <abbr title="Drush\Drush\Boot\BootstrapManager">BootstrapManager</abbr>|null
     <strong>bootstrapManager</strong>()
         </code>
     </h3>
@@ -796,6 +805,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Drush\Boot\BootstrapManager">BootstrapManager</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -805,8 +823,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setBootstrapManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L105">at line 105</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L105">at line 105</a></div>
+        <code>                    void
     <strong>setBootstrapManager</strong>(<a href="../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager)
         </code>
     </h3>
@@ -830,6 +848,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -839,8 +866,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_aliasManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L110">at line 110</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L110">at line 110</a></div>
+        <code>                    <abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null
     <strong>aliasManager</strong>()
         </code>
     </h3>
@@ -854,6 +881,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -863,9 +899,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setAliasManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L115">at line 115</a></div>
-        <code>                    
-    <strong>setAliasManager</strong>($aliasManager)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L115">at line 115</a></div>
+        <code>                    void
+    <strong>setAliasManager</strong>(<abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null $aliasManager)
         </code>
     </h3>
     <div class="details">    
@@ -881,13 +917,22 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td><abbr title="Drush\Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr>|null</td>
                 <td>$aliasManager</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -897,8 +942,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setRedispatchHook">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L120">at line 120</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L120">at line 120</a></div>
+        <code>                    void
     <strong>setRedispatchHook</strong>(<a href="../Drush/Runtime/RedispatchHook.html"><abbr title="Drush\Runtime\RedispatchHook">RedispatchHook</abbr></a> $redispatchHook)
         </code>
     </h3>
@@ -922,6 +967,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -931,8 +985,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setTildeExpansionHook">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L125">at line 125</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L125">at line 125</a></div>
+        <code>                    void
     <strong>setTildeExpansionHook</strong>(<a href="../Drush/Runtime/TildeExpansionHook.html"><abbr title="Drush\Runtime\TildeExpansionHook">TildeExpansionHook</abbr></a> $tildeExpansionHook)
         </code>
     </h3>
@@ -956,6 +1010,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -965,8 +1028,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setServiceManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L130">at line 130</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L130">at line 130</a></div>
+        <code>                    void
     <strong>setServiceManager</strong>(<a href="../Drush/Runtime/ServiceManager.html"><abbr title="Drush\Runtime\ServiceManager">ServiceManager</abbr></a> $serviceManager)
         </code>
     </h3>
@@ -990,6 +1053,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -999,8 +1071,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L138">at line 138</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L138">at line 138</a></div>
+        <code>                    <abbr title="Drush\string|false">string|false</abbr>
     <strong>getUri</strong>()
         </code>
     </h3>
@@ -1013,6 +1085,15 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
         </div>
         <div class="tags">
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\string|false">string|false</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1022,8 +1103,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_refineUriSelection">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L150">at line 150</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L150">at line 150</a></div>
+        <code>                    void
     <strong>refineUriSelection</strong>($cwd)
         </code>
     </h3>
@@ -1047,6 +1128,15 @@ then pick an appropriate site from the cwd.</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1056,7 +1146,7 @@ then pick an appropriate site from the cwd.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_selectUri">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L173">at line 173</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L173">at line 173</a></div>
         <code>                    
     <strong>selectUri</strong>($cwd)
         </code>
@@ -1089,7 +1179,7 @@ then pick an appropriate site from the cwd.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_find">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L185">at line 185</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L185">at line 185</a></div>
         <code>                    <abbr title="Symfony\Component\Console\Command\Command">Command</abbr>
     <strong>find</strong>($name)
         </code>
@@ -1132,7 +1222,7 @@ then pick an appropriate site from the cwd.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doRunCommand">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L197">at line 197</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L197">at line 197</a></div>
         <code>            protected        int
     <strong>doRunCommand</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -1185,9 +1275,9 @@ then pick an appropriate site from the cwd.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_bootstrapAndFind">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L207">at line 207</a></div>
-        <code>            protected        
-    <strong>bootstrapAndFind</strong>($name)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L207">at line 207</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr>
+    <strong>bootstrapAndFind</strong>(string $name)
         </code>
     </h3>
     <div class="details">    
@@ -1202,13 +1292,22 @@ then pick an appropriate site from the cwd.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>string</td>
                 <td>$name</td>
                 <td></td>
             </tr>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Command\Command|Drush\Command\RemoteCommandProxy">RemoteCommandProxy</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1218,7 +1317,7 @@ then pick an appropriate site from the cwd.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_checkObsolete">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L259">at line 259</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L259">at line 259</a></div>
         <code>            protected        
     <strong>checkObsolete</strong>($command)
         </code>
@@ -1252,7 +1351,7 @@ immediately; the command will not run, and no hooks will be called.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_configureIO">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L283">at line 283</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L283">at line 283</a></div>
         <code>            protected        void
     <strong>configureIO</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -1300,8 +1399,8 @@ immediately; the command will not run, and no hooks will be called.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_configureAndRegisterCommands">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L312">at line 312</a></div>
-        <code>                    
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L312">at line 312</a></div>
+        <code>                    void
     <strong>configureAndRegisterCommands</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $commandfileSearchpath, <abbr title="Composer\Autoload\ClassLoader">ClassLoader</abbr> $classLoader)
         </code>
     </h3>
@@ -1340,6 +1439,15 @@ available in the search paths provided via Preflight</p></p>
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -1349,7 +1457,7 @@ available in the search paths provided via Preflight</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderThrowable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L351">at line 351</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L352">at line 352</a></div>
         <code>                    void
     <strong>renderThrowable</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Throwable">Throwable</a> $e, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -1396,7 +1504,7 @@ available in the search paths provided via Preflight</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_addListeners">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L359">at line 359</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L360">at line 360</a></div>
         <code>            protected        void
     <strong>addListeners</strong>($commandfileSearchpath)
         </code>
@@ -1439,7 +1547,7 @@ available in the search paths provided via Preflight</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchIfRemote">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Application.php#L366">at line 366</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Application.php#L367">at line 367</a></div>
         <code>            protected        void
     <strong>redispatchIfRemote</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
