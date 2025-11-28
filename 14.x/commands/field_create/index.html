@@ -7457,6 +7457,7 @@
 <li><code>field:create</code>. Create a field by answering the prompts.</li>
 <li><code>field:create taxonomy_term tag</code>. Create a field and fill in the remaining information through prompts.</li>
 <li><code>field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2</code>. Create a field in a completely non-interactive way.</li>
+<li><code>field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html</code>. Create a formatted text field.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7473,11 +7474,12 @@
 <li><strong>--is-required[=IS-REQUIRED]</strong>. Whether the field is required</li>
 <li><strong>--is-translatable[=IS-TRANSLATABLE]</strong>. Whether the field is translatable</li>
 <li><strong>--cardinality=CARDINALITY</strong>. The allowed number of values</li>
-<li><strong>--target-type[=TARGET-TYPE]</strong>. The target entity type. Only necessary for entity reference fields.</li>
-<li><strong>--target-bundle[=TARGET-BUNDLE]</strong>. The target bundle(s). Only necessary for entity reference fields.</li>
+<li><strong>--target-type[=TARGET-TYPE]</strong>. The target entity type for the entity reference field.</li>
+<li><strong>--target-bundle[=TARGET-BUNDLE]</strong>. The target bundle for the entity reference field.</li>
 <li><strong>--show-machine-names[=SHOW-MACHINE-NAMES]</strong>. Show machine names instead of labels in option lists.</li>
 <li><strong>--existing-field-name[=EXISTING-FIELD-NAME]</strong>. The name of an existing field you want to re-use. Only used in non-interactive context.</li>
 <li><strong>--existing</strong>. Re-use an existing field.</li>
+<li><strong>--allowed-formats=ALLOWED-FORMATS</strong>. Restrict which text formats are allowed, given the user has the required permissions.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
