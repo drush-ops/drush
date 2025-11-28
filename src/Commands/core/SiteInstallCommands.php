@@ -89,6 +89,8 @@ final class SiteInstallCommands extends DrushCommands
                 $value = intval($value);
             } elseif ($value == 'NULL') {
                 $value = null;
+            } elseif (preg_match('/^\[.*\]$/', $value)) {
+                $value = explode(',', trim($value, '[]'));
             }
 
             $form_options[$key] = $value;
