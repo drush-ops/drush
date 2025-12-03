@@ -21,7 +21,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
   name: self::NAME,
   description: '{{ command.description }}',
-  aliases: [{{ command.alias }}],
+  aliases: ['{{ command.alias }}'],
 )]
 #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
 #[CLI\FieldLabels(labels: [
