@@ -6,20 +6,38 @@ namespace Drupal\{{ machine_name }}\Drush\Commands;
 {% apply sort_namespaces %}
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
   {% if services %}
 use Drush\Commands\AutowireTrait;
+use Drush\Formatters\FormatterTrait;
 {{ di.use(services) }}
   {% endif %}
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 {% endapply %}
 
-/**
- * A Drush commandfile.
- */
-final class {{ class }} extends DrushCommands {
+#[AsCommand(
+  name: self::NAME,
+  description: '{{ command.description }}',
+  aliases: ['{{ command.alias }}'],
+)]
+#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
+#[CLI\FieldLabels(labels: [
+  'group' => 'Group',
+  'token' => 'Token',
+  'name' => 'Name'
+])]
+#[CLI\DefaultTableFields(fields: ['group', 'token', 'name'])]
+#[CLI\FilterDefaultField(field: 'name')]
+final class {{ class }} extends Command {
 {% if services %}
 
   use AutowireTrait;
+  use FormatterTrait;
+
+  const NAME = '{{ command.name }}';
 
   /**
    * Constructs {{ class|article }} object.
@@ -31,31 +49,26 @@ final class {{ class }} extends DrushCommands {
   }
 {% endif %}
 
-  /**
-   * Command description here.
-   */
-  #[CLI\Command(name: '{{  machine_name }}:command-name', aliases: ['foo'])]
-  #[CLI\Argument(name: 'arg1', description: 'Argument description.')]
-  #[CLI\Option(name: 'option-name', description: 'Option description')]
-  #[CLI\Usage(name: '{{ machine_name }}:command-name foo', description: 'Usage description')]
-  public function commandName($arg1, $options = ['option-name' => 'default']) {
-    $this->logger()->success(dt('Achievement unlocked.'));
+  protected function configure(): void {
+    $this
+      ->addArgument(name: 'group', mode: InputOption::VALUE_REQUIRED, description: 'Show tokens from this group only.')
+      ->addOption(name: 'example', mode: InputOption::VALUE_OPTIONAL, description: 'Example description')
+      ->addUsage(usage: 'token --group=aggregator');
   }
 
-  /**
-   * An example of the table output format.
-   */
-  #[CLI\Command(name: '{{  machine_name }}:token', aliases: ['token'])]
-  #[CLI\FieldLabels(labels: [
-    'group' => 'Group',
-    'token' => 'Token',
-    'name' => 'Name'
-  ])]
-  #[CLI\DefaultTableFields(fields: ['group', 'token', 'name'])]
-  #[CLI\FilterDefaultField(field: 'name')]
-  public function token($options = ['format' => 'table']): RowsOfFields {
+  public function execute(InputInterface $input, OutputInterface $output): int {
+    $data = $this->doExecute($input, $output);
+    $this->writeFormattedOutput($input, $output, $data);
+    return self::SUCCESS;
+  }
+
+  protected function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields {
     $all = $this->token->getInfo();
     foreach ($all['tokens'] as $group => $tokens) {
+      $group_arg = $input->getArgument('group');
+      if ($group_arg && $group !== $group_arg) {
+        continue;
+      }
       foreach ($tokens as $key => $token) {
         $rows[] = [
           'group' => $group,
@@ -64,7 +77,7 @@ final class {{ class }} extends DrushCommands {
         ];
       }
     }
+    $this->logger->debug('Found {count} tokens', ['count' => count($rows)]);
     return new RowsOfFields($rows);
   }
-
 }
