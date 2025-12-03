@@ -12,13 +12,30 @@ use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Style\DrushStyle;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 
+use Symfony\Component\Console\Output\OutputInterface;
 use function dt;
 
-final class FieldBaseOverrideCreateCommands extends DrushCommands
+/**
+ * @see \Drupal\field_ui\Form\FieldConfigEditForm
+ * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
+ */
+#[AsCommand(
+    name: self::BASE_OVERRIDE_CREATE,
+    description: 'Create a new base field override.',
+    aliases: ['bfoc'],
+)]
+#[CLI\Version(version: '11.0')]
+final class FieldBaseOverrideCreateCommands extends Command
 {
     use AutowireTrait;
     use EntityTypeBundleAskTrait;
@@ -27,47 +44,40 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
     const string BASE_OVERRIDE_CREATE = 'field:base-override-create';
 
     public function __construct(
-        protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-        protected EntityFieldManagerInterface $entityFieldManager
+        private readonly EntityTypeManagerInterface $entityTypeManager,
+        private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        private readonly EntityFieldManagerInterface $entityFieldManager,
+        private readonly LoggerInterface $logger
     ) {
+        parent::__construct();
     }
 
-    /**
-     * Create a new base field override
-     *
-     * @see \Drupal\field_ui\Form\FieldConfigEditForm
-     * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
-     */
-    #[CLI\Command(name: self::BASE_OVERRIDE_CREATE, aliases: ['bfoc'])]
-    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
-    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
-    #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
-    #[CLI\Option(name: 'field-label', description: 'The field label')]
-    #[CLI\Option(name: 'field-description', description: 'The field description')]
-    #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
-    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\Usage(name: 'field:base-override-create', description: 'Create a base field override by answering the prompts.')]
-    #[CLI\Usage(name: 'field:base-override-create taxonomy_term tag', description: 'Create a base field override and fill in the remaining information through prompts.')]
-    #[CLI\Usage(name: 'field:base-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1', description: 'Create a base field override in a completely non-interactive way.')]
-    #[CLI\Complete(method_name_or_callable: 'complete')]
-    #[CLI\Version(version: '11.0')]
-    public function baseOverrideCreateField(?string $entityType = null, ?string $bundle = null, array $options = [
-        'field-name' => InputOption::VALUE_REQUIRED,
-        'field-label' => InputOption::VALUE_REQUIRED,
-        'field-description' => InputOption::VALUE_REQUIRED,
-        'is-required' => InputOption::VALUE_REQUIRED,
-        'show-machine-names' => InputOption::VALUE_OPTIONAL,
-    ]): void
+    protected function configure(): void
     {
-        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
+        $this
+            ->addArgument('entityType', InputArgument::OPTIONAL, 'The machine name of the entity type')
+            ->addArgument('bundle', InputArgument::OPTIONAL, 'The machine name of the bundle')
+            ->addOption(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores')
+            ->addOption(name: 'field-label', description: 'The field label')
+            ->addOption(name: 'field-description', description: 'The field description')
+            ->addOption(name: 'is-required', description: 'Whether the field is required')
+            ->addOption(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists')
+            ->addUsage('field:base-override-create taxonomy_term tag')
+            ->addUsage('field:base-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1');
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $entityType = $input->getArgument('entityType') ?: $this->askEntityType($input, $output);
+        $input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
+        $bundle = $input->getArgument('bundle') ?: $this->askBundle($input, $output);
+        $input->setArgument('bundle', $bundle);
         $this->validateBundle($entityType, $bundle);
 
-        $fieldName = $this->input->getOption('field-name') ?? $this->askFieldName($entityType);
-        $this->input->setOption('field-name', $fieldName);
+        $fieldName = $input->getOption('field-name') ?: $this->askFieldName($input, $output);
+        $input->setOption('field-name', $fieldName);
 
         if ($fieldName === '') {
             throw new \InvalidArgumentException(dt('The !optionName option is required.', [
@@ -88,27 +98,29 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
             );
         }
 
-        $this->input->setOption(
+        $input->setOption(
             'field-label',
-            $this->input->getOption('field-label') ?? $this->askFieldLabel((string) $definition->getLabel())
+            $input->getOption('field-label') ?? $this->askFieldLabel((string) $definition->getLabel())
         );
-        $this->input->setOption(
+        $input->setOption(
             'field-description',
-            $this->input->getOption('field-description') ?? $this->askFieldDescription((string) $definition->getDescription())
+            $input->getOption('field-description') ?? $this->askFieldDescription((string) $definition->getDescription())
         );
-        $this->input->setOption(
+        $input->setOption(
             'is-required',
-            (bool) ($this->input->getOption('is-required') ?? $this->askRequired($definition->isRequired()))
+            (bool) ($input->getOption('is-required') ?? $this->askRequired($definition->isRequired()))
         );
 
-        $fieldName = $this->input->getOption('field-name');
-        $fieldLabel = $this->input->getOption('field-label');
-        $fieldDescription = $this->input->getOption('field-description');
-        $isRequired = $this->input->getOption('is-required');
+        $fieldName = $input->getOption('field-name');
+        $fieldLabel = $input->getOption('field-label');
+        $fieldDescription = $input->getOption('field-description');
+        $isRequired = $input->getOption('is-required');
 
         $baseFieldOverride = $this->createBaseFieldOverride($entityType, $bundle, $fieldName, $fieldLabel, $fieldDescription, $isRequired);
 
         $this->logResult($baseFieldOverride);
+
+        return self::SUCCESS;
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
@@ -135,18 +147,20 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
         }
     }
 
-    protected function askFieldName(string $entityType): string
+    protected function askFieldName(InputInterface $input, OutputInterface $output): string
     {
+        $entityType = $input->getArgument('entityType');
         /** @var BaseFieldDefinition[] $definitions */
         $definitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
         $choices = [];
 
         foreach ($definitions as $definition) {
-            $label = $this->input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
+            $label = $input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
             $choices[$definition->getName()] = $label;
         }
 
-        return $this->io()->select('Field name', $choices);
+        $io = new DrushStyle($input, $output);
+        return $io->select('Field name', $choices);
     }
 
     protected function askFieldLabel(string $default): string
@@ -182,7 +196,7 @@ final class FieldBaseOverrideCreateCommands extends DrushCommands
 
     protected function logResult(BaseFieldOverride $baseFieldOverride): void
     {
-        $this->logger()->success(
+        $this->logger->success(
             sprintf(
                 'Successfully created base field override \'%s\' on %s with bundle \'%s\'',
                 $baseFieldOverride->getName(),
