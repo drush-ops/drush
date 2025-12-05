@@ -41,7 +41,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
     }
 
     /**
-     * Sanitize string fields associated with the user.
+     * Sanitize string and number fields associated with the user.
      *
      * @todo Use Drupal services to get field info.
      */
@@ -66,7 +66,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
             $query = $conn->update($table);
             $name = $def->getName();
             $field_type_class = \Drupal::service('plugin.manager.field.field_type')->getPluginClass($def->getType());
-            $supported_field_types = ['email', 'string', 'string_long', 'telephone', 'text', 'text_long', 'text_with_summary'];
+            $supported_field_types = ['email', 'string', 'string_long', 'telephone', 'text', 'text_long', 'text_with_summary', 'integer', 'decimal'];
             if (in_array($def->getType(), $supported_field_types)) {
                 $value_array = $field_type_class::generateSampleValue($def);
                 $value = $value_array['value'];
@@ -108,13 +108,23 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
                     ]);
                     $execute = true;
                     break;
+
+                case 'integer':
+                    $query->fields([$name . '_value' => 123]);
+                    $execute = true;
+                    break;
+
+                case 'decimal':
+                    $query->fields([$name . '_value' => 123.45]);
+                    $execute = true;
+                    break;
             }
             if ($execute) {
                 $query->execute();
                 $this->entityTypeManager->getStorage('user')->resetCache();
                 $this->logger()->success(dt('!table table sanitized.', ['!table' => $table]));
             } else {
-                $this->logger()->success(dt('No text fields for users need sanitizing.', ['!table' => $table]));
+                $this->logger()->success(dt('No text and number fields for users need sanitizing.', ['!table' => $table]));
             }
         }
     }
@@ -122,7 +132,7 @@ final class SanitizeUserFieldsCommands extends DrushCommands implements Sanitize
     #[CLI\Hook(type: HookManager::ON_EVENT, target: SanitizeCommands::CONFIRMS)]
     public function messages(&$messages, InputInterface $input): void
     {
-        $messages[] = dt('Sanitize text fields associated with users.');
+        $messages[] = dt('Sanitize text and number fields associated with users.');
     }
 
     #[CLI\Hook(type: HookManager::OPTION_HOOK, target: SanitizeCommands::SANITIZE)]
