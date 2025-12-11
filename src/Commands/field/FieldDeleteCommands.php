@@ -11,54 +11,73 @@ use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\DrushCommands;
+use Drush\Commands\IoTrait;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function count;
 use function dt;
 use function field_purge_batch;
 
-final class FieldDeleteCommands extends DrushCommands
+/**
+ * Delete a field
+ *
+ * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
+ */
+#[AsCommand(
+  name: self::DELETE,
+  description: 'Delete a field.',
+  aliases: ['field-delete', 'fd'],
+)]
+#[CLI\Version(version: '11.0')]
+final class FieldDeleteCommands extends Command
 {
     use AutowireTrait;
+    use IoTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
 
     const string DELETE = 'field:delete';
 
     public function __construct(
-        protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo
+        private readonly EntityTypeManagerInterface $entityTypeManager,
+        private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        private readonly LoggerInterface $logger
     ) {
+        parent::__construct();
     }
 
-    /**
-     * Delete a field
-     *
-     * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
-     */
-    #[CLI\Command(name: self::DELETE, aliases: ['field-delete', 'fd'])]
-    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type.')]
-    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle.')]
-    #[CLI\Option(name: 'field-name', description: 'The machine name of the field.')]
-    #[CLI\Option(name: 'all-bundles', description: 'Whether to delete the field from all bundles.')]
-    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\Usage(name: 'field:delete', description: 'Delete a field by answering the prompts.')]
-    #[CLI\Usage(name: 'field-delete taxonomy_term tag', description: 'Delete a field and fill in the remaining information through prompts.')]
-    #[CLI\Usage(name: 'field-delete taxonomy_term tag --field-name=field_tag_label', description: 'Delete a field in a non-interactive way.')]
-    #[CLI\Usage(name: 'field-delete taxonomy_term --field-name=field_tag_label --all-bundles', description: 'Delete a field from all bundles.')]
-    #[CLI\Complete(method_name_or_callable: 'complete')]
-    #[CLI\Version(version: '11.0')]
-    public function delete(?string $entityType = null, ?string $bundle = null, array $options = [
-        'field-name' => InputOption::VALUE_REQUIRED,
-        'show-machine-names' => InputOption::VALUE_OPTIONAL,
-        'all-bundles' => InputOption::VALUE_OPTIONAL,
-    ]): void
+    protected function configure(): void
     {
-        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
+        $this
+            ->addArgument(name: 'entityType', mode: InputArgument::OPTIONAL, description: 'The machine name of the entity type')
+            ->addArgument(name: 'bundle', mode: InputArgument::OPTIONAL, description: 'The machine name of the bundle')
+            ->addOption(name: 'field-name', mode: InputOption::VALUE_REQUIRED, description: 'A unique machine-readable name containing letters, numbers, and underscores')
+            ->addOption(name: 'all-bundles', mode: InputOption::VALUE_OPTIONAL, description: 'Whether to delete the field from all bundles.')
+            ->addOption(name: 'show-machine-names', mode: InputOption::VALUE_OPTIONAL, description: 'Show machine names instead of labels in option lists')
+            ->addUsage('field:delete taxonomy_term tag')
+            ->addUsage('field-delete taxonomy_term tag --field-name=field_tag_label')
+            ->addUsage('field-delete taxonomy_term --field-name=field_tag_label --all-bundles');
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->setIo($input, $output);
+
+        $entityType = $input->getArgument('entityType') ?? $this->askEntityType();
+        $this->input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
+
+        $bundle = $input->getArgument('bundle') ?? $this->askBundle();
+        $this->input->setArgument('bundle', $bundle);
+        $this->validateBundle($entityType, $bundle);
 
         $fieldName = $this->input->getOption('field-name') ?: $this->askExisting($entityType, $bundle);
         $this->input->setOption('field-name', $fieldName);
@@ -85,7 +104,7 @@ final class FieldDeleteCommands extends DrushCommands
             );
         }
 
-        if (!$options['all-bundles']) {
+        if (!$input->getOption('all-bundles')) {
             $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
             $this->validateBundle($entityType, $bundle);
 
@@ -119,6 +138,8 @@ final class FieldDeleteCommands extends DrushCommands
         // low batch limit to avoid administrators having to wait for cron runs when
         // removing fields that meet this criteria.
         field_purge_batch(10);
+
+        return Command::SUCCESS;
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
@@ -269,7 +290,7 @@ final class FieldDeleteCommands extends DrushCommands
             $message = 'There was a problem removing the !field from the !type content type.';
         }
 
-        $this->logger()->success(
+        $this->logger->success(
             dt($message, ['!field' => $fieldConfig->label(), '!type' => $bundleLabel])
         );
     }
