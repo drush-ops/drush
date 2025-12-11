@@ -25,6 +25,7 @@ use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\IoTrait;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -35,6 +36,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Contracts\Service\Attribute\Required;
 
 use function dt;
 
@@ -98,15 +100,16 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
             ->addUsage('field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html');
     }
 
-
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->setIo($input, $output);
 
-        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
+        $entityType = $input->getArgument('entityType') ?? $this->askEntityType();
+        $this->input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
+        $bundle = $input->getArgument('bundle') ?? $this->askBundle();
+        $this->input->setArgument('bundle', $bundle);
         $this->validateBundle($entityType, $bundle);
 
         if ($this->input->getOption('existing') || $this->input->getOption('existing-field-name')) {

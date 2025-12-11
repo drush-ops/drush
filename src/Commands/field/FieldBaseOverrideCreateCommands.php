@@ -72,10 +72,12 @@ final class FieldBaseOverrideCreateCommands extends Command
     {
         $this->setIo($input, $output);
 
-        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
+        $entityType = $input->getArgument('entityType') ?? $this->askEntityType();
+        $this->input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
 
-        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
+        $bundle = $input->getArgument('bundle') ?? $this->askBundle();
+        $this->input->setArgument('bundle', $bundle);
         $this->validateBundle($entityType, $bundle);
 
         $fieldName = $this->input->getOption('field-name') ?? $this->askFieldName($entityType);
