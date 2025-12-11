@@ -12,6 +12,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\IoTrait;
 use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -19,6 +20,7 @@ use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -54,7 +56,7 @@ final class FieldBaseInfoCommands extends Command
 {
     use AutowireTrait;
     use FormatterTrait;
-
+    use IoTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
     use FieldDefinitionRowsOfFieldsTrait;
@@ -73,13 +75,15 @@ final class FieldBaseInfoCommands extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('entityType', InputArgument::REQUIRED, 'The machine name of the entity type')
-            ->addOption(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')
+            ->addArgument(name: 'entityType', mode: InputArgument::OPTIONAL, description: 'The machine name of the entity type')
+            ->addOption(name: 'show-machine-names', mode: InputOption::VALUE_OPTIONAL, description: 'Show machine names instead of labels in option lists')
             ->addUsage('field:base-info taxonomy_term');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->setIo($input, $output);
+
         $entityType = $input->getArgument('entityType') ?? $this->askEntityType();
         $input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);

@@ -12,6 +12,7 @@ use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
+use Drush\Commands\IoTrait;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,8 +22,8 @@ use Symfony\Component\Console\Completion\CompletionSuggestions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-
 use Symfony\Component\Console\Output\OutputInterface;
+
 use function dt;
 
 /**
@@ -40,6 +41,7 @@ final class FieldBaseOverrideCreateCommands extends Command
     use AutowireTrait;
     use EntityTypeBundleAskTrait;
     use EntityTypeBundleValidationTrait;
+    use IoTrait;
 
     const string BASE_OVERRIDE_CREATE = 'field:base-override-create';
 
@@ -55,31 +57,31 @@ final class FieldBaseOverrideCreateCommands extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('entityType', InputArgument::OPTIONAL, 'The machine name of the entity type')
-            ->addArgument('bundle', InputArgument::OPTIONAL, 'The machine name of the bundle')
-            ->addOption(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores')
-            ->addOption(name: 'field-label', description: 'The field label')
-            ->addOption(name: 'field-description', description: 'The field description')
-            ->addOption(name: 'is-required', description: 'Whether the field is required')
-            ->addOption(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists')
+            ->addArgument(name: 'entityType', mode: InputArgument::OPTIONAL, description: 'The machine name of the entity type')
+            ->addArgument(name: 'bundle', mode: InputArgument::OPTIONAL, description: 'The machine name of the bundle')
+            ->addOption(name: 'field-name', mode: InputOption::VALUE_REQUIRED, description: 'A unique machine-readable name containing letters, numbers, and underscores')
+            ->addOption(name: 'field-label', mode: InputOption::VALUE_REQUIRED, description: 'The field label')
+            ->addOption(name: 'field-description', mode: InputOption::VALUE_REQUIRED, description: 'The field description')
+            ->addOption(name: 'is-required', mode: InputOption::VALUE_REQUIRED, description: 'Whether the field is required')
+            ->addOption(name: 'show-machine-names', mode: InputOption::VALUE_OPTIONAL, description: 'Show machine names instead of labels in option lists')
             ->addUsage('field:base-override-create taxonomy_term tag')
             ->addUsage('field:base-override-create taxonomy_term tag --field-name=name --field-label=Label --is-required=1');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $entityType = $input->getArgument('entityType') ?: $this->askEntityType($input, $output);
-        $input->setArgument('entityType', $entityType);
+        $this->setIo($input, $output);
+
+        $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
-        $bundle = $input->getArgument('bundle') ?: $this->askBundle($input, $output);
-        $input->setArgument('bundle', $bundle);
+        $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
         $this->validateBundle($entityType, $bundle);
 
-        $fieldName = $input->getOption('field-name') ?: $this->askFieldName($input, $output);
-        $input->setOption('field-name', $fieldName);
+        $fieldName = $this->input->getOption('field-name') ?? $this->askFieldName($entityType);
+        $this->input->setOption('field-name', $fieldName);
 
-        if ($fieldName === '') {
+        if ($fieldName === null) {
             throw new \InvalidArgumentException(dt('The !optionName option is required.', [
                 '!optionName' => 'field-name',
             ]));
@@ -98,23 +100,23 @@ final class FieldBaseOverrideCreateCommands extends Command
             );
         }
 
-        $input->setOption(
+        $this->input->setOption(
             'field-label',
-            $input->getOption('field-label') ?? $this->askFieldLabel((string) $definition->getLabel())
+            $this->input->getOption('field-label') ?? $this->askFieldLabel((string) $definition->getLabel())
         );
-        $input->setOption(
+        $this->input->setOption(
             'field-description',
-            $input->getOption('field-description') ?? $this->askFieldDescription((string) $definition->getDescription())
+            $this->input->getOption('field-description') ?? $this->askFieldDescription((string) $definition->getDescription())
         );
-        $input->setOption(
+        $this->input->setOption(
             'is-required',
-            (bool) ($input->getOption('is-required') ?? $this->askRequired($definition->isRequired()))
+            (bool) ($this->input->getOption('is-required') ?? $this->askRequired($definition->isRequired()))
         );
 
-        $fieldName = $input->getOption('field-name');
-        $fieldLabel = $input->getOption('field-label');
-        $fieldDescription = $input->getOption('field-description');
-        $isRequired = $input->getOption('is-required');
+        $fieldName = $this->input->getOption('field-name');
+        $fieldLabel = $this->input->getOption('field-label');
+        $fieldDescription = $this->input->getOption('field-description');
+        $isRequired = $this->input->getOption('is-required');
 
         $baseFieldOverride = $this->createBaseFieldOverride($entityType, $bundle, $fieldName, $fieldLabel, $fieldDescription, $isRequired);
 
@@ -147,20 +149,18 @@ final class FieldBaseOverrideCreateCommands extends Command
         }
     }
 
-    protected function askFieldName(InputInterface $input, OutputInterface $output): string
+    protected function askFieldName(string $entityType): string
     {
-        $entityType = $input->getArgument('entityType');
         /** @var BaseFieldDefinition[] $definitions */
         $definitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
         $choices = [];
 
         foreach ($definitions as $definition) {
-            $label = $input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
+            $label = $this->input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
             $choices[$definition->getName()] = $label;
         }
 
-        $io = new DrushStyle($input, $output);
-        return $io->select('Field name', $choices);
+        return $this->io()->select('Field name', $choices);
     }
 
     protected function askFieldLabel(string $default): string
