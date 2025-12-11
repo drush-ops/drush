@@ -23,106 +23,86 @@ use Drupal\Core\Url;
 use Drupal\field\FieldConfigInterface;
 use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
-use Drush\Commands\DrushCommands;
-use Psr\Container\ContainerInterface;
+use Drush\Commands\AutowireTrait;
+use Drush\Commands\IoTrait;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Completion\CompletionSuggestions;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use function dt;
 
-class FieldCreateCommands extends DrushCommands implements CustomEventAwareInterface
+/**
+ * Create a new field.
+ *
+ * @see \Drupal\field_ui\Form\FieldConfigEditForm
+ * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
+ */
+#[AsCommand(
+    name: self::CREATE,
+    description: 'Create a new field.',
+    aliases: ['field-create', 'fc'],
+)]
+#[CLI\Version(version: '11.0')]
+final class FieldCreateCommands extends Command implements CustomEventAwareInterface
 {
     use EntityTypeBundleAskTrait;
     use CustomEventAwareTrait;
     use EntityTypeBundleValidationTrait;
+    use AutowireTrait;
+    use IoTrait;
 
     const CREATE = 'field:create';
 
-    protected ContentTranslationManagerInterface $contentTranslationManager;
-
     public function __construct(
-        protected FieldTypePluginManagerInterface $fieldTypePluginManager,
-        protected WidgetPluginManager $widgetPluginManager,
-        protected SelectionPluginManagerInterface $selectionPluginManager,
-        protected EntityTypeManagerInterface $entityTypeManager,
-        protected EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-        protected ModuleHandlerInterface $moduleHandler,
-        protected EntityFieldManagerInterface $entityFieldManager
+        private readonly FieldTypePluginManagerInterface $fieldTypePluginManager,
+        #[Autowire(service: 'plugin.manager.field.widget')]
+        private readonly WidgetPluginManager $widgetPluginManager,
+        private readonly SelectionPluginManagerInterface $selectionPluginManager,
+        private readonly EntityTypeManagerInterface $entityTypeManager,
+        private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        private readonly ModuleHandlerInterface $moduleHandler,
+        private readonly EntityFieldManagerInterface $entityFieldManager,
+        private readonly LoggerInterface $logger,
+        private ?ContentTranslationManagerInterface $contentTranslationManager = null,
     ) {
         parent::__construct();
     }
 
-    public static function create(ContainerInterface $container): self
+    protected function configure(): void
     {
-        $commandHandler = new self(
-            $container->get('plugin.manager.field.field_type'),
-            $container->get('plugin.manager.field.widget'),
-            $container->get('plugin.manager.entity_reference_selection'),
-            $container->get('entity_type.manager'),
-            $container->get('entity_type.bundle.info'),
-            $container->get('module_handler'),
-            $container->get('entity_field.manager')
-        );
-
-        if ($container->has('content_translation.manager')) {
-            $commandHandler->setContentTranslationManager($container->get('content_translation.manager'));
-        }
-
-        return $commandHandler;
+        $this
+            ->addArgument(name: 'entityType', mode: InputArgument::OPTIONAL, description: 'The machine name of the entity type')
+            ->addArgument(name: 'bundle', mode: InputArgument::OPTIONAL, description: 'The machine name of the bundle')
+            ->addOption(name: 'field-name', mode: InputOption::VALUE_REQUIRED, description: 'A unique machine-readable name containing letters, numbers, and underscores')
+            ->addOption(name: 'field-label', mode: InputOption::VALUE_REQUIRED, description: 'The field label')
+            ->addOption(name: 'field-description', mode: InputOption::VALUE_OPTIONAL, description: 'Instructions to present to the user below this field on the editing form')
+            ->addOption(name: 'field-type', mode: InputOption::VALUE_REQUIRED, description: 'The field type')
+            ->addOption(name: 'field-widget', mode: InputOption::VALUE_REQUIRED, description: 'The field widget')
+            ->addOption(name: 'is-required', mode: InputOption::VALUE_OPTIONAL, description: 'Whether the field is required')
+            ->addOption(name: 'is-translatable', mode: InputOption::VALUE_OPTIONAL, description: 'Whether the field is translatable')
+            ->addOption(name: 'cardinality', mode: InputOption::VALUE_REQUIRED, description: 'The allowed number of values')
+            ->addOption(name: 'target-type', mode: InputOption::VALUE_OPTIONAL, description: 'The target entity type. Only necessary for entity reference fields.')
+            ->addOption(name: 'target-bundle', mode: InputOption::VALUE_OPTIONAL, description: 'The target bundle(s). Only necessary for entity reference fields.')
+            ->addOption(name: 'existing', mode: InputOption::VALUE_OPTIONAL, description: 'Re-use an existing field.')
+            ->addOption(name: 'existing-field-name', mode: InputOption::VALUE_OPTIONAL, description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')
+            ->addOption(name: 'show-machine-names', mode: InputOption::VALUE_OPTIONAL, description: 'Show machine names instead of labels in option lists')
+            ->addUsage('field:create taxonomy_term tag')
+            ->addUsage('field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2')
+            ->addUsage('field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html');
     }
 
-    public function setContentTranslationManager(?ContentTranslationManagerInterface $manager = null): void
-    {
-        if ($manager) {
-            $this->contentTranslationManager = $manager;
-        }
-    }
 
-    /**
-     * Create a new field
-     *
-     * @see \Drupal\field_ui\Form\FieldConfigEditForm
-     * @see \Drupal\field_ui\Form\FieldStorageConfigEditForm
-     */
-    #[CLI\Command(name: self::CREATE, aliases: ['field-create', 'fc'])]
-    #[CLI\Argument(name: 'entityType', description: 'The machine name of the entity type')]
-    #[CLI\Argument(name: 'bundle', description: 'The machine name of the bundle')]
-    #[CLI\Option(name: 'field-name', description: 'A unique machine-readable name containing letters, numbers, and underscores.')]
-    #[CLI\Option(name: 'field-label', description: 'The field label')]
-    #[CLI\Option(name: 'field-description', description: 'Instructions to present to the user below this field on the editing form.')]
-    #[CLI\Option(name: 'field-type', description: 'The field type')]
-    #[CLI\Option(name: 'field-widget', description: 'The field widget')]
-    #[CLI\Option(name: 'is-required', description: 'Whether the field is required')]
-    #[CLI\Option(name: 'is-translatable', description: 'Whether the field is translatable')]
-    #[CLI\Option(name: 'cardinality', description: 'The allowed number of values')]
-    #[CLI\Option(name: 'target-type', description: 'The target entity type. Only necessary for entity reference fields.')]
-    #[CLI\Option(name: 'target-bundle', description: 'The target bundle(s). Only necessary for entity reference fields.')]
-    #[CLI\Option(name: 'existing', description: 'Re-use an existing field.')]
-    #[CLI\Option(name: 'existing-field-name', description: 'The name of an existing field you want to re-use. Only used in non-interactive context.')]
-    #[CLI\Option(name: 'show-machine-names', description: 'Show machine names instead of labels in option lists.')]
-    #[CLI\Usage(name: self::CREATE, description: 'Create a field by answering the prompts.')]
-    #[CLI\Usage(name: 'field:create taxonomy_term tag', description: 'Create a field and fill in the remaining information through prompts.')]
-    #[CLI\Usage(name: 'field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2', description: 'Create a field in a completely non-interactive way.')]
-    #[CLI\Usage(name: 'field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html', description: 'Create a formatted text field.')]
-    #[CLI\Complete(method_name_or_callable: 'complete')]
-    #[CLI\Version(version: '11.0')]
-    public function fieldCreate(?string $entityType = null, ?string $bundle = null, array $options = [
-        'field-name' => InputOption::VALUE_REQUIRED,
-        'field-label' => InputOption::VALUE_REQUIRED,
-        'field-description' => InputOption::VALUE_OPTIONAL,
-        'field-type' => InputOption::VALUE_REQUIRED,
-        'field-widget' => InputOption::VALUE_REQUIRED,
-        'is-required' => InputOption::VALUE_OPTIONAL,
-        'is-translatable' => InputOption::VALUE_OPTIONAL,
-        'cardinality' => InputOption::VALUE_REQUIRED,
-        'target-type' => InputOption::VALUE_OPTIONAL,
-        'target-bundle' => InputOption::VALUE_OPTIONAL,
-        'show-machine-names' => InputOption::VALUE_OPTIONAL,
-        'existing-field-name' => InputOption::VALUE_OPTIONAL,
-        'existing' => false,
-    ]): void
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->setIo($input, $output);
+
         $this->input->setArgument('entityType', $entityType ??= $this->askEntityType());
         $this->validateEntityType($entityType);
 
@@ -200,6 +180,8 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $this->createFieldDisplay('view');
 
         $this->logResult($field);
+
+        return Command::SUCCESS;
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
@@ -478,7 +460,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         $storage = $this->getEntityDisplay($context);
 
         if (!$storage instanceof EntityDisplayInterface) {
-            $this->logger()->info(
+            $this->logger->info(
                 sprintf("'%s' display storage not found for %s type '%s', creating now.", $context, $entityType, $bundle)
             );
 
@@ -513,7 +495,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
 
     protected function logResult(FieldConfigInterface $field): void
     {
-        $this->logger()->success(
+        $this->logger->success(
             sprintf(
                 "Successfully created field '%s' on %s type with bundle '%s'",
                 $field->get('field_name'),
@@ -532,7 +514,7 @@ class FieldCreateCommands extends DrushCommands implements CustomEventAwareInter
         ];
 
         if ($this->moduleHandler->moduleExists('field_ui')) {
-            $this->logger()->success(
+            $this->logger->success(
                 dt('Further customisation can be done through the <href=%editForm>edit form</>.', [
                     '%editForm' => Url::fromRoute($routeName, $routeParams)->setAbsolute(true)->toString(),
                 ]),

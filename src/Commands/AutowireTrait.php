@@ -33,7 +33,7 @@ trait AutowireTrait
                 $service = (string) $attribute->newInstance()->value;
             }
 
-            if (!$container->has($service)) {
+            if (!$container->has($service) && !$parameter->isOptional() && !$parameter->isDefaultValueAvailable()) {
                 throw new AutowiringFailedException($service, sprintf('Cannot autowire service "%s": argument "$%s" of method "%s::_construct()", you should configure its value explicitly.', $service, $parameter->getName(), static::class));
             }
 
