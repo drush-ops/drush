@@ -181,9 +181,10 @@ final class MigrateRunnerCommands extends DrushCommands
         try {
             $sourceRowsCount = $migration->getSourcePlugin()->count();
             // -1 indicates uncountable sources.
-            if ($sourceRowsCount === -1) {
-                return null;
-            }
+            // Can't happen?
+//            if ($sourceRowsCount == -1) {
+//                return null;
+//            }
             return $sourceRowsCount;
         } catch (\Exception $exception) {
             $arguments = [

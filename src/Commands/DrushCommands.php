@@ -59,7 +59,6 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
      */
     protected function io(): DrushStyle
     {
-        // @phpstan-ignore booleanNot.alwaysFalse
         if (!$this->io) {
             // Specify our own Style class when needed.
             $this->io = new DrushStyle($this->input(), $this->output());

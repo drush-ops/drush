@@ -117,7 +117,7 @@ final class UpdateDBCommands extends DrushCommands
     {
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         drupal_load_updates();
-        list($pending, $start, $warnings) = $this->getUpdatedbStatus($options);
+        [$pending, $start, $warnings] = $this->getUpdatedbStatus($options);
 
         // Output any warnings.
         $return = null;
@@ -193,7 +193,7 @@ final class UpdateDBCommands extends DrushCommands
         if (method_exists($update_hook_registry, 'getEquivalentUpdate')) {
             $equivalent_update = \Drupal::service('update.update_hook_registry')->getEquivalentUpdate($module, $number);
         }
-        if ($equivalent_update && $equivalent_update instanceof EquivalentUpdate) {
+        if ($equivalent_update instanceof EquivalentUpdate) {
             $ret['results']['query'] = $equivalent_update->toSkipMessage();
             $ret['results']['success'] = true;
             $context['sandbox']['#finished'] = true;
@@ -280,7 +280,7 @@ final class UpdateDBCommands extends DrushCommands
             return;
         }
 
-        list($extension, $name) = explode('_post_update_', $function, 2);
+        [$extension, $name] = explode('_post_update_', $function, 2);
         \Drupal::service('update.post_update_registry')->getUpdateFunctions($extension);
 
         if (function_exists($function)) {

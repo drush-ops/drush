@@ -227,7 +227,6 @@ final class PmCommands extends DrushCommands
             $modules = StringUtils::csvToArray($modules);
             if ($validation_reasons = $this->getModuleInstaller()->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $reasons) {
-                    // @phpstan-ignore foreach.nonIterable
                     foreach ($reasons as $reason) {
                         $list[] = "$module: " . (string)$reason;
                     }

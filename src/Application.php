@@ -7,10 +7,12 @@ namespace Drush;
 use Composer\Autoload\ClassLoader;
 use Consolidation\AnnotatedCommand\AnnotatedCommand;
 use Consolidation\SiteAlias\SiteAliasManager;
+use Drush\Attributes\HandleRemoteCommands;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\RemoteCommandProxy;
 use Drush\Config\ConfigAwareTrait;
+use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Runtime\RedispatchHook;
 use Drush\Runtime\ServiceManager;
 use Drush\Runtime\TildeExpansionHook;
@@ -192,6 +194,13 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         return $command;
     }
 
+    protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int
+    {
+        $this->redispatchIfRemote($command, $input);
+        // If we get here, redispatch did not happen.
+        return parent::doRunCommand($command, $input, $output);
+    }
+
     /**
      * Look up a command. Bootstrap further if necessary.
      */
@@ -309,6 +318,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // any of the configuration steps we do here.
         $this->configureIO($input, $output);
 
+        $this->addListeners($commandfileSearchpath);
+
         // Directly add the yaml-cli commands.
         $this->addCommands($this->serviceManager->instantiateYamlCliCommands());
 
@@ -324,9 +335,14 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
 
         // Register our commands with Robo, our application framework.
-        // Note that Robo::register can accept either Annotated Command
-        // command handlers or Symfony Console Command objects.
+        // Note that Robo::register can accept Annotated Command
+        // handlers or Symfony Console Command objects, but not yet invokables.
+        $commandInstances = $this->serviceManager->commandFromInvokable($commandInstances);
+        array_walk($commandInstances, fn($instance) => $this->logger->debug('Add command {class}', ['class' => $instance::class]));
         Robo::register($this, $commandInstances);
+
+        // Dispatch our custom event. It also fires later in \Drush\Boot\DrupalBoot8::bootstrapDrupalFull.
+        Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent($this), ConsoleDefinitionsEvent::class);
     }
 
     /**
@@ -337,5 +353,25 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderThrowable($e, $output);
+    }
+
+    // Discover event listeners and add those that do not require bootstrap.
+    protected function addListeners($commandfileSearchpath): void
+    {
+        $listenerClasses = $this->serviceManager->discoverListeners($commandfileSearchpath, '\Drush');
+        $listenerClasses = $this->serviceManager->filterListeners($listenerClasses);
+        $this->serviceManager->addListeners($listenerClasses, Drush::getContainer());
+    }
+
+    protected function redispatchIfRemote(Command $command, InputInterface $input): void
+    {
+        // Redispatch if the command is remote and is eligible.
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
+        $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
+        $reflection = new \ReflectionObject($code);
+        $attributes = $reflection->getAttributes(HandleRemoteCommands::class);
+        if (empty($attributes) && !$command instanceof AnnotatedCommand && !$command instanceof RemoteCommandProxy) {
+            $this->redispatchHook->redispatchIfRemote($input);
+        }
     }
 }

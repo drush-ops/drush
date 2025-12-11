@@ -21,9 +21,13 @@ sut/*
 !sut/drush
 sut/drush/sites/*test.site.yml
 !sut/modules
+!sut/themes
 sut/modules/contrib
 /sandbox/
 .env
 # Test fixtures
 sut/drush/sites/synctest.site.yml
 /tests/.phpunit.result.cache
+
+# Code tools
+.claude

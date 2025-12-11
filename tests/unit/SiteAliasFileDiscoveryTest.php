@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Drush\SiteAlias;
 
-use PHPUnit\Framework\TestCase;
 use Consolidation\SiteAlias\SiteAliasFileDiscovery;
+use PHPUnit\Framework\TestCase;
 use Unish\Utils\Fixtures;
-use Unish\Utils\FunctionUtils;
 
 class SiteAliasFileDiscoveryTest extends TestCase
 {
     use Fixtures;
-    use FunctionUtils;
 
     /**
      * @var SiteAliasFileDiscovery|mixed

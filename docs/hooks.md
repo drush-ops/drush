@@ -1,3 +1,10 @@
+!!! Warning
+
+    Hooks are deprecated in Drush 13.7. A few replacements:
+
+    1. To alter command information (options, arguments, etc.), [see Altering Command Info](commands.md##altering-command-info).
+    2. To validate arguments/options, [provide](commands.md) a PHP8 Attribute class which commands will use to opt into your validation. Add a Listener class with the validation logic.
+    3. To provide an Optionsets, you also [provide an Attribute Class and a Listener Class](commands.md).
 
 ## Core Hooks
 All commandfiles may implement methods that are called by Drush at various times in the request cycle. To implement one, add a `#[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: 'pm:install')]` (for example) to the top of your method. The class constants for hooks are located in [HookManager](https://github.com/consolidation/annotated-command/blob/e01152f698eff4cb5df3ebfe5e097ef335dbd3c9/src/Hooks/HookManager.php#L30-L57). 

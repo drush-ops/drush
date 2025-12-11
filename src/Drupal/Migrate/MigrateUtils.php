@@ -19,9 +19,9 @@ class MigrateUtils
      */
     public static function parseIdList(?string $idlist): array
     {
-        $idlist = array_filter(str_getcsv((string) $idlist));
+        $idlist = array_filter(str_getcsv((string) $idlist, escape: '\\'));
         array_walk($idlist, function (string &$value) {
-            $value = str_getcsv(trim($value), ':');
+            $value = str_getcsv(trim($value), ':', escape: '\\');
         });
         return $idlist;
     }

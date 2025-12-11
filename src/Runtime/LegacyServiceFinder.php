@@ -159,11 +159,11 @@ class LegacyServiceFinder
      * Add a services.yml file if it exists.
      *
      * @param string $serviceProviderName Arbitrary name for temporary use only
-     * @param string $serviceYmlPath Path to drush.services.yml file
+     * @param ?string $serviceYmlPath Path to drush.services.yml file
      */
     protected function addDrushServiceProvider($serviceProviderName, $serviceYmlPath = '')
     {
-        if (($serviceYmlPath !== null) && file_exists($serviceYmlPath)) {
+        if ((!is_null($serviceYmlPath)) && file_exists($serviceYmlPath)) {
             // Keep our own list of service files
             $this->drushServiceYamls[$serviceProviderName] = $serviceYmlPath;
             // This is how we used to add our drush.services.yml file

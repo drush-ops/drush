@@ -35,7 +35,6 @@ class ImageTest extends UnishIntegrationTestCase
         // Test that "drush image-derive" works.
         $style_name = 'thumbnail';
         $this->drush(ImageCommands::DERIVE, [$style_name, $logo]);
-        $this->log($this->getOutput());
         $this->assertFileExists($thumbnail);
 
         // @todo investigate why this is failing.

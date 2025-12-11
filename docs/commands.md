@@ -2,8 +2,8 @@
 
 !!! tip
 
-      1. Drush 13 expects commandfiles to use the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated and will be removed in Drush 14.
-      1. Drush 12 expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators>` directory. The `Drush` subdirectory is a new requirement.
+      1. Drush 13+ expects commandfiles to use the [AutowireTrait](https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php) to inject Drupal and Drush dependencies. Prior versions used a [drush.services.yml file](https://www.drush.org/11.x/dependency-injection/#services-files) which is now deprecated.
+      1. Drush 12+ expects all commandfiles in the `<module-name>/src/Drush/<Commands|Generators|Listeners>` directory. The `Drush` subdirectory is a new requirement.
 
 Creating a new Drush command is easy. Follow the steps below.
 
@@ -14,18 +14,82 @@ Creating a new Drush command is easy. Follow the steps below.
 5. You may [inject dependencies](dependency-injection.md) into a command instance.
 6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/13.x/docs/contribute/unish.md#drush-test-traits).
 
-## Attributes or Annotations
-The following are both valid ways to declare a command:
+## Four ways to declare a command
+The following are supported ways to declare a command.
 
-=== "PHP8 Attributes"
-    
+=== "Console, _Recommended_"
+
+    :warning: Drush 13.7+ is required to use this approach.
+
+    ```php
+    namespace Drupal\[module-name]\Drush\Commands;    
+
+    use Consolidation\OutputFormatters\FormatterManager;
+    use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+    use Drupal\Core\Template\TwigEnvironment;
+    use Drush\Attributes as CLI;
+    use Drush\Commands\AutowireTrait;
+    use Drush\Formatters\FormatterTrait;
+    use Psr\Log\LoggerInterface;
+    use Symfony\Component\Console\Attribute\AsCommand;
+    use Symfony\Component\Console\Command\Command;
+    use Symfony\Component\Console\Input\InputArgument;
+    use Symfony\Component\Console\Input\InputInterface;
+    use Symfony\Component\Console\Output\OutputInterface;    
+
+    #[AsCommand(
+        name: self::NAME,
+        description: 'Find potentially unused Twig templates.',
+        aliases: ['twu'],
+    )]
+    #[CLI\FieldLabels(labels: ['template' => 'Template', 'compiled' => 'Compiled'])]
+    #[CLI\DefaultTableFields(fields: ['template', 'compiled'])]
+    #[CLI\FilterDefaultField(field: 'template')]
+    #[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
+    final class TwigUnusedCommand extends Command
+    {
+        use AutowireTrait;
+        use FormatterTrait;    
+
+        public const NAME = 'twig:unused';    
+
+        public function __construct(
+            protected readonly FormatterManager $formatterManager,
+            protected readonly TwigEnvironment $twig,
+            private readonly LoggerInterface $logger
+        ) {
+            parent::__construct();
+        }    
+
+        protected function configure(): void {
+            $this
+                ->setHelp('Immediately before running this command, web crawl your entire web site.')
+                ->addArgument('searchpaths', InputArgument::REQUIRED, 'A comma delimited list of paths to recursively search.')
+                ->addUsage('twig:unused /var/www/mass.local/docroot/modules/custom');
+        }    
+
+        public function execute(InputInterface $input, OutputInterface $output): int {
+            $data = $this->doExecute($input, $output, $input->getArgument('searchpaths'));
+            $this->writeFormattedOutput($input, $output, $data);
+            return Command::SUCCESS;
+        }    
+
+        public function doExecute(InputInterface $input, OutputInterface $output, string $searchpaths): RowsOfFields
+        {
+            $this->logger->notice('Found {count} unused', ['count' => count($rows)]);
+            return new RowsOfFields($unused);
+        }
+    ```
+
+=== "Annotated (Attributes), _Deprecated_"
+
     ```php
     use Drush\Attributes as CLI;
 
     /**
-     * Retrieve and display xkcd cartoons (attribute variant).
+     * Retrieve and display xkcd cartoons
      */
-    #[CLI\Command(name: 'xkcd:fetch-attributes', aliases: ['xkcd-attributes'])]
+    #[CLI\Command(name: 'xkcd:fetch', aliases: ['xkcd'])]
     #[CLI\Argument(name: 'search', description: 'Optional argument to retrieve the cartoons matching an index, keyword, or "random".')]
     #[CLI\Option(name: 'image-viewer', description: 'Command to use to view images (e.g. xv, firefox).', suggestedValues: ['open', 'xv', 'firefox'])]
     #[CLI\Option(name: 'google-custom-search-api-key', description: 'Google Custom Search API Key')]
@@ -36,8 +100,8 @@ The following are both valid ways to declare a command:
     }
     ```
 
-=== "Annotations"
-    
+=== "Annotated Command, _Deprecated_"
+
     ```php
     /**
      * @command xkcd:fetch
@@ -55,26 +119,83 @@ The following are both valid ways to declare a command:
     }
     ```
 
-- A commandfile that will only be used on PHP8+ should [use PHP Attributes](https://github.com/drush-ops/drush/pull/4821) instead of Annotations.
-- [See Attributes provided by Drush core](https://www.drush.org/api/Drush/Attributes.html). Custom code can supply additional Attribute classes, which may then be added to any command. For example see [InteractConfigName](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/InteractConfigName.php) which is used by [ConfigCommands](https://github.com/drush-ops/drush/blob/8b77c9abe6639de42a198c7e69565f09dcf5f22d/src/Commands/config/ConfigCommands.php#L98).
+=== "Console (Invokable), Symfony 7.4+"
+
+    ```php
+    declare(strict_types=1);
+    
+    namespace Drupal\woot\Drush\Commands;
+    
+    use Symfony\Component\Console\Attribute\Argument;
+    use Symfony\Component\Console\Attribute\AsCommand;
+    use Symfony\Component\Console\Attribute\Option;
+    use Symfony\Component\Console\Command\Command;
+    use Symfony\Component\Console\Output\OutputInterface;
+    
+    #[AsCommand(
+      name: self::NAME,
+      description: 'This command will concatenate two parameters.',
+      aliases: ['my-cat'],
+      help: 'If the --flip flag is provided, then the result is the concatenation of two and one.',
+      usages: ['bet alpha --flip'],
+    )]
+    final class MyCatCommand {
+    
+      const NAME = 'my:cat';
+    
+      public function __invoke(
+        OutputInterface $output,
+        #[Argument('The first parameter.')] string $one,
+        #[Argument('The second parameter.')] string $two,
+        #[Option('Whether or not the second parameter should come first in the result')] bool $flip = FALSE,
+      ): int
+      {
+        if ($flip) {
+          $output->writeln("{$two}{$one}");
+        }
+        else {
+          $output->writeln("{$one}{$two}");
+        }
+        return Command::SUCCESS;
+      }
+    }
+    ```
+
+Drush 13.7 deprecates Annotated Commands in favor of pure [Symfony Console commands](https://symfony.com/doc/current/console.html). This implies:
+
+- Each command lives in its own class file
+- The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
+- The command class should use Console's `#[AsCommand]` Attribute to declare its name, aliases, and hidden status. The `#[Command]` Attribute is deprecated.
+- Options and Arguments moved from Attributes to a `configure()` method on the command class
+- User interaction now happens in an `interact()` method on the command class.
+- Drush and Drupal services may be autowired. See [Dependency Injection](dependency-injection.md).
+- The main logic of the command moves to an execute() method on the command class.
+- Commands that wish to offer multiple _output formats_ (yes please!): 
+    - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
+    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php).
+    - Command class should `use \Drush\Formatters\FormatterTrait`
+    - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
+- Add the following snippet to your project's composer.json. 
+```json
+"conflict": {
+    "drush/drush": "<13.7"
+},
+```
+- [Numerous Optionset and Validate Attributes are provided by Drush core](https://github.com/drush-ops/drush/blob/13.x/src/Attributes). Custom code can supply additional Attributes+Listeners, which any command may choose to use.
 
 ## Altering Command Info
-Drush command info (annotations/attributes) can be altered from other modules. This is done by creating and registering _command info alterers_. Alterers are classes that are able to intercept and manipulate an existing command annotation.
 
-In the module that wants to alter a command info, add a class that:
+Drush command info can be altered from other modules. This is done by creating and registering a command definition listener. Listeners are dispatched once after non-bootstrap commands are instantiated and once again after bootstrap commands are instantiated.
 
-1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\CommandInfoAlterers` and the class file should be located under the `src/Drush/CommandInfoAlterers` directory.
-1. The filename must have a name like FooCommandInfoAlterer.php. The prefix `Foo` can be whatever string you want. The file must end in `CommandInfoAlterer.php`.
-1. The class must implement the `\Consolidation\AnnotatedCommand\CommandInfoAltererInterface`.
-1. Implement the alteration logic in the `alterCommandInfo()` method.
-1. Along with the alter code, it's strongly recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also it's a good practice to inject the the logger in the class constructor.
+In the module that wants to alter command info, add a class that:
 
-For an example, see [WootCommandInfoAlterer](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/CommandInfoAlterers/WootCommandInfoAlterer.php) provided by the testing 'woot' module.
+1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\Listeners` and the class file should be located under the `src/Drush/Listeners` directory.
+1. The filename must have a name like FooListener.php. The prefix `Foo` can be whatever string you want. The file must end in `Listener.php`.
+1. The class should implement the `#[AsListener]` PHP Attribute.
+1. Implement the alteration logic via a `__invoke(ConsoleDefinitionsEvent $event)` method.
+1. Along with the alter code, it's recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
 
-## Symfony Console Commands
-
-Drush lists and runs Symfony Console commands, in addition to more typical annotated commands.
-See [GreetCommands](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Commands/GreetCommands.php) as an example. Note that these commands must conform to the usual class name and class namespace requirements. You might need to extend the Console class if you can't rename and move it.
+For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Listeners/WootDefinitionListener.php) provided by the testing 'woot' module.
 
 ## Auto-discovered commands (PSR4)
 

@@ -5,6 +5,8 @@ parameters:
         - phpstan-bootstrap.php
     paths:
         - src
+        - sut/drush
+    treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
         - Drupal\Core\Extension\Extension
@@ -17,6 +19,8 @@ parameters:
         - src/Commands/core/LanguageCommands.php
         # Remove once we only support Drupal 11.2
         - src/Commands/core/CacheWarmCommands.php
+        # Not used by Drush itself
+        - src/TestTraits
     ignoreErrors:
         # XHprof
         - '#tideways_xhprof_enable#'

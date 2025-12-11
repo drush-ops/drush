@@ -241,7 +241,7 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
     protected function getQuery(string $entity_type, ?string $ids, array $options): QueryInterface
     {
         $storage = $this->entityTypeManager->getStorage($entity_type);
-        $query = $storage->getQuery()->accessCheck(false);
+        $query = $storage->getQuery();
         if ($ids = StringUtils::csvToArray((string) $ids)) {
             $idKey = $this->entityTypeManager->getDefinition($entity_type)->getKey('id');
             $query = $query->condition($idKey, $ids, 'IN');
@@ -258,6 +258,6 @@ final class EntityCommands extends DrushCommands implements StdinAwareInterface
                 $query->range(0, $limit);
             }
         }
-        return $query;
+        return $query->accessCheck(false);
     }
 }
