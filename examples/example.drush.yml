@@ -19,7 +19,7 @@ drush:
 # Global options.
 options:
   # Specify the base_url that should be used when generating links.
-  uri: 'https://example.com/subdir'
+  # uri: 'https://example.com/subdir'
 
 # Command-specific options.
 command:
