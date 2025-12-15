@@ -17,12 +17,12 @@ trait IoTrait
 
     protected DrushStyle $io;
 
-    public function setIo(InputInterface $input, OutputInterface $output): self
+    public function setIo(InputInterface $input, OutputInterface $output): DrushStyle
     {
         $this->input = $input;
         $this->output = $output;
 
-        return $this;
+        return $this->io();
     }
 
     public function io(): DrushStyle
