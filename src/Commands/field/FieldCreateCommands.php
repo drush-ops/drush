@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\field;
 
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
-use Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait;
 use Drupal\content_translation\ContentTranslationManagerInterface;
 use Drupal\Core\Entity\Display\EntityDisplayInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
@@ -25,7 +23,11 @@ use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\IoTrait;
-use Psr\Container\ContainerInterface;
+use Drush\Event\FieldCreateEntityDisplayValuesEvent;
+use Drush\Event\FieldCreateFieldConfigValuesEvent;
+use Drush\Event\FieldCreateFieldStorageConfigValuesEvent;
+use Drush\Event\FieldCreateInputOptionsEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -36,7 +38,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Contracts\Service\Attribute\Required;
 
 use function dt;
 
@@ -52,10 +53,9 @@ use function dt;
     aliases: ['field-create', 'fc'],
 )]
 #[CLI\Version(version: '11.0')]
-final class FieldCreateCommands extends Command implements CustomEventAwareInterface
+final class FieldCreateCommands extends Command
 {
     use EntityTypeBundleAskTrait;
-    use CustomEventAwareTrait;
     use EntityTypeBundleValidationTrait;
     use AutowireTrait;
     use IoTrait;
@@ -72,7 +72,8 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
         private readonly ModuleHandlerInterface $moduleHandler,
         private readonly EntityFieldManagerInterface $entityFieldManager,
         private readonly LoggerInterface $logger,
-        private ?ContentTranslationManagerInterface $contentTranslationManager = null,
+        private readonly ?ContentTranslationManagerInterface $contentTranslationManager = null,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
         parent::__construct();
     }
@@ -172,11 +173,9 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
             $this->createFieldStorage();
         }
 
-        // Command files may set additional options as desired.
-        $handlers = $this->getCustomEventHandlers('field-create-set-options');
-        foreach ($handlers as $handler) {
-            $handler($this->input);
-        }
+        // Event subscribers may set additional options as desired.
+        $event = new FieldCreateInputOptionsEvent($this->input);
+        $this->eventDispatcher->dispatch($event);
 
         $field = $this->createField();
         $this->createFieldDisplay('form');
@@ -401,11 +400,10 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
             'label' => $this->input->getOption('field-label'),
         ];
 
-        // Command files may customize $values as desired.
-        $handlers = $this->getCustomEventHandlers('field-create-field-config');
-        foreach ($handlers as $handler) {
-            $values = $handler($values, $this->input);
-        }
+        // Event subscribers may customize $values as desired.
+        $event = new FieldCreateFieldConfigValuesEvent($values, $this->input);
+        $this->eventDispatcher->dispatch($event);
+        $values = $event->getValues();
 
         $field = $this->entityTypeManager
             ->getStorage('field_config')
@@ -426,11 +424,10 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
             'translatable' => true,
         ];
 
-        // Command files may customize $values as desired.
-        $handlers = $this->getCustomEventHandlers('field-create-field-storage');
-        foreach ($handlers as $handler) {
-            $values = $handler($values, $this->input);
-        }
+        // Event subscribers may customize $values as desired.
+        $event = new FieldCreateFieldStorageConfigValuesEvent($values, $this->input);
+        $this->eventDispatcher->dispatch($event);
+        $values = $event->getValues();
 
         /** @var FieldStorageConfigInterface $fieldStorage */
         $fieldStorage = $this->entityTypeManager
@@ -454,11 +451,10 @@ final class FieldCreateCommands extends Command implements CustomEventAwareInter
             $values['type'] = $fieldWidget;
         }
 
-        // Command files may customize $values as desired.
-        $handlers = $this->getCustomEventHandlers(sprintf('field-create-%s-display', $context));
-        foreach ($handlers as $handler) {
-            $handler($values);
-        }
+        // Event subscribers may customize $values as desired.
+        $event = new FieldCreateEntityDisplayValuesEvent($context, $values, $this->input);
+        $this->eventDispatcher->dispatch($event);
+        $values = $event->getValues();
 
         $storage = $this->getEntityDisplay($context);
 
