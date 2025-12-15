@@ -174,7 +174,7 @@ final class FieldCreateCommands extends Command
         }
 
         // Event subscribers may set additional options as desired.
-        $event = new FieldCreateInputOptionsEvent($this->input);
+        $event = new FieldCreateInputOptionsEvent($this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
 
         $field = $this->createField();
@@ -401,7 +401,7 @@ final class FieldCreateCommands extends Command
         ];
 
         // Event subscribers may customize $values as desired.
-        $event = new FieldCreateFieldConfigValuesEvent($values, $this->input);
+        $event = new FieldCreateFieldConfigValuesEvent($values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
 
@@ -425,7 +425,7 @@ final class FieldCreateCommands extends Command
         ];
 
         // Event subscribers may customize $values as desired.
-        $event = new FieldCreateFieldStorageConfigValuesEvent($values, $this->input);
+        $event = new FieldCreateFieldStorageConfigValuesEvent($values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
 
@@ -452,7 +452,7 @@ final class FieldCreateCommands extends Command
         }
 
         // Event subscribers may customize $values as desired.
-        $event = new FieldCreateEntityDisplayValuesEvent($context, $values, $this->input);
+        $event = new FieldCreateEntityDisplayValuesEvent($context, $values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
 

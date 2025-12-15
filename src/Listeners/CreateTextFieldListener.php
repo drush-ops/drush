@@ -1,24 +1,28 @@
 <?php
 
-namespace Drush\Commands\field;
+declare(strict_types=1);
 
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\AnnotatedCommand\CommandData;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
+namespace Drush\Listeners;
+
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\text\Plugin\Field\FieldType\TextItemBase;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
+use Drush\Commands\field\FieldCreateCommands;
+use Drush\Commands\IoTrait;
+use Drush\Event\ConsoleDefinitionsEvent;
+use Drush\Event\FieldCreateFieldConfigValuesEvent;
+use Drush\Event\FieldCreateInputOptionsEvent;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-final class FieldTextHooks extends DrushCommands
+#[AsEventListener(method: 'onConsoleDefinitionEvent')]
+#[AsEventListener(method: 'onFieldConfigValues')]
+#[AsEventListener(method: 'onInputOptions')]
+final class CreateTextFieldListener
 {
     use AutowireTrait;
-    use EntityTypeBundleValidationTrait;
+    use IoTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -26,9 +30,15 @@ final class FieldTextHooks extends DrushCommands
     ) {
     }
 
-    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: FieldCreateCommands::CREATE)]
-    public function hookOption(Command $command, AnnotationData $annotationData): void
+    public function onConsoleDefinitionEvent(ConsoleDefinitionsEvent $event): void
     {
+        $application = $event->getApplication();
+        if (!$application->has(FieldCreateCommands::CREATE)) {
+            return;
+        }
+
+        $command = $application->get(FieldCreateCommands::CREATE);
+
         $command->addOption(
             'allowed-formats',
             '',
@@ -37,10 +47,12 @@ final class FieldTextHooks extends DrushCommands
         );
     }
 
-    #[CLI\Hook(type: HookManager::ARGUMENT_VALIDATOR, target: FieldCreateCommands::CREATE)]
-    public function hookValidate(CommandData $commandData): void
+    public function onFieldConfigValues(FieldCreateFieldConfigValuesEvent $event): void
     {
-        if (!$this->hasAllowedFormats($commandData->input()->getOption('field-type'))) {
+        $this->setIo($event->getInput(), $event->getOutput());
+        $values = $event->getValues();
+
+        if (!$this->hasAllowedFormats($values['field_type'])) {
             return;
         }
 
@@ -54,32 +66,23 @@ final class FieldTextHooks extends DrushCommands
                 implode(', ', $missingFormats)
             ));
         }
+
+        $values['settings']['allowed_formats'] = $allowedFormats;
+        $event->setValues($values);
     }
 
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-set-options')]
-    public function hookSetOptions(InputInterface $input): void
+    public function onInputOptions(FieldCreateInputOptionsEvent $event): void
     {
-        if (!$this->hasAllowedFormats($input->getOption('field-type'))) {
+        $this->setIo($event->getInput(), $event->getOutput());
+
+        if (!$this->hasAllowedFormats($this->input->getOption('field-type'))) {
             return;
         }
 
-        $input->setOption(
+        $this->input->setOption(
             'allowed-formats',
             $this->input->getOption('allowed-formats') ?: $this->askAllowedFormats()
         );
-    }
-
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-config')]
-    public function hookFieldConfig(array $values, InputInterface $input): array
-    {
-        if (!$this->hasAllowedFormats($values['field_type'])) {
-            return $values;
-        }
-
-        $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
-        $values['settings']['allowed_formats'] = $allowedFormats;
-
-        return $values;
     }
 
     protected function hasAllowedFormats(?string $fieldType = null): bool
