@@ -73,9 +73,6 @@ final class FieldDeleteCommands extends Command
         $this->input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
 
-        $bundle = $input->getArgument('bundle') ?? $this->askBundle();
-        $this->input->setArgument('bundle', $bundle);
-
         $fieldName = $this->input->getOption('field-name') ?: $this->askExisting($entityType, $bundle);
         $this->input->setOption('field-name', $fieldName);
 
