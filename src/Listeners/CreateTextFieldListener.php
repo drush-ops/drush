@@ -13,10 +13,12 @@ use Drush\Commands\IoTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\FieldCreateFieldConfigValuesEvent;
 use Drush\Event\FieldCreateInputOptionsEvent;
+use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(method: 'onConsoleDefinitionEvent')]
+#[AsEventListener(method: 'onConsoleCommand')]
 #[AsEventListener(method: 'onFieldConfigValues')]
 #[AsEventListener(method: 'onInputOptions')]
 final class CreateTextFieldListener
@@ -47,15 +49,18 @@ final class CreateTextFieldListener
         );
     }
 
-    public function onFieldConfigValues(FieldCreateFieldConfigValuesEvent $event): void
+    public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
-        $this->setIo($event->getInput(), $event->getOutput());
-        $values = $event->getValues();
-
-        if (!$this->hasAllowedFormats($values['field_type'])) {
+        $command = $event->getCommand();
+        if ($command->getName() !== FieldCreateCommands::CREATE) {
             return;
         }
 
+        if (!$this->hasAllowedFormats($event->getInput()->getOption('field-type'))) {
+            return;
+        }
+
+        $this->setIo($event->getInput(), $event->getOutput());
         $allFormats = filter_formats();
         $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
 
@@ -66,8 +71,20 @@ final class CreateTextFieldListener
                 implode(', ', $missingFormats)
             ));
         }
+    }
 
+    public function onFieldConfigValues(FieldCreateFieldConfigValuesEvent $event): void
+    {
+        $this->setIo($event->getInput(), $event->getOutput());
+        $values = $event->getValues();
+
+        if (!$this->hasAllowedFormats($values['field_type'])) {
+            return;
+        }
+
+        $allowedFormats = $this->input->getOption('allowed-formats') ?? [];
         $values['settings']['allowed_formats'] = $allowedFormats;
+
         $event->setValues($values);
     }
 
