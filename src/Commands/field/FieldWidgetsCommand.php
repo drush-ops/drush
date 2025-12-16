@@ -87,7 +87,7 @@ final class FieldWidgetsCommand extends Command
         }
 
         $result = new RowsOfFields($definitions);
-        $result->addRendererFunction([$this, 'renderArray']);
+        $result->addRendererFunction($this->renderArray(...));
         $this->writeFormattedOutput($input, $output, $result);
 
         return Command::SUCCESS;
@@ -102,7 +102,7 @@ final class FieldWidgetsCommand extends Command
             }
         }
     }
-    
+
     public function renderArray($key, $value, FormatterOptions $options)
     {
         if (is_array($value)) {

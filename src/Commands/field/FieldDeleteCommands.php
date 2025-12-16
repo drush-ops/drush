@@ -32,9 +32,9 @@ use function field_purge_batch;
  * @see \Drupal\field_ui\Form\FieldConfigDeleteForm
  */
 #[AsCommand(
-  name: self::DELETE,
-  description: 'Delete a field.',
-  aliases: ['field-delete', 'fd'],
+    name: self::DELETE,
+    description: 'Delete a field.',
+    aliases: ['field-delete', 'fd'],
 )]
 #[CLI\Version(version: '11.0')]
 final class FieldDeleteCommands extends Command

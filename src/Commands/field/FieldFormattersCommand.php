@@ -89,7 +89,7 @@ final class FieldFormattersCommand extends Command
         }
 
         $result = new RowsOfFields($definitions);
-        $result->addRendererFunction([$this, 'renderArray']);
+        $result->addRendererFunction($this->renderArray(...));
         $this->writeFormattedOutput($input, $output, $result);
 
         return Command::SUCCESS;

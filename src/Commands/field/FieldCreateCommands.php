@@ -8,7 +8,6 @@ use Drupal\content_translation\ContentTranslationManagerInterface;
 use Drupal\Core\Entity\Display\EntityDisplayInterface;
 use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
-use Drupal\Core\Entity\EntityReferenceSelection\SelectionPluginManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
@@ -60,20 +59,19 @@ final class FieldCreateCommands extends Command
     use AutowireTrait;
     use IoTrait;
 
-    const CREATE = 'field:create';
+    const string CREATE = 'field:create';
 
     public function __construct(
         private readonly FieldTypePluginManagerInterface $fieldTypePluginManager,
         #[Autowire(service: 'plugin.manager.field.widget')]
         private readonly WidgetPluginManager $widgetPluginManager,
-        private readonly SelectionPluginManagerInterface $selectionPluginManager,
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         private readonly ModuleHandlerInterface $moduleHandler,
         private readonly EntityFieldManagerInterface $entityFieldManager,
         private readonly LoggerInterface $logger,
-        private readonly ?ContentTranslationManagerInterface $contentTranslationManager = null,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly ?ContentTranslationManagerInterface $contentTranslationManager = null,
     ) {
         parent::__construct();
     }

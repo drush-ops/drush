@@ -12,19 +12,19 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class FieldCreateInputOptionsEvent extends Event
 {
-  public function __construct(
-    protected InputInterface $input,
-    protected OutputInterface $output,
-  ) {
-  }
+    public function __construct(
+        protected InputInterface $input,
+        protected OutputInterface $output,
+    ) {
+    }
 
-  public function getInput(): InputInterface
-  {
-    return $this->input;
-  }
+    public function getInput(): InputInterface
+    {
+        return $this->input;
+    }
 
-  public function getOutput(): OutputInterface
-  {
-    return $this->output;
-  }
+    public function getOutput(): OutputInterface
+    {
+        return $this->output;
+    }
 }

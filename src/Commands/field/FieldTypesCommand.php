@@ -67,7 +67,7 @@ final class FieldTypesCommand extends Command
         $definitions = \array_values($definitions);
 
         $result = new RowsOfFields($definitions);
-        $result->addRendererFunction([$this, 'renderArray']);
+        $result->addRendererFunction($this->renderArray(...));
         $this->writeFormattedOutput($input, $output, $result);
 
         return Command::SUCCESS;
