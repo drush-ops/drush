@@ -73,6 +73,7 @@ final class FieldDeleteCommands extends Command
         $this->input->setArgument('entityType', $entityType);
         $this->validateEntityType($entityType);
 
+        $bundle = $input->getArgument('bundle');
         $fieldName = $this->input->getOption('field-name') ?: $this->askExisting($entityType, $bundle);
         $this->input->setOption('field-name', $fieldName);
 
@@ -99,7 +100,8 @@ final class FieldDeleteCommands extends Command
         }
 
         if (!$input->getOption('all-bundles')) {
-            $this->input->setArgument('bundle', $bundle ??= $this->askBundle());
+            $bundle ??= $this->askBundle();
+            $this->input->setArgument('bundle', $bundle);
             $this->validateBundle($entityType, $bundle);
 
             /** @var FieldConfig[] $results */
