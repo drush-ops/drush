@@ -27,7 +27,6 @@ use Drush\Event\FieldCreateFieldConfigValuesEvent;
 use Drush\Event\FieldCreateFieldStorageConfigValuesEvent;
 use Drush\Event\FieldCreateInputOptionsEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -69,7 +68,6 @@ final class FieldCreateCommands extends Command
         private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         private readonly ModuleHandlerInterface $moduleHandler,
         private readonly EntityFieldManagerInterface $entityFieldManager,
-        private readonly LoggerInterface $logger,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly ?ContentTranslationManagerInterface $contentTranslationManager = null,
     ) {
@@ -457,7 +455,7 @@ final class FieldCreateCommands extends Command
         $storage = $this->getEntityDisplay($context);
 
         if (!$storage instanceof EntityDisplayInterface) {
-            $this->logger->info(
+            $this->io()->info(
                 sprintf("'%s' display storage not found for %s type '%s', creating now.", $context, $entityType, $bundle)
             );
 
@@ -492,7 +490,7 @@ final class FieldCreateCommands extends Command
 
     protected function logResult(FieldConfigInterface $field): void
     {
-        $this->logger->success(
+        $this->io()->success(
             sprintf(
                 "Successfully created field '%s' on %s type with bundle '%s'",
                 $field->get('field_name'),
@@ -511,7 +509,7 @@ final class FieldCreateCommands extends Command
         ];
 
         if ($this->moduleHandler->moduleExists('field_ui')) {
-            $this->logger->success(
+            $this->io()->success(
                 dt('Further customisation can be done through the <href=%editForm>edit form</>.', [
                     '%editForm' => Url::fromRoute($routeName, $routeParams)->setAbsolute(true)->toString(),
                 ]),
