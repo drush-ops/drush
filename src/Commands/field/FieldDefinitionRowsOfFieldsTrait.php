@@ -35,7 +35,7 @@ trait FieldDefinitionRowsOfFieldsTrait
             $storage = $field->getFieldStorageDefinition();
             $handlerSettings = $field->getSetting('handler_settings');
 
-            $rows[] = [
+            $rows[$field->getName()] = [
                 'label' => $field->getLabel(),
                 'description' => $field->getDescription(),
                 'field_name' => $field->getName(),

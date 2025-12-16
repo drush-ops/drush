@@ -64,8 +64,6 @@ final class FieldTypesCommand extends Command
         ];
 
         $definitions = \array_map($processor, $this->typePluginManager->getDefinitions());
-        $definitions = \array_values($definitions);
-
         $result = new RowsOfFields($definitions);
         $result->addRendererFunction($this->renderArray(...));
         $this->writeFormattedOutput($input, $output, $result);

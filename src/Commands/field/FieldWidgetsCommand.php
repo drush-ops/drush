@@ -80,8 +80,6 @@ final class FieldWidgetsCommand extends Command
         ];
 
         $definitions = \array_map($processor, $this->widgetPluginManager->getDefinitions());
-        $definitions = \array_values($definitions);
-
         if ($fieldType = $input->getOption('field-type')) {
             $definitions = $this->filterByFieldType($definitions, $fieldType);
         }
