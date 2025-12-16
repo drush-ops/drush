@@ -82,8 +82,6 @@ final class FieldFormattersCommand extends Command
         ];
 
         $definitions = \array_map($processor, $this->formatterPluginManager->getDefinitions());
-        $definitions = \array_values($definitions);
-
         if ($fieldType = $input->getOption('field-type')) {
             $definitions = $this->filterByFieldType($definitions, $fieldType);
         }
