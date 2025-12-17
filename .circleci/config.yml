@@ -72,7 +72,7 @@ executors:
       - image: wodby/php:latest
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
-      - image: wodby/postgres:17
+      - image: wodby/postgres:latest
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
