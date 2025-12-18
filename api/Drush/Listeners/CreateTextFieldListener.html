@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Listeners\CreateTextFieldListener | Drush API 14</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Listeners_CreateTextFieldListener" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Listeners.html">Listeners</a></li><li class="backslash">\</li><li>CreateTextFieldListener</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>CreateTextFieldListener    
+            </h1>
+    </div>
+
+    
+    <p>final         class
+    <strong>CreateTextFieldListener</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../Drush/Commands/IoTrait.html"><abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Stores input, output and IO objects for easy access in commands.</p></div>
+            </div>
+            </div>
+    
+    
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_input">
+                                        protected                                        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$input</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#property_input">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_output">
+                                        protected                                        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$output</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#property_output">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_io">
+                                        protected                                        <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
+                                                                                
+                                    </td>
+                <td>$io</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#property_io">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></td>
+            </tr>
+            </table>
+
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setIo">setIo</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#method_setIo">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_io">io</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#method_io">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_input">input</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#method_input">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_output">output</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#method_output">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_ensureIo">ensureIo</a>()
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Commands/IoTrait.html#method_ensureIo">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr> $fieldTypePluginManager)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onConsoleDefinitionEvent">onConsoleDefinitionEvent</a>(<a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onConsoleCommand">onConsoleCommand</a>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onFieldConfigValues">onFieldConfigValues</a>(<a href="../../Drush/Event/FieldCreateFieldConfigValuesEvent.html"><abbr title="Drush\Event\FieldCreateFieldConfigValuesEvent">FieldCreateFieldConfigValuesEvent</abbr></a> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_onInputOptions">onInputOptions</a>(<a href="../../Drush/Event/FieldCreateInputOptionsEvent.html"><abbr title="Drush\Event\FieldCreateInputOptionsEvent">FieldCreateInputOptionsEvent</abbr></a> $event)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasAllowedFormats">hasAllowedFormats</a>(string|null $fieldType = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_askAllowedFormats">askAllowedFormats</a>()
+        
+                                            <p><p>Ask for the allowed formats. Only used in case the command is run interactively.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setIo">
+        <div class="location">in <a href="../../Drush/Commands/IoTrait.html#method_setIo">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/IoTrait.php#L20">at line 20</a></div>
+        <code>                    <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
+    <strong>setIo</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+                <td>$input</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Style\DrushStyle">DrushStyle</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_io">
+        <div class="location">in <a href="../../Drush/Commands/IoTrait.html#method_io">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/IoTrait.php#L28">at line 28</a></div>
+        <code>                    <abbr title="Drush\Style\DrushStyle">DrushStyle</abbr>
+    <strong>io</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Style\DrushStyle">DrushStyle</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_input">
+        <div class="location">in <a href="../../Drush/Commands/IoTrait.html#method_input">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/IoTrait.php#L40">at line 40</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr>
+    <strong>input</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_output">
+        <div class="location">in <a href="../../Drush/Commands/IoTrait.html#method_output">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/IoTrait.php#L47">at line 47</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
+    <strong>output</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_ensureIo">
+        <div class="location">in <a href="../../Drush/Commands/IoTrait.html#method_ensureIo">
+<abbr title="Drush\Commands\IoTrait">IoTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/IoTrait.php#L54">at line 54</a></div>
+        <code>            protected        void
+    <strong>ensureIo</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L29">at line 29</a></div>
+        <code>                    
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr> $fieldTypePluginManager)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr></td>
+                <td>$entityTypeManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Field\FieldTypePluginManagerInterface">FieldTypePluginManagerInterface</abbr></td>
+                <td>$fieldTypePluginManager</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onConsoleDefinitionEvent">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L35">at line 35</a></div>
+        <code>                    void
+    <strong>onConsoleDefinitionEvent</strong>(<a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onConsoleCommand">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L52">at line 52</a></div>
+        <code>                    void
+    <strong>onConsoleCommand</strong>(<abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Event\ConsoleCommandEvent">ConsoleCommandEvent</abbr></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onFieldConfigValues">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L76">at line 76</a></div>
+        <code>                    void
+    <strong>onFieldConfigValues</strong>(<a href="../../Drush/Event/FieldCreateFieldConfigValuesEvent.html"><abbr title="Drush\Event\FieldCreateFieldConfigValuesEvent">FieldCreateFieldConfigValuesEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Event/FieldCreateFieldConfigValuesEvent.html"><abbr title="Drush\Event\FieldCreateFieldConfigValuesEvent">FieldCreateFieldConfigValuesEvent</abbr></a></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_onInputOptions">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L91">at line 91</a></div>
+        <code>                    void
+    <strong>onInputOptions</strong>(<a href="../../Drush/Event/FieldCreateInputOptionsEvent.html"><abbr title="Drush\Event\FieldCreateInputOptionsEvent">FieldCreateInputOptionsEvent</abbr></a> $event)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Drush/Event/FieldCreateInputOptionsEvent.html"><abbr title="Drush\Event\FieldCreateInputOptionsEvent">FieldCreateInputOptionsEvent</abbr></a></td>
+                <td>$event</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasAllowedFormats">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L105">at line 105</a></div>
+        <code>            protected        bool
+    <strong>hasAllowedFormats</strong>(string|null $fieldType = null)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$fieldType</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_askAllowedFormats">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/CreateTextFieldListener.php#L119">at line 119</a></div>
+        <code>            protected        array
+    <strong>askAllowedFormats</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Ask for the allowed formats. Only used in case the command is run interactively.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
