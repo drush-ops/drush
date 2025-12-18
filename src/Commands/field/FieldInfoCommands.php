@@ -80,6 +80,13 @@ final class FieldInfoCommands extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $data = $this->doExecute($input, $output);
+        $this->writeFormattedOutput($input, $output, $data);
+        return self::SUCCESS;
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
+    {
         $this->setIo($input, $output);
 
         $entityType = $this->input->getArgument('entityType') ?? $this->askEntityType();
@@ -97,10 +104,7 @@ final class FieldInfoCommands extends Command
                 'bundle' => $bundle,
             ]);
 
-        $data = $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
-        $this->writeFormattedOutput($input, $output, $data);
-
-        return Command::SUCCESS;
+        return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void

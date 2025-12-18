@@ -81,6 +81,13 @@ final class FieldBaseInfoCommands extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $data = $this->doExecute($input, $output);
+        $this->writeFormattedOutput($input, $output, $data);
+        return self::SUCCESS;
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
+    {
         $this->setIo($input, $output);
 
         $entityType = $input->getArgument('entityType') ?? $this->askEntityType();
@@ -89,10 +96,7 @@ final class FieldBaseInfoCommands extends Command
 
         $fieldDefinitions = $this->entityFieldManager->getBaseFieldDefinitions($entityType);
 
-        $data = $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
-        $this->writeFormattedOutput($input, $output, $data);
-
-        return Command::SUCCESS;
+        return $this->getRowsOfFieldsByFieldDefinitions($fieldDefinitions);
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void

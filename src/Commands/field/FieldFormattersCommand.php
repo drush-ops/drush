@@ -70,6 +70,13 @@ final class FieldFormattersCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $data = $this->doExecute($input, $output);
+        $this->writeFormattedOutput($input, $output, $data);
+        return self::SUCCESS;
+    }
+
+    protected function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
+    {
         $this->setIo($input, $output);
 
         $processor = static fn (array $definition): array => [
@@ -88,9 +95,8 @@ final class FieldFormattersCommand extends Command
 
         $result = new RowsOfFields($definitions);
         $result->addRendererFunction($this->renderArray(...));
-        $this->writeFormattedOutput($input, $output, $result);
 
-        return Command::SUCCESS;
+        return $result;
     }
 
     public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
