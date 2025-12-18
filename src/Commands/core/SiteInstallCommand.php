@@ -410,7 +410,7 @@ final class SiteInstallCommand extends Command
         }
 
         $links = $this->getLoginLinks(User::load(1));
-        $this->logger->notice(dt('Login link: (%links)', ['%links' => implode(' - ', $links)]));
+        $this->logger->notice(implode(' - ', $links));
         if (empty($options['account-pass'])) {
             $this->logger->notice('User name: {name}  User password: {pass}', ['name' => $options['account-name'], 'pass' => $account_pass]);
         }
@@ -572,7 +572,7 @@ final class SiteInstallCommand extends Command
     {
         $timestamp = \Drupal::time()->getRequestTime();
         // @todo Add Homepage if we can find a way to get there via destination= or otherwise.
-        $data = ['admin' => dt('Admin')];
+        $data = ['admin' => dt('Login to /admin')];
         foreach ($data as $path => $text) {
             $link = Url::fromRoute(
                 'user.reset.login',
