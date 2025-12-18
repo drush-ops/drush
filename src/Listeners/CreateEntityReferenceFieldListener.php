@@ -10,7 +10,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\field\EntityTypeBundleValidationTrait;
-use Drush\Commands\field\FieldCreateCommands;
+use Drush\Commands\field\FieldCreateCommand;
 use Drush\Commands\IoTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\FieldCreateFieldConfigValuesEvent;
@@ -38,11 +38,11 @@ final class CreateEntityReferenceFieldListener
     public function onConsoleDefinitionEvent(ConsoleDefinitionsEvent $event): void
     {
         $application = $event->getApplication();
-        if (!$application->has(FieldCreateCommands::CREATE)) {
+        if (!$application->has(FieldCreateCommand::NAME)) {
             return;
         }
 
-        $command = $application->get(FieldCreateCommands::CREATE);
+        $command = $application->get(FieldCreateCommand::NAME);
 
         $command->addOption(
             'target-type',

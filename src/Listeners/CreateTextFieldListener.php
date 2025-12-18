@@ -8,7 +8,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldTypePluginManagerInterface;
 use Drupal\text\Plugin\Field\FieldType\TextItemBase;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\field\FieldCreateCommands;
+use Drush\Commands\field\FieldCreateCommand;
 use Drush\Commands\IoTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\FieldCreateFieldConfigValuesEvent;
@@ -35,11 +35,11 @@ final class CreateTextFieldListener
     public function onConsoleDefinitionEvent(ConsoleDefinitionsEvent $event): void
     {
         $application = $event->getApplication();
-        if (!$application->has(FieldCreateCommands::CREATE)) {
+        if (!$application->has(FieldCreateCommand::NAME)) {
             return;
         }
 
-        $command = $application->get(FieldCreateCommands::CREATE);
+        $command = $application->get(FieldCreateCommand::NAME);
 
         $command->addOption(
             'allowed-formats',
@@ -52,7 +52,7 @@ final class CreateTextFieldListener
     public function onConsoleCommand(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
-        if ($command->getName() !== FieldCreateCommands::CREATE) {
+        if ($command->getName() !== FieldCreateCommand::NAME) {
             return;
         }
 

@@ -6,7 +6,7 @@ namespace Drush\Listeners;
 
 use Drupal\link\LinkItemInterface;
 use Drupal\link\LinkTitleVisibility;
-use Drush\Commands\field\FieldCreateCommands;
+use Drush\Commands\field\FieldCreateCommand;
 use Drush\Commands\IoTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Event\FieldCreateFieldConfigValuesEvent;
@@ -24,11 +24,11 @@ final class CreateLinkFieldListener
     public function onConsoleDefinitionEvent(ConsoleDefinitionsEvent $event): void
     {
         $application = $event->getApplication();
-        if (!$application->has(FieldCreateCommands::CREATE)) {
+        if (!$application->has(FieldCreateCommand::NAME)) {
             return;
         }
 
-        $command = $application->get(FieldCreateCommands::CREATE);
+        $command = $application->get(FieldCreateCommand::NAME);
 
         $command->addOption(
             'link-type',
