@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Create a new field">
+        <meta name="description" content="Create a new field.">
       
       
         <meta name="author" content="Moshe Weitzman">
@@ -65,7 +65,7 @@
       
         <meta  property="og:title"  content="field:create - Drush" >
       
-        <meta  property="og:description"  content="Create a new field" >
+        <meta  property="og:description"  content="Create a new field." >
       
         <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/field_create.png" >
       
@@ -81,7 +81,7 @@
       
         <meta  name="twitter:title"  content="field:create - Drush" >
       
-        <meta  name="twitter:description"  content="Create a new field" >
+        <meta  name="twitter:description"  content="Create a new field." >
       
         <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/field_create.png" >
       
@@ -1009,27 +1009,6 @@
   
   <span class="md-ellipsis">
     Helloworld.script
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="https://github.com/drush-ops/example-drush-extension" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Example drush extension
   </span>
   
 
@@ -7391,7 +7370,7 @@
                   
 
   
-    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldCreateCommands.php" title="Edit this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/field/FieldCreateCommand.php" title="Edit this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4v-2m10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1 2.1 2.1Z"/></svg>
     </a>
@@ -7400,7 +7379,7 @@
     
       
     
-    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/field/FieldCreateCommands.php" title="View source of this page" class="md-content__button md-icon">
+    <a href="https://github.com/drush-ops/drush/raw/14.x/src/Commands/field/FieldCreateCommand.php" title="View source of this page" class="md-content__button md-icon">
       
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 18c.56 0 1 .44 1 1s-.44 1-1 1-1-.44-1-1 .44-1 1-1m0-3c-2.73 0-5.06 1.66-6 4 .94 2.34 3.27 4 6 4s5.06-1.66 6-4c-.94-2.34-3.27-4-6-4m0 6.5a2.5 2.5 0 0 1-2.5-2.5 2.5 2.5 0 0 1 2.5-2.5 2.5 2.5 0 0 1 2.5 2.5 2.5 2.5 0 0 1-2.5 2.5M9.27 20H6V4h7v5h5v4.07c.7.08 1.36.25 2 .49V8l-6-6H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h4.5a8.15 8.15 0 0 1-1.23-2Z"/></svg>
     </a>
@@ -7409,13 +7388,12 @@
 
 <h1 id="fieldcreate">field:create<a class="headerlink" href="#fieldcreate" title="Permanent link">&para;</a></h1>
 <p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7.75 6.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5Z"/><path d="M2.5 1h8.44a1.5 1.5 0 0 1 1.06.44l10.25 10.25a1.5 1.5 0 0 1 0 2.12l-8.44 8.44a1.5 1.5 0 0 1-2.12 0L1.44 12A1.497 1.497 0 0 1 1 10.94V2.5A1.5 1.5 0 0 1 2.5 1Zm0 1.5v8.44l10.25 10.25 8.44-8.44L10.94 2.5Z"/></svg></span> 11.0+</p>
-<p>Create a new field</p>
+<p>Create a new field.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>field:create</code>. Create a field by answering the prompts.</li>
-<li><code>field:create taxonomy_term tag</code>. Create a field and fill in the remaining information through prompts.</li>
-<li><code>field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2</code>. Create a field in a completely non-interactive way.</li>
-<li><code>field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html</code>. Create a formatted text field.</li>
+<li><code>field:create taxonomy_term tag</code></li>
+<li><code>field:create taxonomy_term tag --field-name=field_tag_label --field-label=Label --field-type=string --field-widget=string_textfield --is-required=1 --cardinality=2</code></li>
+<li><code>field:create node article --field-name=field_article_summary --field-label=Summary --field-type=text_long --allowed-formats=full_html --allowed-formats=basic_html</code></li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7424,9 +7402,9 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--field-name=FIELD-NAME</strong>. A unique machine-readable name containing letters, numbers, and underscores.</li>
+<li><strong>--field-name=FIELD-NAME</strong>. A unique machine-readable name containing letters, numbers, and underscores</li>
 <li><strong>--field-label=FIELD-LABEL</strong>. The field label</li>
-<li><strong>--field-description[=FIELD-DESCRIPTION]</strong>. Instructions to present to the user below this field on the editing form.</li>
+<li><strong>--field-description[=FIELD-DESCRIPTION]</strong>. Instructions to present to the user below this field on the editing form</li>
 <li><strong>--field-type=FIELD-TYPE</strong>. The field type</li>
 <li><strong>--field-widget=FIELD-WIDGET</strong>. The field widget</li>
 <li><strong>--is-required[=IS-REQUIRED]</strong>. Whether the field is required</li>
@@ -7434,9 +7412,11 @@
 <li><strong>--cardinality=CARDINALITY</strong>. The allowed number of values</li>
 <li><strong>--target-type[=TARGET-TYPE]</strong>. The target entity type for the entity reference field.</li>
 <li><strong>--target-bundle[=TARGET-BUNDLE]</strong>. The target bundle for the entity reference field.</li>
-<li><strong>--show-machine-names[=SHOW-MACHINE-NAMES]</strong>. Show machine names instead of labels in option lists.</li>
+<li><strong>--existing[=EXISTING]</strong>. Re-use an existing field.</li>
 <li><strong>--existing-field-name[=EXISTING-FIELD-NAME]</strong>. The name of an existing field you want to re-use. Only used in non-interactive context.</li>
-<li><strong>--existing</strong>. Re-use an existing field.</li>
+<li><strong>--show-machine-names[=SHOW-MACHINE-NAMES]</strong>. Show machine names instead of labels in option lists</li>
+<li><strong>--link-type=LINK-TYPE</strong>. Allowed link type.</li>
+<li><strong>--allow-link-text=ALLOW-LINK-TEXT</strong>. Allow link text.</li>
 <li><strong>--allowed-formats=ALLOWED-FORMATS</strong>. Restrict which text formats are allowed, given the user has the required permissions.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
