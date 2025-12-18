@@ -104,7 +104,6 @@ nav:
       - drush.yml: examples/example.drush.yml.md
       - site.yml: examples/example.site.yml.md
       - examples/helloworld.script.md
-      - Example drush extension: https://github.com/drush-ops/example-drush-extension
       - examples/PolicyListener.php.md
       - examples/SyncViaHttpListener.php.md
       - examples/XkcdFetchCommand.php.md
