@@ -242,9 +242,7 @@ Here are some examples of valid commandfile names and namespaces:
 
 Note: Make sure you do _not_ include `src` in the path to your command. Your command may not be discovered and have additional problems.
 
-If a commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site. 
-
-A site-wide commandfile should have tests that run with each (major) version of Drush that is supported. You may model your test suite after the [example drush extension](https://github.com/drush-ops/example-drush-extension) project.
+If a commandfile is added via a Composer package, then it may declare any dependencies that it may need in its composer.json file. Site-wide commandfiles that are committed directly to a site's repository only have access to the dependencies already available in the site.
 
 ## Global commands discovered by configuration
 
