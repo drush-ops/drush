@@ -15,10 +15,6 @@
         <link rel="canonical" href="https://www.drush.org/latest/latest/examples/ArtCommands.php/">
       
       
-        <link rel="prev" href="../helloworld.script/">
-      
-      
-        <link rel="next" href="../PolicyListener.php/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -264,12 +260,10 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../example.drush.yml/" class="md-tabs__link">
           
   
@@ -914,28 +908,23 @@
       
   
   
-    
   
   
-  
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -946,7 +935,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1041,35 +1030,6 @@
                 
   
   
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    ArtCommands.php
-  </span>
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
   
   
     <li class="md-nav__item">
@@ -1078,27 +1038,6 @@
   
   <span class="md-ellipsis">
     PolicyListener.php
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../SiteAliasAlterCommands.php/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SiteAliasAlterCommands.php
   </span>
   
 
@@ -7365,165 +7304,7 @@
 
   <h1>ArtCommands.php</h1>
 
-<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
-
-<span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\AnnotationData</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\CommandData</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Events\CustomEventAwareTrait</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Hooks\HookManager</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\OutputFormatters\StructuredData\RowsOfFields</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
-
-<span class="sd">/**</span>
-<span class="sd"> * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples art sandwich`</span>
-<span class="sd"> *</span>
-<span class="sd"> * See [Drush Test Traits](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md#about-the-test-suites) for info on testing Drush commands.</span>
-<span class="sd"> */</span>
-
-<span class="k">class</span> <span class="nc">ArtCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span> <span class="k">implements</span> <span class="nx">CustomEventAwareInterface</span>
-<span class="p">{</span>
-    <span class="k">use</span> <span class="nx">CustomEventAwareTrait</span><span class="p">;</span>
-
-    <span class="sd">/** @var string[] */</span>
-    <span class="k">protected</span> <span class="o">?</span><span class="k">array</span> <span class="nv">$arts</span><span class="p">;</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Show a fabulous picture.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;artwork:show&#39;</span><span class="p">,</span> <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;arts&#39;</span><span class="p">])]</span>
-    <span class="p">#[</span><span class="nd">CLI\Argument</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;art&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;The name of the art to display&#39;</span><span class="p">)]</span>
-    <span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush art sandwich&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Show a marvelous picture of a sandwich with pickles.&#39;</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">art</span><span class="p">(</span><span class="nv">$art</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
-        <span class="nv">$name</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="nv">$art</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">];</span>
-        <span class="nv">$description</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="nv">$art</span><span class="p">][</span><span class="s1">&#39;description&#39;</span><span class="p">];</span>
-        <span class="nv">$path</span> <span class="o">=</span> <span class="nv">$data</span><span class="p">[</span><span class="nv">$art</span><span class="p">][</span><span class="s1">&#39;path&#39;</span><span class="p">];</span>
-        <span class="nv">$msg</span> <span class="o">=</span> <span class="nx">dt</span><span class="p">(</span>
-            <span class="s1">&#39;Okay. Here is {art}: {description}&#39;</span><span class="p">,</span>
-            <span class="p">[</span><span class="s1">&#39;art&#39;</span> <span class="o">=&gt;</span> <span class="nv">$name</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="nv">$description</span><span class="p">]</span>
-        <span class="p">);</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">.</span> <span class="nv">$msg</span> <span class="o">.</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">);</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">printFile</span><span class="p">(</span><span class="nv">$path</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Show a table of information about available art.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;artwork:list&#39;</span><span class="p">,</span> <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;artls&#39;</span><span class="p">])]</span>
-    <span class="p">#[</span><span class="nd">CLI\FieldLabels</span><span class="p">(</span><span class="nx">labels</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Description&#39;</span><span class="p">,</span> <span class="s1">&#39;path&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Path&#39;</span><span class="p">])]</span>
-    <span class="p">#[</span><span class="nd">CLI\DefaultTableFields</span><span class="p">(</span><span class="nx">fields</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">])]</span>
-    <span class="p">#[</span><span class="nd">CLI\FilterDefaultField</span><span class="p">(</span><span class="nx">field</span><span class="o">:</span> <span class="s1">&#39;name&#39;</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">listArt</span><span class="p">(</span><span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;format&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;table&#39;</span><span class="p">])</span><span class="o">:</span> <span class="nx">RowsOfFields</span>
-    <span class="p">{</span>
-        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="nx">RowsOfFields</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Commandfiles may also add topics.  These will appear in</span>
-<span class="sd">     * the list of topics when `drush topic` is executed.</span>
-<span class="sd">     * To view the topic below, run `drush --include=/full/path/to/examples topic`</span>
-<span class="sd">     */</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Ruminations on the true meaning and philosophy of artwork.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;artwork:explain&#39;</span><span class="p">)]</span>
-    <span class="p">#[</span><span class="nd">CLI\Topics</span><span class="p">(</span><span class="nx">isTopic</span><span class="o">:</span> <span class="k">true</span><span class="p">,</span> <span class="nx">path</span><span class="o">:</span> <span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/art-topic.md&#39;</span><span class="p">)]</span>
-    <span class="p">#[</span><span class="nd">CLI\Help</span><span class="p">(</span><span class="nx">hidden</span><span class="o">:</span> <span class="k">true</span><span class="p">)]</span>
-    <span class="nd">public</span> <span class="nd">function</span> <span class="nd">ruminate</span><span class="p">()</span><span class="o">:</span> <span class="nd">void</span>
-    <span class="p">{</span>
-        <span class="nd">self</span><span class="o">::</span><span class="na">printFile</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">commandData</span><span class="p">);</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Return the available built-in art. Any Drush commandfile may provide</span>
-<span class="sd">     * more art by implementing a &#39;drush-art&#39; on-event hook. This on-event</span>
-<span class="sd">     * hook is defined in the &#39;findArt&#39; method below.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ON_EVENT</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;drush-art&#39;</span><span class="p">)]</span>
-    <span class="nd">public</span> <span class="nd">function</span> <span class="nd">builtInArt</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nd">return</span> <span class="p">[</span>
-            <span class="s1">&#39;drush&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-                <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Drush&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;The Drush logo.&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;path&#39;</span> <span class="o">=&gt;</span> <span class="nd">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/art/drush-nocolor.txt&#39;</span><span class="p">,</span>
-            <span class="p">],</span>
-            <span class="s1">&#39;sandwich&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
-                <span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Sandwich&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;description&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;A tasty meal with bread often consumed at lunchtime.&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;path&#39;</span> <span class="o">=&gt;</span> <span class="no">__DIR__</span> <span class="o">.</span> <span class="s1">&#39;/art/sandwich-nocolor.txt&#39;</span><span class="p">,</span>
-            <span class="p">],</span>
-        <span class="p">];</span>
-    <span class="p">}</span>
-
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">INTERACT</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;artwork:show&#39;</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">interact</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="c1">// If the user did not specify any artwork, then prompt for one.</span>
-        <span class="nv">$art</span> <span class="o">=</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;art&#39;</span><span class="p">);</span>
-        <span class="nd">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$art</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
-            <span class="nv">$selections</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">convertArtListToKeyValue</span><span class="p">(</span><span class="nv">$data</span><span class="p">);</span>
-            <span class="nv">$selection</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">io</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">select</span><span class="p">(</span><span class="s1">&#39;Select art to display&#39;</span><span class="p">,</span> <span class="nv">$selections</span><span class="p">);</span>
-            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setArgument</span><span class="p">(</span><span class="s1">&#39;art&#39;</span><span class="p">,</span> <span class="nv">$selection</span><span class="p">);</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">ARGUMENT_VALIDATOR</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;artwork:show&#39;</span><span class="p">)]</span>
-    <span class="nd">public</span> <span class="nd">function</span> <span class="nd">artValidate</span><span class="p">(</span><span class="nx">CommandData</span> <span class="nv">$commandData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$art</span> <span class="o">=</span> <span class="nv">$commandData</span><span class="o">-&gt;</span><span class="na">input</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;art&#39;</span><span class="p">);</span>
-        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getArt</span><span class="p">();</span>
-        <span class="nd">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$data</span><span class="p">[</span><span class="nv">$art</span><span class="p">]))</span> <span class="p">{</span>
-            <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="nx">dt</span><span class="p">(</span><span class="s1">&#39;I do not have any art called &quot;{name}&quot;.&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span> <span class="o">=&gt;</span> <span class="nv">$art</span><span class="p">]));</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Get a list of available artwork. Cache result for future fast access.</span>
-<span class="sd">     */</span>
-    <span class="k">protected</span> <span class="k">function</span> <span class="nf">getArt</span><span class="p">()</span><span class="o">:</span> <span class="k">array</span>
-    <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">isset</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">arts</span><span class="p">))</span> <span class="p">{</span>
-            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">arts</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">findArt</span><span class="p">();</span>
-        <span class="p">}</span>
-        <span class="nd">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">arts</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Use custom defined on-event hook &#39;drush-art&#39; to find available artwork.</span>
-<span class="sd">     */</span>
-    <span class="nd">protected</span> <span class="nd">function</span> <span class="nd">findArt</span><span class="p">()</span>
-    <span class="p">{</span>
-        <span class="nv">$arts</span> <span class="o">=</span> <span class="p">[];</span>
-        <span class="nv">$handlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">&#39;drush-art&#39;</span><span class="p">);</span>
-        <span class="nd">foreach</span> <span class="p">(</span><span class="nv">$handlers</span> <span class="k">as</span> <span class="nv">$handler</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nv">$handlerResult</span> <span class="o">=</span> <span class="nv">$handler</span><span class="p">();</span>
-            <span class="nv">$arts</span> <span class="o">=</span> <span class="nd">array_merge</span><span class="p">(</span><span class="nv">$arts</span><span class="p">,</span> <span class="nv">$handlerResult</span><span class="p">);</span>
-        <span class="p">}</span>
-        <span class="nd">return</span> <span class="nv">$arts</span><span class="p">;</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * Given a list of artwork, convert to a &#39;key&#39; =&gt; &#39;Name: Description&#39; array.</span>
-<span class="sd">     */</span>
-    <span class="nd">protected</span> <span class="nd">function</span> <span class="nd">convertArtListToKeyValue</span><span class="p">(</span><span class="k">array</span> <span class="nv">$data</span><span class="p">)</span><span class="o">:</span> <span class="nd">array</span>
-    <span class="p">{</span>
-        <span class="nv">$result</span> <span class="o">=</span> <span class="p">[];</span>
-        <span class="nd">foreach</span> <span class="p">(</span><span class="nv">$data</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$item</span><span class="p">)</span> <span class="p">{</span>
-            <span class="nv">$result</span><span class="p">[</span><span class="nv">$key</span><span class="p">]</span> <span class="o">=</span> <span class="nv">$item</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s1">&#39;: &#39;</span> <span class="o">.</span> <span class="nv">$item</span><span class="p">[</span><span class="s1">&#39;description&#39;</span><span class="p">];</span>
-        <span class="p">}</span>
-        <span class="k">return</span> <span class="nv">$result</span><span class="p">;</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 
 

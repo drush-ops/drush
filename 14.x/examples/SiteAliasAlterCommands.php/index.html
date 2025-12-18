@@ -15,10 +15,6 @@
         <link rel="canonical" href="https://www.drush.org/latest/latest/examples/SiteAliasAlterCommands.php/">
       
       
-        <link rel="prev" href="../PolicyListener.php/">
-      
-      
-        <link rel="next" href="../SyncViaHttpListener.php/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
@@ -264,12 +260,10 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../example.drush.yml/" class="md-tabs__link">
           
   
@@ -914,28 +908,23 @@
       
   
   
-    
   
   
-  
     
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -946,7 +935,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Examples
@@ -1044,27 +1033,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../ArtCommands.php/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ArtCommands.php
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../PolicyListener.php/" class="md-nav__link">
         
   
@@ -1074,35 +1042,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    SiteAliasAlterCommands.php
-  </span>
-  
-
-      </a>
-      
     </li>
   
 
@@ -7365,63 +7304,7 @@
 
   <h1>SiteAliasAlterCommands.php</h1>
 
-<div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
-
-<span class="k">namespace</span> <span class="nx">Drush\Commands</span><span class="p">;</span>
-
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\AnnotationData</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\AnnotatedCommand\Hooks\HookManager</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Consolidation\SiteAlias\SiteAliasManagerInterface</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Attributes</span> <span class="k">as</span> <span class="nx">CLI</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Drush\Boot\DrupalBootLevels</span><span class="p">;</span>
-<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
-
-<span class="sd">/**</span>
-<span class="sd"> * Load this example by using the --include option - e.g. `drush --include=/path/to/drush/examples`</span>
-<span class="sd"> */</span>
-<span class="p">#[</span><span class="nd">CLI\Bootstrap</span><span class="p">(</span><span class="nx">DrupalBootLevels</span><span class="o">::</span><span class="na">NONE</span><span class="p">)]</span>
-<span class="k">class</span> <span class="nc">SiteAliasAlterCommands</span> <span class="k">extends</span> <span class="nx">DrushCommands</span>
-<span class="p">{</span>
-    <span class="k">use</span> <span class="nx">AutowireTrait</span><span class="p">;</span>
-
-    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
-        <span class="k">private</span> <span class="nx">readonly</span> <span class="nx">SiteAliasManagerInterface</span> <span class="nv">$siteAliasManager</span>
-    <span class="p">)</span> <span class="p">{</span>
-        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">();</span>
-    <span class="p">}</span>
-
-    <span class="sd">/**</span>
-<span class="sd">     * A few example alterations to site aliases.</span>
-<span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_INITIALIZE</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;*&#39;</span><span class="p">)]</span>
-    <span class="k">public</span> <span class="k">function</span> <span class="nf">alter</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
-    <span class="p">{</span>
-        <span class="nv">$self</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
-        <span class="k">if</span> <span class="p">(</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">isRemote</span><span class="p">())</span> <span class="p">{</span>
-            <span class="c1">// Always pass along ssh keys.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">&#39;ssh.options&#39;</span><span class="p">))</span> <span class="p">{</span>
-                <span class="c1">// Don&#39;t edit the alias - edit the general config service instead.</span>
-                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getConfig</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;ssh.options&#39;</span><span class="p">,</span> <span class="s1">&#39;-o ForwardAgent=yes&#39;</span><span class="p">);</span>
-            <span class="p">}</span>
-
-            <span class="c1">// Change the SSH user.</span>
-            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">&#39;remote-user&#39;</span><span class="p">,</span> <span class="s1">&#39;mw2&#39;</span><span class="p">);</span>
-
-            <span class="c1">// Test to see if specific environment really exists in wildcard</span>
-            <span class="c1">// aliases, but only if the target is a specific host.</span>
-            <span class="nv">$host</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s1">&#39;#\.myserver.com$#&#39;</span><span class="p">,</span> <span class="nv">$host</span><span class="p">))</span> <span class="p">{</span>
-                <span class="nv">$ip</span> <span class="o">=</span> <span class="nb">gethostbyname</span><span class="p">(</span><span class="nv">$host</span><span class="p">);</span>
-                <span class="c1">// If the return value of gethostbyname equals its input parameter,</span>
-                <span class="c1">// that indicates failure.</span>
-                <span class="k">if</span> <span class="p">(</span><span class="nv">$host</span> <span class="o">==</span> <span class="nv">$ip</span><span class="p">)</span> <span class="p">{</span>
-                    <span class="nv">$aliasName</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">();</span>
-                    <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="s2">&quot;The alias </span><span class="si">$aliasName</span><span class="s2"> refers to an environment that does not exist.&quot;</span><span class="p">);</span>
-                <span class="p">}</span>
-            <span class="p">}</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-<span class="p">}</span>
+<div class="highlight"><pre><span></span><code>
 </code></pre></div>
 
 
