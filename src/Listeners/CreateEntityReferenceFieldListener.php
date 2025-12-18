@@ -1,24 +1,32 @@
 <?php
 
-namespace Drush\Commands\field;
+declare(strict_types=1);
 
-use Consolidation\AnnotatedCommand\AnnotationData;
-use Consolidation\AnnotatedCommand\Hooks\HookManager;
+namespace Drush\Listeners;
+
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\DrushCommands;
-use Symfony\Component\Console\Command\Command;
+use Drush\Commands\field\EntityTypeBundleValidationTrait;
+use Drush\Commands\field\FieldCreateCommand;
+use Drush\Commands\IoTrait;
+use Drush\Event\ConsoleDefinitionsEvent;
+use Drush\Event\FieldCreateFieldConfigValuesEvent;
+use Drush\Event\FieldCreateFieldStorageConfigValuesEvent;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-final class FieldEntityReferenceHooks extends DrushCommands
+#[AsEventListener(method: 'onConsoleDefinitionEvent')]
+#[AsEventListener(method: 'onFieldConfigValues')]
+#[AsEventListener(method: 'onFieldStorageConfigValues')]
+final class CreateEntityReferenceFieldListener
 {
     use AutowireTrait;
     use EntityTypeBundleValidationTrait;
+    use IoTrait;
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -27,9 +35,15 @@ final class FieldEntityReferenceHooks extends DrushCommands
     ) {
     }
 
-    #[CLI\Hook(type: HookManager::OPTION_HOOK, target: 'field:create')]
-    public function hookOption(Command $command, AnnotationData $annotationData): void
+    public function onConsoleDefinitionEvent(ConsoleDefinitionsEvent $event): void
     {
+        $application = $event->getApplication();
+        if (!$application->has(FieldCreateCommand::NAME)) {
+            return;
+        }
+
+        $command = $application->get(FieldCreateCommand::NAME);
+
         $command->addOption(
             'target-type',
             '',
@@ -45,24 +59,28 @@ final class FieldEntityReferenceHooks extends DrushCommands
         );
     }
 
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-storage')]
-    public function hookFieldStorage(array $values, InputInterface $input): array
+    public function onFieldConfigValues(FieldCreateFieldConfigValuesEvent $event): void
     {
-        if ($input->getOption('field-type') === 'entity_reference') {
-            $values['settings']['target_type'] = $this->getTargetType($input);
+        $this->setIo($event->getInput(), $event->getOutput());
+        $values = $event->getValues();
+
+        if ($this->input->getOption('field-type') === 'entity_reference') {
+            $values['settings']['handler_settings']['target_bundles'] = $this->getTargetBundles($this->input);
         }
 
-        return $values;
+        $event->setValues($values);
     }
 
-    #[CLI\Hook(type: HookManager::ON_EVENT, target: 'field-create-field-config')]
-    public function hookFieldConfig(array $values, InputInterface $input): array
+    public function onFieldStorageConfigValues(FieldCreateFieldStorageConfigValuesEvent $event): void
     {
-        if ($input->getOption('field-type') === 'entity_reference') {
-            $values['settings']['handler_settings']['target_bundles'] = $this->getTargetBundles($input);
+        $this->setIo($event->getInput(), $event->getOutput());
+        $values = $event->getValues();
+
+        if ($this->input->getOption('field-type') === 'entity_reference') {
+            $values['settings']['target_type'] = $this->getTargetType($this->input);
         }
 
-        return $values;
+        $event->setValues($values);
     }
 
     protected function getTargetType(InputInterface $input): string
@@ -86,7 +104,7 @@ final class FieldEntityReferenceHooks extends DrushCommands
 
     protected function getTargetBundles(InputInterface $input): ?array
     {
-        $targetType = $input->getOption('target-type');
+        $targetType = $this->input->getOption('target-type');
         $targetTypeDefinition = $this->entityTypeManager->getDefinition($targetType);
         // For the 'target_bundles' setting, a NULL value is equivalent to "allow
         // entities from any bundle to be referenced" and an empty array value is
