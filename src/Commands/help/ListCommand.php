@@ -86,15 +86,15 @@ final class ListCommand extends Command
             if (!$this->bootstrapManager->hasBootstrapped((DrupalBootLevels::ROOT))) {
                 $io->note(dt('Drupal root not found. In order to see Drupal-specific commands, make sure that the `drush` you are calling is a dependency in your site\'s composer.json. The --uri option might also help.'));
             }
-            return self::SUCCESS;;
+            return self::SUCCESS;
         } elseif ($options['format'] == 'xml') {
             $descriptor = new XmlDescriptor();
             $descriptor->describe($output, $application, []);
-            return self::SUCCESS;;
+            return self::SUCCESS;
         } elseif ($options['format'] == 'json') {
             $descriptor = new JsonDescriptor();
             $descriptor->describe($output, $application, []);
-            return self::SUCCESS;;
+            return self::SUCCESS;
         } else {
             // No longer used. Works for XML, but gives error for JSON.
             // $dom = $this->buildDom($namespaced, $application);
