@@ -6,8 +6,8 @@
 
 Drush makes use of [standard Symfony Console events](https://symfony.com/doc/current/components/console/events.html). In addition, it also fires a custom _ConsoleDefinitionsEvent_ event (see below). Further, commands can inject an event dispatcher service via autowire (use `\Psr\EventDispatcher\EventDispatcherInterface` as the type hint) and then dispatch their own events (e.g. sql:sanitize, cache:clear).
 
-- `Drush\Event\ConsoleDefinitionsEvent`. Used to modify command definitions. That is, add/remove options, usages, etc. Example: [PolicyListener](examples\PolicyListener.php.md)  
-- `Symfony\Component\Console\Event\ConsoleCommandEvent`. Used to act before a command fires. That is, populate user input, check for validity, etc. Example: [PolicyListener](examples\PolicyListener.php.md)
+- `Drush\Event\ConsoleDefinitionsEvent`. Used to modify command definitions. That is, add/remove options, usages, etc. Example: [OptionsetSqlListener](https://github.com/drush-ops/drush/blob/14.x/src/Listeners/OptionsetSqlListener.php)  
+- `Symfony\Component\Console\Event\ConsoleCommandEvent`. Used to act before a command fires. That is, populate user input, check for validity, etc. Example: [ValidateQueueNameListener](https://github.com/drush-ops/drush/blob/14.x/src/Listeners/ValidateQueueNameListener.php)
 - `Symfony\Component\Console\Event\ConsoleTerminateEvent`. Used to run code after a command completes. Example: [DrupliconListener](https://github.com/drush-ops/drush/blob/14.x/src/Listeners/DrupliconListener.php)
 
 ## Implementing a listener
