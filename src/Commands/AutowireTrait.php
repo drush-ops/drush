@@ -44,6 +44,7 @@ trait AutowireTrait
             }
         }
 
-        return new self(...$args);
+        // @phpstan-ignore-next-line new.static
+        return new static(...$args);
     }
 }
