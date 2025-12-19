@@ -185,14 +185,8 @@ Drush 13.7 deprecates Annotated Commands in favor of pure [Symfony Console comma
 
 ## Altering Command Info
 
-Drush command info can be altered from other modules. This is done by creating and registering a command definition listener. Listeners are dispatched once after non-bootstrap commands are instantiated and once again after bootstrap commands are instantiated.
+Drush command info can be altered from other modules. This is done by creating and registering a [command definition listener](listeners.md). Listeners are dispatched once after non-bootstrap commands are instantiated and once again after bootstrap commands are instantiated.
 
-In the module that wants to alter command info, add a class that:
-
-1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\Listeners` and the class file should be located under the `src/Drush/Listeners` directory.
-1. The filename must have a name like FooListener.php. The prefix `Foo` can be whatever string you want. The file must end in `Listener.php`.
-1. The class should implement the `#[AsListener]` PHP Attribute.
-1. Implement the alteration logic via a `__invoke(ConsoleDefinitionsEvent $event)` method.
 1. Along with the alter code, it's recommended to log a debug message explaining what exactly was altered. This makes things easier on others who may need to debug the interaction of the alter code with other modules. Also, it's a good practice to inject the logger in the class constructor.
 
 For an example, see [WootDefinitionListener](https://github.com/drush-ops/drush/blob/13.x/sut/modules/unish/woot/src/Drush/Listeners/WootDefinitionListener.php) provided by the testing 'woot' module.
