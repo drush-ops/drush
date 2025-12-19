@@ -895,8 +895,8 @@ phase.</p></dd><dt><a href="Drush/Boot/EmptyBoot.html#method_bootstrapInitPhases
 <abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr>::buildDependents</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DrupalDependenciesCommands.html"><abbr title="Drush\Commands\core\DrupalDependenciesCommands">DrupalDependenciesCommands</abbr></a></em></dt>
                     <dd><p>Build the reverse the relation: dependent -&gt; dependencies.</p></dd><dt><a href="Drush/Commands/core/EditCommand.html#method_bashFiles">
 <abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr>::bashFiles</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/EditCommand.html"><abbr title="Drush\Commands\core\EditCommand">EditCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_buildDom">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::buildDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_buildDom">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::buildDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Drush.html#method_bootstrapManager">
 <abbr title="Drush\Drush">Drush</abbr>::bootstrapManager</a>() &mdash; <em>Method in class <a href="Drush/Drush.html"><abbr title="Drush\Drush">Drush</abbr></a></em></dt>
                     <dd><p>Return the Bootstrap Manager.</p></dd><dt><a href="Drush/Drush.html#method_bootstrap">
@@ -1434,8 +1434,10 @@ available in the search paths provided via Preflight</p></dd><dt><a href="Drush/
 <abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr>::cleanOptions</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCommand.html#method_configure">
 <abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCommand.html"><abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_categorize">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::categorize</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_configure">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_categorize">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::categorize</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleExportCommand.html#method_configure">
 <abbr title="Drush\Commands\locale\LocaleExportCommand">LocaleExportCommand</abbr>::configure</a>() &mdash; <em>Method in class <a href="Drush/Commands/locale/LocaleExportCommand.html"><abbr title="Drush\Commands\locale\LocaleExportCommand">LocaleExportCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleImportAllCommand.html#method_configure">
@@ -2843,6 +2845,8 @@ is no site at Drupal root, or when no root is specified.</p></dd><dt><a href="Dr
 <abbr title="Drush\Commands\generate\GenerateCommand">GenerateCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommand.html"><abbr title="Drush\Commands\generate\GenerateCommand">GenerateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCommand.html#method_execute">
 <abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCommand.html"><abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_execute">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleCheckCommand.html#method_execute">
 <abbr title="Drush\Commands\locale\LocaleCheckCommand">LocaleCheckCommand</abbr>::execute</a>() &mdash; <em>Method in class <a href="Drush/Commands/locale/LocaleCheckCommand.html"><abbr title="Drush\Commands\locale\LocaleCheckCommand">LocaleCheckCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleClearStatusCommand.html#method_execute">
@@ -3949,8 +3953,8 @@ provided uri.</p></dd><dt><a href="Drush/Commands/core/StatusCommand.html#method
 <abbr title="Drush\Commands\generate\Generators\Drush\DrushGeneratorFile">DrushGeneratorFile</abbr>::generate</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/Generators/Drush/DrushGeneratorFile.html"><abbr title="Drush\Commands\generate\Generators\Drush\DrushGeneratorFile">DrushGeneratorFile</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/DrushHelpDocument.html#method_generateBaseHelpDom">
 <abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr>::generateBaseHelpDom</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/DrushHelpDocument.html"><abbr title="Drush\Commands\help\DrushHelpDocument">DrushHelpDocument</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_getTerminalWidth">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::getTerminalWidth</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_getTerminalWidth">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::getTerminalWidth</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/migrate/MigrateRunnerTrait.html#method_getMigrationSourceRowsCount">
 <abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr>::getMigrationSourceRowsCount</a>() &mdash; <em>Method in class <a href="Drush/Commands/migrate/MigrateRunnerTrait.html"><abbr title="Drush\Commands\migrate\MigrateRunnerTrait">MigrateRunnerTrait</abbr></a></em></dt>
                     <dd><p>Returns the migration source rows count.</p></dd><dt><a href="Drush/Commands/migrate/MigrateRunnerTrait.html#method_getMigrationNeedingUpdateCount">
@@ -4639,9 +4643,7 @@ is when an environment name <code>@env</code> is used as a shortcut for <code>@s
 <abbr title="Drush\Commands\field\FieldCreateCommand">FieldCreateCommand</abbr>::hasContentTranslation</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldCreateCommand.html"><abbr title="Drush\Commands\field\FieldCreateCommand">FieldCreateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCLIFormatter.html"><abbr title="Drush\Commands\help\HelpCLIFormatter">HelpCLIFormatter</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/help.html">Drush\Commands\help</a></em></dt>
                     <dd><p>Format an array into CLI help string.</p></dd><dt><a href="Drush/Commands/help/HelpCommand.html"><abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/help.html">Drush\Commands\help</a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_helpList">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::helpList</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
-                    <dd><p>List available commands.</p></dd><dt><a href="Drush/Commands/sql/SqlCliCommand.html#method_hasPipedInput">
+                    <dd></dd><dt><a href="Drush/Commands/sql/SqlCliCommand.html#method_hasPipedInput">
 <abbr title="Drush\Commands\sql\SqlCliCommand">SqlCliCommand</abbr>::hasPipedInput</a>() &mdash; <em>Method in class <a href="Drush/Commands/sql/SqlCliCommand.html"><abbr title="Drush\Commands\sql\SqlCliCommand">SqlCliCommand</abbr></a></em></dt>
                     <dd><p>Test if there is input waiting on STDIN</p></dd><dt><a href="Drush/Config/DrushConfig.html#method_home">
 <abbr title="Drush\Config\DrushConfig">DrushConfig</abbr>::home</a>() &mdash; <em>Method in class <a href="Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></em></dt>
@@ -5388,7 +5390,7 @@ the value of a path alias.</p></dd><dt><a href="Drush/Boot/BaseBoot.html#method_
 <abbr title="Drush\Commands\field\FieldBaseOverrideCreateCommand">FieldBaseOverrideCreateCommand</abbr>::logResult</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldBaseOverrideCreateCommand.html"><abbr title="Drush\Commands\field\FieldBaseOverrideCreateCommand">FieldBaseOverrideCreateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/field/FieldCreateCommand.html#method_logResult">
 <abbr title="Drush\Commands\field\FieldCreateCommand">FieldCreateCommand</abbr>::logResult</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldCreateCommand.html"><abbr title="Drush\Commands\field\FieldCreateCommand">FieldCreateCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/help.html">Drush\Commands\help</a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/help.html">Drush\Commands\help</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleCheckCommand.html"><abbr title="Drush\Commands\locale\LocaleCheckCommand">LocaleCheckCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/locale.html">Drush\Commands\locale</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleClearStatusCommand.html"><abbr title="Drush\Commands\locale\LocaleClearStatusCommand">LocaleClearStatusCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/locale.html">Drush\Commands\locale</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleExportCommand.html"><abbr title="Drush\Commands\locale\LocaleExportCommand">LocaleExportCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/locale.html">Drush\Commands\locale</a></em></dt>
@@ -6762,10 +6764,10 @@ command was found, but did not meet requirements.</p></dd><dt>$<a href="Drush/Bo
 <abbr title="Drush\Commands\field\FieldTypesCommand">FieldTypesCommand</abbr>::renderArray</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldTypesCommand.html"><abbr title="Drush\Commands\field\FieldTypesCommand">FieldTypesCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/field/FieldWidgetsCommand.html#method_renderArray">
 <abbr title="Drush\Commands\field\FieldWidgetsCommand">FieldWidgetsCommand</abbr>::renderArray</a>() &mdash; <em>Method in class <a href="Drush/Commands/field/FieldWidgetsCommand.html"><abbr title="Drush\Commands\field\FieldWidgetsCommand">FieldWidgetsCommand</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_renderListCLI">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::renderListCLI</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Drush/Commands/help/ListCommands.html#method_renderListRaw">
-<abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr>::renderListRaw</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommands.html"><abbr title="Drush\Commands\help\ListCommands">ListCommands</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_renderListCLI">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::renderListCLI</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method_renderListRaw">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::renderListRaw</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RoleCreateCommand.html"><abbr title="Drush\Commands\role\RoleCreateCommand">RoleCreateCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/role.html">Drush\Commands\role</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RoleDeleteCommand.html"><abbr title="Drush\Commands\role\RoleDeleteCommand">RoleDeleteCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/role.html">Drush\Commands\role</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/role/RoleListCommand.html"><abbr title="Drush\Commands\role\RoleListCommand">RoleListCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/role.html">Drush\Commands\role</a></em></dt>
@@ -9376,6 +9378,8 @@ user-specified options for this request.</p></dd><dt><a href="Consolidation/Outp
 <abbr title="Drush\Commands\generate\GenerateCommand">GenerateCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/generate/GenerateCommand.html"><abbr title="Drush\Commands\generate\GenerateCommand">GenerateCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/help/HelpCommand.html#method___construct">
 <abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/HelpCommand.html"><abbr title="Drush\Commands\help\HelpCommand">HelpCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Commands/help/ListCommand.html#method___construct">
+<abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/help/ListCommand.html"><abbr title="Drush\Commands\help\ListCommand">ListCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleCheckCommand.html#method___construct">
 <abbr title="Drush\Commands\locale\LocaleCheckCommand">LocaleCheckCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Commands/locale/LocaleCheckCommand.html"><abbr title="Drush\Commands\locale\LocaleCheckCommand">LocaleCheckCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/locale/LocaleClearStatusCommand.html#method___construct">
