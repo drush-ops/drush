@@ -329,7 +329,7 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         // Uncomment the lines below to use Console's built in help and list commands.
         // unset($commandClasses[__DIR__ . '/Commands/help/HelpCommands.php']);
-        // unset($commandClasses[__DIR__ . '/Commands/help/ListCommands.php']);
+        // unset($commandClasses[__DIR__ . '/Commands/help/ListCommand.php']);
 
         // Instantiate our command handler objects with the service manager
         // (handles 'createEarly' static factories)
