@@ -78,7 +78,7 @@ final class ListCommand extends Command
          * output chooses to use the Symfony descriptor as well.
          */
         if ($options['raw']) {
-            $this->renderListRaw($namespaced);
+            $this->renderListRaw($namespaced, $output);
             return self::SUCCESS;
         } elseif ($options['format'] == 'listcli') {
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
@@ -182,9 +182,9 @@ final class ListCommand extends Command
         return $term->getWidth();
     }
 
-    public function renderListRaw(array $namespaced): void
+    public function renderListRaw(array $namespaced, OutputInterface $output): void
     {
-        $table = new Table($this->output());
+        $table = new Table($output);
         $table->setStyle('compact');
         foreach ($namespaced as $namespace => $commands) {
             foreach ($commands as $command) {
