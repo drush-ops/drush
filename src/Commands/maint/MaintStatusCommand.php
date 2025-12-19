@@ -33,7 +33,7 @@ final class MaintStatusCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addUsage('maint:status && drush cron')
+            ->addUsage('maint:status &amp;&amp; drush cron')
             ->setHelp('This commands fails with exit code of 3 when maintenance mode is on. This special exit code distinguishes from a failure to complete. Only run cron when Drupal is not in maintenance mode.');
     }
 

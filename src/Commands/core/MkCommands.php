@@ -12,7 +12,7 @@ use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\generate\ApplicationFactory;
 use Drush\Commands\help\HelpCLIFormatter;
-use Drush\Commands\help\ListCommands;
+use Drush\Commands\help\ListCommand;
 use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Application;
@@ -54,7 +54,7 @@ final class MkCommands extends Command
         $this->logger->debug('Writing to {path}', ['path' => $destination_path]);
         $this->getApplication()->get('completion')->setHidden(true);
         $all = $this->getApplication()->all();
-        $namespaced = ListCommands::categorize($all);
+        $namespaced = ListCommand::categorize($all);
         [$nav_commands, $pages_commands, $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_commands, $destination_path, 'All commands');
 
@@ -64,7 +64,7 @@ final class MkCommands extends Command
         $container = Drush::getContainer();
         $application_generate = (new ApplicationFactory($container, $this->logger))->create();
         $all = $this->createAnnotatedCommands($application_generate, $this->getApplication());
-        $namespaced = ListCommands::categorize($all);
+        $namespaced = ListCommand::categorize($all);
         [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
         $this->writeAllMd($pages_generators, $destination_path, 'All generators');
 

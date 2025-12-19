@@ -9,36 +9,58 @@ use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drush\Attributes as CLI;
+use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\DrushCommands;
-use Drush\Drush;
+use Drush\Command\HelpLinks;
+use Drush\Commands\AutowireTrait;
+use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Descriptor\JsonDescriptor;
 use Symfony\Component\Console\Descriptor\XmlDescriptor;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Terminal;
 
-class ListCommands extends DrushCommands
+#[AsCommand(
+    name: self::NAME,
+    description: 'List available commands',
+)]
+#[CLI\Bootstrap(DrupalBootLevels::NONE)]
+#[CLI\HelpLinks(links: [HelpLinks::Readme])]
+final class ListCommand extends Command
 {
-    const LIST = 'list';
+    use AutowireTrait;
 
-    /**
-     * List available commands.
-     */
-    #[CLI\Command(name: self::LIST, aliases: [])]
-    #[CLI\Option(name: 'filter', description: 'Restrict command list to those commands defined in the specified file. Omit value to choose from a list of names.')]
-    #[CLI\Option(name: 'raw', description: 'Show a simple table of command names and descriptions.')]
-    #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
-    #[CLI\Usage(name: 'drush list', description: 'List all commands.')]
-    #[CLI\Usage(name: 'drush list --filter=devel_generate', description: 'Show only commands starting with devel-')]
-    #[CLI\Usage(name: 'drush list --format=xml', description: 'List all commands in Symfony compatible xml format.')]
-    public function helpList(array $options = ['format' => 'listcli', 'raw' => false, 'filter' => self::REQ]): ?string
+    const string NAME = 'list';
+
+    public function __construct(
+        private readonly BootstrapManager $bootstrapManager,
+    ) {
+        parent::__construct();
+    }
+
+    protected function configure(): void
     {
-        $application = Drush::getApplication();
+        $this
+            ->addOption(name: 'format', mode: InputOption::VALUE_REQUIRED, description: 'Show command list in XML format', default: 'listcli')
+            ->addOption(name: 'filter', mode: InputOption::VALUE_REQUIRED, description: 'Restrict command list to those commands defined in the specified category. Omit value to choose from a list of names.')
+            ->addOption(name: 'raw', mode: InputOption::VALUE_NONE, description: 'Show a simple table of command names and descriptions.')
+            ->addUsage('drush list --filter=devel_generate')
+            ->addUsage('drush list --format=xml');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
+        $io = new DrushStyle($input, $output);
+        $application = $this->getApplication();
+        $options = $input->getOptions();
         $all = $application->all();
-        $namespaced = static::categorize($all);
+        $namespaced = self::categorize($all);
 
         // Filter out namespaces that the user does not want to see
         $filter_category = $options['filter'];
@@ -56,28 +78,28 @@ class ListCommands extends DrushCommands
          * output chooses to use the Symfony descriptor as well.
          */
         if ($options['raw']) {
-            $this->renderListRaw($namespaced);
-            return null;
+            $this->renderListRaw($namespaced, $output);
+            return self::SUCCESS;
         } elseif ($options['format'] == 'listcli') {
             $preamble = dt('Run `drush help [command]` to view command-specific help.  Run `drush topic` to read even more documentation.');
-            static::renderListCLI($application, $namespaced, $this->output(), $preamble);
-            if (!Drush::bootstrapManager()->hasBootstrapped((DrupalBootLevels::ROOT))) {
-                $this->io()->note(dt('Drupal root not found. In order to see Drupal-specific commands, make sure that the `drush` you are calling is a dependency in your site\'s composer.json. The --uri option might also help.'));
+            self::renderListCLI($application, $namespaced, $output, $preamble);
+            if (!$this->bootstrapManager->hasBootstrapped((DrupalBootLevels::ROOT))) {
+                $io->note(dt('Drupal root not found. In order to see Drupal-specific commands, make sure that the `drush` you are calling is a dependency in your site\'s composer.json. The --uri option might also help.'));
             }
-            return null;
+            return self::SUCCESS;
         } elseif ($options['format'] == 'xml') {
             $descriptor = new XmlDescriptor();
-            $descriptor->describe($this->output, $application, []);
-            return null;
+            $descriptor->describe($output, $application, []);
+            return self::SUCCESS;
         } elseif ($options['format'] == 'json') {
             $descriptor = new JsonDescriptor();
-            $descriptor->describe($this->output, $application, []);
-            return null;
+            $descriptor->describe($output, $application, []);
+            return self::SUCCESS;
         } else {
             // No longer used. Works for XML, but gives error for JSON.
             // $dom = $this->buildDom($namespaced, $application);
             // return $dom;
-            return null;
+            return self::SUCCESS;
         }
     }
 
@@ -122,8 +144,7 @@ class ListCommands extends DrushCommands
     {
         $output->writeln($application->getHelp());
         $output->writeln('');
-        $output
-        ->writeln($preamble);
+        $output->writeln($preamble);
         $output->writeln('');
 
         $rows[] = ['Available commands:', ''];
@@ -161,9 +182,9 @@ class ListCommands extends DrushCommands
         return $term->getWidth();
     }
 
-    public function renderListRaw(array $namespaced): void
+    public function renderListRaw(array $namespaced, OutputInterface $output): void
     {
-        $table = new Table($this->output());
+        $table = new Table($output);
         $table->setStyle('compact');
         foreach ($namespaced as $namespace => $commands) {
             foreach ($commands as $command) {

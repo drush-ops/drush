@@ -57,7 +57,7 @@ final class ConfigStatusCommand extends Command
             ->addUsage('config:status --state=Identical')
             ->addUsage("config:status --state='Only in sync dir' --prefix=node.type.")
             ->addUsage('config:status --state=Any --format=list')
-            ->addUsage('config:status 2>&1 | grep "No differences"');
+            ->addUsage('config:status 2>&amp;1 | grep "No differences"');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int

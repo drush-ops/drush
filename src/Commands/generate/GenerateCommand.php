@@ -7,7 +7,7 @@ namespace Drush\Commands\generate;
 use Drush\Attributes as CLI;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\help\ListCommands;
+use Drush\Commands\help\ListCommand;
 use Drush\Style\DrushStyle;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -69,9 +69,9 @@ See https://github.com/Chi-teck/drupal-code-generator for a README and bug repor
         if (!$generator || $generator === 'list') {
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
-            $namespaced = ListCommands::categorize($all);
+            $namespaced = ListCommand::categorize($all);
             $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
-            ListCommands::renderListCLI($application, $namespaced, $output, $preamble);
+            ListCommand::renderListCLI($application, $namespaced, $output, $preamble);
             return self::SUCCESS;
         }
 
