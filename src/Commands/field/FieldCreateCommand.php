@@ -241,6 +241,7 @@ final class FieldCreateCommand extends Command
         $bundle = $this->input->getArgument('bundle');
         $showMachineNames = (bool) $this->input->getOption('show-machine-names');
         $choices = $this->getExistingFieldStorageOptions($entityType, $bundle, $showMachineNames);
+        asort($choices);
 
         if ($choices === []) {
             return null;
@@ -307,6 +308,7 @@ final class FieldCreateCommand extends Command
             $label = $this->input->getOption('show-machine-names') ? $definition['id'] : $definition['label']->render();
             $choices[$definition['id']] = $label;
         }
+        asort($choices);
 
         return $this->io()->select('Field type', $choices, scroll: 25);
     }
@@ -336,6 +338,7 @@ final class FieldCreateCommand extends Command
             $label = $this->input->getOption('show-machine-names') ? $name : $label->render();
             $choices[$name] = $label;
         }
+        asort($choices);
 
         $fieldName = $this->input->getOption('field-name');
         $default = $this->getExistingEntityDisplayForDefaults('form')?->getComponent($fieldName)['type'] ?? null;

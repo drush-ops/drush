@@ -35,6 +35,7 @@ trait EntityTypeBundleAskTrait
                 ? $entityTypeDefinition->id()
                 : $entityTypeDefinition->getLabel();
         }
+        asort($choices);
 
         if (!$answer = $this->io()->select('Entity type', $choices, required: true)) {
             throw new \InvalidArgumentException(dt('The entityType argument is required.'));
@@ -66,6 +67,7 @@ trait EntityTypeBundleAskTrait
             $label = $this->input->getOption('show-machine-names') ? $bundle : $data['label'];
             $choices[$bundle] = $label;
         }
+        asort($choices);
 
         if (!$answer = $this->io()->select('Bundle', $choices)) {
             throw new \InvalidArgumentException(dt('The bundle argument is required.'));
