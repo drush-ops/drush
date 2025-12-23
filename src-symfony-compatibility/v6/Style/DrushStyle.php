@@ -99,8 +99,13 @@ class DrushStyle extends SymfonyStyle
      * @param  array<int|string>  $default
      * @return array<int|string>
      */
-    public function multiselect(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, ?\Closure $validate = null, string $hint = 'Use the space bar to select options.'): array
+    public function multiselect(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, ?\Closure $validate = null, string $hint = 'Use the space bar to select options.', bool $search = true, int $searchThreshold = 20): array
     {
+        if ($search && count($options) >= $searchThreshold) {
+            // Use the search prompt if there are many options.
+            return $this->multisearch($label, fn (string $input) => array_filter($options, fn ($option) => str_contains(strtolower($option), strtolower($input))), '', $scroll, $required, $validate, $hint);
+        }
+
         return (new MultiSelectPrompt($label, $options, $default, $scroll, $required, $validate, $hint))->prompt();
     }
 
