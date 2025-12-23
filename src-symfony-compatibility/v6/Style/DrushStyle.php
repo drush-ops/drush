@@ -82,8 +82,13 @@ class DrushStyle extends SymfonyStyle
      * @param  array<int|string, string>  $options
      * @param  true|string  $required
      */
-    public function select(string $label, array $options, int|string|null $default = null, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true): int|string
+    public function select(string $label, array $options, int|string|null $default = null, int $scroll = 10, ?\Closure $validate = null, string $hint = '', bool|string $required = true, bool $search = true, int $searchThreshold = 20): int|string
     {
+        if ($search && count($options) >= $searchThreshold) {
+            // Use the search prompt if there are many options.
+            return $this->search($label, fn (string $input) => array_filter($options, fn ($option) => str_contains(strtolower($option), strtolower($input))), '', $scroll, $validate, $hint, $required);
+        }
+
         return (new SelectPrompt($label, $options, $default, $scroll, $validate, $hint, $required))->prompt();
     }
 
