@@ -157,6 +157,7 @@ final class FieldBaseOverrideCreateCommand extends Command
             $label = $this->input->getOption('show-machine-names') ? $definition->getName() : (string) $definition->getLabel();
             $choices[$definition->getName()] = $label;
         }
+        asort($choices);
 
         return $this->io()->select('Field name', $choices) ?: null;
     }
