@@ -27,7 +27,7 @@ class UpdateDBTest extends CommandUnishTestCase
         $this->drush(PmCommands::INSTALL, ['drush_empty_module']);
         $this->drush(UpdateDBStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[OK] No database updates required.', $err);
+        $this->assertStringContainsString('[success] No database updates required.', $err);
 
         // Force a pending update.
         $this->drush(PhpCommands::SCRIPT, ['updatedb_script'], ['script-path' => __DIR__ . '/resources']);
@@ -43,7 +43,7 @@ class UpdateDBTest extends CommandUnishTestCase
         // Assert that we ran hook_update_n properly
         $this->drush(UpdateDbStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[OK] No database updates required.', $err);
+        $this->assertStringContainsString('[success] No database updates required.', $err);
 
         // Assure that a pending post-update is reported.
         $this->pathPostUpdate = Path::join($this->webroot(), 'modules/unish/drush_empty_module/drush_empty_module.post_update.php');
@@ -230,7 +230,7 @@ YAML_FRAGMENT;
         // Assert that the updates were run correctly.
         $this->drush(UpdateDBStatusCommand::NAME);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString('[OK] No database updates required.', $err);
+        $this->assertStringContainsString('[success] No database updates required.', $err);
     }
 
     /**
