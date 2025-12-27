@@ -16,7 +16,7 @@ In the module that wants to alter command info, add a class that:
 
 1. The class namespace, relative to base namespace, should be `Drupal\<module-name>\Drush\Listeners` and the class file should be located under the `src/Drush/Listeners` directory.
 1. The filename must have a name like FooListener.php. The prefix `Foo` can be whatever string you want. The file must end in `Listener.php`.
-1. The class should implement the `#[AsListener]` PHP Attribute.
+1. The class should implement the `#[\Symfony\Component\EventDispatcher\Attribute\AsEventListener]` PHP Attribute.
 1. Implement your logic via a `__invoke(ConsoleDefinitionsEvent $event)` method. Use a different type hint to listen on a different Event.
 1. Inject the logger and any other needed dependencies in the class constructor.
 
