@@ -26,6 +26,7 @@ use Drush\Event\FieldCreateEntityDisplayValuesEvent;
 use Drush\Event\FieldCreateFieldConfigValuesEvent;
 use Drush\Event\FieldCreateFieldStorageConfigValuesEvent;
 use Drush\Event\FieldCreateInputOptionsEvent;
+use Drush\Log\SuccessInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -495,6 +496,7 @@ final class FieldCreateCommand extends Command
 
     protected function logResult(FieldConfigInterface $field): void
     {
+        assert($this->logger instanceof SuccessInterface);
         $this->logger->success(
             sprintf(
                 "Successfully created field '%s' on %s type with bundle '%s'",
