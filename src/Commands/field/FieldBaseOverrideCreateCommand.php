@@ -12,6 +12,7 @@ use Drupal\Core\Field\Entity\BaseFieldOverride;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\IoTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -45,7 +46,8 @@ final class FieldBaseOverrideCreateCommand extends Command
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
         private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
-        private readonly EntityFieldManagerInterface $entityFieldManager
+        private readonly EntityFieldManagerInterface $entityFieldManager,
+        private readonly LoggerInterface $logger,
     ) {
         parent::__construct();
     }
@@ -195,7 +197,7 @@ final class FieldBaseOverrideCreateCommand extends Command
 
     protected function logResult(BaseFieldOverride $baseFieldOverride): void
     {
-        $this->io()->success(
+        $this->logger->success(
             sprintf(
                 'Successfully created base field override \'%s\' on %s with bundle \'%s\'',
                 $baseFieldOverride->getName(),

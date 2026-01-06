@@ -12,6 +12,7 @@ use Drupal\field\FieldStorageConfigInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\IoTrait;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -47,7 +48,8 @@ final class FieldDeleteCommand extends Command
 
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
-        private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo
+        private readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
+        private readonly LoggerInterface $logger
     ) {
         parent::__construct();
     }
@@ -286,7 +288,7 @@ final class FieldDeleteCommand extends Command
             $message = 'There was a problem removing the !field from the !type content type.';
         }
 
-        $this->io()->success(
+        $this->logger->success(
             dt($message, ['!field' => $fieldConfig->label(), '!type' => $bundleLabel])
         );
     }

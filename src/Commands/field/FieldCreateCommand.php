@@ -27,6 +27,7 @@ use Drush\Event\FieldCreateFieldConfigValuesEvent;
 use Drush\Event\FieldCreateFieldStorageConfigValuesEvent;
 use Drush\Event\FieldCreateInputOptionsEvent;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -69,6 +70,7 @@ final class FieldCreateCommand extends Command
         private readonly ModuleHandlerInterface $moduleHandler,
         private readonly EntityFieldManagerInterface $entityFieldManager,
         private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly LoggerInterface $logger,
         private readonly ?ContentTranslationManagerInterface $contentTranslationManager = null,
     ) {
         parent::__construct();
@@ -493,7 +495,7 @@ final class FieldCreateCommand extends Command
 
     protected function logResult(FieldConfigInterface $field): void
     {
-        $this->io()->success(
+        $this->logger->success(
             sprintf(
                 "Successfully created field '%s' on %s type with bundle '%s'",
                 $field->get('field_name'),
@@ -512,7 +514,7 @@ final class FieldCreateCommand extends Command
         ];
 
         if ($this->moduleHandler->moduleExists('field_ui')) {
-            $this->io()->success(
+            $this->logger->success(
                 dt('Further customisation can be done through the <href=%editForm>edit form</>.', [
                     '%editForm' => Url::fromRoute($routeName, $routeParams)->setAbsolute(true)->toString(),
                 ]),
