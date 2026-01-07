@@ -38,15 +38,6 @@ command:
         structure-tables-key: common
 
 # Non-options.
-sql:
-  # List of tables whose *data* is skipped by the 'sql:dump' and 'sql:sync'
-  # commands when the "--structure-tables-key=common" option is provided.
-  structure-tables:
-    common:
-      - cache
-      - 'cache_*'
-      - 'watchdog'
-
 ssh:
   # Specify options to pass to ssh.  The default is to prohibit
   # password authentication, and is included here, so you may add additional
