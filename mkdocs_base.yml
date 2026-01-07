@@ -98,6 +98,7 @@ nav:
     - Dependency injection: dependency-injection.md
     - Input / Output: io.md
     - Generator Authoring: generators.md
+    - Listeners: listeners.md
     - Bootstrap: bootstrap.md
     - Site Alias Manager: site-alias-manager.md
   - Examples:
