@@ -19,7 +19,7 @@ drush:
 # Global options.
 options:
   # Specify the base_url that should be used when generating links.
-# uri: 'http://example.com/subdir'
+  # uri: 'https://example.com/subdir'
 
 # Command-specific options.
 command:
@@ -29,12 +29,13 @@ command:
   user:
     login:
       options:
-        name: newadminuser
+        name: newadmin
   sql:
     dump:
       options:
-        # Uncomment to omit cache and similar tables (including during a sql:sync).
-#       structure-tables-key: common
+        # Omit cache and similar tables (including during a sql:sync).
+        # Define tables to exclude under sql section.
+        structure-tables-key: common
 
 # Non-options.
 ssh:
