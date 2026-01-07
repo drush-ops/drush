@@ -32,7 +32,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: self::NAME,
-    description: 'Apply any database updates required (as with running update.php).',
+    description: 'Apply any database updates required (as with running update.php). Automatically sets the site in maintenance mode, during the update.',
     aliases: ['updb'],
 )]
 #[CLI\Bootstrap(DrupalBootLevels::NONE)]
