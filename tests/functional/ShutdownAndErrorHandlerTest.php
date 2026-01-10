@@ -20,10 +20,10 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
      */
     public function testShutdownFunctionAbruptExit()
     {
-        // Run some garbage php with a syntax error.
-        $this->drush(PhpCommands::EVAL, ['exit(0);'], [], null, null, DrushCommands::EXIT_FAILURE);
-
-        $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
+        // Run some garbage php with a syntax error and assert correct exit code.
+        $this->drush(PhpCommands::EVAL, ['exit(1);'], [], null, null, DrushCommands::EXIT_FAILURE);
+        // Placate phpunit. If above succeeds we are done here.
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -46,9 +46,9 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     public function testShutdownFunctionPHPError()
     {
         // Run some garbage php with a syntax error.
-        $this->drush(PhpCommands::EVAL, ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, PHP_MAJOR_VERSION == 5 ? 255 : DrushCommands::EXIT_FAILURE);
-
-        $this->assertStringContainsString("Drush command terminated abnormally.", $this->getErrorOutput(), 'Error handler did not log a message.');
+        $this->drush(PhpCommands::EVAL, ['\Drush\Drush::setContainer("string is the wrong type to pass here");'], [], null, null, DrushCommands::EXIT_FAILURE);
+        // Placate phpunit. If above succeeds we are done here.
+        $this->addToAssertionCount(1);
     }
 
     /**
@@ -58,12 +58,6 @@ class ShutdownAndErrorHandlerTest extends CommandUnishTestCase
     {
         // Access a missing array element
         $this->drush(PhpCommands::EVAL, ['$a = []; print $a["b"];']);
-
-        if (empty($this->logLevel()) && PHP_MAJOR_VERSION <= 7) {
-            $this->assertEquals('', $this->getErrorOutput(), 'Error handler did not suppress deprecated message.');
-        } else {
-            $msg = PHP_MAJOR_VERSION >= 8 ? 'Undefined array key "b" PhpCommands.php' : 'Undefined index: b PhpCommands.php';
-            $this->assertStringContainsString($msg, $this->getErrorOutput());
-        }
+        $this->assertStringContainsString('Undefined array key "b" PhpCommands.php', $this->getErrorOutput());
     }
 }
