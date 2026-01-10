@@ -18,6 +18,7 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * We use [PSR-12](https://www.php-fig.org/psr/psr-12/).
 * Keep it compatible. Do not introduce changes to the public API, or configurations too casually. Don't make incompatible changes without good reasons!
 * Run `composer cs` to check the project for coding style issues and run `composer cbf` to fix them automatically where possible. These scripts use [`PHP_CodeSniffer`](https://github.com/squizlabs/PHP_CodeSniffer) in background.
+* Files in the `src`, `examples` and `tests` folders are checked. Files in other folders are excluded.
 
 ## Documentation
 * The docs are on our [web site](https://www.drush.org). You may also read these from within Drush, with the `drush topic` command.
