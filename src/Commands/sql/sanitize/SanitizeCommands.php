@@ -64,7 +64,7 @@ final class SanitizeCommands extends DrushCommands implements CustomEventAwareIn
         foreach ($handlers as $handler) {
             $handler($messages, $this->input());
             $stringCallable = (is_string($handler[0]) ? $handler[0] : get_class($handler[0])) . '::' . $handler[1];
-            $this->logger()->notice('The {handler} sanitize plugin is using a deprecated API. See {url}', ['handler' => $stringCallable, 'url' => 'https://www.drush.org/14.x/events/']);
+            $this->logger()->notice('The {handler} sanitize plugin is using a deprecated API. See {url}', ['handler' => $stringCallable, 'url' => 'https://www.drush.org/13.x/listeners/']);
         }
 
         if ($messages) {
