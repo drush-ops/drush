@@ -7344,7 +7344,7 @@
 <span class="c1"># Global options.</span>
 <span class="nt">options</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># Specify the base_url that should be used when generating links.</span>
-<span class="c1"># uri: &#39;http://example.com/subdir&#39;</span>
+<span class="w">  </span><span class="c1"># uri: &#39;https://example.com/subdir&#39;</span>
 
 <span class="c1"># Command-specific options.</span>
 <span class="nt">command</span><span class="p">:</span>
@@ -7354,12 +7354,13 @@
 <span class="w">  </span><span class="nt">user</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">login</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">newadminuser</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">newadmin</span>
 <span class="w">  </span><span class="nt">sql</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">dump</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">options</span><span class="p">:</span>
-<span class="w">        </span><span class="c1"># Uncomment to omit cache and similar tables (including during a sql:sync).</span>
-<span class="c1">#       structure-tables-key: common</span>
+<span class="w">        </span><span class="c1"># Omit cache and similar tables (including during a sql:sync).</span>
+<span class="w">        </span><span class="c1"># Define tables to exclude under sql section.</span>
+<span class="w">        </span><span class="nt">structure-tables-key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">common</span>
 
 <span class="c1"># Non-options.</span>
 <span class="nt">ssh</span><span class="p">:</span>
