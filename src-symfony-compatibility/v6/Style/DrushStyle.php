@@ -2,6 +2,7 @@
 
 namespace Drush\Style;
 
+use Consolidation\Log\LogOutputStyler;
 use Drush\Drush;
 use JetBrains\PhpStorm\Deprecated;
 use Laravel\Prompts\MultiSearchPrompt;
@@ -13,6 +14,9 @@ use Laravel\Prompts\SelectPrompt;
 use Laravel\Prompts\Spinner;
 use Laravel\Prompts\SuggestPrompt;
 use Laravel\Prompts\TextPrompt;
+use Psr\Log\LogLevel;
+use Robo\Log\RoboLogLevel;
+use Robo\Log\RoboLogStyle;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -22,11 +26,6 @@ use function Laravel\Prompts\select;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function success(array|string $message): void {
-      // Force output to stderr so as to not interfere with formatted output.
-      $this->getErrorStyle()->success($message);
-    }
-
     public function confirm(string $question, bool $default = true, string $yes = 'Yes', string $no = 'No', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): bool
     {
         // Automatically accept confirmations if the --yes argument was supplied.
@@ -175,19 +174,43 @@ class DrushStyle extends SymfonyStyle
         return $progress;
     }
 
+    public function comment(string|array $message): void
+    {
+        $this->message('', $message, '// ');
+    }
+
+    public function success(string|array $message): void
+    {
+        $messages = \is_array($message) ? array_values($message) : [$message];
+        foreach ($messages as $message) {
+            // Force output to stderr to not interfere with formatted output.
+            $this->getErrorOutput()->writeln($this->formatMessage(RoboLogLevel::SUCCESS, $message, RoboLogStyle::TASK_STYLE_SUCCESS));
+        }
+    }
+
+    public function error(string|array $message): void
+    {
+        $this->message(LogLevel::ERROR, $message, '', LogOutputStyler::TASK_STYLE_ERROR);
+    }
+
     public function warning(string|array $message): void
     {
-        $this->block($message, 'WARNING', 'fg=black;bg=yellow', ' ! ', true);
+        $this->message(LogLevel::WARNING, $message, '', LogOutputStyler::TASK_STYLE_WARNING);
     }
 
     public function note(string|array $message): void
     {
-        $this->block($message, 'NOTE', 'fg=black;bg=yellow', ' ! ');
+        $this->message(LogLevel::NOTICE, $message, '', LogOutputStyler::TASK_STYLE_INFO);
+    }
+
+    public function info(string|array $message): void
+    {
+        $this->message(LogLevel::INFO, $message, '', LogOutputStyler::TASK_STYLE_INFO);
     }
 
     public function caution(string|array $message): void
     {
-        $this->block($message, 'CAUTION', 'fg=black;bg=yellow', ' ! ', true);
+        $this->message('caution', $message, '! ', LogOutputStyler::TASK_STYLE_ERROR);
     }
 
     /**
@@ -207,5 +230,42 @@ class DrushStyle extends SymfonyStyle
         });
 
         return $this->askQuestion($question);
+    }
+
+    /**
+     * Log a message with the provided label and message styles.
+     */
+    protected function message(string $label, string|array $message, string $prefix, string $labelStyle = '', string $messageStyle = ''): void
+    {
+        $messages = \is_array($message) ? array_values($message) : [$message];
+        foreach ($messages as $message) {
+            $this->writeln($this->formatMessage($label, $prefix . $message, $labelStyle, $messageStyle));
+        }
+    }
+
+    /**
+     * Apply styling with the provided label and message styles.
+     */
+    protected function formatMessage(string $label, string|array $message, string $labelStyle = '', string $messageStyle = ''): string
+    {
+        if (!empty($messageStyle)) {
+            $message = $this->wrapFormatString(" $message ", $messageStyle);
+        }
+        if (!empty($label)) {
+            $message = ' ' . $this->wrapFormatString("[$label]", $labelStyle) . ' ' . $message;
+        }
+
+        return $message;
+    }
+
+    /**
+     * Wrap a string in a format element.
+     */
+    protected function wrapFormatString(string $string, string $style): string
+    {
+        if ($style) {
+            return "<{$style}>$string</>";
+        }
+        return $string;
     }
 }
