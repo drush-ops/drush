@@ -80,7 +80,7 @@ drush:
 
 #### Backup directory
 Specify a folder where Drush should store backup files, including
-temporary sql dump files created during [sql:sync](https://www.drush.org/latest/commands/sql_sync/). If unspecified,
+temporary sql dump files created during [sql:sync](commands/sql_sync.md). If unspecified,
 defaults to `$HOME/drush-backups`.
 ```yml
 drush:

@@ -13,7 +13,7 @@
 !!! note
     - See [Usage](usage.md) for details on using Drush. 
     - To use a non-default PHP, [edit ~/.bashrc so that the desired PHP is in front of your $PATH](http://stackoverflow.com/questions/4145667/how-to-override-the-path-of-php-to-use-the-mamp-path/10653443#10653443). If that is not desirable, you can change your PATH for just one request: `PATH=/path/to/php:$PATH` drush status ...`
-    - To use custom PHP configuration such as _memory_limit_, create a custom php.ini for Drush requests as per https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342 and https://github.com/drush-ops/drush/issues/3294#issuecomment-618962852. This approach ensures that the custom config is used for the subprocesses as well (e.g. `updatedb`).   
+    - To use custom PHP configuration such as _memory_limit_, create a custom php.ini for Drush requests as per https://github.com/drush-ops/drush/issues/3294#issuecomment-370201342 and https://github.com/drush-ops/drush/issues/3294#issuecomment-618962852. This approach ensures that the custom config is used for the subprocesses as well (e.g. [updatedb](commands/updatedb.md)).   
     - See our [guide on porting commandfiles](https://weitzman.github.io/blog/port-to-drush9) from Drush 8 to later versions. Also note that alias and config files use a new .yml format in Drush 10+.
 
 Drupal Compatibility
