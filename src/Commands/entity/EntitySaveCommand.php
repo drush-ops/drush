@@ -8,6 +8,7 @@ use Drupal\Core\Entity\ContentEntityStorageInterface;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException;
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
+use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
@@ -43,7 +44,8 @@ final class EntitySaveCommand extends Command
     public function __construct(
         protected readonly EntityTypeManagerInterface $entityTypeManager,
         protected readonly TimeInterface $time,
-        protected readonly AccountInterface $currentUser
+        protected readonly AccountInterface $currentUser,
+        protected readonly ?ModerationInformationInterface $moderationInformation = null
     ) {
         parent::__construct();
     }
@@ -146,9 +148,8 @@ final class EntitySaveCommand extends Command
                 $entity = $storage->createRevision($entity, true);
             }
             if ($state) {
-                // AutowireTrait does not support optional params so can't use DI.
-                $moderationInformation = \Drupal::service('content_moderation.moderation_information');
-                if (!$moderationInformation->isModeratedEntity($entity)) {
+                assert($this->moderationInformation instanceof ModerationInformationInterface);
+                if (!$this->moderationInformation->isModeratedEntity($entity)) {
                     throw new \InvalidArgumentException(dt('!bundle !id does not support content moderation.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
                 }
 
