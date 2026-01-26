@@ -80,10 +80,10 @@ final class EntityDeleteCommand extends Command
             }
 
             $chunks = array_chunk($result, (int) $options['chunks'], true);
-            $io->progressStart(count($chunks));
+            $io->progressStart(count($result));
             foreach ($chunks as $chunk) {
                 drush_op($this->doDelete(...), $entity_type, $chunk);
-                $io->progressAdvance();
+                $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
             $io->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
