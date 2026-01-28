@@ -109,10 +109,10 @@ final class EntitySaveCommand extends Command
             $io->success(dt('No matching entities found.'));
         } else {
             $chunks = array_chunk($result, (int) $options['chunks'], true);
-            $io->progressStart(count($chunks));
+            $io->progressStart(count($result));
             foreach ($chunks as $chunk) {
                 drush_op($this->doSave(...), $entity_type, $chunk, $action, $state);
-                $io->progressAdvance();
+                $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
             $io->success(dt("Saved !type entity ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
