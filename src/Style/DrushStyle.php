@@ -22,9 +22,10 @@ use function Laravel\Prompts\select;
 
 class DrushStyle extends SymfonyStyle
 {
-    public function success(array|string $message): void {
-      // Force output to stderr so as to not interfere with formatted output.
-      $this->getErrorStyle()->success($message);
+    public function success(array|string $message): void
+    {
+        // Force output to stderr so as to not interfere with formatted output.
+        $this->getErrorStyle()->success($message);
     }
 
     public function confirm(string $question, bool $default = true, string $yes = 'Yes', string $no = 'No', bool|string $required = false, ?\Closure $validate = null, string $hint = ''): bool
