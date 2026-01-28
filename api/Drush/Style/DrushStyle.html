@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Style\DrushStyle | Drush API 14</title>
+
+            <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../fonts/doctum-font.css">
+        <script src="../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../doctum.js"></script>
+        <script async defer src="../../js/bootstrap.min.js"></script>
+        <script async defer src="../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Style_DrushStyle" data-root-path="../../" data-search-index-url="../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../classes.html">Classes</a></li>
+                    <li><a href="../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../traits.html">Traits</a></li>
+                    <li><a href="../../doc-index.html">Index</a></li>
+                    <li><a href="../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../Drush/Style.html">Style</a></li><li class="backslash">\</li><li>DrushStyle</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>DrushStyle    
+            </h1>
+    </div>
+
+    
+    <p>        class
+    <strong>DrushStyle</strong>        extends <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php">View source</a>)
+</p>
+
+        
+    
+        
+
+            
+        
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_success">success</a>(<abbr title="Drush\Style\array|string">array|string</abbr> $message)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_confirm">confirm</a>(string $question, bool $default = true, string $yes = &#039;Yes&#039;, string $no = &#039;No&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_choice">choice</a>(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 15, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_ask">ask</a>(<abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $question, string|null $default = null, callable|null $validator = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $placeholder = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $hint = &#039;&#039;)
+        
+                                            <p><p>Prompt the user for text input.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_password">password</a>(<abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $label, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $placeholder = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $hint = &#039;&#039;)
+        
+                                            <p><p>Prompt the user for input, hiding the value.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Style\int|string">int|string</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_select">select</a>(string $label, array $options, <abbr title="Drush\Style\int|string|null">int|string|null</abbr> $default = null, int $scroll = 10, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true, bool $search = true, int $searchThreshold = 20)
+        
+                                            <p><p>Prompt the user to select an option.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_multiselect">multiselect</a>(string $label, array $options, array $default = [], int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;, bool $search = true, int $searchThreshold = 20)
+        
+                                            <p><p>Prompt the user to select multiple options.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_suggest">suggest</a>(string $label, array|Closure $options, string $placeholder = &#039;&#039;, string $default = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Start typing the first letter(s) and matching choices will be shown.&#039;)
+        
+                                            <p><p>Prompt the user for text input with auto-completion.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drush\Style\int|string">int|string</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_search">search</a>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true)
+        
+                                            <p><p>Allow the user to search for an option.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_multisearch">multisearch</a>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;)
+        
+                                            <p><p>Allow the user to search for multiple option.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_spin">spin</a>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $callback, string $message = &#039;&#039;)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="array|Laravel\Prompts\Progress">Progress</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_progress">progress</a>(string $label, <abbr title="Drush\Style\iterable|int">iterable|int</abbr> $steps, <abbr title="Drush\Style\Closure">Closure</abbr>|null $callback = null, string $hint = &#039;&#039;)
+        
+                                            <p><p>Display a progress bar.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_warning">warning</a>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_note">note</a>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_caution">caution</a>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    mixed
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_askRequired">askRequired</a>($question)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_success">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L25">at line 25</a></div>
+        <code>                    void
+    <strong>success</strong>(<abbr title="Drush\Style\array|string">array|string</abbr> $message)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\array|string">array|string</abbr></td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_confirm">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L31">at line 31</a></div>
+        <code>                    bool
+    <strong>confirm</strong>(string $question, bool $default = true, string $yes = &#039;Yes&#039;, string $no = &#039;No&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$question</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$yes</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$no</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_choice">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L45">at line 45</a></div>
+        <code>                    mixed
+    <strong>choice</strong>(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 15, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$question</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$choices</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>mixed</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$multiSelect</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_ask">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L58">at line 58</a></div>
+        <code>                    mixed
+    <strong>ask</strong>(<abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $question, string|null $default = null, callable|null $validator = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $placeholder = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $hint = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prompt the user for text input.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$question</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable|null</td>
+                <td>$validator</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$placeholder</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_password">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L75">at line 75</a></div>
+        <code>                    string
+    <strong>password</strong>(<abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $label, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $placeholder = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, <abbr title="Drush\Style\Stringable|string">Stringable|string</abbr> $hint = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prompt the user for input, hiding the value.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$placeholder</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Stringable|string">Stringable|string</abbr></td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_select">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L86">at line 86</a></div>
+        <code>                    <abbr title="Drush\Style\int|string">int|string</abbr>
+    <strong>select</strong>(string $label, array $options, <abbr title="Drush\Style\int|string|null">int|string|null</abbr> $default = null, int $scroll = 10, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true, bool $search = true, int $searchThreshold = 20)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prompt the user to select an option.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\int|string|null">int|string|null</abbr></td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$search</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$searchThreshold</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Style\int|string">int|string</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_multiselect">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L103">at line 103</a></div>
+        <code>                    array
+    <strong>multiselect</strong>(string $label, array $options, array $default = [], int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;, bool $search = true, int $searchThreshold = 20)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prompt the user to select multiple options.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$search</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$searchThreshold</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_suggest">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L118">at line 118</a></div>
+        <code>                    string
+    <strong>suggest</strong>(string $label, array|Closure $options, string $placeholder = &#039;&#039;, string $default = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Start typing the first letter(s) and matching choices will be shown.&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Prompt the user for text input with auto-completion.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array|Closure</td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$placeholder</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_search">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L129">at line 129</a></div>
+        <code>                    <abbr title="Drush\Style\int|string">int|string</abbr>
+    <strong>search</strong>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;&#039;, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = true)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Allow the user to search for an option.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$placeholder</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drush\Style\int|string">int|string</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_multisearch">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L140">at line 140</a></div>
+        <code>                    array
+    <strong>multisearch</strong>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, <abbr title="Drush\Style\bool|string">bool|string</abbr> $required = false, <abbr title="Drush\Style\Closure">Closure</abbr>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Allow the user to search for multiple option.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a></td>
+                <td>$options</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$placeholder</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$scroll</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\bool|string">bool|string</abbr></td>
+                <td>$required</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$validate</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_spin">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L153">at line 153</a></div>
+        <code>                    mixed
+    <strong>spin</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $callback, string $message = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a></td>
+                <td>$callback</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_progress">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L168">at line 168</a></div>
+        <code>                    <abbr title="array|Laravel\Prompts\Progress">Progress</abbr>
+    <strong>progress</strong>(string $label, <abbr title="Drush\Style\iterable|int">iterable|int</abbr> $steps, <abbr title="Drush\Style\Closure">Closure</abbr>|null $callback = null, string $hint = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Display a progress bar.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$label</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\iterable|int">iterable|int</abbr></td>
+                <td>$steps</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Style\Closure">Closure</abbr>|null</td>
+                <td>$callback</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hint</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="array|Laravel\Prompts\Progress">Progress</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_warning">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L179">at line 179</a></div>
+        <code>                    void
+    <strong>warning</strong>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\string|array">string|array</abbr></td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_note">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L184">at line 184</a></div>
+        <code>                    void
+    <strong>note</strong>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\string|array">string|array</abbr></td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_caution">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L189">at line 189</a></div>
+        <code>                    void
+    <strong>caution</strong>(<abbr title="Drush\Style\string|array">string|array</abbr> $message)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drush\Style\string|array">string|array</abbr></td>
+                <td>$message</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_askRequired">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L197">at line 197</a></div>
+        <code>                    mixed
+    <strong>askRequired</strong>($question)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$question</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>mixed</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
