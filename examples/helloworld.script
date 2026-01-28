@@ -17,7 +17,7 @@ $output->writeln(print_r($extra, true));
 // the '@self' alias, which is defined only if
 // there is a bootstrapped site.
 //
-$self = Drush::aliasManager()->getSelf();;
+$self = Drush::aliasManager()->getSelf();
 if (!$self->hasRoot()) {
   $output->writeln('No bootstrapped site.');
 }
