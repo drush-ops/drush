@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 #[CLI\FieldLabels(labels: ['rid' => 'ID', 'label' => 'Role Label', 'perms' => 'Permissions'])]
 #[CLI\FilterDefaultField(field: 'perms')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
+#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'yaml')]
 final class RoleListCommand extends Command
 {
     use AutowireTrait;
