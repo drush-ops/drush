@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
-use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Database\Connection;
+use Drupal\Core\Logger\RfcLogLevel;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
 use Drush\Exceptions\UserAbortException;
