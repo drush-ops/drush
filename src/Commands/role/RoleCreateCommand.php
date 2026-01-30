@@ -24,11 +24,6 @@ final class RoleCreateCommand extends Command
 
     const string NAME = 'role:create';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function configure(): void
     {
         $this

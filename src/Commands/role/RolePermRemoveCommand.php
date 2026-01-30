@@ -4,14 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
-use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\Role;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\cache\CacheRebuildCommand;
-use Drush\Drush;
-use Drush\SiteAlias\ProcessManager;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -36,8 +32,6 @@ final class RolePermRemoveCommand extends Command
     const string NAME = 'role:perm:remove';
 
     public function __construct(
-        private readonly ProcessManager $processManager,
-        private readonly SiteAliasManagerInterface $siteAliasManager,
         protected DateFormatterInterface $dateFormatter,
     ) {
         parent::__construct();
@@ -60,7 +54,7 @@ final class RolePermRemoveCommand extends Command
         $perms = StringUtils::csvToArray($permissions);
         user_role_revoke_permissions($machineName, $perms);
         $io->success(sprintf('Removed "%s" permission from "%s" role', $permissions, $machineName));
-        $this->processManager->drush($this->siteAliasManager->getSelf(), CacheRebuildCommand::NAME, [], Drush::redispatchOptions() + ['strict' => 0]);
+        drupal_flush_all_caches();
         return self::SUCCESS;
     }
 

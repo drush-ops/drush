@@ -28,11 +28,6 @@ final class RoleDeleteCommand extends Command
 
     const string NAME = 'role:delete';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function configure(): void
     {
         $this
