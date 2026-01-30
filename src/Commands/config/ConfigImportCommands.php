@@ -27,18 +27,20 @@ use Drupal\Core\Site\Settings;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
+use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\DocsCommands;
 use Drush\Commands\DrushCommands;
 use Drush\Exceptions\UserAbortException;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class ConfigImportCommands extends DrushCommands
 {
+    use AutowireTrait;
+
     const IMPORT = 'config:import';
-    protected ?StorageInterface $configStorageSync;
-    protected ?ImportStorageTransformer $importStorageTransformer;
 
     public function getConfigManager(): ConfigManagerInterface
     {
@@ -127,46 +129,25 @@ class ConfigImportCommands extends DrushCommands
 
     public function __construct(
         protected ConfigManagerInterface $configManager,
+        #[Autowire('config.storage')]
         protected StorageInterface $configStorage,
+        #[Autowire('cache.config')]
         protected CacheBackendInterface $configCache,
         protected ModuleHandlerInterface $moduleHandler,
         protected EventDispatcherInterface $eventDispatcher,
+        #[Autowire('lock')]
         protected LockBackendInterface $lock,
         protected TypedConfigManagerInterface $configTyped,
         protected ModuleInstallerInterface $moduleInstaller,
         protected ThemeHandlerInterface $themeHandler,
         protected TranslationInterface $stringTranslation,
         protected ModuleExtensionList $moduleExtensionList,
-        protected ThemeExtensionList $themeExtensionList
+        protected ThemeExtensionList $themeExtensionList,
+        #[Autowire('config.storage.sync')]
+        protected StorageInterface $configStorageSync,
+        protected ?ImportStorageTransformer $importStorageTransformer = null
     ) {
         parent::__construct();
-    }
-
-    public static function create(ContainerInterface $container): self
-    {
-        $commandHandler = new self(
-            $container->get('config.manager'),
-            $container->get('config.storage'),
-            $container->get('cache.config'),
-            $container->get('module_handler'),
-            $container->get('event_dispatcher'),
-            $container->get('lock'),
-            $container->get('config.typed'),
-            $container->get('module_installer'),
-            $container->get('theme_handler'),
-            $container->get('string_translation'),
-            $container->get('extension.list.module'),
-            $container->get('extension.list.theme')
-        );
-
-        if ($container->has('config.import_transformer')) {
-            $commandHandler->setImportTransformer($container->get('config.import_transformer'));
-        }
-        if ($container->has('config.storage.sync')) {
-            $commandHandler->setConfigStorageSync($container->get('config.storage.sync'));
-        }
-
-        return $commandHandler;
     }
 
     /**
