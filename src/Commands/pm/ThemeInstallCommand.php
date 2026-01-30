@@ -6,8 +6,8 @@ namespace Drush\Commands\pm;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
-use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drupal\Core\Extension\ThemeExtensionList;
+use Drupal\Core\Extension\ThemeInstallerInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Exceptions\UserAbortException;
 use Drush\Style\DrushStyle;

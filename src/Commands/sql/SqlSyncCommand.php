@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql;
 
-use Consolidation\SiteAlias\SiteAliasInterface;
-use Drush\Config\DrushConfig;
 use Consolidation\SiteAlias\SiteAlias;
+use Consolidation\SiteAlias\SiteAliasInterface;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
@@ -14,6 +13,7 @@ use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\core\RsyncCommands;
 use Drush\Commands\core\StatusCommand;
+use Drush\Config\DrushConfig;
 use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\SiteAlias\ProcessManager;
