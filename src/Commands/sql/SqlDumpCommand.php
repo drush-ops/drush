@@ -7,7 +7,6 @@ namespace Drush\Commands\sql;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drush\Attributes as CLI;
-use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
@@ -39,7 +38,6 @@ final class SqlDumpCommand extends Command
     public const string NAME = 'sql:dump';
 
     public function __construct(
-        protected BootstrapManager $bootstrapManager,
         protected readonly FormatterManager $formatterManager,
     ) {
         parent::__construct();
