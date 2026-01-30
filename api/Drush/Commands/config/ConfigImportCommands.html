@@ -100,6 +100,11 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                     <abbr title="Consolidation\SiteProcess\ProcessManagerAwareTrait">ProcessManagerAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
@@ -275,24 +280,6 @@
                 <td class="last"></td>
                 <td><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#property_commandData">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_configStorageSync">
-                                        protected                                        <abbr title="Drush\Commands\config\Drupal\Core\Config\StorageInterface">StorageInterface</abbr>|null
-                                                                                
-                                    </td>
-                <td>$configStorageSync</td>
-                <td class="last"></td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td class="type" id="property_importStorageTransformer">
-                                        protected                                        <abbr title="Drush\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null
-                                                                                
-                                    </td>
-                <td>$importStorageTransformer</td>
-                <td class="last"></td>
-                <td></td>
             </tr>
             </table>
 
@@ -518,7 +505,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Symfony\Contracts\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $themeExtensionList)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Symfony\Contracts\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $themeExtensionList, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorageSync, <abbr title="Drush\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null $importStorageTransformer = null)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -668,6 +655,17 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                                             <p><p>This method overrides the trait in order to provide a more specific return type.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/DrushCommands.html#method_processManager">
 <abbr title="Drush\Commands\DrushCommands">DrushCommands</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -851,17 +849,6 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>           
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getThemeExtensionList">getThemeExtensionList</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -1638,9 +1625,9 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L128">at line 128</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L130">at line 130</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Symfony\Contracts\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $themeExtensionList)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr> $configManager, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorage, <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr> $configCache, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Symfony\Contracts\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher, <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr> $lock, <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr> $configTyped, <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr> $moduleInstaller, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr> $stringTranslation, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $moduleExtensionList, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $themeExtensionList, <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr> $configStorageSync, <abbr title="Drush\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null $importStorageTransformer = null)
         </code>
     </h3>
     <div class="details">    
@@ -1713,6 +1700,16 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr></td>
                 <td>$themeExtensionList</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr></td>
+                <td>$configStorageSync</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drush\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null</td>
+                <td>$importStorageTransformer</td>
                 <td></td>
             </tr>
             </table>
@@ -2207,8 +2204,42 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_getConfigManager">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L43">at line 43</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L45">at line 45</a></div>
         <code>                    <abbr title="Drupal\Core\Config\ConfigManagerInterface">ConfigManagerInterface</abbr>
     <strong>getConfigManager</strong>()
         </code>
@@ -2241,7 +2272,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigStorage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L50">at line 50</a></div>
         <code>                    <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr>
     <strong>getConfigStorage</strong>()
         </code>
@@ -2274,7 +2305,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigStorageSync">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L53">at line 53</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L55">at line 55</a></div>
         <code>                    <abbr title="Drupal\Core\Config\StorageInterface">StorageInterface</abbr>
     <strong>getConfigStorageSync</strong>()
         </code>
@@ -2307,7 +2338,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setConfigStorageSync">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L58">at line 58</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L60">at line 60</a></div>
         <code>                    void
     <strong>setConfigStorageSync</strong>(<abbr title="Drush\Commands\config\Drupal\Core\Config\StorageInterface">StorageInterface</abbr>|null $syncStorage)
         </code>
@@ -2350,7 +2381,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigCache">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L63">at line 63</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L65">at line 65</a></div>
         <code>                    <abbr title="Drupal\Core\Cache\CacheBackendInterface">CacheBackendInterface</abbr>
     <strong>getConfigCache</strong>()
         </code>
@@ -2383,7 +2414,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L68">at line 68</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L70">at line 70</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
     <strong>getModuleHandler</strong>()
         </code>
@@ -2416,7 +2447,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getEventDispatcher">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L73">at line 73</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L75">at line 75</a></div>
         <code>                    <abbr title="Symfony\Contracts\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr>
     <strong>getEventDispatcher</strong>()
         </code>
@@ -2449,7 +2480,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getLock">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L78">at line 78</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L80">at line 80</a></div>
         <code>                    <abbr title="Drupal\Core\Lock\LockBackendInterface">LockBackendInterface</abbr>
     <strong>getLock</strong>()
         </code>
@@ -2482,7 +2513,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getConfigTyped">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L83">at line 83</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L85">at line 85</a></div>
         <code>                    <abbr title="Drupal\Core\Config\TypedConfigManagerInterface">TypedConfigManagerInterface</abbr>
     <strong>getConfigTyped</strong>()
         </code>
@@ -2515,7 +2546,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleInstaller">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L88">at line 88</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L90">at line 90</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleInstallerInterface">ModuleInstallerInterface</abbr>
     <strong>getModuleInstaller</strong>()
         </code>
@@ -2548,7 +2579,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getThemeHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L93">at line 93</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L95">at line 95</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr>
     <strong>getThemeHandler</strong>()
         </code>
@@ -2581,7 +2612,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getStringTranslation">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L98">at line 98</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L100">at line 100</a></div>
         <code>                    <abbr title="Drupal\Core\StringTranslation\TranslationInterface">TranslationInterface</abbr>
     <strong>getStringTranslation</strong>()
         </code>
@@ -2614,7 +2645,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L103">at line 103</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L105">at line 105</a></div>
         <code>                    void
     <strong>setImportTransformer</strong>(<abbr title="Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr> $importStorageTransformer)
         </code>
@@ -2657,7 +2688,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_hasImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L108">at line 108</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L110">at line 110</a></div>
         <code>                    bool
     <strong>hasImportTransformer</strong>()
         </code>
@@ -2690,7 +2721,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getImportTransformer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L113">at line 113</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L115">at line 115</a></div>
         <code>                    <abbr title="Drush\Commands\config\Drupal\Core\Config\ImportStorageTransformer">ImportStorageTransformer</abbr>|null
     <strong>getImportTransformer</strong>()
         </code>
@@ -2723,7 +2754,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getModuleExtensionList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L118">at line 118</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L120">at line 120</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr>
     <strong>getModuleExtensionList</strong>()
         </code>
@@ -2756,7 +2787,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getThemeExtensionList">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L123">at line 123</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L125">at line 125</a></div>
         <code>                    <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr>
     <strong>getThemeExtensionList</strong>()
         </code>
@@ -2788,51 +2819,8 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L145">at line 145</a></div>
-        <code>        static            <a href="../../../Drush/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a>
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        </code>
-    </h3>
-    <div class="details">    
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
-                <td>$container</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Drush/Commands/config/ConfigImportCommands.html"><abbr title="Drush\Commands\config\ConfigImportCommands">ConfigImportCommands</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_import">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L175">at line 175</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L156">at line 156</a></div>
         <code>                    
     <strong>import</strong>(array $options = [&#039;source&#039; =&gt; self::REQ, &#039;partial&#039; =&gt; false, &#039;diff&#039; =&gt; false])
         </code>
@@ -2865,7 +2853,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doImport">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L239">at line 239</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L220">at line 220</a></div>
         <code>                    void
     <strong>doImport</strong>($storage_comparer)
         </code>
@@ -2908,7 +2896,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L306">at line 306</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/config/ConfigImportCommands.php#L287">at line 287</a></div>
         <code>                    
     <strong>validate</strong>(<a href="../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
