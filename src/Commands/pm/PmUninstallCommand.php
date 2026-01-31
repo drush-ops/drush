@@ -12,7 +12,6 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Drush;
 use Drush\Exceptions\UserAbortException;
 use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
@@ -21,6 +20,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -49,7 +49,8 @@ final class PmUninstallCommand extends Command
     {
         $this
             ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
-            ->addUsage('pm:uninstall --simulate field_ui');
+            ->addOption(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Outputs the operations but will not execute anything.')
+            ->addUsage('pm:uninstall --dry-run field_ui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -68,7 +69,7 @@ final class PmUninstallCommand extends Command
         }
 
         $list = $this->addUninstallDependencies($installed_modules);
-        if (Drush::simulate()) {
+        if ($input->getOption('dry-run')) {
             $output->writeln(sprintf('The following extensions will be uninstalled: %s', implode(', ', $list)));
             return self::SUCCESS;
         }
