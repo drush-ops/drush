@@ -70,7 +70,7 @@ See https://github.com/Chi-teck/drupal-code-generator for a README and bug repor
             $all = $application->all();
             unset($all['help'], $all['list'], $all['completion']);
             $namespaced = ListCommand::categorize($all);
-            $preamble = dt('Run `drush generate [command]` and answer a few questions in order to write starter code to your project.');
+            $preamble = 'Run `drush generate [command]` and answer a few questions in order to write starter code to your project.';
             ListCommand::renderListCLI($application, $namespaced, $output, $preamble);
             return self::SUCCESS;
         }
