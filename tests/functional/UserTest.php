@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\UserCommands;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\user\UserLoginCommand;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\Filesystem\Path;
 
 #[Group('slow')]
@@ -122,13 +122,6 @@ class UserTest extends CommandUnishTestCase
         $this->drush(PhpCommands::EVAL, [$eval]);
         $output = $this->getOutput();
         $this->assertStringContainsString('2', $output, 'User can login with new password.');
-    }
-
-    public function testUserLoginNoBootstrappedSite(): never
-    {
-        $this->markTestSkipped('TODO: @none should prevent selection of site at cwd');
-        // Check if user-login on a non-bootstrapped environment returns error.
-        $this->drush(UserLoginCommand::NAME, [], [], '@none', null, self::EXIT_ERROR);
     }
 
     public function testUserLogin(): void
