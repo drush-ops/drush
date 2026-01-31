@@ -193,7 +193,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> $processManager, <a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -421,9 +421,9 @@ default browser could not be found.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L38">at line 38</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L32">at line 32</a></div>
         <code>                    
-    <strong>__construct</strong>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> $processManager, <a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr> $languageManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time)
         </code>
     </h3>
     <div class="details">    
@@ -439,18 +439,13 @@ default browser could not be found.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
-                <td>$bootstrapManager</td>
+                <td><abbr title="Drupal\Core\Language\LanguageManagerInterface">LanguageManagerInterface</abbr></td>
+                <td>$languageManager</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><a href="../../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a></td>
-                <td>$processManager</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><a href="../../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a></td>
-                <td>$siteAliasManager</td>
+                <td><abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr></td>
+                <td>$time</td>
                 <td></td>
             </tr>
             </table>
@@ -465,7 +460,7 @@ default browser could not be found.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_configure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L46">at line 46</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L39">at line 39</a></div>
         <code>            protected        void
     <strong>configure</strong>()
         </code>
@@ -498,7 +493,7 @@ default browser could not be found.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserLoginCommand.php#L52">at line 52</a></div>
         <code>                    int
     <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
