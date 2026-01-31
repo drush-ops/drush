@@ -69,20 +69,20 @@ final class UserLoginCommand extends Command
             $link = $process->getOutput();
         } else {
             if (!$this->bootstrapManager->doBootstrap(DrupalBootLevels::FULL)) {
-                throw new \Exception(dt('Unable to bootstrap Drupal.'));
+                throw new \Exception('Unable to bootstrap Drupal.');
             }
 
             $account = null;
             if ($input->getOption('name') && !$account = user_load_by_name($input->getOption('name'))) {
-                throw new \Exception(dt('Unable to load user by name: !name', ['!name' => $input->getOption('name')]));
+                throw new \Exception(sprintf('Unable to load user by name: %s', $input->getOption('name')));
             }
 
             if ($input->getOption('uid') && !$account = User::load($input->getOption('uid'))) {
-                throw new \Exception(dt('Unable to load user by uid: !uid', ['!uid' => $input->getOption('uid')]));
+                throw new \Exception(sprintf('Unable to load user by uid: %s', $input->getOption('uid')));
             }
 
             if ($input->getOption('mail') && !$account = user_load_by_mail($input->getOption('mail'))) {
-                throw new \Exception(dt('Unable to load user by mail: !mail', ['!mail' => $input->getOption('mail')]));
+                throw new \Exception(sprintf('Unable to load user by mail: %s', $input->getOption('mail')));
             }
 
             if (empty($account)) {
@@ -90,7 +90,7 @@ final class UserLoginCommand extends Command
             }
 
             if ($account->isBlocked()) {
-                throw new \InvalidArgumentException(dt('Account !name is blocked and thus cannot login. The user:unblock command may be helpful.', ['!name' => $account->getAccountName()]));
+                throw new \InvalidArgumentException('Account %s is blocked and thus cannot login. The user:unblock command may be helpful.', $account->getAccountName());
             }
 
             // Can't inject dependency because this command instantiates without a bootstrap.

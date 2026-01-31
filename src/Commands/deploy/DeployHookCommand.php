@@ -158,10 +158,7 @@ final class DeployHookCommand extends Command
             }
         } else {
             $ret['#abort'] = ['success' => false];
-            Drush::logger()->warning(dt('Deploy hook function @function not found in file @filename', [
-                '@function' => $function,
-                '@filename' => "$filename.php",
-            ]));
+            Drush::logger()->warning(sprintf('Deploy hook function %s not found in file %s', $function, "$filename.php"));
         }
 
         if (isset($context['sandbox']['#finished'])) {

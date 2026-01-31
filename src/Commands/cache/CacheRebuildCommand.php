@@ -51,7 +51,7 @@ class CacheRebuildCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         if (str_contains(strval($input), 'cache-clear') && !$input->getoption('cache-clear')) {
-            $this->logger->info(dt("Skipping cache:rebuild due to --no-cache-clear option."));
+            $this->logger->info("Skipping cache:rebuild due to --no-cache-clear option.");
             return self::SUCCESS;
         }
 

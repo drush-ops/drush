@@ -47,7 +47,7 @@ final class CacheWarmCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->warmer->preWarmAllCaches();
-        (new DrushStyle($input, $output))->success(dt('Warmed caches.'));
+        (new DrushStyle($input, $output))->success('Warmed caches.');
         return self::SUCCESS;
     }
 }
