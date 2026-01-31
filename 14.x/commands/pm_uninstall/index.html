@@ -3477,6 +3477,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#options" class="md-nav__link">
+    <span class="md-ellipsis">
+      Options
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       Global Options
@@ -7402,11 +7411,15 @@
 <p>Uninstall one or more modules and their dependent modules.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>pm:uninstall --simulate field_ui</code></li>
+<li><code>pm:uninstall --dry-run field_ui</code></li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>[modules]...</strong>. A comma delimited list of modules.</li>
+</ul>
+<h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>--dry-run</strong>. Outputs the operations but will not execute anything.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>
