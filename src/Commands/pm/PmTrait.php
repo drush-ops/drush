@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\pm;
 
+use Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\MissingDependencyException;
@@ -13,7 +14,6 @@ use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\user\PermissionHandlerInterface;
-use Drupal;
 
 trait PmTrait
 {
@@ -78,7 +78,7 @@ trait PmTrait
         $module_data = $this->extensionListModule->reset()->getList();
         $module_list = array_combine($modules, $modules);
         if ($diff = array_diff_key($module_list, $module_data)) {
-            throw new \Exception(dt('A specified extension does not exist: !diff', ['!diff' => implode(',', $diff)]));
+            throw new \Exception(sprintf('A specified extension does not exist: %s', implode(',', $diff)));
         }
         $extension_config = $this->configFactory->getEditable('core.extension');
         $installed_modules = $extension_config->get('module') ?: [];
@@ -124,19 +124,19 @@ trait PmTrait
         // implementation exists then the module provides an overview page, rather
         // than checking to see if the page exists, which is costly.
         if ($this->moduleHandler->moduleExists('help') && $module->status && $this->moduleHandler->hasImplementations('help', $module->getName())) {
-            $links[] = Link::fromTextAndUrl(dt('Help'), Url::fromRoute('help.page', ['name' => $module->getName()]));
+            $links[] = Link::fromTextAndUrl('Help', Url::fromRoute('help.page', ['name' => $module->getName()]));
         }
 
         // Generate link for module's permissions page.
         // Avoid DI for PermissionHandler until we understand better at https://github.com/drush-ops/drush/issues/6154.
         if ($module->status && Drupal::service(PermissionHandlerInterface::class)->moduleProvidesPermissions($module->getName())) {
-            $links[] = Link::fromTextAndUrl(dt('Permissions'), Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
+            $links[] = Link::fromTextAndUrl('Permissions', Url::fromRoute('user.admin_permissions.module', ['modules' => $module->getName()]));
         }
 
         // Generate link for module's configuration page, if it has one.
         if ($module->status && isset($module->info['configure'])) {
             $route_parameters = $module->info['configure_parameters'] ?? [];
-            $links[] = Link::fromTextAndUrl(dt('Configure'), Url::fromRoute($module->info['configure'], $route_parameters));
+            $links[] = Link::fromTextAndUrl('Configure', Url::fromRoute($module->info['configure'], $route_parameters));
         }
 
         return $links;

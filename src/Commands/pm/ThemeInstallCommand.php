@@ -53,10 +53,9 @@ final class ThemeInstallCommand extends Command
         $themes = StringUtils::csvToArray($themes);
 
         $todo = $this->addInstallDependencies($themes, 'themes');
-        $todo_str = ['!list' => implode(', ', $todo)];
-        if ($todo !== []) {
-            $output->writeln(dt('The following module(s) and themes(s) will be installed: !list', $todo_str));
-            if (!$io->confirm(dt('Do you want to continue?'))) {
+        if ($todo) {
+            $output->writeln(sprintf('The following module(s) and themes(s) will be installed: %s', implode(', ', $todo)));
+            if (!$io->confirm('Do you want to continue?')) {
                 throw new UserAbortException();
             }
 
