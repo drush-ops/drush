@@ -11,7 +11,6 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\user\Entity\User;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Formatters\FormatterTrait;
 use Drush\Style\DrushStyle;
 use InvalidArgumentException;
@@ -43,7 +42,6 @@ final class UserCreateCommand extends Command
     public function __construct(
         protected readonly FormatterManager $formatterManager,
         protected readonly LoggerInterface $logger,
-        protected readonly DrushConfig $drushConfig,
         protected DateFormatterInterface $dateFormatter
     ) {
         parent::__construct();
@@ -92,20 +90,16 @@ final class UserCreateCommand extends Command
             'status' => 1,
         ];
 
-        if (!$this->drushConfig->simulate()) {
-            if ($account = User::create($new_user)) {
-                $account->save();
-                $io->success(sprintf('Created a new user with uid %s', $account->id()));
-                $outputs[$account->id()] = $this->infoArray($account);
+        if ($account = User::create($new_user)) {
+            $account->save();
+            $io->success(sprintf('Created a new user with uid %s', $account->id()));
+            $outputs[$account->id()] = $this->infoArray($account);
 
-                $result = new RowsOfFields($outputs);
-                $result->addRendererFunction($this->renderRolesCell(...));
-                return $result;
-            } else {
-                throw new InvalidArgumentException(sprintf('Could not create a new user account with the name %s.', $name));
-            }
+            $result = new RowsOfFields($outputs);
+            $result->addRendererFunction($this->renderRolesCell(...));
+            return $result;
         } else {
-            return new RowsOfFields([]);
+            throw new InvalidArgumentException(sprintf('Could not create a new user account with the name %s.', $name));
         }
     }
 

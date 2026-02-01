@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\user;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,7 +25,7 @@ final class UserPasswordCommand extends Command
     public const string NAME = 'user:password';
 
     public function __construct(
-        protected readonly DrushConfig $drushConfig
+        protected readonly EntityTypeManagerInterface $entityTypeManager,
     ) {
         parent::__construct();
     }
@@ -44,12 +44,12 @@ final class UserPasswordCommand extends Command
         $name = $input->getArgument('name');
         $password = $input->getArgument('password');
 
-        if ($account = user_load_by_name($name)) {
-            if (!$this->drushConfig->simulate()) {
-                $account->setpassword($password);
-                $account->save();
-                $io->success(sprintf('Changed password for %s.', $name));
-            }
+        $accounts = $this->entityTypeManager->getStorage('user')->loadByProperties(['name' => $name]);
+        $account = reset($accounts);
+        if ($account) {
+            $account->setpassword($password);
+            $account->save();
+            $io->success(sprintf('Changed password for %s.', $name));
         } else {
             throw new \Exception(sprintf('Unable to load user: %s', $name));
         }
