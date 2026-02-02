@@ -85,14 +85,14 @@ final class ConfigPullCommand extends Command
             'yes' => null,
             'format' => 'string',
         ];
-        $this->logger->notice(dt('Starting to export configuration on :source.', [':source' => $source]));
+        $this->logger->notice('Starting to export configuration on {source}.', ['source' => $source]);
         $process = $this->processManager->drush($sourceRecord, ConfigExportCommand::NAME, [], $export_options + $global_options);
         $process->mustRun();
 
         if ($this->drushConfig->simulate()) {
             $export_path = '/simulated/path';
         } elseif (empty(trim($process->getOutput()))) {
-            throw new \Exception(dt('The Drush config:export command did not report the path to the export directory.'));
+            throw new \Exception('The Drush config:export command did not report the path to the export directory.');
         } else {
             // Trailing slash ensures that we transfer files and not the containing dir.
             $export_path = trim($process->getOutput()) . '/';
@@ -108,10 +108,10 @@ final class ConfigPullCommand extends Command
             $runner = $sourceRecord->isRemote() && $destinationRecord->isRemote() ? $destinationRecord : $this->siteAliasManager->getSelf();
         }
         $this->logger
-            ->notice(dt('Starting to rsync configuration files from !source to !dest.', [
-                '!source' => "$source:$export_path",
-                '!dest' => $destinationHostPath->getOriginal(),
-            ]));
+            ->notice('Starting to rsync configuration files from {source} to {dest}.', [
+                'source' => "$source:$export_path",
+                'dest' => $destinationHostPath->getOriginal(),
+            ]);
         $args = ["$source:$export_path", $destinationHostPath->getOriginal()];
         $options_double_dash = [
             'remove-source-files' => true,

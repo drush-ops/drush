@@ -90,7 +90,7 @@ final class ConfigSetCommand extends Command
         $new_key = $config->get($key) === null;
         $simulate = $this->drushConfig->simulate();
 
-        if ($key == '?' && !empty($data) && $io->confirm(dt('Do you want to update or set multiple keys on !name config.', ['!name' => $config_name]))) {
+        if ($key == '?' && !empty($data) && $io->confirm(sprintf('Do you want to update or set multiple keys on %s config.', $config_name))) {
             foreach ($data as $data_key => $val) {
                 $config->set($data_key, $val);
             }
@@ -99,11 +99,11 @@ final class ConfigSetCommand extends Command
             }
         } else {
             $confirmed = false;
-            if ($config->isNew() && $io->confirm(dt('!name config does not exist. Do you want to create a new config object?', ['!name' => $config_name]))) {
+            if ($config->isNew() && $io->confirm(sprintf('%s config does not exist. Do you want to create a new config object?', $config_name))) {
                 $confirmed = true;
-            } elseif ($new_key && $io->confirm(dt('!key key does not exist in !name config. Do you want to create a new config key?', ['!key' => $key, '!name' => $config_name]))) {
+            } elseif ($new_key && $io->confirm(sprintf('%s key does not exist in %s config. Do you want to create a new config key?', $key, $config_name))) {
                 $confirmed = true;
-            } elseif ($io->confirm(dt('Do you want to update !key key in !name config?', ['!key' => $key, '!name' => $config_name]))) {
+            } elseif ($io->confirm(sprintf('Do you want to update %s key in %s config?', $key, $config_name))) {
                 $confirmed = true;
             }
             if ($confirmed && !$simulate) {
