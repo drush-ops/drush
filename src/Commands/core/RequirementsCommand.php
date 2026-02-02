@@ -67,10 +67,10 @@ final class RequirementsCommand extends Command
     {
         include_once DRUPAL_ROOT . '/core/includes/install.inc';
         $severities = [
-            REQUIREMENT_INFO => dt('Info'),
-            REQUIREMENT_OK => dt('OK'),
-            REQUIREMENT_WARNING => dt('Warning'),
-            REQUIREMENT_ERROR => dt('Error'),
+            REQUIREMENT_INFO => 'Info',
+            REQUIREMENT_OK => 'OK',
+            REQUIREMENT_WARNING => 'Warning',
+            REQUIREMENT_ERROR => 'Error',
         ];
 
         drupal_load_updates();

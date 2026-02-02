@@ -57,7 +57,7 @@ final class WorkspacePublishCommand extends Command
         /** @var \Drupal\workspaces\Entity\Workspace $workspace */
         $workspace = $this->entityTypeManager->getStorage('workspace')->load($id);
         if (!$workspace) {
-            throw new \Exception(dt('Workspace @id not found.', ['@id' => $id]));
+            throw new \Exception(sprintf('Workspace %s not found.', $id));
         }
 
         $workspace_publisher = $this->workspacesOperationFactory->getPublisher($workspace);

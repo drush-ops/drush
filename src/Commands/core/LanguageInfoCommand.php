@@ -65,8 +65,8 @@ final class LanguageInfoCommand extends Command
             $row = [
                 'language' => $language->getName() . ' (' . $language->getId() . ')',
                 'direction' => $language->getDirection(),
-                'default' => $language->isDefault() ? dt('yes') : '',
-                'locked' => $language->isLocked() ? dt('yes') : '',
+                'default' => $language->isDefault() ? 'yes' : '',
+                'locked' => $language->isLocked() ? 'yes' : '',
             ];
             $rows[$key] = $row;
         }

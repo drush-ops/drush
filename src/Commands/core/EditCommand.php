@@ -79,7 +79,7 @@ final class EditCommand extends Command
         if (count($all) === 1) {
             $filepath = current($all);
         } else {
-            $choice = $io->choice(dt("Choose a file to edit"), $all);
+            $choice = $io->choice('Choose a file to edit', $all);
             $filepath = $choice;
             // We don't yet support launching editor at a start line.
             if ($pos = strpos($filepath, ':')) {
