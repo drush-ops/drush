@@ -145,9 +145,9 @@ class StatusCommand extends Command
                     if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
                         $status_table['install-profile'] = \Drupal::installProfile();
                         if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
-                            $status_table['db-status'] = dt('Connected');
+                            $status_table['db-status'] = 'Connected';
                             if ($this->bootstrapManager->hasBootstrapped(DrupalBootLevels::FULL)) {
-                                $status_table['bootstrap'] = dt('Successful');
+                                $status_table['bootstrap'] = 'Successful';
                             }
                         }
                     }

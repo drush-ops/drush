@@ -65,9 +65,9 @@ final class LanguageAddCommand extends Command
                 $language = ConfigurableLanguage::createFromLangcode($langcode);
                 $language->save();
 
-                $io->success(dt('Added language @language', [
+                $io->success('Added language {language}', [
                     '@language' => $language->label(),
-                ]));
+                ]);
             }
 
             if ($skipTranslations) {
@@ -94,9 +94,7 @@ final class LanguageAddCommand extends Command
         $standardLanguages = $this->languageManager->getStandardLanguageList();
         foreach ($langcodes as $key => $langcode) {
             if (!isset($standardLanguages[$langcode])) {
-                throw new \Exception(dt('Unknown language: !langcode', [
-                    '!langcode' => $langcode
-                ]));
+                throw new \Exception(sprintf('Unknown language: %s', $langcode));
             }
         }
 
@@ -111,9 +109,9 @@ final class LanguageAddCommand extends Command
         $enabledLanguages = $this->languageManager->getLanguages();
         foreach ($langcodes as $key => $langcode) {
             if (isset($enabledLanguages[$langcode])) {
-                $io->warning(dt('The language !langcode is already enabled.', [
-                    '!langcode' => $langcode
-                ]));
+                $io->warning('The language {langcode} is already enabled.', [
+                    'langcode' => $langcode
+                ]);
                 unset($langcodes[$key]);
             }
         }

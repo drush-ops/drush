@@ -53,7 +53,7 @@ final class ImageFlushCommand extends Command
             $styles_all = $styles;
             array_unshift($styles_all, 'all');
             $choices = array_combine($styles_all, $styles_all);
-            $style_names = $io->choice(dt("Choose a style to flush"), $choices, 'all');
+            $style_names = $io->choice('Choose a style to flush', $choices, 'all');
             if ($style_names == 'all') {
                 $style_names = implode(',', $styles);
             }

@@ -120,7 +120,7 @@ final class PhpScriptCommand extends Command
                     $all[] = $script_filename;
                 }
                 if (!$found) {
-                    throw new \Exception(dt('Unable to find any of the following: @files', ['@files' => implode(', ', $all)]));
+                    throw new \Exception(sprintf('Unable to find any of the following: %s', implode(', ', $all)));
                 }
             }
         }
