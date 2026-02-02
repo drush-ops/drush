@@ -134,12 +134,8 @@ EOT;
             $parameters['ssl-cipher'] = $dbSpec['pdo'][$attribs['ssl_cipher']];
         }
 
-        if (!empty($dbSpec['pdo'][$attribs['ssl_key']])) {
-            $parameters['ssl-key'] = $dbSpec['pdo'][$attribs['ssl_key']];
-        }
-
-        if (!empty($dbSpec['pdo'][$attribs['ssl_verify_server_cert']])) {
-            $parameters['ssl-verify-server-cert'] = $dbSpec['pdo'][$attribs['ssl_verify_server_cert']];
+        if (isset($dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY])) {
+            $parameters['ssl-key'] = $dbSpec['pdo'][PDO::MYSQL_ATTR_SSL_KEY] ? 'true' : 'false';
         }
 
         return $this->paramsToOptions($parameters);
