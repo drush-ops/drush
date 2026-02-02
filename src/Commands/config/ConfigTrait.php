@@ -87,7 +87,7 @@ trait ConfigTrait
             try {
                 $destination->write($name, $source->read($name));
             } catch (\TypeError $e) {
-                throw new \Exception(dt('Source not found for @name.', ['@name' => $name]), $e->getCode(), $e);
+                throw new \Exception(sprintf('Source not found for %s.', $name), $e->getCode(), $e);
             }
         }
 
