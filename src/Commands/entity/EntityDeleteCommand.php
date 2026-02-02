@@ -71,10 +71,10 @@ final class EntityDeleteCommand extends Command
         }
 
         if (empty($result)) {
-            $io->success(dt('No matching entities found.'));
+            $io->success('No matching entities found.');
         } else {
             if (empty($options['limit']) && empty($ids)) {
-                if (!$io->confirm(dt('You are about to delete !count entities. Do you wish to continue?', ['!count' => count($result)]), false)) {
+                if (!$io->confirm(sprintf('You are about to delete %s entities. Do you wish to continue?', count($result)), false)) {
                     throw new UserAbortException();
                 }
             }
@@ -86,7 +86,7 @@ final class EntityDeleteCommand extends Command
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
-            $io->success(dt("Deleted !type entity Ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
+            $io->success('Deleted {type} entity Ids: {ids}', ['type' => $entity_type, 'ids' => implode(', ', array_values($result))]);
         }
 
         return self::SUCCESS;
