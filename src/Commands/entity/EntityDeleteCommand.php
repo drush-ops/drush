@@ -86,7 +86,7 @@ final class EntityDeleteCommand extends Command
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
-            $io->success('Deleted {type} entity Ids: {ids}', ['type' => $entity_type, 'ids' => implode(', ', array_values($result))]);
+            $io->success(sprintf('Deleted %s entity Ids: %s', $entity_type, implode(', ', array_values($result))));
         }
 
         return self::SUCCESS;

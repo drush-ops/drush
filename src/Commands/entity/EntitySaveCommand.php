@@ -115,12 +115,12 @@ final class EntitySaveCommand extends Command
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
-            $io->success("Saved {type} entity ids: {ids}", ['type' => $entity_type, 'ids' => implode(', ', array_values($result))]);
+            $io->success(sprintf('Saved %s entity ids: %s', $entity_type, implode(', ', array_values($result))));
             if ($action) {
-                $io->success("Entities have been {actioned}.", ['!actioned' => $action]);
+                $io->success(sprintf('Entities have been %s.', $action));
             }
             if ($state) {
-                $io->success("Entities have been transitioned to {state}.", ['state' => $state]);
+                $io->success(sprintf('Entities have been transitioned to %s.', $state));
             }
         }
 
