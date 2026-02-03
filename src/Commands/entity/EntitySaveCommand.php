@@ -80,13 +80,13 @@ final class EntitySaveCommand extends Command
         $options = $input->getOptions();
 
         if ($options['publish'] && $options['unpublish']) {
-            throw new \InvalidArgumentException(dt('You may not specify both --publish and --unpublish.'));
+            throw new \InvalidArgumentException('You may not specify both --publish and --unpublish.');
         }
         if ($options['state'] && $options['publish']) {
-            throw new \InvalidArgumentException(dt('You may not specify both --state and --publish.'));
+            throw new \InvalidArgumentException('You may not specify both --state and --publish.');
         }
         if ($options['state'] && $options['unpublish']) {
-            throw new \InvalidArgumentException(dt('You may not specify both --state and --unpublish.'));
+            throw new \InvalidArgumentException('You may not specify both --state and --unpublish.');
         }
 
         $action = $state = null;
@@ -106,7 +106,7 @@ final class EntitySaveCommand extends Command
         $result = $query->execute();
 
         if (empty($result)) {
-            $io->success(dt('No matching entities found.'));
+            $io->success('No matching entities found.');
         } else {
             $chunks = array_chunk($result, (int) $options['chunks'], true);
             $io->progressStart(count($result));
@@ -115,12 +115,12 @@ final class EntitySaveCommand extends Command
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
-            $io->success(dt("Saved !type entity ids: !ids", ['!type' => $entity_type, '!ids' => implode(', ', array_values($result))]));
+            $io->success(sprintf('Saved %s entity ids: %s', $entity_type, implode(', ', array_values($result))));
             if ($action) {
-                $io->success(dt("Entities have been !actioned.", ['!action' => $action]));
+                $io->success(sprintf('Entities have been %s.', $action));
             }
             if ($state) {
-                $io->success(dt("Entities have been transitioned to !state.", ['!state' => $state]));
+                $io->success(sprintf('Entities have been transitioned to %s.', $state));
             }
         }
 
@@ -150,7 +150,7 @@ final class EntitySaveCommand extends Command
             if ($state) {
                 assert($this->moderationInformation instanceof ModerationInformationInterface);
                 if (!$this->moderationInformation->isModeratedEntity($entity)) {
-                    throw new \InvalidArgumentException(dt('!bundle !id does not support content moderation.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
+                    throw new \InvalidArgumentException(sprintf('%s %s does not support content moderation.', $entity->bundle(), $entity->id()));
                 }
 
                 // This line satisfies the bully that is phpstan.
@@ -160,7 +160,7 @@ final class EntitySaveCommand extends Command
             }
             if ($action) {
                 if (!$entity instanceof EntityPublishedInterface) {
-                    throw new \InvalidArgumentException(dt('!bundle !id does not support publish/unpublish.', ['!bundle' => $entity->bundle(), '!id' => $entity->id()]));
+                    throw new \InvalidArgumentException(sprintf('%s %s does not support publish/unpublish.', $entity->bundle(), $entity->id()));
                 }
                 if ($action === 'publish') {
                     $entity->setPublished();
