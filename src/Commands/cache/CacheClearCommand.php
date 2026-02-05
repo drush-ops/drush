@@ -9,10 +9,10 @@ use Drupal\Core\Asset\JsCollectionOptimizerLazy;
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheFactoryInterface;
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
+use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Plugin\CachedDiscoveryClearerInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\Core\Theme\Registry;
-use Drush\Boot\BootstrapManager;
 use Drush\Commands\AutowireTrait;
 use Drush\Event\CacheClearEvent;
 use Drush\Style\DrushStyle;
@@ -49,7 +49,8 @@ final class CacheClearCommand extends Command
         #[Autowire(service: 'asset.css.collection_optimizer')]
         private $cssOptimizer,
         private readonly CachedDiscoveryClearerInterface $pluginCacheClearer,
-        private readonly BootstrapManager $bootstrapManager,
+        #[Autowire(service: 'kernel')]
+        private readonly DrupalKernelInterface $kernel,
         private readonly AssetQueryStringInterface $assetQueryString,
         protected EventDispatcherInterface $eventDispatcher,
         private readonly LoggerInterface $logger,
@@ -178,8 +179,7 @@ final class CacheClearCommand extends Command
 
     public function clearContainer(): void
     {
-        $boot_object = $this->bootstrapManager->bootstrap();
-        $boot_object->getKernel()->invalidateContainer();
+        $this->kernel->invalidateContainer();
     }
 
     /**
