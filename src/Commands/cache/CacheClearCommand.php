@@ -101,7 +101,7 @@ final class CacheClearCommand extends Command
         $this->validateType($type);
 
         $types = $this->getTypes();
-        drush_op($types[$type], $args);
+        $types[$type](...$args);
 
         // Avoid double confirm.
         if ($type !== 'bin') {
