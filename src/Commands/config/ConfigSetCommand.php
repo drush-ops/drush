@@ -7,7 +7,6 @@ namespace Drush\Commands\config;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\StorageCacheInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -33,7 +32,6 @@ final class ConfigSetCommand extends Command
     public function __construct(
         protected readonly ConfigFactoryInterface $configFactory,
         protected readonly StorageCacheInterface $configStorage,
-        protected readonly DrushConfig $drushConfig,
     ) {
         parent::__construct();
     }
@@ -88,15 +86,12 @@ final class ConfigSetCommand extends Command
         // Check to see if config key already exists.
         $key = $input->getArgument('key');
         $new_key = $config->get($key) === null;
-        $simulate = $this->drushConfig->simulate();
 
         if ($key == '?' && !empty($data) && $io->confirm(sprintf('Do you want to update or set multiple keys on %s config.', $config_name))) {
             foreach ($data as $data_key => $val) {
                 $config->set($data_key, $val);
             }
-            if (!$simulate) {
-                $config->save();
-            }
+            $config->save();
         } else {
             $confirmed = false;
             if ($config->isNew() && $io->confirm(sprintf('%s config does not exist. Do you want to create a new config object?', $config_name))) {
@@ -106,7 +101,7 @@ final class ConfigSetCommand extends Command
             } elseif ($io->confirm(sprintf('Do you want to update %s key in %s config?', $key, $config_name))) {
                 $confirmed = true;
             }
-            if ($confirmed && !$simulate) {
+            if ($confirmed) {
                 $config->set($key, $data)->save();
             }
         }
