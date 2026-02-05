@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Drupal;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Commands\AutowireTrait;
-use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
@@ -64,7 +64,8 @@ class TwigCompileCommand extends Command
             ->exclude('tests')
             ->in($searchpaths);
         foreach ($files as $file) {
-            $relative = Path::makeRelative($file->getRealPath(), Drush::bootstrapManager()->getRoot());
+            // @todo use DI once we stop using compound container.
+            $relative = Path::makeRelative($file->getRealPath(), Drupal::getContainer()->getParameter('app.root'));
             // Loading the template ensures the compiled template is cached.
             try {
                 $this->twig->load($relative);
