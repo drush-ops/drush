@@ -6,10 +6,10 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal;
 use Drupal\Core\PhpStorage\PhpStorageFactory;
 use Drupal\Core\Template\TwigEnvironment;
 use Drush\Attributes as CLI;
-use Drush\Boot\BootstrapManager;
 use Drush\Commands\AutowireTrait;
 use Drush\Formatters\FormatterTrait;
 use Drush\Utils\StringUtils;
@@ -40,7 +40,6 @@ final class TwigUnusedCommand extends Command
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
-        protected readonly BootstrapManager $bootstrapManager,
         protected readonly TwigEnvironment $twig,
         private readonly LoggerInterface $logger
     ) {
@@ -78,7 +77,8 @@ final class TwigUnusedCommand extends Command
 
         // Check to see if a compiled equivalent exists in PHPStorage
         foreach ($files as $file) {
-            $relative = Path::makeRelative($file->getRealPath(), $this->bootstrapManager->getRoot());
+            // @todo use DI once we stop using compound container.
+            $relative = Path::makeRelative($file->getRealPath(), Drupal::getContainer()->getParameter('app.root'));
             $mainCls = $this->twig->getTemplateClass($relative);
             $cache = $this->twig->getCache();
             if ($cache) {
