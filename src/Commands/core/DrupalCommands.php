@@ -125,88 +125,84 @@ final class DrupalCommands extends DrushCommands
     /**
      * Display watchdog logs generated since the given ID.
      *
-     * @param int $lastWid The last watchdog ID before cron ran
-     * @param int $minSeverity Minimum severity level to display
-     * @param string|null $type Optional type filter
+     * @param int $last_wid The last watchdog ID before cron ran
+     * @param int $min_severity Minimum severity level to display
+     * @param string|null $log_type Optional type filter
      */
-    protected function displayCronLogs(int $lastWid, int $minSeverity, ?string $type): void
+    protected function displayCronLogs(int $last_wid, int $min_severity, ?string $log_type): void
     {
-        try {
-            $query = $this->connection->select('watchdog', 'w')
-                ->fields('w')
-                ->condition('wid', $lastWid, '>')
-                ->condition('severity', $minSeverity, '<=')
-                ->orderBy('wid', 'ASC');
+        $query = $this->connection->select('watchdog', 'w')
+            ->fields('w', ['wid', 'timestamp', 'type', 'severity', 'message', 'variables'])
+            ->condition('wid', $last_wid, '>')
+            ->orderBy('wid', 'ASC');
 
-            if ($type) {
-                $query->condition('type', $type);
-            }
+        if ($min_severity < 7) {
+            $query->condition('severity', $min_severity, '<=');
+        }
 
-            $results = $query->execute()->fetchAll();
+        if ($log_type) {
+            $query->condition('type', $log_type);
+        }
 
-            if (empty($results)) {
-                $this->logger()->notice('No Drupal logs generated during cron execution.');
-                return;
-            }
+        $logs = $query->execute()->fetchAll();
 
+        if (!empty($logs)) {
             $this->logger()->notice(dt('Drupal logs generated during cron execution:'));
             $this->logger()->notice(str_repeat('-', 80));
 
-            $severityLabels = [
-                0 => 'EMERGENCY',
-                1 => 'ALERT',
-                2 => 'CRITICAL',
-                3 => 'ERROR',
-                4 => 'WARNING',
-                5 => 'NOTICE',
-                6 => 'INFO',
-                7 => 'DEBUG',
-            ];
-
-            foreach ($results as $log) {
-                $message = $this->formatLogMessage($log);
-                $severity = $severityLabels[$log->severity] ?? 'UNKNOWN';
+            foreach ($logs as $log) {
                 $timestamp = date('Y-m-d H:i:s', (int) $log->timestamp);
 
-                $output = sprintf(
-                    '[%s] [%s] [%s] %s',
-                    $timestamp,
-                    $severity,
-                    $log->type,
-                    $message
-                );
+                $severity_labels = [
+                    0 => 'EMERGENCY',
+                    1 => 'ALERT',
+                    2 => 'CRITICAL',
+                    3 => 'ERROR',
+                    4 => 'WARNING',
+                    5 => 'NOTICE',
+                    6 => 'INFO',
+                    7 => 'DEBUG',
+                ];
 
-                // Color output based on severity
+                $severity_label = $severity_labels[$log->severity] ?? 'UNKNOWN';
+
+                // Format message
+                $message = $this->formatLogMessage($log->message, $log->variables);
+
+                // Output using logger based on severity
                 if ($log->severity <= 2) {
-                    $this->logger()->error($output);
+                    $this->logger()->error(dt("[$timestamp] [$severity_label] [{$log->type}] $message"));
                 } elseif ($log->severity <= 4) {
-                    $this->logger()->warning($output);
+                    $this->logger()->warning(dt("[$timestamp] [$severity_label] [{$log->type}] $message"));
                 } else {
-                    $this->logger()->info($output);
+                    $this->logger()->notice(dt("[$timestamp] [$severity_label] [{$log->type}] $message"));
                 }
             }
 
             $this->logger()->notice(str_repeat('-', 80));
-            $this->logger()->success(dt('Total logs displayed: !count', ['!count' => count($results)]));
-        } catch (\Exception $e) {
-            $this->logger()->error('Failed to retrieve watchdog logs: ' . $e->getMessage());
+            $this->logger()->success(dt('Total logs displayed: @count', ['@count' => count($logs)]));
+        } else {
+            $this->logger()->notice(dt('No Drupal logs generated during cron execution.'));
         }
     }
 
     /**
-     * Format a log message by replacing placeholders.
+     * Format a log message by replacing placeholders and sanitizing content.
      *
-     * @param object $log The watchdog log entry
-     * @return string The formatted message
+     * @param string $message
+     *   The log message with placeholders (e.g., 'User @name logged in').
+     * @param string|null $variables
+     *   Serialized array of placeholder replacements.
+     *
+     * @return string
+     *   The formatted message with HTML stripped and truncated if needed.
      */
-    protected function formatLogMessage(object $log): string
+    protected function formatLogMessage(string $message, ?string $variables): string
     {
-        $message = $log->message;
-
-        if (!empty($log->variables)) {
-            $variables = @unserialize($log->variables);
-            if (is_array($variables)) {
-                $message = strtr($message, $variables);
+        if (!empty($variables)) {
+            $variables_array = @unserialize($variables);
+            if (is_array($variables_array)) {
+                $message = strtr($message, $variables_array);
             }
         }
 
