@@ -166,7 +166,7 @@ final class DrupalCommands extends DrushCommands
             foreach ($results as $log) {
                 $message = $this->formatLogMessage($log);
                 $severity = $severityLabels[$log->severity] ?? 'UNKNOWN';
-                $timestamp = date('Y-m-d H:i:s', $log->timestamp);
+                $timestamp = date('Y-m-d H:i:s', (int) $log->timestamp);
 
                 $output = sprintf(
                     '[%s] [%s] [%s] %s',
