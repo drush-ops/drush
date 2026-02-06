@@ -6,10 +6,12 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\CronInterface;
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
 use Drush\Attributes as CLI;
+use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\DrushCommands;
 use Drush\Drupal\DrupalUtil;
@@ -39,6 +41,7 @@ final class DrupalCommands extends DrushCommands
     }
 
     public function __construct(
+        protected Connection $connection,
         protected CronInterface $cron,
         protected ModuleHandlerInterface $moduleHandler,
         protected RouteProviderInterface $routeProvider
@@ -50,12 +53,172 @@ final class DrupalCommands extends DrushCommands
      * Run all cron hooks in all active modules for specified site.
      *
      * Consider using `drush maint:status && drush core:cron` to avoid cache poisoning during maintenance mode.
+     *
+     * @command core:cron
+     * @aliases cron,core-cron
+     * @topics docs:cron
+     * @option show-drupal-logs Display Drupal watchdog logs generated during cron execution.
+     * @option log-severity Minimum severity level for displayed logs (emergency=0, alert=1, critical=2, error=3, warning=4, notice=5, info=6, debug=7). Defaults to 6 (info).
+     * @option log-type Filter logs by type (e.g., 'cron', 'php', 'system').
+     * @usage drush core:cron
+     *   Run cron normally.
+     * @usage drush core:cron --show-drupal-logs
+     *   Run cron and display Drupal logs generated during execution.
+     * @usage drush core:cron --show-drupal-logs --log-severity=4
+     *   Run cron and show only warnings and higher severity logs.
+     * @usage drush core:cron --show-drupal-logs --log-type=cron
+     *   Run cron and show only cron-related logs.
      */
     #[CLI\Command(name: self::CRON, aliases: ['cron', 'core-cron'])]
-    #[CLI\Topics(topics: [DocsCommands::CRON])]
-    public function cron(): bool
+    #[CLI\Option(name: 'show-drupal-logs', description: 'Display Drupal watchdog logs generated during cron execution.')]
+    #[CLI\Option(name: 'log-severity', description: 'Minimum severity level for displayed logs (0-7). Defaults to 6 (info).')]
+    #[CLI\Option(name: 'log-type', description: 'Filter logs by type.')]
+    #[CLI\Topics(topics: ['docs:cron'])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function cron($options = [
+        'show-drupal-logs' => false,
+        'log-severity' => 6,
+        'log-type' => self::REQ,
+    ]): void
     {
-        return $this->getCron()->run();
+        // Get the last watchdog ID before running cron
+        $lastWid = null;
+        if ($options['show-drupal-logs']) {
+            // Only check if dblog module is enabled
+            if (!$this->moduleHandler->moduleExists('dblog')) {
+                throw new \Exception(dt('The dblog module must be enabled to use --show-drupal-logs option.'));
+            }
+            $lastWid = $this->getLastWatchdogId();
+        }
+
+        // Run cron
+        $this->getCron()->run();
+
+        // Display Drupal logs if requested
+        if ($options['show-drupal-logs'] && $lastWid !== null) {
+            $this->displayCronLogs($lastWid, (int) $options['log-severity'], $options['log-type']);
+        }
+    }
+
+    /**
+     * Get the last watchdog entry ID.
+     *
+     * @return int|null
+     */
+    protected function getLastWatchdogId(): ?int
+    {
+        try {
+            $result = $this->connection->select('watchdog', 'w')
+                ->fields('w', ['wid'])
+                ->orderBy('wid', 'DESC')
+                ->range(0, 1)
+                ->execute()
+                ->fetchField();
+
+            return $result ? (int) $result : 0;
+        } catch (\Exception $e) {
+            $this->logger()->warning('Could not retrieve last watchdog ID: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Display watchdog logs generated since the given ID.
+     *
+     * @param int $lastWid The last watchdog ID before cron ran
+     * @param int $minSeverity Minimum severity level to display
+     * @param string|null $type Optional type filter
+     */
+    protected function displayCronLogs(int $lastWid, int $minSeverity, ?string $type): void
+    {
+        try {
+            $query = $this->connection->select('watchdog', 'w')
+                ->fields('w')
+                ->condition('wid', $lastWid, '>')
+                ->condition('severity', $minSeverity, '<=')
+                ->orderBy('wid', 'ASC');
+
+            if ($type) {
+                $query->condition('type', $type);
+            }
+
+            $results = $query->execute()->fetchAll();
+
+            if (empty($results)) {
+                $this->logger()->notice('No Drupal logs generated during cron execution.');
+                return;
+            }
+
+            $this->logger()->notice(dt('Drupal logs generated during cron execution:'));
+            $this->logger()->notice(str_repeat('-', 80));
+
+            $severityLabels = [
+                0 => 'EMERGENCY',
+                1 => 'ALERT',
+                2 => 'CRITICAL',
+                3 => 'ERROR',
+                4 => 'WARNING',
+                5 => 'NOTICE',
+                6 => 'INFO',
+                7 => 'DEBUG',
+            ];
+
+            foreach ($results as $log) {
+                $message = $this->formatLogMessage($log);
+                $severity = $severityLabels[$log->severity] ?? 'UNKNOWN';
+                $timestamp = date('Y-m-d H:i:s', $log->timestamp);
+
+                $output = sprintf(
+                    '[%s] [%s] [%s] %s',
+                    $timestamp,
+                    $severity,
+                    $log->type,
+                    $message
+                );
+
+                // Color output based on severity
+                if ($log->severity <= 2) {
+                    $this->logger()->error($output);
+                } elseif ($log->severity <= 4) {
+                    $this->logger()->warning($output);
+                } else {
+                    $this->logger()->info($output);
+                }
+            }
+
+            $this->logger()->notice(str_repeat('-', 80));
+            $this->logger()->success(dt('Total logs displayed: !count', ['!count' => count($results)]));
+        } catch (\Exception $e) {
+            $this->logger()->error('Failed to retrieve watchdog logs: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Format a log message by replacing placeholders.
+     *
+     * @param object $log The watchdog log entry
+     * @return string The formatted message
+     */
+    protected function formatLogMessage(object $log): string
+    {
+        $message = $log->message;
+
+        if (!empty($log->variables)) {
+            $variables = @unserialize($log->variables);
+            if (is_array($variables)) {
+                $message = strtr($message, $variables);
+            }
+        }
+
+        // Strip HTML tags
+        $message = strip_tags($message);
+
+        // Truncate long messages
+        if (strlen($message) > 200) {
+            $message = substr($message, 0, 197) . '...';
+        }
+
+        return $message;
     }
 
     /**
