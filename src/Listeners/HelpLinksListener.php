@@ -8,6 +8,7 @@ use Drush\Attributes as CLI;
 use Drush\Attributes\HelpLinks;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Event\ConsoleDefinitionsEvent;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener]
@@ -17,6 +18,9 @@ final class HelpLinksListener
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
+            if ($command instanceof LazyCommand) {
+                $command = $command->getCommand();
+            }
             // Support invokable commands (Symfony Console 7.4+).
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);
