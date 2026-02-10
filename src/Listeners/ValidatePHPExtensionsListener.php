@@ -7,7 +7,6 @@ namespace Drush\Listeners;
 use Drush\Attributes\ValidatePhpExtensions;
 use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -28,9 +27,6 @@ class ValidatePHPExtensionsListener
     public function __invoke(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
-        if ($command instanceof LazyCommand) {
-            $command = $command->getCommand();
-        }
         // Support invokable commands (Symfony Console 7.4+).
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
