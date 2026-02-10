@@ -7,7 +7,6 @@ namespace Drush\Listeners;
 use Drush\Attributes\Bootstrap;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleTerminateEvent;
@@ -25,7 +24,6 @@ final class DrupliconListener
 
     public function __construct(
         protected LoggerInterface $logger,
-        protected DrushConfig $drushConfig,
     ) {
     }
 
@@ -46,7 +44,7 @@ final class DrupliconListener
         }
         $this->printed = true;
         if ($event->getInput()->hasOption('druplicon') && $event->getInput()->getOption('druplicon')) {
-            $misc_dir = $this->drushConfig->get('drush.base-dir') . '/misc';
+            $misc_dir = dirname(__DIR__, 2) . '/misc';
             if ($event->getInput()->getOption('no-ansi')) {
                 $content = file_get_contents($misc_dir . '/druplicon-no_color.txt');
             } else {

@@ -17,6 +17,8 @@ final class HelpLinksListener
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
+            // Support LazyCommand.
+            $command = method_exists($command, 'getCommand') && $command->getCommand() ? $command->getCommand() : $command;
             // Support invokable commands (Symfony Console 7.4+).
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);

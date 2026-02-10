@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Listeners;
 
-use Drush\Attributes\Formatter;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\Options\FormatterOptions;
 use Drush\Attributes as CLI;
+use Drush\Attributes\Formatter;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
@@ -30,6 +30,8 @@ final class FormatterListener
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
+            // Support LazyCommand.
+            $command = method_exists($command, 'getCommand') && $command->getCommand() ? $command->getCommand() : $command;
             // Support invokable commands (Symfony Console 7.4+).
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);
