@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Robo\Task\Docker\Result | Drush API 13</title>
+    <title>Robo\Task\Docker\Result | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        class
-    <strong>Result</strong>        extends <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Task/Docker/Result.php">View source</a>)
+    <strong>Result</strong>        extends <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Task/Docker/Result.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -507,10 +508,10 @@ that it has and we need.</p></p>                </div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
+                    static&nbsp;
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_ensureResult">ensureResult</a>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, $result)
+                    <a href="#method_ensureResult">ensureResult</a>($task, $result)
         
                                             <p><p>Tasks should always return a Result. However, they are also
 allowed to return NULL or an array to indicate success.</p></p>                </div>
@@ -730,12 +731,13 @@ $child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method___construct">
         <div class="location">in <a href="../../../Robo/Result.html#method___construct">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L35">at line 35</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L35">at line 35</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, int $exitCode, string $message = &#039;&#039;, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -780,12 +782,13 @@ $child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_getData">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_getData">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L30">at line 30</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L30">at line 30</a></div>
         <code>                    array
     <strong>getData</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -814,12 +817,13 @@ $child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_getMessage">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_getMessage">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L38">at line 38</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L38">at line 38</a></div>
         <code>                    string
     <strong>getMessage</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -848,12 +852,13 @@ $child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_setMessage">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_setMessage">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L46">at line 46</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L46">at line 46</a></div>
         <code>                    
     <strong>setMessage</strong>(string $message)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -883,12 +888,13 @@ $child-&gt;setFoo($this-&gt;foo).</p></p>                </div>
                     <div class="method-item">
                     <h3 id="method_merge">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_merge">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L60">at line 60</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L60">at line 60</a></div>
         <code>                    $this
     <strong>merge</strong>(<a href="../../../Robo/State/Data.html"><abbr title="Robo\State\Data">Data</abbr></a> $result)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -928,12 +934,13 @@ data in the Result being merged.</p></p>
                     <div class="method-item">
                     <h3 id="method_update">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_update">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L75">at line 75</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L75">at line 75</a></div>
         <code>                    $this
     <strong>update</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/ArrayObject">ArrayObject</a> $update)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -971,12 +978,13 @@ data in the Result being merged.</p></p>
                     <div class="method-item">
                     <h3 id="method_mergeData">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_mergeData">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L99">at line 99</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L99">at line 99</a></div>
         <code>                    array
     <strong>mergeData</strong>(array $data)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1017,12 +1025,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_hasExecutionTime">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_hasExecutionTime">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L109">at line 109</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L109">at line 109</a></div>
         <code>                    bool
     <strong>hasExecutionTime</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1051,12 +1060,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_getExecutionTime">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_getExecutionTime">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L117">at line 117</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L117">at line 117</a></div>
         <code>                    null|float
     <strong>getExecutionTime</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1085,12 +1095,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_accumulateExecutionTime">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_accumulateExecutionTime">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L132">at line 132</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L132">at line 132</a></div>
         <code>                    null|float
     <strong>accumulateExecutionTime</strong>(array|float $duration)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1128,12 +1139,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_accumulateMessage">
         <div class="location">in <a href="../../../Robo/State/Data.html#method_accumulateMessage">
-<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/State/Data.php#L149">at line 149</a></div>
+<abbr title="Robo\State\Data">Data</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/State/Data.php#L149">at line 149</a></div>
         <code>                    string
     <strong>accumulateMessage</strong>(string $message)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1171,12 +1183,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_message">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_message">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L46">at line 46</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L46">at line 46</a></div>
         <code>        static            <a href="../../../Robo/ResultData.html"><abbr title="Robo\ResultData">ResultData</abbr></a>
     <strong>message</strong>(string $message, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1220,12 +1233,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_cancelled">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_cancelled">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L57">at line 57</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L57">at line 57</a></div>
         <code>        static            <a href="../../../Robo/ResultData.html"><abbr title="Robo\ResultData">ResultData</abbr></a>
     <strong>cancelled</strong>(string $message = &#039;&#039;, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1269,12 +1283,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_getExitCode">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_getExitCode">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L65">at line 65</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L65">at line 65</a></div>
         <code>                    
     <strong>getExitCode</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1294,12 +1309,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_getOutputData">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_getOutputData">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L73">at line 73</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L73">at line 73</a></div>
         <code>                    
     <strong>getOutputData</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1319,12 +1335,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_alreadyPrinted">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_alreadyPrinted">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L83">at line 83</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L83">at line 83</a></div>
         <code>                    
     <strong>alreadyPrinted</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1343,12 +1360,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_provideOutputdata">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_provideOutputdata">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L91">at line 91</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L91">at line 91</a></div>
         <code>                    
     <strong>provideOutputdata</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1367,12 +1385,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_wasSuccessful">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_wasSuccessful">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L99">at line 99</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L99">at line 99</a></div>
         <code>                    bool
     <strong>wasSuccessful</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1401,12 +1420,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_wasCancelled">
         <div class="location">in <a href="../../../Robo/ResultData.html#method_wasCancelled">
-<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/ResultData.php#L107">at line 107</a></div>
+<abbr title="Robo\ResultData">ResultData</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/ResultData.php#L107">at line 107</a></div>
         <code>                    bool
     <strong>wasCancelled</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1435,12 +1455,13 @@ to $this-&gt;message if set.</p></p>
                     <div class="method-item">
                     <h3 id="method_inflect">
         <div class="location">in <a href="../../../Robo/Common/InflectionTrait.html#method_inflect">
-<abbr title="Robo\Common\InflectionTrait">InflectionTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/InflectionTrait.php#L17">at line 17</a></div>
+<abbr title="Robo\Common\InflectionTrait">InflectionTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/InflectionTrait.php#L17">at line 17</a></div>
         <code>                    $this
     <strong>inflect</strong>(<a href="../../../Robo/Contract/InflectionInterface.html"><abbr title="Robo\Contract\InflectionInterface">InflectionInterface</abbr></a>|mixed $parent)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1479,12 +1500,13 @@ that it has and we need.</p></p>
                     <div class="method-item">
                     <h3 id="method_setOutput">
         <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_setOutput">
-<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L23">at line 23</a></div>
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L23">at line 23</a></div>
         <code>                    $this
     <strong>setOutput</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1534,12 +1556,13 @@ that it has and we need.</p></p>
                     <div class="method-item">
                     <h3 id="method_output">
         <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_output">
-<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L33">at line 33</a></div>
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L33">at line 33</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
     <strong>output</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1568,12 +1591,13 @@ that it has and we need.</p></p>
                     <div class="method-item">
                     <h3 id="method_stderr">
         <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_stderr">
-<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L44">at line 44</a></div>
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L44">at line 44</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
     <strong>stderr</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1602,12 +1626,13 @@ that it has and we need.</p></p>
                     <div class="method-item">
                     <h3 id="method_getOutput">
         <div class="location">in <a href="../../../Robo/Common/OutputAwareTrait.html#method_getOutput">
-<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L60">at line 60</a></div>
+<abbr title="Robo\Common\OutputAwareTrait">OutputAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/OutputAwareTrait.php#L60">at line 60</a></div>
         <code>            protected        <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>
     <strong>getOutput</strong>()
         <small><span class="label label-danger">deprecated</span></small></code>
     </h3>
     <div class="details">    
+            
             <p>
                 <small><span class="label label-danger">deprecated</span></small>
                             <tr>
@@ -1642,12 +1667,13 @@ that it has and we need.</p></p>
                     <div class="method-item">
                     <h3 id="method_ensureResult">
         <div class="location">in <a href="../../../Robo/Result.html#method_ensureResult">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L56">at line 56</a></div>
-        <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
-    <strong>ensureResult</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, $result)
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L56">at line 56</a></div>
+        <code>        static            
+    <strong>ensureResult</strong>($task, $result)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1660,7 +1686,7 @@ allowed to return NULL or an array to indicate success.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a></td>
+                <td></td>
                 <td>$task</td>
                 <td></td>
             </tr>
@@ -1672,15 +1698,6 @@ allowed to return NULL or an array to indicate success.</p></p>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -1690,12 +1707,13 @@ allowed to return NULL or an array to indicate success.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_printResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L11">at line 11</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L11">at line 11</a></div>
         <code>            protected        
     <strong>printResult</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1714,12 +1732,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_errorMissingExtension">
         <div class="location">in <a href="../../../Robo/Result.html#method_errorMissingExtension">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L99">at line 99</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L99">at line 99</a></div>
         <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
     <strong>errorMissingExtension</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, string $extension, string $service)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1768,12 +1787,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_errorMissingPackage">
         <div class="location">in <a href="../../../Robo/Result.html#method_errorMissingPackage">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L114">at line 114</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L114">at line 114</a></div>
         <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
     <strong>errorMissingPackage</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, string $class, string $package)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1822,12 +1842,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_error">
         <div class="location">in <a href="../../../Robo/Result.html#method_error">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L129">at line 129</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L129">at line 129</a></div>
         <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
     <strong>error</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, string $message, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1876,12 +1897,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_fromException">
         <div class="location">in <a href="../../../Robo/Result.html#method_fromException">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L141">at line 141</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L141">at line 141</a></div>
         <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
     <strong>fromException</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, <a target="_blank" rel="noopener" href="https://www.php.net/Exception">Exception</a> $e, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1930,12 +1952,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_success">
         <div class="location">in <a href="../../../Robo/Result.html#method_success">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L157">at line 157</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L157">at line 157</a></div>
         <code>        static            <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a>
     <strong>success</strong>(<a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a> $task, string $message = &#039;&#039;, array $data = [])
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1984,12 +2007,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_getContext">
         <div class="location">in <a href="../../../Robo/Result.html#method_getContext">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L167">at line 167</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L167">at line 167</a></div>
         <code>                    array
     <strong>getContext</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2017,12 +2041,13 @@ allowed to return NULL or an array to indicate success.</p></p>
                     <div class="method-item">
                     <h3 id="method_accumulate">
         <div class="location">in <a href="../../../Robo/Result.html#method_accumulate">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L187">at line 187</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L187">at line 187</a></div>
         <code>                    
     <strong>accumulate</strong>(int|string $key, <a href="../../../Robo/Result.html"><abbr title="Robo\Result">Result</abbr></a> $taskResult)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2058,12 +2083,13 @@ as necessary.</p></p>
                     <div class="method-item">
                     <h3 id="method_isUnnamed">
         <div class="location">in <a href="../../../Robo/Result.html#method_isUnnamed">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L214">at line 214</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L214">at line 214</a></div>
         <code>        static            bool
     <strong>isUnnamed</strong>(int|string $key)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2103,12 +2129,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method_getTask">
         <div class="location">in <a href="../../../Robo/Result.html#method_getTask">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L222">at line 222</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L222">at line 222</a></div>
         <code>                    <a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a>
     <strong>getTask</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2137,12 +2164,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method_cloneTask">
         <div class="location">in <a href="../../../Robo/Result.html#method_cloneTask">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L230">at line 230</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L230">at line 230</a></div>
         <code>                    <a href="../../../Robo/Contract/TaskInterface.html"><abbr title="Robo\Contract\TaskInterface">TaskInterface</abbr></a>
     <strong>cloneTask</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2171,12 +2199,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method___invoke">
         <div class="location">in <a href="../../../Robo/Result.html#method___invoke">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L243">at line 243</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L243">at line 243</a></div>
         <code>                    bool
     <strong>__invoke</strong>()
         <small><span class="label label-danger">deprecated</span></small></code>
     </h3>
     <div class="details">    
+            
             <p>
                 <small><span class="label label-danger">deprecated</span></small>
                             <tr>
@@ -2223,12 +2252,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method_stopOnFail">
         <div class="location">in <a href="../../../Robo/Result.html#method_stopOnFail">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L252">at line 252</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L252">at line 252</a></div>
         <code>                    $this
     <strong>stopOnFail</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2257,12 +2287,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method_resultPrinter">
         <div class="location">in <a href="../../../Robo/Result.html#method_resultPrinter">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L267">at line 267</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L267">at line 267</a></div>
         <code>            protected        <a href="../../../Robo/Log/ResultPrinter.html"><abbr title="Robo\Log\ResultPrinter">ResultPrinter</abbr></a>
     <strong>resultPrinter</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2291,12 +2322,13 @@ index of an array, and therefore insignificant.</p></p>
                     <div class="method-item">
                     <h3 id="method_injectDependencies">
         <div class="location">in <a href="../../../Robo/Result.html#method_injectDependencies">
-<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Result.php#L281">at line 281</a></div>
+<abbr title="Robo\Result">Result</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Result.php#L281">at line 281</a></div>
         <code>                    
     <strong>injectDependencies</strong>(mixed $child)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2332,12 +2364,13 @@ injection, not inflection.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getCid">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L18">at line 18</a></div>
         <code>                    null|string
     <strong>getCid</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -2365,12 +2398,13 @@ injection, not inflection.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_getContainerName">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Task/Docker/Result.php#L29">at line 29</a></div>
         <code>                    null|string
     <strong>getContainerName</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

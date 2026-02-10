@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Consolidation\OutputFormatters\Formatters\ListFormatter | Drush API 13</title>
+    <title>Consolidation\OutputFormatters\Formatters\ListFormatter | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        class
-    <strong>ListFormatter</strong>        implements        <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Transformations/OverrideRestructureInterface.html"><abbr title="Consolidation\OutputFormatters\Transformations\OverrideRestructureInterface">OverrideRestructureInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Formatters/RenderDataInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\RenderDataInterface">RenderDataInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php">View source</a>)
+    <strong>ListFormatter</strong>        implements        <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Transformations/OverrideRestructureInterface.html"><abbr title="Consolidation\OutputFormatters\Transformations\OverrideRestructureInterface">OverrideRestructureInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Formatters/RenderDataInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\RenderDataInterface">RenderDataInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -110,7 +111,7 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_write">write</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, mixed $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+                    <a href="#method_write">write</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -157,12 +158,13 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_write">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L24">at line 24</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L24">at line 24</a></div>
         <code>                    
-    <strong>write</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, mixed $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+    <strong>write</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -180,9 +182,9 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
                 <td></td>
             </tr>
                     <tr>
-                <td>mixed</td>
+                <td></td>
                 <td>$data</td>
-                <td><p>Structured data to format</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
@@ -201,12 +203,13 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_overrideRestructure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L32">at line 32</a></div>
         <code>                    mixed
     <strong>overrideRestructure</strong>(mixed $structuredOutput, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -249,12 +252,13 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderData">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L45">at line 45</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L45">at line 45</a></div>
         <code>                    mixed
     <strong>renderData</strong>(mixed $originalData, mixed $restructuredData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -302,12 +306,13 @@ formatter, and wrap your data in an PropertyList.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderEachCell">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L53">at line 53</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/ListFormatter.php#L53">at line 53</a></div>
         <code>            protected        
     <strong>renderEachCell</strong>($originalData, $restructuredData, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

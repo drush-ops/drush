@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\TestTraits\CliTestTrait | Drush API %version%</title>
+    <title>Drush\TestTraits\CliTestTrait | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        trait
-    <strong>CliTestTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php">View source</a>)
+    <strong>CliTestTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -133,7 +134,7 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
             </tr>
                     <tr>
                 <td class="type" id="property_process">
-                                        protected                                        <abbr title="Drush\TestTraits\Symfony\Component\Process\Process">Process</abbr>|null
+                                        protected                                        <abbr title="Symfony\Component\Process\Process">Process</abbr>|null
                                                                                 
                                     </td>
                 <td>$process</td>
@@ -260,7 +261,7 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                     mixed
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getOutputFromJSON">getOutputFromJSON</a>(<abbr title="Drush\TestTraits\string|int">string|int</abbr> $key = null)
+                    <a href="#method_getOutputFromJSON">getOutputFromJSON</a>(string|int|null $key = null)
         
                                             <p><p>Accessor for the last output, decoded from json.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getOutputFromJSON">
@@ -271,7 +272,7 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                     <abbr title="Symfony\Component\Process\Process">Process</abbr>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_startExecute">startExecute</a>(<abbr title="Drush\TestTraits\string|array">string|array</abbr> $command, string|null $cd = null, array|null $env = null, string|null $input = null)
+                    <a href="#method_startExecute">startExecute</a>(string|array $command, string|null $cd = null, array|null $env = null, string|null $input = null)
         
                                             <p><p>Run a command and return the process without waiting for it to finish.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -281,7 +282,7 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_execute">execute</a>(<abbr title="Drush\TestTraits\array|string">array|string</abbr> $command, int $expected_return = 0, string|null $cd = null, array|null $env = null, string|null $input = null)
+                    <a href="#method_execute">execute</a>(array|string $command, int $expected_return = 0, string|null $cd = null, array|null $env = null, string|null $input = null)
         
                                             <p><p>Actually runs the command.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -357,12 +358,13 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getOutputRaw">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L47">at line 47</a></div>
         <code>                    string
     <strong>getOutputRaw</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -389,12 +391,13 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
             </div>
                     <div class="method-item">
                     <h3 id="method_getErrorOutputRaw">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L60">at line 60</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L60">at line 60</a></div>
         <code>                    string
     <strong>getErrorOutputRaw</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -422,12 +425,13 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                     <div class="method-item">
                     <h3 id="method_getSimplifiedOutput">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getSimplifiedOutput">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L28">at line 28</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L28">at line 28</a></div>
         <code>            protected        string
     <strong>getSimplifiedOutput</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -455,12 +459,13 @@ that define <code>getOutputRaw()</code> and <code>getErrorOutputRaw()</code> met
                     <div class="method-item">
                     <h3 id="method_getSimplifiedErrorOutput">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getSimplifiedErrorOutput">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L40">at line 40</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L40">at line 40</a></div>
         <code>            protected        string
     <strong>getSimplifiedErrorOutput</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -489,12 +494,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_simplifyOutput">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_simplifyOutput">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L48">at line 48</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L48">at line 48</a></div>
         <code>            protected        string
     <strong>simplifyOutput</strong>(string $output)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -532,12 +538,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_pathsToSimplify">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_pathsToSimplify">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L73">at line 73</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L73">at line 73</a></div>
         <code>                    array
     <strong>pathsToSimplify</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -566,12 +573,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_getOutput">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getOutput">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L81">at line 81</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L81">at line 81</a></div>
         <code>                    string
     <strong>getOutput</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -599,12 +607,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_getErrorOutput">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getErrorOutput">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L89">at line 89</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L89">at line 89</a></div>
         <code>                    string
     <strong>getErrorOutput</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -632,12 +641,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_getOutputAsList">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getOutputAsList">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L97">at line 97</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L97">at line 97</a></div>
         <code>                    array
     <strong>getOutputAsList</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -665,12 +675,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_getErrorOutputAsList">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getErrorOutputAsList">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L105">at line 105</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L105">at line 105</a></div>
         <code>                    array
     <strong>getErrorOutputAsList</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -698,12 +709,13 @@ paths and superfluous whitespace removed from it.</p></td>
                     <div class="method-item">
                     <h3 id="method_getOutputFromJSON">
         <div class="location">in <a href="../../Drush/TestTraits/OutputUtilsTrait.html#method_getOutputFromJSON">
-<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/OutputUtilsTrait.php#L116">at line 116</a></div>
+<abbr title="Drush\TestTraits\OutputUtilsTrait">OutputUtilsTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/OutputUtilsTrait.php#L116">at line 116</a></div>
         <code>                    mixed
-    <strong>getOutputFromJSON</strong>(<abbr title="Drush\TestTraits\string|int">string|int</abbr> $key = null)
+    <strong>getOutputFromJSON</strong>(string|int|null $key = null)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -715,7 +727,7 @@ paths and superfluous whitespace removed from it.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drush\TestTraits\string|int">string|int</abbr></td>
+                <td>string|int|null</td>
                 <td>$key</td>
                 <td><p>Optionally return only a top level element from the json object.</p></td>
             </tr>
@@ -740,12 +752,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_startExecute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L77">at line 77</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L77">at line 77</a></div>
         <code>                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
-    <strong>startExecute</strong>(<abbr title="Drush\TestTraits\string|array">string|array</abbr> $command, string|null $cd = null, array|null $env = null, string|null $input = null)
+    <strong>startExecute</strong>(string|array $command, string|null $cd = null, array|null $env = null, string|null $input = null)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -757,9 +770,9 @@ paths and superfluous whitespace removed from it.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drush\TestTraits\string|array">string|array</abbr></td>
+                <td>string|array</td>
                 <td>$command</td>
-                <td><p>The actual command line to run.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string|null</td>
@@ -769,12 +782,12 @@ paths and superfluous whitespace removed from it.</p></td>
                     <tr>
                 <td>array|null</td>
                 <td>$env</td>
-                <td><p>Extra environment variables.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string|null</td>
                 <td>$input</td>
-                <td><p>A string representing the STDIN that is piped to the command.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -797,12 +810,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L114">at line 114</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L114">at line 114</a></div>
         <code>                    void
-    <strong>execute</strong>(<abbr title="Drush\TestTraits\array|string">array|string</abbr> $command, int $expected_return = 0, string|null $cd = null, array|null $env = null, string|null $input = null)
+    <strong>execute</strong>(array|string $command, int $expected_return = 0, string|null $cd = null, array|null $env = null, string|null $input = null)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -814,14 +828,14 @@ paths and superfluous whitespace removed from it.</p></td>
 
                     <table class="table table-condensed">
                     <tr>
-                <td><abbr title="Drush\TestTraits\array|string">array|string</abbr></td>
+                <td>array|string</td>
                 <td>$command</td>
-                <td><p>The actual command line to run.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>int</td>
                 <td>$expected_return</td>
-                <td><p>The return code to expect</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string|null</td>
@@ -831,12 +845,12 @@ paths and superfluous whitespace removed from it.</p></td>
                     <tr>
                 <td>array|null</td>
                 <td>$env</td>
-                <td><p>Extra environment variables.</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td>string|null</td>
                 <td>$input</td>
-                <td><p>A string representing the STDIN that is piped to the command.</p></td>
+                <td></td>
             </tr>
             </table>
 
@@ -859,12 +873,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_escapeshellarg">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L159">at line 159</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L159">at line 159</a></div>
         <code>        static            string
     <strong>escapeshellarg</strong>(string $arg)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -902,12 +917,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_isWindows">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L171">at line 171</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L171">at line 171</a></div>
         <code>        static            bool
     <strong>isWindows</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -935,12 +951,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method__escapeshellargWindows">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L176">at line 176</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L176">at line 176</a></div>
         <code>        static            string
     <strong>_escapeshellargWindows</strong>(string $arg)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -978,12 +995,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_buildProcessMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L196">at line 196</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L196">at line 196</a></div>
         <code>                    string
     <strong>buildProcessMessage</strong>()
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1010,12 +1028,13 @@ paths and superfluous whitespace removed from it.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_assertOutputEquals">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L230">at line 230</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L230">at line 230</a></div>
         <code>            protected        void
     <strong>assertOutputEquals</strong>(string $expected, string $filter = &#039;&#039;)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -1059,12 +1078,13 @@ on minor differences.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_assertErrorOutputEquals">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/12.x/src/TestTraits/CliTestTrait.php#L251">at line 251</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/TestTraits/CliTestTrait.php#L251">at line 251</a></div>
         <code>            protected        void
     <strong>assertErrorOutputEquals</strong>(string $expected, string $filter = &#039;&#039;)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

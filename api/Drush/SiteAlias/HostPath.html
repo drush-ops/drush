@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\SiteAlias\HostPath | Drush API %version%</title>
+    <title>Drush\SiteAlias\HostPath | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        class
-    <strong>HostPath</strong>        extends <abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/HostPath.php">View source</a>)
+    <strong>HostPath</strong>        extends <a href="../../Consolidation/SiteAlias/HostPath.html"><abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/SiteAlias/HostPath.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -100,7 +101,801 @@ by a label, and the label may be an @alias or a site specification.</p></p>     
             
         
     
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_alias_record">
+                                        protected                                        <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>
+                                                                                
+                                    </td>
+                <td>$alias_record</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#property_alias_record">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_original_path">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$original_path</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#property_original_path">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_path">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$path</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#property_path">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_implicit">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$implicit</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#property_implicit">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></td>
+            </tr>
+            </table>
+
     
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a> $alias_record, string $original_path, string $path = &#039;&#039;, $implicit = false)
+        
+                                            <p><p>HostPath constructor</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method___construct">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $manager, string $hostPath)
+        
+                                            <p><p>Factory method to create a host path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_create">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getSiteAlias">getSiteAlias</a>()
+        
+                                            <p><p>Return the alias record portion of the host path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getSiteAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getAliasRecord">getAliasRecord</a>()
+        <small><span class="label label-danger">deprecated</span></small>
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getAliasRecord">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isRemote">isRemote</a>()
+        
+                                            <p><p>Returns true if this host path points at a remote machine</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_isRemote">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOriginalPath">getOriginalPath</a>()
+        
+                                            <p><p>Return just the path portion, without considering the alias root.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getOriginalPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getOriginal">getOriginal</a>()
+        
+                                            <p><p>Return the original host path string, as provided to the create() method.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getOriginal">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getPath">getPath</a>()
+        
+                                            <p><p>Return just the path portion of the host path</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_hasPathAlias">hasPathAlias</a>()
+        
+                                            <p><p>Returns 'true' if the path portion of the host path begins with a
+path alias (e.g. '%files'). Path aliases must appear at the beginning
+of the path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_hasPathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getPathAlias">getPathAlias</a>()
+        
+                                            <p><p>Return just the path alias portion of the path (e.g. '%files'), or
+empty if there is no alias in the path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getPathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    $this
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_replacePathAlias">replacePathAlias</a>(string $resolvedPath)
+        
+                                            <p><p>Replaces the path alias portion of the path with the resolved path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_replacePathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getHost">getHost</a>()
+        
+                                            <p><p>Return the host portion of the host path, including the user.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_getHost">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_fullyQualifiedPath">fullyQualifiedPath</a>()
+        
+                                            <p><p>Return the fully resolved path, e.g. user@server:/path/to/drupalroot/sites/default/files</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_fullyQualifiedPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_fullyQualifiedPathPreservingTrailingSlash">fullyQualifiedPathPreservingTrailingSlash</a>()
+        
+                                            <p><p>Our fully qualified path passes the result through Path::makeAbsolute()
+which canonicallizes the path, removing any trailing slashes.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_fullyQualifiedPathPreservingTrailingSlash">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_determinePathOrAlias">determinePathOrAlias</a>(<a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $manager, <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>|bool $alias_record, string $hostPath, string $single_part)
+        
+                                            <p><p>Helper method for HostPath::create(). When the host path contains no
+':', this method determines whether the string that was provided is
+a host or a path.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/HostPath.html#method_determinePathOrAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a></small></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method___construct">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L51">at line 51</a></div>
+        <code>            protected        
+    <strong>__construct</strong>(<a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a> $alias_record, string $original_path, string $path = &#039;&#039;, $implicit = false)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>HostPath constructor</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a></td>
+                <td>$alias_record</td>
+                <td><p>The alias record or site specification record</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$original_path</td>
+                <td><p>The original host path</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$path</td>
+                <td><p>Just the 'path' component</p></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$implicit</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_create">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L66">at line 66</a></div>
+        <code>        static            
+    <strong>create</strong>(<a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $manager, string $hostPath)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Factory method to create a host path.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a></td>
+                <td>$manager</td>
+                <td><p>We need to be provided a reference
+to the alias manager to create a host path</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hostPath</td>
+                <td><p>The path to create.</p></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getSiteAlias">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getSiteAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L102">at line 102</a></div>
+        <code>                    <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>
+    <strong>getSiteAlias</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the alias record portion of the host path.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getAliasRecord">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getAliasRecord">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L110">at line 110</a></div>
+        <code>                    
+    <strong>getAliasRecord</strong>()
+        <small><span class="label label-danger">deprecated</span></small></code>
+    </h3>
+    <div class="details">    
+            
+            <p>
+                <small><span class="label label-danger">deprecated</span></small>
+                            <tr>
+                    <td>Use</td>
+                    <td>getSiteAlias</td>
+                </tr>
+                    </p>
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isRemote">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_isRemote">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L120">at line 120</a></div>
+        <code>                    bool
+    <strong>isRemote</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns true if this host path points at a remote machine</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOriginalPath">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getOriginalPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L130">at line 130</a></div>
+        <code>                    string
+    <strong>getOriginalPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return just the path portion, without considering the alias root.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getOriginal">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getOriginal">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L140">at line 140</a></div>
+        <code>                    string
+    <strong>getOriginal</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the original host path string, as provided to the create() method.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getPath">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L150">at line 150</a></div>
+        <code>                    string
+    <strong>getPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return just the path portion of the host path</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_hasPathAlias">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_hasPathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L168">at line 168</a></div>
+        <code>                    bool
+    <strong>hasPathAlias</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Returns 'true' if the path portion of the host path begins with a
+path alias (e.g. '%files'). Path aliases must appear at the beginning
+of the path.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getPathAlias">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getPathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L180">at line 180</a></div>
+        <code>                    string
+    <strong>getPathAlias</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return just the path alias portion of the path (e.g. '%files'), or
+empty if there is no alias in the path.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_replacePathAlias">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_replacePathAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L194">at line 194</a></div>
+        <code>                    $this
+    <strong>replacePathAlias</strong>(string $resolvedPath)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Replaces the path alias portion of the path with the resolved path.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$resolvedPath</td>
+                <td><p>The converted path alias (e.g. 'sites/default/files')</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>$this</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getHost">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_getHost">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L225">at line 225</a></div>
+        <code>                    string
+    <strong>getHost</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the host portion of the host path, including the user.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fullyQualifiedPath">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_fullyQualifiedPath">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L235">at line 235</a></div>
+        <code>                    string
+    <strong>fullyQualifiedPath</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the fully resolved path, e.g. user@server:/path/to/drupalroot/sites/default/files</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fullyQualifiedPathPreservingTrailingSlash">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_fullyQualifiedPathPreservingTrailingSlash">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L253">at line 253</a></div>
+        <code>                    string
+    <strong>fullyQualifiedPathPreservingTrailingSlash</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Our fully qualified path passes the result through Path::makeAbsolute()
+which canonicallizes the path, removing any trailing slashes.</p></p>                <p><p>That is what we want most of the time; however, the trailing slash is
+sometimes significant, e.g. for rsync, so we provide a separate API
+for those cases where the trailing slash should be preserved.</p></p>        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_determinePathOrAlias">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/HostPath.html#method_determinePathOrAlias">
+<abbr title="Consolidation\SiteAlias\HostPath">HostPath</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/HostPath.php#L272">at line 272</a></div>
+        <code>        static    protected        
+    <strong>determinePathOrAlias</strong>(<a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a> $manager, <a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>|bool $alias_record, string $hostPath, string $single_part)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Helper method for HostPath::create(). When the host path contains no
+':', this method determines whether the string that was provided is
+a host or a path.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAliasManager.html"><abbr title="Consolidation\SiteAlias\SiteAliasManager">SiteAliasManager</abbr></a></td>
+                <td>$manager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../Consolidation/SiteAlias/SiteAlias.html"><abbr title="Consolidation\SiteAlias\SiteAlias">SiteAlias</abbr></a>|bool</td>
+                <td>$alias_record</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$hostPath</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$single_part</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
     
 </div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>

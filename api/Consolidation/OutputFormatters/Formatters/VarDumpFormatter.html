@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Consolidation\OutputFormatters\Formatters\VarDumpFormatter | Drush API 13</title>
+    <title>Consolidation\OutputFormatters\Formatters\VarDumpFormatter | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        class
-    <strong>VarDumpFormatter</strong>        implements        <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Validate/ValidationInterface.html"><abbr title="Consolidation\OutputFormatters\Validate\ValidationInterface">ValidationInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php">View source</a>)
+    <strong>VarDumpFormatter</strong>        implements        <a href="../../../Consolidation/OutputFormatters/Formatters/FormatterInterface.html"><abbr title="Consolidation\OutputFormatters\Formatters\FormatterInterface">FormatterInterface</abbr></a>, <a href="../../../Consolidation/OutputFormatters/Validate/ValidationInterface.html"><abbr title="Consolidation\OutputFormatters\Validate\ValidationInterface">ValidationInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -107,7 +108,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_write">write</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, mixed $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+                    <a href="#method_write">write</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -144,12 +145,13 @@ is valid. The data may be encapsulated or converted if necessary.</p></p>       
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_write">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L22">at line 22</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L22">at line 22</a></div>
         <code>                    
-    <strong>write</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, mixed $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
+    <strong>write</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, $data, <a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a> $options)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -167,9 +169,9 @@ is valid. The data may be encapsulated or converted if necessary.</p></p>       
                 <td></td>
             </tr>
                     <tr>
-                <td>mixed</td>
+                <td></td>
                 <td>$data</td>
-                <td><p>Structured data to format</p></td>
+                <td></td>
             </tr>
                     <tr>
                 <td><a href="../../../Consolidation/OutputFormatters/Options/FormatterOptions.html"><abbr title="Consolidation\OutputFormatters\Options\FormatterOptions">FormatterOptions</abbr></a></td>
@@ -188,12 +190,13 @@ is valid. The data may be encapsulated or converted if necessary.</p></p>       
             </div>
                     <div class="method-item">
                     <h3 id="method_isValidDataType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L42">at line 42</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L42">at line 42</a></div>
         <code>                    
     <strong>isValidDataType</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/ReflectionClass">ReflectionClass</a> $dataType)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -222,12 +225,13 @@ this formatter.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L47">at line 47</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/output-formatters/src/Formatters/VarDumpFormatter.php#L47">at line 47</a></div>
         <code>                    mixed
     <strong>validate</strong>(mixed $structuredData)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

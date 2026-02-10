@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Drupal\Commands\sql\SanitizePluginInterface | Drush API %version%</title>
+    <title>Drush\Drupal\Commands\sql\SanitizePluginInterface | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        interface
-    <strong>SanitizePluginInterface</strong>        implements        <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html"><abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Drupal/Commands/sql/SanitizePluginInterface.php">View source</a>)
+    <strong>SanitizePluginInterface</strong>        implements        <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html"><abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Drupal/Commands/sql/SanitizePluginInterface.php">View source</a>)
 </p>
 
+        
         
             <p>
                 <small><span class="label label-danger">deprecated</span></small>
@@ -112,7 +113,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_sanitize">sanitize</a>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+                    <a href="#method_sanitize">sanitize</a>(mixed $result, <a href="../../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         
                                             <p><p>Run your sanitization logic using standard Drupal APIs.</p></p>                </div>
                 <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_sanitize">
@@ -138,12 +139,13 @@
                     <div class="method-item">
                     <h3 id="method_sanitize">
         <div class="location">in <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_sanitize">
-<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L24">at line 24</a></div>
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L25">at line 25</a></div>
         <code>                    
-    <strong>sanitize</strong>($result, <abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr> $commandData)
+    <strong>sanitize</strong>(mixed $result, <a href="../../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -155,12 +157,12 @@
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$result</td>
                 <td><p>Exit code from the main operation for sql-sanitize.</p></td>
             </tr>
                     <tr>
-                <td><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></td>
+                <td><a href="../../../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a></td>
                 <td>$commandData</td>
                 <td><p>Information about the current request.</p>
 <p>Use <code>#[CLI\Hook(type: HookManager::POST_COMMAND_HOOK, target: SanitizeCommands::SANITIZE)]</code></p></td>
@@ -178,12 +180,13 @@
                     <div class="method-item">
                     <h3 id="method_messages">
         <div class="location">in <a href="../../../../Drush/Commands/sql/sanitize/SanitizePluginInterface.html#method_messages">
-<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L32">at line 32</a></div>
+<abbr title="Drush\Commands\sql\sanitize\SanitizePluginInterface">SanitizePluginInterface</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/sql/sanitize/SanitizePluginInterface.php#L33">at line 33</a></div>
         <code>                    
     <strong>messages</strong>(array $messages, <abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

@@ -90,6 +90,7 @@
 </p>
 
         
+        
     
         
 
@@ -128,7 +129,7 @@
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_where">where</a>(string|null $type = null, $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, <abbr title="Drush\Commands\watchdog\int|string|null">int|string|null</abbr> $severity_min = null)
+                    <a href="#method_where">where</a>(string|null $type = null, mixed $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
         
                                             <p><p>Build a WHERE snippet based on given parameters.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -163,10 +164,11 @@
                     <h3 id="method_where">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L37">at line 37</a></div>
         <code>            protected        array
-    <strong>where</strong>(string|null $type = null, $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, <abbr title="Drush\Commands\watchdog\int|string|null">int|string|null</abbr> $severity_min = null)
+    <strong>where</strong>(string|null $type = null, mixed $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -183,7 +185,7 @@
                 <td><p>String. Valid watchdog type.</p></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>mixed</td>
                 <td>$severity</td>
                 <td><p>Int or String for a valid watchdog severity message.</p></td>
             </tr>
@@ -198,7 +200,7 @@
                 <td><p>('AND', 'OR'). Criteria for the WHERE snippet.</p></td>
             </tr>
                     <tr>
-                <td><abbr title="Drush\Commands\watchdog\int|string|null">int|string|null</abbr></td>
+                <td>int|string|null</td>
                 <td>$severity_min</td>
                 <td><p>Int or String for the minimum severity to return.</p></td>
             </tr>
@@ -229,6 +231,7 @@
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -276,6 +279,7 @@
         </code>
     </h3>
     <div class="details">    
+            
     
             
 

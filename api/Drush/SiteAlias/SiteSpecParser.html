@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\SiteAlias\SiteSpecParser | Drush API %version%</title>
+    <title>Drush\SiteAlias\SiteSpecParser | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API %version%</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,9 +86,10 @@
 
     
     <p>        class
-    <strong>SiteSpecParser</strong>        extends <abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr>        (<a href="https://github.com/drush-ops/drush/blob/12.x/src/SiteAlias/SiteSpecParser.php">View source</a>)
+    <strong>SiteSpecParser</strong>        extends <a href="../../Consolidation/SiteAlias/SiteSpecParser.html"><abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/SiteAlias/SiteSpecParser.php">View source</a>)
 </p>
 
+        
         
     
         
@@ -104,7 +105,611 @@
             
         
     
+            <h2>Properties</h2>
+
+            <table class="table table-condensed">
+                    <tr>
+                <td class="type" id="property_multisiteDirectoryRoot">
+                                        protected                                        string
+                                                                                
+                                    </td>
+                <td>$multisiteDirectoryRoot</td>
+                <td class="last"></td>
+                <td><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#property_multisiteDirectoryRoot">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></td>
+            </tr>
+            </table>
+
     
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_parse">parse</a>(string $spec, string $root = &#039;&#039;)
+        
+                                            <p><p>Parse a site specification</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_parse">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_validSiteSpec">validSiteSpec</a>(string $spec)
+        
+                                            <p><p>Determine if the provided specification is valid. Note that this
+tests only for syntactic validity; to see if the specification is
+usable, call 'parse()', which will also filter out specifications
+for local sites that specify a multidev site that does not exist.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_validSiteSpec">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    bool
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_isAliasName">isAliasName</a>(string $aliasName)
+        
+                                            <p><p>Determine whether or not the provided name is an alias name.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_isAliasName">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_setMultisiteDirectoryRoot">setMultisiteDirectoryRoot</a>($location)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_setMultisiteDirectoryRoot">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_getMultisiteDirectoryRoot">getMultisiteDirectoryRoot</a>($root)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_getMultisiteDirectoryRoot">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_patterns">patterns</a>()
+        
+                                            <p><p>Return the set of regular expression patterns that match the available
+site specification formats.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_patterns">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_match">match</a>($spec)
+        
+                                            <p><p>Run through all of the available regex patterns and determine if
+any match the provided specification.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_match">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_defaults">defaults</a>($result = [])
+        
+                                            <p><p>Inflate the provided array so that it always contains the required
+elements.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_defaults">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_mapResult">mapResult</a>(array $map, array $matches)
+        
+                                            <p><p>Take the data from the matches from the regular expression and
+plug them into the result array per the info in the provided map.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_mapResult">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_fixAndCheckUsability">fixAndCheckUsability</a>(array $result, $root)
+        
+                                            <p><p>Validate the provided result. If the result is local, then it must
+have a 'root'. If it does not, then fill in the root that was provided
+to us in our consturctor.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_fixAndCheckUsability">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a></small></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_parse">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_parse">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L42">at line 42</a></div>
+        <code>                    array
+    <strong>parse</strong>(string $spec, string $root = &#039;&#039;)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Parse a site specification</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$spec</td>
+                <td><p>A site specification in one of the accepted forms:</p>
+<ul>
+<li>/path/to/drupal#uri</li>
+<li>user@server/path/to/drupal#uri</li>
+<li>user@server/path/to/drupal</li>
+<li>user@server#uri
+or, a site name:</li>
+<li>
+<h1>uri</h1>
+</li>
+</ul></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$root</td>
+                <td><p>Drupal root (if provided).</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>A site specification array with the specified components filled in:</p>
+<ul>
+<li>user</li>
+<li>host</li>
+<li>path</li>
+<li>uri
+or, an empty array if the provided parameter is not a valid site spec.</li>
+</ul></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_validSiteSpec">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_validSiteSpec">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L58">at line 58</a></div>
+        <code>                    bool
+    <strong>validSiteSpec</strong>(string $spec)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine if the provided specification is valid. Note that this
+tests only for syntactic validity; to see if the specification is
+usable, call 'parse()', which will also filter out specifications
+for local sites that specify a multidev site that does not exist.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$spec</td>
+                <td>parse()</td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_isAliasName">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_isAliasName">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L70">at line 70</a></div>
+        <code>                    bool
+    <strong>isAliasName</strong>(string $aliasName)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Determine whether or not the provided name is an alias name.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$aliasName</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>bool</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_setMultisiteDirectoryRoot">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_setMultisiteDirectoryRoot">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L75">at line 75</a></div>
+        <code>                    
+    <strong>setMultisiteDirectoryRoot</strong>($location)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$location</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_getMultisiteDirectoryRoot">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_getMultisiteDirectoryRoot">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L80">at line 80</a></div>
+        <code>                    
+    <strong>getMultisiteDirectoryRoot</strong>($root)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_patterns">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_patterns">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L94">at line 94</a></div>
+        <code>            protected        array
+    <strong>patterns</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Return the set of regular expression patterns that match the available
+site specification formats.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>key: site specification regex
+value: an array mapping from site specification component names to
+the elements in the 'matches' array containing the data for that element.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_match">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_match">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L141">at line 141</a></div>
+        <code>            protected        array
+    <strong>match</strong>($spec)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Run through all of the available regex patterns and determine if
+any match the provided specification.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$spec</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>parse()</td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_defaults">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_defaults">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L162">at line 162</a></div>
+        <code>            protected        array
+    <strong>defaults</strong>($result = [])
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Inflate the provided array so that it always contains the required
+elements.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td></td>
+                <td>$result</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>parse()</td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_mapResult">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_mapResult">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L183">at line 183</a></div>
+        <code>            protected        array
+    <strong>mapResult</strong>(array $map, array $matches)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Take the data from the matches from the regular expression and
+plug them into the result array per the info in the provided map.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$map</td>
+                <td><p>An array mapping from result key to matches index.</p></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$matches</td>
+                <td><p>The matched strings returned from preg_match</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>parse()</td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fixAndCheckUsability">
+        <div class="location">in <a href="../../Consolidation/SiteAlias/SiteSpecParser.html#method_fixAndCheckUsability">
+<abbr title="Consolidation\SiteAlias\SiteSpecParser">SiteSpecParser</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteSpecParser.php#L209">at line 209</a></div>
+        <code>            protected        array
+    <strong>fixAndCheckUsability</strong>(array $result, $root)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Validate the provided result. If the result is local, then it must
+have a 'root'. If it does not, then fill in the root that was provided
+to us in our consturctor.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$result</td>
+                <td><p>parse() result.</p></td>
+            </tr>
+                    <tr>
+                <td></td>
+                <td>$root</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td>parse()</td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
     
 </div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>

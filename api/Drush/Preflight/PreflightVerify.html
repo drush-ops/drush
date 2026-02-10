@@ -90,6 +90,7 @@
 </p>
 
         
+        
     
         
 
@@ -139,7 +140,7 @@ notify the user that a setting change is needed and abort.</p></p>              
                     bool
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_invalidIniValue">invalidIniValue</a>(mixed $ini_value, <abbr title="Drush\Preflight\string|array">string|array</abbr> $disallowed_value)
+                    <a href="#method_invalidIniValue">invalidIniValue</a>(mixed $ini_value, string|array $disallowed_value)
         
                                             <p><p>Determine whether an ini value is valid based on the criteria.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -170,6 +171,7 @@ is available or not.</p></p>                </div>
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -212,6 +214,7 @@ is available or not.</p></p>                </div>
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -254,6 +257,7 @@ is available or not.</p></p>                </div>
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -284,10 +288,11 @@ notify the user that a setting change is needed and abort.</p></p>
                     <h3 id="method_invalidIniValue">
         <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L69">at line 69</a></div>
         <code>            protected        bool
-    <strong>invalidIniValue</strong>(mixed $ini_value, <abbr title="Drush\Preflight\string|array">string|array</abbr> $disallowed_value)
+    <strong>invalidIniValue</strong>(mixed $ini_value, string|array $disallowed_value)
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
@@ -304,7 +309,7 @@ notify the user that a setting change is needed and abort.</p></p>
                 <td><p>The value of the ini setting being tested.</p></td>
             </tr>
                     <tr>
-                <td><abbr title="Drush\Preflight\string|array">string|array</abbr></td>
+                <td>string|array</td>
                 <td>$disallowed_value</td>
                 <td><p>The value that the ini setting cannot be, or a list of disallowed
 values that cannot appear in the setting.</p></td>
@@ -336,6 +341,7 @@ values that cannot appear in the setting.</p></td>
         </code>
     </h3>
     <div class="details">    
+            
     
             
 
