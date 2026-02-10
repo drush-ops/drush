@@ -13,6 +13,7 @@ use Drush\Commands\AutowireTrait;
 use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Formatters\FormatterConfigurationItemProviderInterface;
 use ReflectionObject;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -30,8 +31,9 @@ final class FormatterListener
     public function __invoke(ConsoleDefinitionsEvent $event): void
     {
         foreach ($event->getApplication()->all() as $id => $command) {
-            // Support LazyCommand.
-            $command = method_exists($command, 'getCommand') && $command->getCommand() ? $command->getCommand() : $command;
+            if ($command instanceof LazyCommand) {
+                $command = $command->getCommand();
+            }
             // Support invokable commands (Symfony Console 7.4+).
             $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
             $reflectionObject = new \ReflectionObject($code);

@@ -8,6 +8,7 @@ use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drush\Drupal\Migrate\ValidateMigrationId;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -35,8 +36,9 @@ class ValidateMigrationIdListener
     public function __invoke(ConsoleCommandEvent $event): void
     {
         $command = $event->getCommand();
-        // Support LazyCommand.
-        $command = method_exists($command, 'getCommand') && $command->getCommand() ? $command->getCommand() : $command;
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
         // Support invokable commands (Symfony Console 7.4+).
         $code = method_exists($command, 'getCode') && $command->getCode() ? $command->getCode() : $command;
         $reflection = new \ReflectionObject($code);
