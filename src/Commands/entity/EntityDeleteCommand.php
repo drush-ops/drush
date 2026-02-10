@@ -82,7 +82,7 @@ final class EntityDeleteCommand extends Command
             $chunks = array_chunk($result, (int) $options['chunks'], true);
             $io->progressStart(count($result));
             foreach ($chunks as $chunk) {
-                drush_op($this->doDelete(...), $entity_type, $chunk);
+                $this->doDelete($entity_type, $chunk);
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();

@@ -111,7 +111,7 @@ final class EntitySaveCommand extends Command
             $chunks = array_chunk($result, (int) $options['chunks'], true);
             $io->progressStart(count($result));
             foreach ($chunks as $chunk) {
-                drush_op($this->doSave(...), $entity_type, $chunk, $action, $state);
+                $this->doSave($entity_type, $chunk, $action, $state);
                 $io->progressAdvance(count($chunk));
             }
             $io->progressFinish();
