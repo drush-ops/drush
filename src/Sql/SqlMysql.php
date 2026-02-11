@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Sql;
 
+use Consolidation\SiteProcess\Util\Escape;
 use Drush\Drush;
 use Drush\Exec\ExecTrait;
 use PDO;
@@ -21,11 +22,24 @@ class SqlMysql extends SqlBase
      */
     public static function make(array $dbSpec, array $options): SqlMysql|SqlMariaDB
     {
-        // If the mysql version reports that it is MariaDB, use MariaDB as client.
-        $process = Drush::shell('mysql --version');
+        $process = Drush::shell(Escape::isWindows() ? 'where mysql' : 'command -v mysql');
         $process->setSimulated(false);
         $process->run();
-        if ((!$process->isSuccessful() || str_contains($process->getOutput(), 'MariaDB')) && self::programExists('mariadb') && self::programExists('mariadb-dump')) {
+        if ($process->isSuccessful()) {
+            $clientPath = $process->getOutput();
+            // The mysql client might be symlinked to a mariadb client.
+            // For example see https://pkgs.alpinelinux.org/package/edge/main/x86/mysql-client
+            if (is_link($clientPath)) {
+                $clientPath = readlink($clientPath) ?: throw new \Exception('Failed to read symlink ' . $clientPath);
+            }
+            $client = basename($clientPath);
+        } elseif (self::programExists('mariadb')) {
+            $client = 'mariadb';
+        } else {
+            throw new \Exception('Failed to locate mysql client');
+        }
+
+        if ($client === 'mariadb') {
             $instance = new SqlMariaDB($dbSpec, $options);
         } else {
             $instance = new self($dbSpec, $options);
@@ -115,7 +129,6 @@ EOT;
             'ssl_cert' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CERT : PDO::MYSQL_ATTR_SSL_CERT),
             'ssl_cipher' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CIPHER : PDO::MYSQL_ATTR_SSL_CIPHER),
             'ssl_key' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_KEY : PDO::MYSQL_ATTR_SSL_KEY),
-            'ssl_verify_server_cert' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT : PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT),
         ];
 
         if (!empty($dbSpec['pdo'][$attribs['ssl_ca']])) {
@@ -136,10 +149,6 @@ EOT;
 
         if (!empty($dbSpec['pdo'][$attribs['ssl_key']])) {
             $parameters['ssl-key'] = $dbSpec['pdo'][$attribs['ssl_key']];
-        }
-
-        if (!empty($dbSpec['pdo'][$attribs['ssl_verify_server_cert']])) {
-            $parameters['ssl-verify-server-cert'] = $dbSpec['pdo'][$attribs['ssl_verify_server_cert']];
         }
 
         return $this->paramsToOptions($parameters);
