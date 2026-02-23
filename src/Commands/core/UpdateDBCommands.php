@@ -41,7 +41,7 @@ final class UpdateDBCommands extends DrushCommands
      */
 
     /**
-     * Apply any database updates required (as with running update.php).
+     * Apply any pending database updates. Automatically enables maintenance mode during the update.
      */
     #[CLI\Command(name: self::UPDATEDB, aliases: ['updb'])]
     #[CLI\Option(name: 'cache-clear', description: 'Clear caches upon completion.')]
