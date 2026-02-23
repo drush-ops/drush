@@ -119,7 +119,7 @@ class UpdateDBTest extends CommandUnishTestCase
             $output_offset = strpos($err, $update_completed_string, $output_offset);
             $this->assertIsInt($output_offset, "Could not find update hook: $expected_update");
             $this->assertStringContainsString($update_completed_string, substr($err, $output_offset));
-          // Move the offset for the next update to search.
+            // Move the offset for the next update to search.
             $output_offset += strlen($update_completed_string);
         }
 
