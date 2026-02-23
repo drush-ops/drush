@@ -171,7 +171,9 @@ abstract class CommandUnishTestCase extends UnishTestCase
             foreach ($values as $value) {
                 $dashes = strlen($key) === 1 ? '-' : '--';
                 $equals = strlen($key) === 1 ? '' : '=';
-                if (!isset($value)) {
+                if ($key === '--') {
+                    $cmd[] = '--';
+                } elseif (!isset($value)) {
                     $cmd[] = "$dashes$key";
                 } else {
                     // Cast because the CLI sends only strings.
