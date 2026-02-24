@@ -48,9 +48,10 @@ final class PmUninstallCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
+            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules. Wildcard patterns (e.g. "views*") are supported.')
             ->addOption(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Outputs the operations but will not execute anything.')
-            ->addUsage('pm:uninstall --dry-run field_ui');
+            ->addUsage('pm:uninstall --dry-run field_ui')
+            ->addUsage('pm:uninstall "views*"');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -59,6 +60,7 @@ final class PmUninstallCommand extends Command
 
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
+        $modules = $this->expandWildcards($modules);
 
         $installed_modules = array_filter($modules, $this->moduleHandler->moduleExists(...));
         if ($installed_modules === []) {
@@ -94,6 +96,7 @@ final class PmUninstallCommand extends Command
         $list = [];
         if ($modules = $commandData->input()->getArgument('modules')) {
             $modules = StringUtils::csvToArray($modules);
+            $modules = $this->expandWildcards($modules);
             if ($validation_reasons = $this->moduleInstaller->validateUninstall($modules)) {
                 foreach ($validation_reasons as $module => $reasons) {
                     foreach ($reasons as $reason) {

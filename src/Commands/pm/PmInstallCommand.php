@@ -45,9 +45,10 @@ final class PmInstallCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
+            ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules. Wildcard patterns (e.g. "views*") are supported.')
             ->addOption(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Outputs the operations but will not execute anything.')
-            ->addUsage('pm:install --dry-run content_moderation');
+            ->addUsage('pm:install --dry-run content_moderation')
+            ->addUsage('pm:install "views*"');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -57,6 +58,7 @@ final class PmInstallCommand extends Command
 
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
+        $modules = $this->expandWildcards($modules);
         $todo = $this->addInstallDependencies($modules);
 
         if ($todo === []) {
@@ -97,6 +99,7 @@ final class PmInstallCommand extends Command
     {
         $modules = $input->getArgument('modules');
         $modules = StringUtils::csvToArray($modules);
+        $modules = $this->expandWildcards($modules);
         $modules = $this->addInstallDependencies($modules);
         if ($modules === []) {
             return;

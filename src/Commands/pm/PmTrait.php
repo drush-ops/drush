@@ -116,6 +116,42 @@ trait PmTrait
         return $extension->status == 1 ? 'enabled' : 'disabled';
     }
 
+    /**
+     * Expand wildcard patterns (e.g. "views*") to matching module names.
+     *
+     * Supports glob-style '*' wildcards anywhere in the module name. If no
+     * wildcard characters are present, the input is returned unchanged with
+     * zero overhead (no extension list lookup).
+     *
+     * @param string[] $modules
+     *   Module names, possibly containing '*' glob characters.
+     *
+     * @return string[]
+     *   Expanded list of module names with wildcards resolved.
+     */
+    protected function expandWildcards(array $modules): array
+    {
+        if (!array_filter($modules, fn($m) => str_contains($m, '*'))) {
+            return $modules;
+        }
+
+        $all = array_keys($this->extensionListModule->reset()->getList());
+        $expanded = [];
+        foreach ($modules as $module) {
+            if (str_contains($module, '*')) {
+                $pattern = '/^' . str_replace('\\*', '.*', preg_quote($module, '/')) . '$/';
+                $matches = preg_grep($pattern, $all);
+                if ($matches === []) {
+                    $this->logger->warning('No modules found matching pattern: {pattern}', ['pattern' => $module]);
+                }
+                array_push($expanded, ...array_values($matches));
+            } else {
+                $expanded[] = $module;
+            }
+        }
+        return array_unique($expanded);
+    }
+
     protected function getModuleLinks(Extension $module): array
     {
         $links = [];
