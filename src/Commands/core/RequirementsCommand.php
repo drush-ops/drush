@@ -67,10 +67,10 @@ final class RequirementsCommand extends Command
     {
         include_once DRUPAL_ROOT . '/core/includes/install.inc';
         $severities = [
-            REQUIREMENT_INFO => 'Info',
-            REQUIREMENT_OK => 'OK',
-            REQUIREMENT_WARNING => 'Warning',
-            REQUIREMENT_ERROR => 'Error',
+            -1 => 'Info',
+            0 => 'OK',
+            1 => 'Warning',
+            2 => 'Error',
         ];
 
         drupal_load_updates();
@@ -132,9 +132,9 @@ final class RequirementsCommand extends Command
         }
 
         return match ($severity) {
-            REQUIREMENT_OK => '<info>' . $content . '</>',
-            REQUIREMENT_WARNING => '<comment>' . $content . '</>',
-            REQUIREMENT_ERROR => '<fg=red>' . $content . '</>',
+            0 => '<info>' . $content . '</>',
+            1 => '<comment>' . $content . '</>',
+            2 => '<fg=red>' . $content . '</>',
             default => $content,
         };
     }

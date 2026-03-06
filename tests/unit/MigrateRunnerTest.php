@@ -154,7 +154,7 @@ class MigrateRunnerTest extends TestCase
         // Get the database connection.
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo('sqlite://localhost/:memory:?module=sqlite', $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo('sqlite://localhost/:memory:?module=sqlite', null);
         Database::addConnectionInfo('default', 'default', $info);
         $connection = Database::getConnection();
         chdir($cwd);

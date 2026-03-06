@@ -129,7 +129,7 @@ final class PmInstallCommand extends Command
                     if (is_object($requirement['severity'])) {
                         $value = $requirement['severity']->value;
                     }
-                    if ($value !== REQUIREMENT_ERROR) {
+                    if ($value !== 2) {
                         continue;
                     }
                     $message = $requirement['description'];
