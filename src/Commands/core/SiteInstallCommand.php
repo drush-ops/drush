@@ -597,7 +597,7 @@ final class SiteInstallCommand extends Command
      * Determine an appropriate site subdir name to use for the
      * provided uri.
      */
-    protected function getSitesSubdirFromUri(string $root, $uri)
+    protected function getSitesSubdirFromUri(string $root, ?string $uri)
     {
         $dir = strtolower($uri);
         // Always accept simple uris (e.g. 'dev', 'stage', etc.)
@@ -615,7 +615,7 @@ final class SiteInstallCommand extends Command
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse
+            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse, function.impossibleType
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
