@@ -3,6 +3,8 @@ parameters:
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
     bootstrapFiles:
         - phpstan-bootstrap.php
+    scanFiles:
+        - includes/legacy.inc
     paths:
         - src
     treatPhpDocTypesAsCertain: false
