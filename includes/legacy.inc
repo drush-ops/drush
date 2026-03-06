@@ -20,3 +20,12 @@ function drush_drupal_requirements_severity(&$requirements) {
         return $severity;
     }
 }
+
+function drush_locale_translation_default_update_options() {
+    if (function_exists('_locale_translation_default_update_options')) {
+        return _locale_translation_default_update_options();
+    }
+    else {
+        return \Drupal\locale\LocaleDefaultOptions::updateOptions();
+    }
+}
