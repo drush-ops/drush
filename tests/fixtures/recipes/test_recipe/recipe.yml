@@ -4,10 +4,10 @@ type: 'Site'
 install:
   - image
   - help
+  - history
   - config
   - contextual
   - menu_link_content
-  - node
   - datetime
   - menu_ui
   - options
