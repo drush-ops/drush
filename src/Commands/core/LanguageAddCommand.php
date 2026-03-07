@@ -129,7 +129,7 @@ final class LanguageAddCommand extends Command
         $this->moduleHandler->loadInclude('locale', 'inc', 'locale.translation');
         $this->moduleHandler->loadInclude('locale', 'inc', 'locale.fetch');
         $this->moduleHandler->loadInclude('locale', 'inc', 'locale.bulk');
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
 
         locale_translation_clear_status();
         $batch = locale_translation_batch_update_build([], $langcodes, $translationOptions);

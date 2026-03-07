@@ -75,7 +75,7 @@ final class ViewsExecuteCommand extends Command
             // Don't show admin links in markup by default.
             $view->hide_admin_links = !$showAdminLinks;
             $build = $view->preview();
-            $rendered = (string) $this->renderer->renderPlain($build);
+            $rendered = (string) $this->renderer->renderInIsolation($build);
             $output->write($rendered);
             return self::SUCCESS;
         }

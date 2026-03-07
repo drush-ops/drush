@@ -40,7 +40,7 @@ function woot_post_update_render()
         '#theme' => 'item_list',
         '#items' => ['a', 'b'],
     ];
-    \Drupal::service('renderer')->renderPlain($render_array);
+    \Drupal::service('renderer')->renderInIsolation($render_array);
 }
 
 /**

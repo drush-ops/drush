@@ -72,7 +72,7 @@ final class LocaleUpdateCommand extends Command
 
         // Set the translation import options. This determines if existing
         // translations will be overwritten by imported strings.
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
 
         // If the status was updated recently we can immediately start fetching the
         // translation updates. If the status is expired we clear it an run a batch to

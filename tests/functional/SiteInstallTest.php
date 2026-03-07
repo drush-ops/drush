@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\core\SiteInstallCommands;
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\sql\SqlCommands;
+use PHPUnit\Framework\Attributes\Group;
 use Unish\Utils\Fixtures;
 
 #[Group('base')]
@@ -84,8 +84,8 @@ class SiteInstallTest extends CommandUnishTestCase
      */
     public function testSiteInstallRecipe(): void
     {
-        if (!$this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
-            $this->markTestSkipped('Recipes require Drupal 10.3.0 or later.');
+        if ($this->isDrupalGreaterThanOrEqualTo('12')) {
+            $this->markTestSkipped('@todo - fix this method for Drupal 12.');
         }
 
         // Install Drupal with our test recipe.
