@@ -58,7 +58,7 @@
   "require-dev": {
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "dev-main",
+    "drupal/core-recommended": "^10.4.0 || ^11 || ^12@dev",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^2",
