@@ -149,7 +149,7 @@ final class PmCommands extends DrushCommands
             if (function_exists('install_check_class_requirements')) {
                 $requirements = array_merge($requirements, install_check_class_requirements($this->extensionListModule->get($module)));
             }
-            if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
+            if (is_array($requirements) && drush_drupal_requirements_severity($requirements) == 2) {
                 $error = true;
                 $reasons = [];
                 foreach ($requirements as $id => $requirement) {
@@ -160,7 +160,7 @@ final class PmCommands extends DrushCommands
                     if (is_object($requirement['severity'])) {
                         $value = $requirement['severity']->value;
                     }
-                    if ($value !== REQUIREMENT_ERROR) {
+                    if ($value !== 2) {
                         continue;
                     }
                     $message = $requirement['description'];

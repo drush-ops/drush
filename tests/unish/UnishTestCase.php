@@ -7,7 +7,6 @@ namespace Unish;
 use Composer\Semver\Comparator;
 use Consolidation\SiteAlias\SiteAlias;
 use Consolidation\SiteProcess\ProcessManager;
-use Drupal\Component\Utility\DeprecationHelper;
 use Drupal\Core\Database\Database;
 use Drush\Commands\core\SiteInstallCommands;
 use PHPUnit\Framework\TestCase;
@@ -484,7 +483,7 @@ abstract class UnishTestCase extends TestCase
     {
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), null);
         if ($info['driver'] === 'sqlite') {
             $info['database'] = "sites/$env/files/unish.sqlite";
         } else {
@@ -500,7 +499,7 @@ abstract class UnishTestCase extends TestCase
     {
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), null);
         chdir($cwd);
         return $info['driver'] ?? false;
     }

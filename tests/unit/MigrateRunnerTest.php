@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Drupal\Migrate;
 
-use Composer\Semver\Comparator;
 use Drupal\Core\Database\Database;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
@@ -162,7 +161,7 @@ class MigrateRunnerTest extends TestCase
         // Get the database connection.
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo('sqlite://localhost/:memory:?module=sqlite', $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo('sqlite://localhost/:memory:?module=sqlite', null);
         Database::addConnectionInfo('default', 'default', $info);
         $connection = Database::getConnection();
         chdir($cwd);

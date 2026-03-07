@@ -79,10 +79,10 @@ final class DrupalCommands extends DrushCommands
     {
         include_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $severities = [
-            REQUIREMENT_INFO => dt('Info'),
-            REQUIREMENT_OK => dt('OK'),
-            REQUIREMENT_WARNING => dt('Warning'),
-            REQUIREMENT_ERROR => dt('Error'),
+            -1 => dt('Info'),
+            0 => dt('OK'),
+            1 => dt('Warning'),
+            2 => dt('Error'),
         ];
 
         drupal_load_updates();
@@ -192,13 +192,13 @@ final class DrupalCommands extends DrushCommands
         }
 
         switch ($severity) {
-            case REQUIREMENT_OK:
+            case 0:
                 return '<info>' . $content . '</>';
-            case REQUIREMENT_WARNING:
+            case 1:
                 return '<comment>' . $content . '</>';
-            case REQUIREMENT_ERROR:
+            case 2:
                 return '<fg=red>' . $content . '</>';
-            case REQUIREMENT_INFO:
+            case -1:
             default:
                 return $content;
         }

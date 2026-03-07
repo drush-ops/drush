@@ -222,7 +222,7 @@ final class ViewsCommands extends DrushCommands
             // Don't show admin links in markup by default.
             $view->hide_admin_links = !$options['show-admin-links'];
             $build = $view->preview();
-            return (string) $this->getRenderer()->renderPlain($build);
+            return (string) $this->getRenderer()->renderInIsolation($build);
         }
     }
 

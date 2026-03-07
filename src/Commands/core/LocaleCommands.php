@@ -129,7 +129,7 @@ final class LocaleCommands extends DrushCommands
 
         // Set the translation import options. This determines if existing
         // translations will be overwritten by imported strings.
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
 
         // If the status was updated recently we can immediately start fetching the
         // translation updates. If the status is expired we clear it an run a batch to
@@ -228,7 +228,7 @@ final class LocaleCommands extends DrushCommands
         $this->moduleHandler->loadInclude('locale', 'translation.inc');
         $this->moduleHandler->loadInclude('locale', 'bulk.inc');
 
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
         $translationOptions['customized'] = $this->convertCustomizedType($options['type']);
         $override = $this->convertOverrideOption($options['override']);
         if ($override) {
@@ -311,7 +311,7 @@ final class LocaleCommands extends DrushCommands
         $this->moduleHandler->loadInclude('locale', 'translation.inc');
         $this->moduleHandler->loadInclude('locale', 'bulk.inc');
 
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
         $translationOptions['langcode'] = $language->getId();
         $translationOptions['customized'] = $this->convertCustomizedType($options['type']);
         $override = $this->convertOverrideOption($options['override']);
