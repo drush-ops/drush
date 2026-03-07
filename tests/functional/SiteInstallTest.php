@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\RoleCommands;
+use Drush\Commands\core\SiteInstallCommands;
 use Drush\Commands\core\StatusCommands;
 use Drush\Commands\sql\SqlCommands;
-use Drush\Commands\core\SiteInstallCommands;
 use Unish\Utils\Fixtures;
 
 /**
@@ -66,8 +66,8 @@ class SiteInstallTest extends CommandUnishTestCase
      */
     public function testSiteInstallRecipesNotSupported()
     {
-        if ($this->isDrupalGreaterThanOrEqualTo('10.3.0')) {
-            $this->markTestSkipped('We can only test the recipes requirement check on versions prior to Drupal 10.3.0.');
+        if ($this->isDrupalGreaterThanOrEqualTo('12')) {
+            $this->markTestSkipped('@todo - fix this method for Drupal 12.');
         }
 
         if ($this->dbDriver() === 'sqlite') {

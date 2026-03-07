@@ -83,7 +83,7 @@ final class SiteInstallCommands extends DrushCommands
         $recipeOrProfile = array_shift($additional) ?: '';
         $form_options = [];
         foreach ($additional as $arg) {
-            list($key, $value) = explode('=', $arg, 2);
+            [$key, $value] = explode('=', $arg, 2);
 
             // Allow for numeric and NULL values to be passed in.
             if (is_numeric($value)) {
@@ -96,7 +96,7 @@ final class SiteInstallCommands extends DrushCommands
         }
 
         $this->serverGlobals($this->bootstrapManager->getUri());
-        list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $options);
+        [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $options);
         $account_pass = $options['account-pass'] ?: StringUtils::generatePassword();
 
         // Was giving error during validate() so its here for now.
@@ -352,7 +352,7 @@ final class SiteInstallCommands extends DrushCommands
                 try {
                     // Do some install booting to get basic services available.
                     $recipeOrProfile = array_shift($commandData->input()->getArgument('recipeOrProfile')) ?: '';
-                    list($recipe, $profile) = $this->determineRecipeOrProfile($recipeOrProfile, $commandData->input()->getOptions());
+                    [$recipe, $profile] = $this->determineRecipeOrProfile($recipeOrProfile, $commandData->input()->getOptions());
                     require_once DRUSH_DRUPAL_CORE . '/includes/install.core.inc';
                     $install_state = ['interactive' => false] + install_state_defaults();
                     $install_state['parameters']['profile'] = $profile ?? '';
@@ -549,7 +549,7 @@ final class SiteInstallCommands extends DrushCommands
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse
+            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse, function.impossibleType
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }
