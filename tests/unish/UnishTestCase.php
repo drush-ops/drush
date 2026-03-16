@@ -665,7 +665,7 @@ EOT;
     {
         $root = $this->webroot();
         $siteDir = "$root/sites/$uri";
-        @mkdir($siteDir);
+        @mkdir($siteDir, 0777, true);
         chmod("$siteDir", 0777);
         @chmod("$siteDir/settings.php", 0777);
         if ($refreshSettings) {
