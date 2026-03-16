@@ -62,25 +62,6 @@ class SiteInstallTest extends CommandUnishTestCase
     }
 
     /**
-     * Test functionality of attempting to install a recipe on a version of Drupal that does not support them.
-     */
-    public function testSiteInstallRecipesNotSupported()
-    {
-        if ($this->isDrupalGreaterThanOrEqualTo('12')) {
-            $this->markTestSkipped('@todo - fix this method for Drupal 12.');
-        }
-
-        if ($this->dbDriver() === 'sqlite') {
-            $this->markTestSkipped('This test runs afoul of profile-selection code that does not work right with SQLite, since we have not set up the db-url for this test.');
-        }
-
-        $recipeDir = $this->fixturesDir() . '/recipes/test_recipe';
-        $this->drush(SiteInstallCommands::INSTALL, [$recipeDir], ['no-interaction' => null], null, null, self::EXIT_ERROR);
-        $error_output = $this->getErrorOutput();
-        $this->assertStringContainsString('Recipes are only supported on Drupal 10.3.0 and later.', $error_output);
-    }
-
-    /**
      * Test functionality of installing a site with a recipe.
      */
     public function testSiteInstallRecipe()
