@@ -483,7 +483,7 @@ abstract class UnishTestCase extends TestCase
     {
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo(self::getDbUrl(), null);
         $info['database'] = $info['driver'] === 'sqlite' ? "sites/$env/files/unish.sqlite" : 'unish_' . $env;
         $connection_class = $info['namespace'] . '\\Connection';
         $ret = $connection_class::createUrlFromConnectionOptions($info);
@@ -495,7 +495,7 @@ abstract class UnishTestCase extends TestCase
     {
         $cwd = getcwd();
         chdir($this->webroot());
-        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), $this->webroot());
+        $info = Database::convertDbUrlToConnectionInfo($db_url ?: self::getDbUrl(), null);
         chdir($cwd);
         return $info['driver'] ?? false;
     }

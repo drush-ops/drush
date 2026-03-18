@@ -9,17 +9,19 @@ use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Component\DependencyInjection\Container;
 use Drupal\Component\Render\MarkupInterface;
 use Drupal\Core\Config\ConfigBase;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\EntityTypeRepositoryInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Render\HtmlResponse;
 use Drush\Attributes as CLI;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
 use Drush\Psysh\Caster;
@@ -27,7 +29,6 @@ use Drush\Psysh\DrushCommand;
 use Drush\Psysh\DrushHelpCommand;
 use Drush\Psysh\Shell;
 use Drush\Runtime\Runtime;
-use Drush\Utils\FsUtils;
 use Psy\Configuration;
 use Psy\VersionUpdater\Checker;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -35,6 +36,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\TerminableInterface;
 
 #[AsCommand(
     name: self::NAME,
@@ -51,11 +55,14 @@ final class CliCommand extends Command
     public const string NAME = 'php:cli';
 
     public function __construct(
+        protected readonly ConfigFactoryInterface $configFactory,
         protected readonly EntityTypeManagerInterface $entityTypeManager,
         protected readonly EntityTypeRepositoryInterface $entityTypeRepository,
         protected readonly EntityTypeBundleInfoInterface $entityTypeBundleInfo,
         protected readonly FormatterManager $formatterManager,
-        protected readonly DrushConfig $drushConfig,
+        #[Autowire(service: 'kernel')]
+        protected readonly DrupalKernelInterface $kernel,
+        protected readonly RequestStack $requestStack,
     ) {
         parent::__construct();
     }
@@ -63,7 +70,6 @@ final class CliCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addOption('version-history', null, InputOption::VALUE_NONE, 'Use command history based on Drupal version. Default is per site.')
             ->addOption('cwd', null, InputOption::VALUE_REQUIRED, 'A directory to change to before launching the shell. Default is the project root directory')
             ->addUsage('$node = Node::load(1)')
             ->addUsage('$node = NodeArticle::load(1)')
@@ -76,12 +82,12 @@ final class CliCommand extends Command
         $configuration = new Configuration();
 
         // Set the Drush specific history file path.
-        $configuration->setHistoryFile($this->historyPath($input));
+        $configuration->setHistoryFile('private://' . self::NAME . '.history');
 
         $configuration->setStartupMessage(
             sprintf(
                 '<aside>%s (Drupal %s)</aside>',
-                \Drupal::config('system.site')->get('name'),
+                $this->configFactory->get('system.site')->get('name'),
                 \Drupal::VERSION
             )
         );
@@ -112,12 +118,10 @@ final class CliCommand extends Command
         // database connection when they are killed. So when we return back to the
         // parent process after, there is no connection. This will be called after the
         // command in preflight still, but the subscriber instances are already
-        // created from before. Call terminate() regardless, this is a no-op for all
-        // DrupalBoot classes except DrupalBoot8.
-        // @phpstan-ignore if.alwaysTrue
-        if ($bootstrap = Drush::bootstrap()) {
-            $bootstrap->terminate();
-        }
+        // created from before.
+        $response = new HtmlResponse();
+        assert($this->kernel instanceof TerminableInterface);
+        $this->kernel->terminate($this->requestStack->getCurrentRequest(), $response);
 
         // If the cwd option is passed, lets change the current working directory to wherever
         // the user wants to go before we launch psysh.
@@ -142,10 +146,10 @@ final class CliCommand extends Command
             self::NAME,
             'php:cli',
             'php',
-            PhpCommands::EVAL,
+            PhpEvalCommand::NAME,
             'eval',
             'ev',
-            PhpCommands::SCRIPT,
+            PhpScriptCommand::NAME,
             'scr',
         ];
         $php_keywords = $this->getPhpKeywords();
@@ -188,42 +192,6 @@ final class CliCommand extends Command
             Container::class => Caster::castContainer(...),
             MarkupInterface::class => Caster::castMarkup(...),
         ];
-    }
-
-    /**
-     * Returns the file path for the CLI history.
-     *
-     * This can either be site-specific (default) or Drupal version specific.
-     */
-    private function historyPath(InputInterface $input): string
-    {
-        $cli_directory = FsUtils::getBackupDirParent();
-        $drupal_major_version = Drush::getMajorVersion();
-
-        // If there is no drupal version (and thus no root). Just use the current
-        // path.
-        // @todo Could use a global file within drush?
-        if (!$drupal_major_version) {
-            $file_name = 'global-' . md5($this->drushConfig->cwd());
-        } elseif ($input->getOption('version-history')) {
-            // If only the Drupal version is being used for the history.
-            $file_name = "drupal-$drupal_major_version";
-        } else {
-            // If there is an alias, use that in the site specific name. Otherwise,
-            // use a hash of the root path.
-            $aliasRecord = Drush::aliasManager()->getSelf();
-
-            if ($aliasRecord->name()) {
-                $site_suffix = ltrim($aliasRecord->name(), '@');
-            } else {
-                $drupal_root = Drush::bootstrapManager()->getRoot();
-                $site_suffix = md5($drupal_root);
-            }
-
-            $file_name = "drupal-site-$site_suffix";
-        }
-
-        return "$cli_directory/$file_name";
     }
 
     /**

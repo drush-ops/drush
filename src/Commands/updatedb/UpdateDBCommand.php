@@ -126,20 +126,21 @@ final class UpdateDBCommand extends Command
 
         \Drupal::moduleHandler()->resetImplementations();
         $requirements = update_check_requirements();
-        $severity = drupal_requirements_severity($requirements);
+        $severity = drush_drupal_requirements_severity($requirements);
 
         // If there are issues, report them.
-        if ($severity != REQUIREMENT_OK) {
-            if ($severity === REQUIREMENT_ERROR) {
+        // @todo - use enum values instead of ints when we drop support for d11.
+        if ($severity != 0) {
+            if ($severity === 2) {
                 $return = false;
             }
             foreach ($requirements as $requirement) {
-                if (isset($requirement['severity']) && $requirement['severity'] != REQUIREMENT_OK) {
+                if (isset($requirement['severity']) && $requirement['severity'] != 0) {
                     $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
                         $message .= ' (Currently using ' . $requirement['title'] . ' ' . DrupalUtil::drushRender($requirement['value']) . ')';
                     }
-                    $log_level = $requirement['severity'] === REQUIREMENT_ERROR ? LogLevel::ERROR : LogLevel::WARNING;
+                    $log_level = $requirement['severity'] === 2 ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger->log($log_level, $message);
                 }
             }

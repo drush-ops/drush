@@ -6,15 +6,16 @@ namespace Drush\Commands\core;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\OutputFormatters\StructuredData\UnstructuredData;
+use Drupal\Core\DrupalKernelInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Drush;
 use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
@@ -34,6 +35,8 @@ final class JsonapiGetCommand extends Command
 
     public function __construct(
         protected readonly FormatterManager $formatterManager,
+        #[Autowire(service: 'kernel')]
+        protected readonly DrupalKernelInterface $kernel,
     ) {
         parent::__construct();
     }
@@ -57,9 +60,8 @@ final class JsonapiGetCommand extends Command
 
     public function doExecute(string $url): UnstructuredData
     {
-        $kernel = Drush::bootstrap()->getKernel();
         $sub_request = Request::create($url, 'GET');
-        $subResponse = $kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        $subResponse = $this->kernel->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
         return new UnstructuredData(json_decode($subResponse->getContent()));
     }
 }

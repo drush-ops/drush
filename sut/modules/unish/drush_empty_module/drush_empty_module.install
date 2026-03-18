@@ -15,12 +15,12 @@ function drush_empty_module_requirements($phase) {
     $requirements['drush_empty_module'] = [
       'title' => t('Drush empty module: installation failure'),
       'description' => t('Primary install requirements not met.'),
-      'severity' => REQUIREMENT_ERROR,
+      'severity' => 2,
     ];
     $requirements['drush_empty_module_secondary'] = [
       'title' => t('Drush empty module: installation failure'),
       'description' => t('Secondary install requirements not met.'),
-      'severity' => REQUIREMENT_ERROR,
+      'severity' => 2,
     ];
   }
 

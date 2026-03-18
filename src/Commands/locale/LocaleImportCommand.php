@@ -73,7 +73,7 @@ final class LocaleImportCommand extends Command
         $this->moduleHandler->loadInclude('locale', 'translation.inc');
         $this->moduleHandler->loadInclude('locale', 'bulk.inc');
 
-        $translationOptions = _locale_translation_default_update_options();
+        $translationOptions = drush_locale_translation_default_update_options();
         $translationOptions['langcode'] = $language->getId();
         $translationOptions['customized'] = $this->convertCustomizedType($type);
         $override_options = $this->convertOverrideOption($override);
