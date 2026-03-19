@@ -5,7 +5,7 @@ defaults: &defaults
   environment:
     TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     TERM: dumb
-    SYMFONY_DEPRECATIONS_HELPER: disabled
+    SYMFONY_DEPRECATIONS_HELPER: weak
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K

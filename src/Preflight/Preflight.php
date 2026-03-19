@@ -198,6 +198,7 @@ class Preflight
             5 => 'v4',  // Early Drupal 10 (Symfony 5 works with Symfony 4 classes, so we don't keep an extra copy)
             6 => 'v6',  // Drupal 10
             7 => 'v6',  // Drupal 11
+            8 => 'v6',  // Drupal 12
         ];
 
         // @phpstan-ignore empty.offset
