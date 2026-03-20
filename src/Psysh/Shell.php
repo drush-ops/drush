@@ -27,7 +27,7 @@ class Shell extends BaseShell
      *
      * @return bool True if the shell has a command for the given input.
      */
-    protected function hasCommand(string $input): bool
+    public function hasCommand(string $input): bool
     {
         if ($name = $this->getCommandFromInput($input)) {
             return $this->has($name);
