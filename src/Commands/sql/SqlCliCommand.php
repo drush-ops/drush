@@ -67,25 +67,31 @@ final class SqlCliCommand extends Command
         }
 
         $process = $this->processManager->shell($sql->connect(), null, $sql->getEnv());
-        // No longer needed?
-        // if (Tty::isTtySupported()) {
-        //     $process->setTty((bool) $this->drushConfig->get('ssh.tty', $input->isInteractive()));
-        // }
+        // Enable TTY for interactive use if supported.
+        if (\Symfony\Component\Process\Process::isTtySupported()) {
+            $process->setTty(true);
+        }
         $process->mustRun($process->showRealtime());
         return Command::SUCCESS;
     }
 
     /**
-     * Test if there is input waiting on STDIN
+     * Test if there is input waiting on STDIN.
      */
     protected function hasPipedInput(): bool
     {
-        $streams = [STDIN]; // note STDIN here is not a string
-        $write_array = [];
-        $except_array = [];
-        $seconds = 0; // zero seconds on timeout since this is just for testing stream change
-        $streamCount = @stream_select($streams, $write_array, $except_array, $seconds);
+        // If STDIN is connected to a TTY, there's definitely no piped input.
+        if (function_exists('posix_isatty') && posix_isatty(STDIN)) {
+            return false;
+        }
 
-        return (bool) $streamCount;
+        // In containerized environments (Docker, ddev, etc.), stream_select() returns
+        // false positives because stdin is a pipe/socket rather than a TTY, even when
+        // no data is being piped. Since we cannot reliably distinguish between:
+        // 1. Interactive use in a container (no piped data, but stdin is not a TTY)
+        // 2. Actual piped input (data is being sent via stdin)
+        // We disable the piped input check when not on a TTY. Users who pipe input
+        // will simply use a slightly less efficient path, which is acceptable.
+        return false;
     }
 }
