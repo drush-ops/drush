@@ -31,7 +31,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Consolidation\Config\ConfigAwareInterface;
-use Drush\Symfony\OutputAwareInterface;
+use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
