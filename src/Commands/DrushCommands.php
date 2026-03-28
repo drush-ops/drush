@@ -7,8 +7,6 @@ namespace Drush\Commands;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
 use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
-use Consolidation\AnnotatedCommand\State\SavableState;
-use Consolidation\AnnotatedCommand\State\State;
 use Consolidation\Config\ConfigAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
@@ -35,7 +33,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Path;
 
 #[Deprecated('See https://www.drush.org/latest/commands/')]
-abstract class DrushCommands implements OutputAwareInterface, InputAwareInterface, SavableState, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
+abstract class DrushCommands implements OutputAwareInterface, InputAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
     use ProcessManagerAwareTrait;
     use ExecTrait;
@@ -59,33 +57,6 @@ abstract class DrushCommands implements OutputAwareInterface, InputAwareInterfac
 
     public function __construct()
     {
-    }
-
-    public function currentState()
-    {
-        return new class($this, $this->input, $this->output, $this->io) implements State {
-            public function __construct(
-                protected $obj,
-                protected $input,
-                protected $output,
-                protected $io,
-            ) {
-            }
-
-            public function restore()
-            {
-                $this->obj->restoreState($this->input, $this->output, $this->io);
-            }
-        };
-    }
-
-    public function restoreState(?InputInterface $input = null, ?OutputInterface $output = null, ?SymfonyStyle $io = null)
-    {
-        $this->setInput($input);
-        $this->setOutput($output);
-        $this->io = $io;
-
-        return $this;
     }
 
     public function setInput(InputInterface $input): void
