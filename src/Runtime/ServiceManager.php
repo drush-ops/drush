@@ -30,9 +30,8 @@ use League\Container\Container as DrushContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Contract\OutputAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
+use Drush\Symfony\OutputAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -427,7 +426,7 @@ class ServiceManager
     }
 
     /**
-     * Robo does not support invokable commands, so build a Command as needed.
+     * The annotated command framework does not support invokable commands, so build a Command as needed.
      */
     public function commandFromInvokable(array &$callables): array
     {
@@ -598,7 +597,7 @@ class ServiceManager
             $object->setProcessManager($container->get('process.manager'));
         }
         // InputAwareInterface and OutputAwareInterface are needed by
-        // the Robo IO trait that saves and restores input/output state,
+        // the IO trait that saves and restores input/output state,
         // so they must be maintained until that system is retired.
         if ($object instanceof InputAwareInterface) {
             $object->setInput($container->get('input'));

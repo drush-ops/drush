@@ -21,9 +21,9 @@ use GuzzleHttp\Middleware;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Robo\Common\IO;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Contract\IOAwareInterface;
+use Drush\Symfony\IO;
+use Consolidation\Config\ConfigAwareInterface;
+use Drush\Symfony\IOAwareInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Filesystem\Path;
 
@@ -35,7 +35,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     use ConfigAwareTrait;
     use LoggerAwareTrait;
     use IO {
-        io as roboIo;
+        io as traitIo;
     }
 
     // This is more readable.
@@ -55,7 +55,7 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     }
 
     /**
-     * Override Robo's IO function with our custom style.
+     * Override the IO trait's io() with our custom style.
      */
     protected function io(): DrushStyle
     {

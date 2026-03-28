@@ -11,7 +11,7 @@ use Drush\Boot\DrupalBootLevels;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\Utils\FsUtils;
-use Robo\Contract\ConfigAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;

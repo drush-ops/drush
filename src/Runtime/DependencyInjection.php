@@ -6,9 +6,21 @@ namespace Drush\Runtime;
 
 use Psr\Container\ContainerInterface;
 use Composer\Autoload\ClassLoader;
+use Consolidation\AnnotatedCommand\AnnotatedCommandFactory;
 use Consolidation\AnnotatedCommand\CommandFileDiscovery;
+use Consolidation\AnnotatedCommand\CommandProcessor;
+use Consolidation\AnnotatedCommand\Events\CustomEventAwareInterface;
+use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\AnnotatedCommand\Input\StdinAwareInterface;
+use Consolidation\AnnotatedCommand\Input\StdinHandler;
+use Consolidation\AnnotatedCommand\Options\AlterOptionsCommandEvent;
+use Consolidation\AnnotatedCommand\Options\PrepareTerminalWidthOption;
+use Consolidation\AnnotatedCommand\ParameterInjection;
+use Consolidation\Config\ConfigAwareInterface;
 use Consolidation\Config\ConfigInterface;
+use Consolidation\Config\Inject\ConfigForCommand;
 use Consolidation\Config\Util\ConfigOverlay;
+use Consolidation\Log\LogOutputStyler;
 use Consolidation\OutputFormatters\FormatterManager;
 use Consolidation\SiteAlias\SiteAliasManager;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
@@ -31,11 +43,13 @@ use Drush\SiteAlias\ProcessManager;
 use Drush\Symfony\DrushStyleInjector;
 use League\Container\Container;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Robo\Robo;
+use Symfony\Component\Console\Input\InputAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Prepare our Dependency Injection Container
@@ -70,11 +84,11 @@ class DependencyInjection
         // Set up our dependency injection container.
         $container = new Container();
 
-        // With league/container 3.x, first call wins, so add Drush services first.
+        // With league/container, first call wins, so add Drush services first.
         $this->addDrushServices($container, $loader, $drupalFinder, $aliasManager, $config, $output, $input);
 
-        // Robo has the same signature for configureContainer in 1.x, 2.x and 3.x.
-        Robo::configureContainer($container, $application, $config, $input, $output);
+        // Register the core annotated-command framework services.
+        $this->configureContainer($container, $application, $config, $input, $output);
         $container->add('container', $container);
         $container->add(ContainerInterface::class, 'container'); // For autowiring
 
@@ -101,67 +115,132 @@ class DependencyInjection
         }
     }
 
-    // Add Drush Services to league/container 3.x
+    /**
+     * Register core services in the container.
+     *
+     * Sets up the annotated-command framework services (hookManager,
+     * commandFactory, commandProcessor, eventDispatcher, etc.) and
+     * standard inflectors.
+     */
+    protected function configureContainer(Container $container, Application $application, ConfigInterface $config, InputInterface $input, OutputInterface $output): void
+    {
+        $config->set(DrushConfig::DECORATED, $output->isDecorated());
+        $config->set(DrushConfig::INTERACTIVE, $input->isInteractive());
+
+        $container->addShared('application', $application);
+        $container->addShared('config', $config);
+        $container->addShared('input', $input);
+        $container->addShared('output', $output);
+
+        // Logging support
+        $container->addShared('logStyler', LogOutputStyler::class);
+
+        // Annotated command framework services
+        $container->addShared('injectConfigEventListener', ConfigForCommand::class)
+            ->addArgument('config')
+            ->addMethodCall('setApplication', ['application']);
+        $container->addShared('alterOptionsCommandEvent', AlterOptionsCommandEvent::class)
+            ->addArgument('application');
+        $container->addShared('hookManager', HookManager::class)
+            ->addMethodCall('addCommandEvent', ['alterOptionsCommandEvent'])
+            ->addMethodCall('addCommandEvent', ['injectConfigEventListener']);
+        $container->addShared('eventDispatcher', EventDispatcher::class)
+            ->addMethodCall('addSubscriber', ['hookManager']);
+        $container->addShared('prepareTerminalWidthOption', PrepareTerminalWidthOption::class)
+            ->addMethodCall('setApplication', ['application']);
+        $container->addShared('parameterInjection', ParameterInjection::class);
+        $container->addShared('commandProcessor', CommandProcessor::class)
+            ->addArgument('hookManager')
+            ->addMethodCall('setFormatterManager', ['formatterManager'])
+            ->addMethodCall('addPrepareFormatter', ['prepareTerminalWidthOption'])
+            ->addMethodCall('setParameterInjection', ['parameterInjection'])
+            ->addMethodCall(
+                'setDisplayErrorFunction',
+                [
+                    function ($output, $message) use ($container) {
+                        $logger = $container->get('logger');
+                        $logger->error($message);
+                    }
+                ]
+            );
+        $container->addShared('stdinHandler', StdinHandler::class);
+        $container->addShared('commandFactory', AnnotatedCommandFactory::class)
+            ->addMethodCall('setCommandProcessor', ['commandProcessor']);
+
+        // Add inflectors for common *AwareInterface patterns
+        $container->inflector(ConfigAwareInterface::class)
+            ->invokeMethod('setConfig', ['config']);
+        $container->inflector(LoggerAwareInterface::class)
+            ->invokeMethod('setLogger', ['logger']);
+        $container->inflector(InputAwareInterface::class)
+            ->invokeMethod('setInput', ['input']);
+        $container->inflector(\Consolidation\AnnotatedCommand\Output\OutputAwareInterface::class)
+            ->invokeMethod('setOutput', ['output']);
+        $container->inflector(CustomEventAwareInterface::class)
+            ->invokeMethod('setHookManager', ['hookManager']);
+        $container->inflector(StdinAwareInterface::class)
+            ->invokeMethod('setStdinHandler', ['stdinHandler']);
+
+        // Make sure the application is appropriately initialized.
+        $application->setAutoExit(false);
+    }
+
+    // Add Drush Services to the container
     protected function addDrushServices(Container $container, ClassLoader $loader, DrushDrupalFinder $drupalFinder, SiteAliasManager $aliasManager, DrushConfig $config, OutputInterface $output, InputInterface $input): void
     {
-        // Override Robo's logger with a LoggerManager that delegates to the Drush logger.
-        Robo::addShared($container, 'logger', DrushLoggerManager::class)
+        // Drush's logger: a LoggerManager that delegates to the Drush logger.
+        $container->addShared('logger', DrushLoggerManager::class)
             ->addMethodCall('setLogOutputStyler', ['logStyler'])
             ->addMethodCall('add', ['drush', new Logger($output)]);
-        Robo::addShared($container, LoggerInterface::class, 'logger');  // For autowiring
+        $container->addShared(LoggerInterface::class, 'logger');  // For autowiring
 
-        Robo::addShared($container, self::LOADER, $loader);
-        Robo::addShared($container, ClassLoader::class, self::LOADER);  // For autowiring
-        Robo::addShared($container, self::SITE_ALIAS_MANAGER, $aliasManager);
-        Robo::addShared($container, SiteAliasManagerInterface::class, self::SITE_ALIAS_MANAGER);  // For autowiring
+        $container->addShared(self::LOADER, $loader);
+        $container->addShared(ClassLoader::class, self::LOADER);  // For autowiring
+        $container->addShared(self::SITE_ALIAS_MANAGER, $aliasManager);
+        $container->addShared(SiteAliasManagerInterface::class, self::SITE_ALIAS_MANAGER);  // For autowiring
 
         // Fetch the runtime config, where -D et. al. are stored, and
         // add a reference to it to the container.
-        Robo::addShared($container, 'config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
+        $container->addShared('config.runtime', $config->getContext(ConfigOverlay::PROCESS_CONTEXT));
 
-        // Override Robo's formatter manager with our own
-        // @todo not sure that we'll use this. Maybe remove it.
-        Robo::addShared($container, self::FORMATTER_MANAGER, DrushFormatterManager::class)
+        // Drush's formatter manager
+        $container->addShared(self::FORMATTER_MANAGER, DrushFormatterManager::class)
             ->addMethodCall('addDefaultFormatters', [])
             ->addMethodCall('addDefaultSimplifiers', [])
             ->addMethodCall('addSimplifier', [new EntityToArraySimplifier()]);
-        Robo::addShared($container, FormatterManager::class, self::FORMATTER_MANAGER);  // For autowiring
+        $container->addShared(FormatterManager::class, self::FORMATTER_MANAGER);  // For autowiring
 
-        // Add some of our own objects to the container
-        Robo::addShared($container, 'service.manager', ServiceManager::class)
+        // Add Drush services to the container
+        $container->addShared('service.manager', ServiceManager::class)
             ->addArgument(self::LOADER)
             ->addArgument('config')
             ->addArgument('logger');
-        Robo::addShared($container, 'bootstrap.drupal8', DrupalBoot8::class)
+        $container->addShared('bootstrap.drupal8', DrupalBoot8::class)
             ->addArgument('service.manager')
             ->addArgument(self::LOADER);
-        Robo::addShared($container, self::BOOTSTRAP_MANAGER, BootstrapManager::class)
+        $container->addShared(self::BOOTSTRAP_MANAGER, BootstrapManager::class)
             ->addMethodCall('setDrupalFinder', [$drupalFinder])
             ->addMethodCall('add', ['bootstrap.drupal8']);
-        Robo::addShared($container, BootstrapManager::class, self::BOOTSTRAP_MANAGER); // For autowiring
-        Robo::addShared($container, 'bootstrap.hook', BootstrapHook::class)
+        $container->addShared(BootstrapManager::class, self::BOOTSTRAP_MANAGER); // For autowiring
+        $container->addShared('bootstrap.hook', BootstrapHook::class)
           ->addArgument(self::BOOTSTRAP_MANAGER);
-        Robo::addShared($container, 'tildeExpansion.hook', TildeExpansionHook::class);
-        Robo::addShared($container, self::PROCESS_MANAGER, ProcessManager::class)
+        $container->addShared('tildeExpansion.hook', TildeExpansionHook::class);
+        $container->addShared(self::PROCESS_MANAGER, ProcessManager::class)
             ->addMethodCall('setConfig', ['config'])
             ->addMethodCall('setConfigRuntime', ['config.runtime'])
             ->addMethodCall('setDrupalFinder', [$drupalFinder]);
-        Robo::addShared($container, ProcessManager::class, self::PROCESS_MANAGER); // For autowiring
-        Robo::addShared($container, 'redispatch.hook', RedispatchHook::class)
+        $container->addShared(ProcessManager::class, self::PROCESS_MANAGER); // For autowiring
+        $container->addShared('redispatch.hook', RedispatchHook::class)
             ->addArgument(self::PROCESS_MANAGER);
-        ;
 
-        // Robo does not manage the command discovery object in the container,
-        // but we will register and configure one for our use.
-        // TODO: Some old adapter code uses this, but the Symfony dispatcher does not.
-        // See Application::commandDiscovery().
-        Robo::addShared($container, 'commandDiscovery', CommandFileDiscovery::class)
+        // Command discovery
+        $container->addShared('commandDiscovery', CommandFileDiscovery::class)
             ->addMethodCall('addSearchLocation', ['CommandFiles'])
             ->addMethodCall('setSearchPattern', ['#.*(Commands|CommandFile).php$#']);
 
         // Error and Shutdown handlers
-        Robo::addShared($container, 'errorHandler', ErrorHandler::class);
-        Robo::addShared($container, 'shutdownHandler', ShutdownHandler::class);
+        $container->addShared('errorHandler', ErrorHandler::class);
+        $container->addShared('shutdownHandler', ShutdownHandler::class);
 
         // Add inflectors. @see \Drush\Boot\BaseBoot::inflect
         $container->inflector(SiteAliasManagerAwareInterface::class)
@@ -175,11 +254,9 @@ class DependencyInjection
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());
 
-        // Alias the dispatcher service that is defined in \Robo\Robo::configureContainer.
-        Robo::addShared($container, EventDispatcherInterface::class, 'eventDispatcher');  // For autowiring
-
-        // Alias the config service that is defined in \Robo\Robo::configureContainer.
-        Robo::addShared($container, DrushConfig::class, 'config');  // For autowiring
+        // Autowiring aliases
+        $container->addShared(EventDispatcherInterface::class, 'eventDispatcher');
+        $container->addShared(DrushConfig::class, 'config');
 
         // Add our own callback to the hook manager
         $hookManager = $container->get('hookManager');
