@@ -249,7 +249,7 @@ class DependencyInjection
             ->invokeMethod('setProcessManager', [self::PROCESS_MANAGER]);
     }
 
-    protected function alterServicesForDrush(ContainerInterface $container, Application $application, InputInterface $input, OutputInterface $output): void
+    protected function alterServicesForDrush(Container $container, Application $application, InputInterface $input, OutputInterface $output): void
     {
         $paramInjection = $container->get('parameterInjection');
         $paramInjection->register(SymfonyStyle::class, new DrushStyleInjector());
