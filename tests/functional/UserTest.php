@@ -118,7 +118,7 @@ class UserTest extends CommandUnishTestCase
         $newpass = 'newpass';
         $name = self::NAME;
         $this->drush(UserCommands::PASSWORD, [self::NAME, $newpass]);
-        $eval = "return Drupal::service(\"user.auth\")->authenticate(\"$name\", \"$newpass\");";
+        $eval = "return Drupal::service(\"user.auth\")->authenticate(Drupal::service(\"user.auth\")-lookup($name), \"$newpass\");";
         $this->drush(PhpCommands::EVAL, [$eval]);
         $output = $this->getOutput();
         $this->assertStringContainsString('2', $output, 'User can login with new password.');
