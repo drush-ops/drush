@@ -98,7 +98,7 @@ class ServiceManager
     }
 
     /**
-     * Return cached of deferred scubscriber objects.
+     * Return cached of deferred subscriber objects.
      *
      * @return string[]
      *   List of class names to instantiate at bootstrap time.
@@ -109,7 +109,7 @@ class ServiceManager
     }
 
     /**
-     * Discover all of the different kinds of command handler objects
+     * Discover all the different kinds of command handler objects
      * in the places where Drush can find them. Called during preflight;
      * some command classes are returned right away, and others are saved
      * to be handled later during Drupal bootstrap.
@@ -190,8 +190,8 @@ class ServiceManager
     }
 
     /**
-     * Discover PSR-4 autoloaded classes that implement Annotated Command
-     * library command handlers.
+     * Discover PSR-4 autoloaded classes that implement extend DrushCommands and
+     * are named properly.
      *
      * @return string[]
      *   List of command classes

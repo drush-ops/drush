@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\sql;
 
+use Consolidation\SiteProcess\Util\Tty;
 use Drush\Attributes as CLI;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
@@ -67,10 +68,9 @@ final class SqlCliCommand extends Command
         }
 
         $process = $this->processManager->shell($sql->connect(), null, $sql->getEnv());
-        // No longer needed?
-        // if (Tty::isTtySupported()) {
-        //     $process->setTty((bool) $this->drushConfig->get('ssh.tty', $input->isInteractive()));
-        // }
+        if (Tty::isTtySupported()) {
+            $process->setTty((bool) $this->drushConfig->get('ssh.tty', $input->isInteractive()));
+        }
         $process->mustRun($process->showRealtime());
         return Command::SUCCESS;
     }
