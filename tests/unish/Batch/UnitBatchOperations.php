@@ -22,6 +22,6 @@ class UnitBatchOperations
 
     public static function finish($success, $results, $operations): void
     {
-        Drush::logger()->success("Result count is " . count($results));
+        Drush::logger()->notice("Result count is " . count($results));
     }
 }

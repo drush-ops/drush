@@ -18,7 +18,6 @@ use Drush\Event\ConsoleDefinitionsEvent;
 use Drush\Runtime\LegacyServiceFinder;
 use Drush\Runtime\LegacyServiceInstantiator;
 use Drush\Runtime\ServiceManager;
-use Robo\Robo;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\TerminableInterface;
@@ -261,8 +260,8 @@ class DrupalBoot8 extends DrupalBoot
         $commandInfoAltererInstances = $this->serviceManager->instantiateServices($commandInfoAlterers, $drushContainer, $container);
         $commandInfoAlterers = array_merge($commandInfoAltererInstances, $legacyServiceInstantiator->taggedServices('drush.command_info_alterer'));
 
-        // Set the command info alterers. We must do this prior to calling
-        // Robo::register to add any commands, as that is the point where the
+        // Set the command info alterers. We must do this prior to
+        // registering any commands, as that is the point where the
         // alteration will happen.
         foreach ($commandInfoAlterers as $altererHandler) {
             $handler = $this->serviceManager->commandFromInvokable($altererHandler);
@@ -275,7 +274,7 @@ class DrupalBoot8 extends DrupalBoot
         foreach ($drushServicesConsoleCommands as $command) {
             $this->serviceManager->inflect($drushContainer, $command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
-            $application->add($command);
+            $application->addCommand($command);
         }
 
         // Add annotation commands from drush.services.yml
@@ -283,7 +282,7 @@ class DrupalBoot8 extends DrupalBoot
         foreach ($drushServicesCommandHandlers as $commandHandler) {
             $this->serviceManager->inflect($drushContainer, $commandHandler);
             $this->logger->debug(dt('Add a commandfile class: !name', ['!name' => $commandHandler::class]));
-            Robo::register($application, $commandHandler);
+            $application->registerCommandInstances($commandHandler);
         }
 
         // Instantiate all of the classes we discovered in
@@ -293,7 +292,7 @@ class DrupalBoot8 extends DrupalBoot
 
         // Inflect and register all command handlers
         $commandHandlers = $this->serviceManager->commandFromInvokable($commandHandlers);
-        Robo::register($application, $commandHandlers);
+        $application->registerCommandInstances($commandHandlers);
 
         // Dispatch our custom event. It also fires earlier in \Drush\Application::configureAndRegisterCommands.
         Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent(Drush::getApplication()), ConsoleDefinitionsEvent::class);

@@ -30,9 +30,8 @@ use League\Container\Container as DrushContainer;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Contract\OutputAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
+use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -99,7 +98,7 @@ class ServiceManager
     }
 
     /**
-     * Return cached of deferred scubscriber objects.
+     * Return cached of deferred subscriber objects.
      *
      * @return string[]
      *   List of class names to instantiate at bootstrap time.
@@ -110,7 +109,7 @@ class ServiceManager
     }
 
     /**
-     * Discover all of the different kinds of command handler objects
+     * Discover all the different kinds of command handler objects
      * in the places where Drush can find them. Called during preflight;
      * some command classes are returned right away, and others are saved
      * to be handled later during Drupal bootstrap.
@@ -191,8 +190,8 @@ class ServiceManager
     }
 
     /**
-     * Discover PSR-4 autoloaded classes that implement Annotated Command
-     * library command handlers.
+     * Discover PSR-4 autoloaded classes that implement extend DrushCommands and
+     * are named properly.
      *
      * @return string[]
      *   List of command classes
@@ -427,7 +426,7 @@ class ServiceManager
     }
 
     /**
-     * Robo does not support invokable commands, so build a Command as needed.
+     * The annotated command framework does not support invokable commands, so build a Command as needed.
      */
     public function commandFromInvokable(array &$callables): array
     {
@@ -598,7 +597,7 @@ class ServiceManager
             $object->setProcessManager($container->get('process.manager'));
         }
         // InputAwareInterface and OutputAwareInterface are needed by
-        // the Robo IO trait that saves and restores input/output state,
+        // the IO trait that saves and restores input/output state,
         // so they must be maintained until that system is retired.
         if ($object instanceof InputAwareInterface) {
             $object->setInput($container->get('input'));

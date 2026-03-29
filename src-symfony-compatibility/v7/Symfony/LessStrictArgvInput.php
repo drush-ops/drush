@@ -92,7 +92,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @param string $token The current token
      */
-    private function parseShortOption($token)
+    private function parseShortOption(string $token): void
     {
         $name = substr($token, 1);
 
@@ -113,7 +113,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @param string $name The current token
      */
-    private function parseShortOptionSet(string $name)
+    private function parseShortOptionSet(string $name): void
     {
         $len = strlen($name);
         for ($i = 0; $i < $len; ++$i) {
@@ -143,11 +143,6 @@ class LessStrictArgvInput extends ArgvInput
 
         if (false !== $pos = strpos($name, '=')) {
             if (0 === strlen($value = substr($name, $pos + 1))) {
-                // if no value after "=" then substr() returns "" since php7 only, false before
-                // see http://php.net/manual/fr/migration70.incompatible.php#119151
-                if (\PHP_VERSION_ID < 70000 && false === $value) {
-                    $value = '';
-                }
                 array_unshift($this->parsed, $value);
             }
             $this->addLongOption(substr($name, 0, $pos), $value);
@@ -163,7 +158,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When too many arguments are given
      */
-    private function parseArgument(string $token)
+    private function parseArgument(string $token): void
     {
         $c = count($this->arguments);
 
@@ -196,7 +191,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addShortOption(string $shortcut, mixed $value)
+    private function addShortOption(string $shortcut, mixed $value): void
     {
         if (!$this->definition->hasShortcut($shortcut)) {
             // Hard to know what to do with unknown short options. Maybe
@@ -223,7 +218,7 @@ class LessStrictArgvInput extends ArgvInput
      *
      * @throws RuntimeException When option given doesn't exist
      */
-    private function addLongOption(string $name, mixed $value)
+    private function addLongOption(string $name, mixed $value): void
     {
         if (!$this->definition->hasOption($name)) {
             // If we don't know anything about this option, then we'll

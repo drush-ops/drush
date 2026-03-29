@@ -194,10 +194,11 @@ class Preflight
         $symfonyMajorVersion = Kernel::MAJOR_VERSION;
         $compatibilityMap = [
             3 => false, // Drupal 8
-            4 => 'v4',  // Drupal 9
-            5 => 'v4',  // Early Drupal 10 (Symfony 5 works with Symfony 4 classes, so we don't keep an extra copy)
-            6 => 'v6',  // Drupal 10
-            7 => 'v6',  // Drupal 11
+            4 => false,  // Drupal 9
+            5 => false,  // Early Drupal 10
+            6 => false,  // Drupal 10
+            7 => 'v7',  // Drupal 11
+            8 => 'v7',  // Drupal 12
         ];
 
         // @phpstan-ignore empty.offset

@@ -28,7 +28,7 @@
     <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
     <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
     <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1"/>
     <includePath>.</includePath>
   </php>
 </phpunit>

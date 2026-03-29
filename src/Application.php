@@ -18,8 +18,7 @@ use Drush\Runtime\ServiceManager;
 use Drush\Runtime\TildeExpansionHook;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Robo;
+use Consolidation\Config\ConfigAwareInterface;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -335,12 +334,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         // (handles 'createEarly' static factories)
         $commandInstances = $this->serviceManager->instantiateServices($commandClasses, Drush::getContainer());
 
-        // Register our commands with Robo, our application framework.
-        // Note that Robo::register can accept Annotated Command
-        // handlers or Symfony Console Command objects, but not yet invokables.
+        // Register command handlers with the application.
+        // Accepts Annotated Command handlers or Symfony Console Command objects.
         $commandInstances = $this->serviceManager->commandFromInvokable($commandInstances);
         array_walk($commandInstances, fn($instance) => $this->logger->debug('Add command {class}', ['class' => $instance::class]));
-        Robo::register($this, $commandInstances);
+        $this->registerCommandInstances($commandInstances);
 
         // Dispatch our custom event. It also fires later in \Drush\Boot\DrupalBoot8::bootstrapDrupalFull.
         Drush::getContainer()->get('eventDispatcher')->dispatch(new ConsoleDefinitionsEvent($this), ConsoleDefinitionsEvent::class);
@@ -354,6 +352,35 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
         $output->writeln('', OutputInterface::VERBOSITY_QUIET);
 
         $this->doRenderThrowable($e, $output);
+    }
+
+    /**
+     * Register command handler instances with the application.
+     *
+     * For Symfony Command objects, adds them directly.
+     * For annotated command handler objects, creates commands via commandFactory.
+     *
+     * @param object|object[] $handlers
+     */
+    public function registerCommandInstances(object|array $handlers): void
+    {
+        if (!is_array($handlers)) {
+            $handlers = [$handlers];
+        }
+
+        $container = Drush::getContainer();
+        $commandFactory = $container->get('commandFactory');
+
+        foreach ($handlers as $handler) {
+            if ($handler instanceof Command) {
+                $this->addCommand($handler);
+            } else {
+                $commandList = $commandFactory->createCommandsFromClass($handler);
+                foreach ($commandList as $command) {
+                    $this->addCommand($command);
+                }
+            }
+        }
     }
 
     // Discover event listeners and add those that do not require bootstrap.

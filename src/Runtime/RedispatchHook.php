@@ -13,7 +13,7 @@ use Drush\Attributes\HandleRemoteCommands;
 use Drush\Config\ConfigAwareTrait;
 use Drush\Drush;
 use Drush\SiteAlias\ProcessManager;
-use Robo\Contract\ConfigAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**

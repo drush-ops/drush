@@ -9,6 +9,7 @@ use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Extension\ThemeExtensionList;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -52,6 +53,7 @@ final class PmListCommand extends Command
         protected ModuleHandlerInterface $moduleHandler,
         protected ThemeHandlerInterface $themeHandler,
         protected ModuleExtensionList $extensionListModule,
+        protected ThemeExtensionList $extensionListTheme,
         protected LoggerInterface $logger,
         protected FormatterManager $formatterManager,
     ) {
@@ -81,7 +83,7 @@ final class PmListCommand extends Command
         $rows = [];
 
         $modules = $this->extensionListModule->getList();
-        $themes = $this->themeHandler->rebuildThemeData();
+        $themes = $this->extensionListTheme->getList();
         $both = array_merge($modules, $themes);
 
         $package_filter = StringUtils::csvToArray(strtolower((string) $input->getOption('package')));

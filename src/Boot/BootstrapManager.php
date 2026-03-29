@@ -10,7 +10,7 @@ use Drush\DrupalFinder\DrushDrupalFinder;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
-use Robo\Contract\ConfigAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
 
 class BootstrapManager implements LoggerAwareInterface, ConfigAwareInterface
 {

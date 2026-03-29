@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Log;
 
-use Robo\Robo;
 use Drupal\Core\Logger\LogMessageParserInterface;
 use Drupal\Core\Logger\RfcLoggerTrait;
 use Drupal\Core\Logger\RfcLogLevel;
@@ -43,7 +42,7 @@ class DrushLog implements LoggerInterface, LoggerAwareInterface
     public function log($level, $message, array $context = []): void
     {
         // Only log during Drush requests, not web requests.
-        if (!Robo::hasContainer()) {
+        if (!Drush::hasContainer()) {
             return;
         }
 

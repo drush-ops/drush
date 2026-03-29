@@ -6,6 +6,8 @@ namespace Drush\Commands;
 
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\Hooks\HookManager;
+use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
+use Consolidation\Config\ConfigAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareTrait;
 use Drush\Attributes as CLI;
@@ -21,22 +23,22 @@ use GuzzleHttp\Middleware;
 use JetBrains\PhpStorm\Deprecated;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
-use Robo\Common\IO;
-use Robo\Contract\ConfigAwareInterface;
-use Robo\Contract\IOAwareInterface;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputAwareInterface;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Path;
 
 #[Deprecated('See https://www.drush.org/latest/commands/')]
-abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
+abstract class DrushCommands implements OutputAwareInterface, InputAwareInterface, LoggerAwareInterface, ConfigAwareInterface, ProcessManagerAwareInterface
 {
     use ProcessManagerAwareTrait;
     use ExecTrait;
     use ConfigAwareTrait;
     use LoggerAwareTrait;
-    use IO {
-        io as roboIo;
-    }
 
     // This is more readable.
     const REQ = InputOption::VALUE_REQUIRED;
@@ -49,13 +51,50 @@ abstract class DrushCommands implements IOAwareInterface, LoggerAwareInterface, 
     const EXIT_FAILURE_WITH_CLARITY = 3;
 
     protected ?CommandData $commandData = null;
+    protected ?InputInterface $input = null;
+    protected ?OutputInterface $output = null;
+    protected ?SymfonyStyle $io = null;
 
     public function __construct()
     {
     }
 
+    public function setInput(InputInterface $input): void
+    {
+        if ($input != $this->input) {
+            $this->io = null;
+        }
+        $this->input = $input;
+    }
+
+    public function setOutput(OutputInterface $output)
+    {
+        if ($output != $this->output) {
+            $this->io = null;
+        }
+        $this->output = $output;
+
+        return $this;
+    }
+
+    protected function input(): InputInterface
+    {
+        if (!isset($this->input)) {
+            $this->setInput(new ArgvInput());
+        }
+        return $this->input;
+    }
+
+    protected function output(): OutputInterface
+    {
+        if (!isset($this->output)) {
+            $this->setOutput(new NullOutput());
+        }
+        return $this->output;
+    }
+
     /**
-     * Override Robo's IO function with our custom style.
+     * Override to provide a DrushStyle instance.
      */
     protected function io(): DrushStyle
     {
