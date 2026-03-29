@@ -17,7 +17,7 @@ class ProcessRowTestSubscriber implements EventSubscriberInterface
     /**
      * {@inheritdoc}
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW => 'onPrepareRow'];
     }
