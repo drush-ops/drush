@@ -196,9 +196,9 @@ class Preflight
             3 => false, // Drupal 8
             4 => false,  // Drupal 9
             5 => false,  // Early Drupal 10
-            6 => 'v6',  // Drupal 10
-            7 => 'v6',  // Drupal 11
-            8 => 'v6',  // Drupal 12
+            6 => false,  // Drupal 10
+            7 => 'v7',  // Drupal 11
+            8 => 'v7',  // Drupal 12
         ];
 
         // @phpstan-ignore empty.offset

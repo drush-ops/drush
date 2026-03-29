@@ -274,7 +274,7 @@ class DrupalBoot8 extends DrupalBoot
         foreach ($drushServicesConsoleCommands as $command) {
             $this->serviceManager->inflect($drushContainer, $command);
             $this->logger->debug(dt('Add a command: !name', ['!name' => $command->getName()]));
-            $application->add($command);
+            $application->addCommand($command);
         }
 
         // Add annotation commands from drush.services.yml

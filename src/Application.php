@@ -373,11 +373,11 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
 
         foreach ($handlers as $handler) {
             if ($handler instanceof Command) {
-                $this->add($handler);
+                $this->addCommand($handler);
             } else {
                 $commandList = $commandFactory->createCommandsFromClass($handler);
                 foreach ($commandList as $command) {
-                    $this->add($command);
+                    $this->addCommand($command);
                 }
             }
         }
