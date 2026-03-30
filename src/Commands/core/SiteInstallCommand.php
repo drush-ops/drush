@@ -615,7 +615,7 @@ final class SiteInstallCommand extends Command
         if (file_exists($sites_file)) {
             $sites = [];
             include $sites_file;
-            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse, function.impossibleType
+            // @phpstan-ignore booleanAnd.alwaysFalse, notIdentical.alwaysFalse
             if ($sites !== [] && array_key_exists($uri, $sites)) {
                 return $sites[$uri];
             }

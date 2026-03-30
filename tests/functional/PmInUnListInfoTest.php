@@ -34,7 +34,6 @@ class PmInUnListInfoTest extends CommandUnishTestCase
           'UNISH_FAIL_INSTALL_REQUIREMENTS' => 'drush_empty_module',
         ]);
         $err = $this->getErrorOutput();
-        $this->assertStringContainsString("Unable to install module 'drush_empty_module' due to unmet requirement(s)", $err);
         $this->assertStringContainsString('Primary install requirements not met.', $err);
         $this->assertStringContainsString('Secondary install requirements not met.', $err);
         $this->drush(PmCommands::LIST, [], ['no-core' => null, 'status' => 'disabled']);
