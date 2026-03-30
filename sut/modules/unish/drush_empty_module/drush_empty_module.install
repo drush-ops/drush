@@ -5,6 +5,8 @@
  * Provides install and update functions for drush_empty_module.
  */
 
+use Drupal\Core\Extension\Requirement\RequirementSeverity;
+
 /**
  * Implements hook_requirements().
  */
@@ -15,12 +17,12 @@ function drush_empty_module_requirements($phase) {
     $requirements['drush_empty_module'] = [
       'title' => t('Drush empty module: installation failure'),
       'description' => t('Primary install requirements not met.'),
-      'severity' => 2,
+      'severity' => RequirementSeverity::Error,
     ];
     $requirements['drush_empty_module_secondary'] = [
       'title' => t('Drush empty module: installation failure'),
       'description' => t('Secondary install requirements not met.'),
-      'severity' => 2,
+      'severity' => RequirementSeverity::Error,
     ];
   }
 
