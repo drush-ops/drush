@@ -8,6 +8,7 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleExtensionList;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Extension\ModuleInstallerInterface;
+use Drupal\Core\Messenger\MessengerInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Exceptions\UserAbortException;
 use Drush\Style\DrushStyle;
@@ -34,6 +35,7 @@ final class PmInstallCommand extends Command
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory,
+        protected MessengerInterface $messenger,
         protected ModuleInstallerInterface $moduleInstaller,
         protected ModuleHandlerInterface $moduleHandler,
         protected ModuleExtensionList $extensionListModule,
@@ -103,48 +105,21 @@ final class PmInstallCommand extends Command
         }
 
         require_once DRUPAL_ROOT . '/core/includes/install.inc';
-        $error = false;
+        $errors = [];
         foreach ($modules as $module) {
-            // Note: we can't just call the API ($moduleHandler->loadInclude($module, 'install')),
-            // because the API ignores modules that haven't been installed yet. We have
-            // to do it the same way the `function drupal_check_module($module)` does.
-            $file = DRUPAL_ROOT . '/' . $this->extensionListModule->getPath($module) . "/$module.install";
-            if (is_file($file)) {
-                require_once $file;
-            }
-            // Once we've loaded the module, we can invoke its requirements hook.
-            $requirements = $this->moduleHandler->invoke($module, 'requirements', ['install']) ?? [];
-            if (function_exists('install_check_class_requirements')) {
-                $requirements = array_merge($requirements, install_check_class_requirements($this->extensionListModule->get($module)));
-            }
-            // @todo use Enum value instead of ints when we drop support for d11.
-            if (is_array($requirements) && drush_drupal_requirements_severity($requirements) == 2) {
-                $error = true;
-                $reasons = [];
-                foreach ($requirements as $id => $requirement) {
-                    if (empty($requirement['severity'])) {
-                        continue;
-                    }
-                    $value = $requirement['severity'];
-                    if (is_object($requirement['severity'])) {
-                        $value = $requirement['severity']->value;
-                    }
-                    if ($value !== 2) {
-                        continue;
-                    }
-                    $message = $requirement['description'];
-                    if (isset($requirement['value']) && $requirement['value']) {
-                        $message = sprintf('%s (Currently using %s version %s)', $requirement['description'], $requirement['title'], $requirement['value']);
-                    }
-                    $reasons[$id] = $message;
+            $return = drupal_check_module($module);
+            if (!$return) {
+                $errors = $this->messenger->messagesByType($this->messenger::TYPE_ERROR);
+                $this->messenger->deleteByType($this->messenger::TYPE_ERROR);
+                foreach ($errors as $error) {
+                    $this->logger->error((string)$error);
                 }
-                $this->logger->error(sprintf("Unable to install module '%s' due to unmet requirement(s):%s", $module, "\n  - " . implode("\n  - ", $reasons)));
             }
         }
 
-        if ($error) {
+        if ($errors) {
             // Allow the user to bypass the install requirements.
-            if (!$io->confirm(sprintf('The %s module\'s install requirements failed. Do you wish to continue?', $module), false)) {
+            if (!$io->confirm('Install requirements failed. Do you wish to continue?', false)) {
                 throw new UserAbortException();
             }
         }
