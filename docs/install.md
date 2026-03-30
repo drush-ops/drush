@@ -23,15 +23,15 @@ Drupal Compatibility
     <th rowspan="2"> Drush Version </th> 
     <th rowspan="2"> PHP Version</th>
     <th rowspan="2"> End Of Life </th>
-    <th colspan="5"> Drupal versions </th>
+    <th colspan="6"> Drupal versions </th>
   </tr>
-    <th>7</th> <th>8</th> <th>9</th> <th>10</th> <th>11</th>
+    <th>7</th> <th>8</th> <th>9</th> <th>10</th> <th>11</th><th>12</th>
   </tr>
   <tr>
     <td> Drush 14 </td>
     <td> 8.3+ </td>
     <td> TBD </td>
-    <td></td> <td></td> <td></td> <td><b>✓ 10.5+</b></td> <td><b>✅11.2+</b></td>
+    <td></td> <td></td> <td></td> <td></td> <td><b>✅11.3+</b></td><td><b>✅</b></td>
   </tr>
   <tr>
     <td> Drush 13 </td>
