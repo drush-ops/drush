@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Imports to a gettext translation file.">
+        <meta name="description" content="Imports from a gettext translation file.">
       
       
         <meta name="author" content="Moshe Weitzman">
@@ -65,7 +65,7 @@
       
         <meta  property="og:title"  content="locale:import - Drush" >
       
-        <meta  property="og:description"  content="Imports to a gettext translation file." >
+        <meta  property="og:description"  content="Imports from a gettext translation file." >
       
         <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/locale_import.png" >
       
@@ -81,7 +81,7 @@
       
         <meta  name="twitter:title"  content="locale:import - Drush" >
       
-        <meta  name="twitter:description"  content="Imports to a gettext translation file." >
+        <meta  name="twitter:description"  content="Imports from a gettext translation file." >
       
         <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/locale_import.png" >
       
@@ -7492,14 +7492,14 @@
 
 
 <h1 id="localeimport">locale:import<a class="headerlink" href="#localeimport" title="Permanent link">&para;</a></h1>
-<p>Imports to a gettext translation file.</p>
+<p>Imports from a gettext translation file.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>drush locale-import nl drupal-8.4.2.nl.po</code>. Import the Dutch drupal core translation.</li>
 <li><code>drush locale-import --type=customized nl drupal-8.4.2.nl.po</code>. Import the Dutch drupal core translation. Treat imported strings as custom translations.</li>
 <li><code>drush locale-import --override=none nl drupal-8.4.2.nl.po</code>. Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.</li>
 <li><code>drush locale-import --override=not-customized nl drupal-8.4.2.nl.po</code>. Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.</li>
-<li><code>drush locale-import nl custom-translations.po --type=customized --override=all</code>. Import customized Dutch translations and override any existing translation.</li>
+<li><code>drush locale-import nl custom-translations.po --type=customized --override=all</code>. Import customized Dutch translations and override any existing translations.</li>
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7508,8 +7508,8 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--type[=TYPE]</strong>. String types to include, defaults to all types. Recognized values: <em>not-customized</em>, <em>customized</em>, <em>not-translated</em> [default: <em>not-customized</em>]</li>
-<li><strong>--override=OVERRIDE</strong>. Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <em>none</em>, <em>customized</em>, <em>not-customized</em>, <em>all</em></li>
+<li><strong>--type[=TYPE]</strong>. Treat imported strings as this type of translation. Recognized values: <em>not-customized</em>, <em>customized</em>, <em>not-translated</em> [default: <em>not-customized</em>]</li>
+<li><strong>--override=OVERRIDE</strong>. Whether and how imported strings will override existing translations. Defaults to the import behavior configured in the admin interface. Recognized values: <em>none</em>, <em>customized</em>, <em>not-customized</em>, <em>all</em></li>
 <li><strong>--autocreate-language</strong>. Create the language in addition to import.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
