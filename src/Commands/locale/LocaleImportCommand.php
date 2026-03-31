@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: self::NAME,
-    description: 'Imports to a gettext translation file.',
+    description: 'Imports from a gettext translation file.',
     aliases: ['locale-import'],
 )]
 #[CLI\ValidateModulesEnabled(modules: ['locale'])]
@@ -46,8 +46,8 @@ final class LocaleImportCommand extends Command
         $this
             ->addArgument('langcode', InputArgument::REQUIRED, 'The language code of the imported translations.')
             ->addArgument('file', InputArgument::REQUIRED, 'Path and file name of the gettext file. Relative paths calculated from Drupal root.')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'String types to include, defaults to all types. Recognized values: not-customized, customized, not-translated', 'not-customized')
-            ->addOption('override', null, InputOption::VALUE_REQUIRED, 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: none, customized, not-customized, all')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Treat imported strings as this type of translation. Recognized values: not-customized, customized, not-translated', 'not-customized')
+            ->addOption('override', null, InputOption::VALUE_REQUIRED, 'Whether and how imported strings will override existing translations. Defaults to the import behavior configured in the admin interface. Recognized values: none, customized, not-customized, all')
             ->addOption('autocreate-language', null, InputOption::VALUE_NONE, 'Create the language in addition to import.')
             ->addUsage('locale-import nl drupal-8.4.2.nl.po')
             ->addUsage('locale-import --type=customized nl drupal-8.4.2.nl.po')
