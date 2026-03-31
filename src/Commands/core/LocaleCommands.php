@@ -286,19 +286,19 @@ final class LocaleCommands extends DrushCommands
     }
 
     /**
-     * Imports to a gettext translation file.
+     * Imports from a gettext translation file.
      */
     #[CLI\Command(name: self::IMPORT, aliases: ['locale-import'])]
     #[CLI\Argument(name: 'langcode', description: 'The language code of the imported translations.')]
     #[CLI\Argument(name: 'file', description: 'Path and file name of the gettext file. Relative paths calculated from Drupal root.')]
-    #[CLI\Option(name: 'type', description: 'String types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
-    #[CLI\Option(name: 'override', description: 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>')]
+    #[CLI\Option(name: 'type', description: 'Treat imported strings as this type of translation. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
+    #[CLI\Option(name: 'override', description: 'Whether and how imported strings will override existing translations. Defaults to the import behavior configured in the admin interface. Recognized values: <info>none</info>, <info>customized</info>, <info>not-customized</info>, <info>all</info>')]
     #[CLI\Option(name: 'autocreate-language', description: 'Create the language in addition to import.')]
     #[CLI\Usage(name: 'drush locale-import nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation.')]
     #[CLI\Usage(name: 'drush locale-import --type=customized nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation. Treat imported strings as custom translations.')]
     #[CLI\Usage(name: 'drush locale-import --override=none nl drupal-8.4.2.nl.po', description: "Import the Dutch drupal core translation. Don't overwrite existing translations. Only append new translations.")]
     #[CLI\Usage(name: 'drush locale-import --override=not-customized nl drupal-8.4.2.nl.po', description: 'Import the Dutch drupal core translation. Only override non-customized translations, customized translations are kept.')]
-    #[CLI\Usage(name: 'drush locale-import nl custom-translations.po --type=customized --override=all', description: 'Import customized Dutch translations and override any existing translation.')]
+    #[CLI\Usage(name: 'drush locale-import nl custom-translations.po --type=customized --override=all', description: 'Import customized Dutch translations and override any existing translations.')]
     #[CLI\ValidateModulesEnabled(modules: ['locale'])]
     public function import($langcode, $file, $options = ['type' => 'not-customized', 'override' => self::REQ, 'autocreate-language' => false]): void
     {
