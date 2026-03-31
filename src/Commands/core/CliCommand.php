@@ -19,6 +19,8 @@ use Drupal\Core\Entity\EntityTypeRepositoryInterface;
 use Drupal\Core\Field\FieldItemInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Render\HtmlResponse;
+use Drupal\Core\StreamWrapper\StreamWrapperManager;
+use Drupal\Core\StreamWrapper\StreamWrapperManagerInterface;
 use Drush\Attributes as CLI;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
@@ -63,6 +65,7 @@ final class CliCommand extends Command
         #[Autowire(service: 'kernel')]
         protected readonly DrupalKernelInterface $kernel,
         protected readonly RequestStack $requestStack,
+        protected readonly StreamWrapperManagerInterface $streamWrapperManager,
     ) {
         parent::__construct();
     }
@@ -82,7 +85,9 @@ final class CliCommand extends Command
         $configuration = new Configuration();
 
         // Set the Drush specific history file path.
-        $configuration->setHistoryFile('private://' . self::NAME . '.history');
+        if ($this->streamWrapperManager->isValidScheme('private')) {
+            $configuration->setHistoryFile('private://' . self::NAME . '.history');
+        }
 
         $configuration->setStartupMessage(
             sprintf(
