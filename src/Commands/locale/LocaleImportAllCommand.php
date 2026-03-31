@@ -46,9 +46,9 @@ final class LocaleImportAllCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('directory', InputArgument::REQUIRED, 'The path to directory with translation files to import.')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'String types to include, defaults to not-customized. Recognized values: not-customized, customized')
-            ->addOption('override', null, InputOption::VALUE_REQUIRED, 'Whether and how imported strings will override existing translations. Defaults to the Import behavior configured in the admin interface. Recognized values: none, customized, not-customized, all')
+            ->addArgument('directory', InputArgument::REQUIRED, 'The path to a directory with translation files to import.')
+            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Treat imported strings as this type of translation. Recognized values: not-customized, customized')
+            ->addOption('override', null, InputOption::VALUE_REQUIRED, 'Whether and how imported strings will override existing translations. Defaults to the import behavior configured in the admin interface. Recognized values: none, customized, not-customized, all')
             ->addUsage('locale:import-all /var/www/translations')
             ->addUsage('locale:import-all /var/www/translations/custom --type=customized --override=all');
     }
