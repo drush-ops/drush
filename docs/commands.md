@@ -172,7 +172,9 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
 - The main logic of the command moves to an execute() method on the command class.
 - Commands that wish to offer multiple _output formats_ (yes please!): 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
-    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php). [Here are the possible values](https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57) for the `defaultFormatter` parameter.
+    - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php).
+      - `returnType` is usually a command class like  RowsOfFields::class.
+      - `defaultFormatter` is a string with [these possible values](https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
 - Add the following snippet to your project's composer.json. 
