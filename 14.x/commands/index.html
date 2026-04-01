@@ -7574,7 +7574,7 @@
 <ul>
 <li>Each command lives in its own class file</li>
 <li>The command class extends <code>Symfony\Component\Console\Command\Command</code> directly. The base class <code>DrushCommands</code> is deprecated.</li>
-<li>The command class should use Console's <code>#[AsCommand]</code> Attribute to declare its name, aliases, and hidden status. The <code>#[Command]</code> Attribute is deprecated.</li>
+<li>The command class should use Console's <code>#[AsCommand]</code> Attribute to declare its name, aliases, usages, and hidden status. The <code>#[Command]</code> Attribute is deprecated.</li>
 <li>Options and Arguments moved from Attributes to a <code>configure()</code> method on the command class</li>
 <li>User interaction now happens in an <code>interact()</code> method on the command class.</li>
 <li>Drush and Drupal services may be autowired. See <a href="../dependency-injection/">Dependency Injection</a>.</li>
@@ -7582,6 +7582,8 @@
 <li>Commands that wish to offer multiple <em>output formats</em> (yes please!): <ul>
 <li>See <a href="https://www.drush.org/latest/commands/twig_unused/">TwigUnusedCommand</a>] or <a href="https://www.drush.org/latest/commands/sql_dump/">SqlDumpCommand</a> as examples.</li>
 <li>Implement the <a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php">Formatter Attribute</a>.</li>
+<li><code>returnType</code> is usually a command class like  RowsOfFields::class.</li>
+<li><code>defaultFormatter</code> is a string with <a href="https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57">these possible values</a>.</li>
 <li>Command class should <code>use \Drush\Formatters\FormatterTrait</code></li>
 <li><code>execute()</code> is largely boilerplate. See examples above. By convention, do your work in a <code>doExecute()</code> method instead.</li>
 </ul>
@@ -7699,7 +7701,7 @@ With this configuration in place, global commands may be placed as described in 
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="December 19, 2025 21:46:27 UTC">December 19, 2025</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 1, 2026 17:04:27 UTC">April 1, 2026</span>
   </span>
 
     
