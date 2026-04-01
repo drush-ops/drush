@@ -165,7 +165,7 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
 
 - Each command lives in its own class file
 - The command class extends `Symfony\Component\Console\Command\Command` directly. The base class `DrushCommands` is deprecated.
-- The command class should use Console's `#[AsCommand]` Attribute to declare its name, aliases, and hidden status. The `#[Command]` Attribute is deprecated.
+- The command class should use Console's `#[AsCommand]` Attribute to declare its name, aliases, usages, and hidden status. The `#[Command]` Attribute is deprecated.
 - Options and Arguments moved from Attributes to a `configure()` method on the command class
 - User interaction now happens in an `interact()` method on the command class.
 - Drush and Drupal services may be autowired. See [Dependency Injection](dependency-injection.md).
@@ -173,6 +173,8 @@ Drush 14 deprecates Annotated Commands in favor of pure [Symfony Console command
 - Commands that wish to offer multiple _output formats_ (yes please!): 
     - See [TwigUnusedCommand](https://www.drush.org/latest/commands/twig_unused/)] or [SqlDumpCommand](https://www.drush.org/latest/commands/sql_dump/) as examples.
     - Implement the [Formatter Attribute](https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php).
+      - `returnType` is usually a command class like  RowsOfFields::class.
+      - `defaultFormatter` is a string with [these possible values](https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57).
     - Command class should `use \Drush\Formatters\FormatterTrait`
     - `execute()` is largely boilerplate. See examples above. By convention, do your work in a `doExecute()` method instead.
 - Add the following snippet to your project's composer.json. 
