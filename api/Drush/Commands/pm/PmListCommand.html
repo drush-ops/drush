@@ -331,7 +331,7 @@ as RowsOfFields, then re-apply the wrapper.</p></p>                </div>
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../../Consolidation/OutputFormatters/FormatterManager.html"><abbr title="Consolidation\OutputFormatters\FormatterManager">FormatterManager</abbr></a> $formatterManager)
+                    <a href="#method___construct">__construct</a>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $extensionListTheme, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../../Consolidation/OutputFormatters/FormatterManager.html"><abbr title="Consolidation\OutputFormatters\FormatterManager">FormatterManager</abbr></a> $formatterManager)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -880,9 +880,9 @@ as RowsOfFields, then re-apply the wrapper.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L50">at line 50</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L51">at line 51</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../../Consolidation/OutputFormatters/FormatterManager.html"><abbr title="Consolidation\OutputFormatters\FormatterManager">FormatterManager</abbr></a> $formatterManager)
+    <strong>__construct</strong>(<abbr title="Drupal\Core\Config\ConfigFactoryInterface">ConfigFactoryInterface</abbr> $configFactory, <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr> $moduleHandler, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $themeHandler, <abbr title="Drupal\Core\Extension\ModuleExtensionList">ModuleExtensionList</abbr> $extensionListModule, <abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr> $extensionListTheme, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../../Consolidation/OutputFormatters/FormatterManager.html"><abbr title="Consolidation\OutputFormatters\FormatterManager">FormatterManager</abbr></a> $formatterManager)
         </code>
     </h3>
     <div class="details">    
@@ -919,6 +919,11 @@ as RowsOfFields, then re-apply the wrapper.</p></p>
                 <td></td>
             </tr>
                     <tr>
+                <td><abbr title="Drupal\Core\Extension\ThemeExtensionList">ThemeExtensionList</abbr></td>
+                <td>$extensionListTheme</td>
+                <td></td>
+            </tr>
+                    <tr>
                 <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
                 <td>$logger</td>
                 <td></td>
@@ -940,7 +945,7 @@ as RowsOfFields, then re-apply the wrapper.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_configure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L63">at line 63</a></div>
         <code>            protected        void
     <strong>configure</strong>()
         </code>
@@ -974,7 +979,7 @@ as RowsOfFields, then re-apply the wrapper.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L72">at line 72</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L74">at line 74</a></div>
         <code>                    int
     <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -1023,7 +1028,7 @@ as RowsOfFields, then re-apply the wrapper.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doExecute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L79">at line 79</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/pm/PmListCommand.php#L81">at line 81</a></div>
         <code>            protected        <a href="../../../Consolidation/OutputFormatters/StructuredData/RowsOfFields.html"><abbr title="Consolidation\OutputFormatters\StructuredData\RowsOfFields">RowsOfFields</abbr></a>
     <strong>doExecute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>

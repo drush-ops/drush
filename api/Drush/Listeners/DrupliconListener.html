@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Listeners\DrupliconListener | Drush API 13</title>
+    <title>Drush\Listeners\DrupliconListener | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>DrupliconListener</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Listeners/DrupliconListener.php">View source</a>)
+    <strong>DrupliconListener</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/DrupliconListener.php">View source</a>)
 </p>
 
         
@@ -113,7 +113,7 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;
+                    static&nbsp;<a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
@@ -127,7 +127,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
+                    <a href="#method___construct">__construct</a>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -164,8 +164,8 @@
                     <div class="method-item">
                     <h3 id="method_create">
         <div class="location">in <a href="../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
-        <code>        static            
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
     <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
         </code>
     </h3>
@@ -189,6 +189,15 @@
             </table>
 
             
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
             
             
             
@@ -198,9 +207,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Listeners/DrupliconListener.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/DrupliconListener.php#L25">at line 25</a></div>
         <code>                    
-    <strong>__construct</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
+    <strong>__construct</strong>(<abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
     </h3>
     <div class="details">    
@@ -221,11 +230,6 @@
                 <td>$logger</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
-                <td>$drushConfig</td>
-                <td></td>
-            </tr>
             </table>
 
             
@@ -238,7 +242,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_onConsoleDefinitionEvent">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Listeners/DrupliconListener.php#L32">at line 32</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/DrupliconListener.php#L30">at line 30</a></div>
         <code>                    void
     <strong>onConsoleDefinitionEvent</strong>(<a href="../../Drush/Event/ConsoleDefinitionsEvent.html"><abbr title="Drush\Event\ConsoleDefinitionsEvent">ConsoleDefinitionsEvent</abbr></a> $event)
         </code>
@@ -282,7 +286,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_onConsoleTerminateEvent">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Listeners/DrupliconListener.php#L39">at line 39</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Listeners/DrupliconListener.php#L37">at line 37</a></div>
         <code>                    void
     <strong>onConsoleTerminateEvent</strong>(<abbr title="Symfony\Component\Console\Event\ConsoleTerminateEvent">ConsoleTerminateEvent</abbr> $event)
         </code>
