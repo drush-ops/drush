@@ -20,7 +20,6 @@ $iterator = Finder::create()
       $dir,
       __DIR__ . '/vendor/consolidation/annotated-command/src',
       __DIR__ . '/vendor/consolidation/output-formatters/src',
-      __DIR__ . '/vendor/consolidation/robo/src',
       __DIR__ . '/vendor/consolidation/site-alias/src',
   ])
 ;
@@ -31,12 +30,12 @@ $iterator = Finder::create()
 //   ->add('11.x', 'Main branch');
 
 return new Doctum($iterator, [
-  // 'theme'                => 'symfony',
-  // 'versions'             => $versions,
+  // 'theme'               => 'symfony',
+  // 'versions'            => $versions,
     'title' => 'Drush API 14',
-  'build_dir'            => __DIR__.'/gh-pages/api',
-  //'build_dir'            => __DIR__.'/gh-pages/api/%version%',
-  'cache_dir'            => __DIR__.'/.doctum-cache/%version%',
-  'remote_repository'    => new GitHubRemoteRepository('drush-ops/drush', dirname($dir)),
-  'default_opened_level' => 2,
+    'build_dir'            => __DIR__ . '/gh-pages/api',
+    //'build_dir'          => __DIR__ . '/gh-pages/api/%version%',
+    'cache_dir'            => __DIR__ . '/.doctum-cache/%version%',
+    'remote_repository'    => new GitHubRemoteRepository('drush-ops/drush', dirname($dir)),
+    'default_opened_level' => 2,
 ]);
