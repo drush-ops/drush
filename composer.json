@@ -65,7 +65,8 @@
   "conflict": {
     "drupal/core": "< 10.0",
     "drupal/migrate_run": "*",
-    "drupal/migrate_tools": "<= 5"
+    "drupal/migrate_tools": "<= 5",
+    "psy/psysh": ">= 0.12.22"
   },
   "autoload": {
     "psr-4": {
