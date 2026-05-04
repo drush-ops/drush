@@ -118,8 +118,7 @@ EOT;
         ];
         if (defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')) {
             $attribs['ssl_verify_server_cert'] = Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT;
-        }
-        elseif (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
+        } elseif (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
             $attribs['ssl_verify_server_cert'] = PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT;
         }
 
