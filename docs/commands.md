@@ -20,6 +20,7 @@ The following are supported ways to declare a command.
 === "Console, _Recommended_"
 
     :warning: Drush 13.7+ is required to use this approach.
+    :warning: Your class name _must_ end in `Command.php` e.g. `MyThingCommand.php` and not `MyThing.php`
 
     ```php
     namespace Drupal\[module-name]\Drush\Commands;    
