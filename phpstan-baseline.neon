@@ -35,8 +35,3 @@ parameters:
 			identifier: arguments.count
 			count: 1
 			path: src/Drupal/Migrate/MigrateRunnerHooks.php
-
-		-
-			message: '#^Property Drush\\Commands\\UnitReturnOptionsCommand\:\:\$formatterManager \(Consolidation\\OutputFormatters\\FormatterManager\) in isset\(\) is not nullable\.$#'
-			count: 1
-			path: src/Formatters/FormatterTrait.php
