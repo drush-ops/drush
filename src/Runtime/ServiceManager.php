@@ -454,7 +454,7 @@ class ServiceManager
             foreach ($attributes as $attribute) {
                 $attributeInstance = $attribute->newInstance();
                 $method = $attributeInstance->method ?? '__invoke';
-                $priority = $attributeInstance->priority ?? 0;
+                $priority = $attributeInstance->priority;
                 $reflectionMethod = $reflectionObject->getMethod($method);
                 $reflectionParameters = $reflectionMethod->getParameters();
                 $paramType = $reflectionParameters[0]->getType();
