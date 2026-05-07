@@ -24,7 +24,9 @@ class LocaleTest extends UnishIntegrationTestCase
 
         $this->sourceFile = Path::join(__DIR__, '/resources/drush_empty_module.nl.po');
 
-        $this->markTestSkipped('@todo debug failure');
+        if ($this->isDrupalGreaterThanOrEqualTo('11')) {
+            $this->markTestSkipped('@todo debug failure');
+        }
 
         $this->drush(LocaleCommands::IMPORT, ['nl', $this->sourceFile]);
         $this->assertTranslation('Drush Empty Module', 'NL Drush Empty Module', 'nl', 0);
