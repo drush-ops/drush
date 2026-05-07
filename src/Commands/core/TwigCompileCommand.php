@@ -30,7 +30,6 @@ use Twig\Error\SyntaxError;
 class TwigCompileCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
 
     const NAME = 'twig:compile';
 
