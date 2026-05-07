@@ -18,10 +18,6 @@ trait FormatterTrait
      */
     protected function writeFormattedOutput(InputInterface $input, OutputInterface $output, $data): void
     {
-        if (!isset($this->formatterManager)) {
-            throw new \Exception('\Consolidation\OutputFormatters\FormatterManager must be injected into the command during __construct().');
-        }
-
         if (is_object($data) || is_array($data) || is_string($data)) {
             $data = $this->alterResult($data, $input);
             $format = $input->getOption('format');
