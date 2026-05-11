@@ -200,7 +200,7 @@ class ServiceManager
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Commands')
-            ->setSearchPattern('/.*Commands\.php$/')
+            ->setSearchPattern('/.*(Command)s?\.php$/')
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
