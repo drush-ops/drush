@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Style\DrushStyle | Drush API 14</title>
+    <title>Drush\Style\DrushStyle | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>DrushStyle</strong>        extends <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php">View source</a>)
+    <strong>DrushStyle</strong>        extends <abbr title="Symfony\Component\Console\Style\SymfonyStyle">SymfonyStyle</abbr>        (<a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php">View source</a>)
 </p>
 
         
@@ -159,7 +159,7 @@
                     int|string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_select">select</a>(string $label, array $options, int|string|null $default = null, int $scroll = 10, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true, bool $search = true, int $searchThreshold = 20)
+                    <a href="#method_select">select</a>(string $label, array $options, int|string|null $default = null, int $scroll = 10, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true)
         
                                             <p><p>Prompt the user to select an option.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -169,7 +169,7 @@
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_multiselect">multiselect</a>(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;, bool $search = true, int $searchThreshold = 20)
+                    <a href="#method_multiselect">multiselect</a>(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;)
         
                                             <p><p>Prompt the user to select multiple options.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -276,7 +276,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_success">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L25">at line 25</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L25">at line 25</a></div>
         <code>                    void
     <strong>success</strong>(array|string $message)
         </code>
@@ -320,7 +320,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_confirm">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L31">at line 31</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L31">at line 31</a></div>
         <code>                    bool
     <strong>confirm</strong>(string $question, bool $default = true, string $yes = &#039;Yes&#039;, string $no = &#039;No&#039;, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;)
         </code>
@@ -394,7 +394,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_choice">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L45">at line 45</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L45">at line 45</a></div>
         <code>                    mixed
     <strong>choice</strong>(string $question, array $choices, mixed $default = null, bool $multiSelect = false, int $scroll = 15, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true)
         </code>
@@ -473,7 +473,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_ask">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L58">at line 58</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L58">at line 58</a></div>
         <code>                    mixed
     <strong>ask</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $question, string|null $default = null, callable|null $validator = null, <a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $placeholder = &#039;&#039;, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, <a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $hint = &#039;&#039;)
         </code>
@@ -546,7 +546,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_password">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L75">at line 75</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L75">at line 75</a></div>
         <code>                    string
     <strong>password</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $placeholder = &#039;&#039;, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, <a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a>|string $hint = &#039;&#039;)
         </code>
@@ -609,9 +609,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_select">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L86">at line 86</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L86">at line 86</a></div>
         <code>                    int|string
-    <strong>select</strong>(string $label, array $options, int|string|null $default = null, int $scroll = 10, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true, bool $search = true, int $searchThreshold = 20)
+    <strong>select</strong>(string $label, array $options, int|string|null $default = null, int $scroll = 10, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true)
         </code>
     </h3>
     <div class="details">    
@@ -661,16 +661,6 @@
                 <td>$required</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td>bool</td>
-                <td>$search</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>int</td>
-                <td>$searchThreshold</td>
-                <td></td>
-            </tr>
             </table>
 
             
@@ -692,9 +682,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_multiselect">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L103">at line 103</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L98">at line 98</a></div>
         <code>                    array
-    <strong>multiselect</strong>(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;, bool $search = true, int $searchThreshold = 20)
+    <strong>multiselect</strong>(string $label, array $options, array $default = [], int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;)
         </code>
     </h3>
     <div class="details">    
@@ -744,16 +734,6 @@
                 <td>$hint</td>
                 <td></td>
             </tr>
-                    <tr>
-                <td>bool</td>
-                <td>$search</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>int</td>
-                <td>$searchThreshold</td>
-                <td></td>
-            </tr>
             </table>
 
             
@@ -775,7 +755,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_suggest">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L118">at line 118</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L108">at line 108</a></div>
         <code>                    string
     <strong>suggest</strong>(string $label, array|<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, string $default = &#039;&#039;, int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Start typing the first letter(s) and matching choices will be shown.&#039;)
         </code>
@@ -853,7 +833,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_search">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L129">at line 129</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L119">at line 119</a></div>
         <code>                    int|string
     <strong>search</strong>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;&#039;, bool|string $required = true)
         </code>
@@ -926,7 +906,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_multisearch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L140">at line 140</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L130">at line 130</a></div>
         <code>                    array
     <strong>multisearch</strong>(string $label, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $options, string $placeholder = &#039;&#039;, int $scroll = 10, bool|string $required = false, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $validate = null, string $hint = &#039;Use the space bar to select options.&#039;)
         </code>
@@ -999,7 +979,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_spin">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L153">at line 153</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L143">at line 143</a></div>
         <code>                    mixed
     <strong>spin</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a> $callback, string $message = &#039;&#039;)
         </code>
@@ -1047,7 +1027,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_progress">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L168">at line 168</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L158">at line 158</a></div>
         <code>                    array|<abbr title="Laravel\Prompts\Progress">Progress</abbr>
     <strong>progress</strong>(string $label, <abbr title="Drush\Style\iterable">iterable</abbr>|int $steps, <a target="_blank" rel="noopener" href="https://www.php.net/Closure">Closure</a>|null $callback = null, string $hint = &#039;&#039;)
         </code>
@@ -1105,7 +1085,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_warning">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L179">at line 179</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L169">at line 169</a></div>
         <code>                    void
     <strong>warning</strong>(string|array $message)
         </code>
@@ -1149,7 +1129,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_note">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L184">at line 184</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L174">at line 174</a></div>
         <code>                    void
     <strong>note</strong>(string|array $message)
         </code>
@@ -1193,7 +1173,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_caution">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L189">at line 189</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L179">at line 179</a></div>
         <code>                    void
     <strong>caution</strong>(string|array $message)
         </code>
@@ -1237,7 +1217,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_askRequired">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Style/DrushStyle.php#L197">at line 197</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.3/src/Style/DrushStyle.php#L187">at line 187</a></div>
         <code>                    mixed
     <strong>askRequired</strong>($question)
         </code>
