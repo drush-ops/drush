@@ -121,8 +121,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             node
             ├─core.entity_view_mode.node.full
             ├─core.entity_view_mode.node.rss
-            ├─core.entity_view_mode.node.search_index
-            ├─core.entity_view_mode.node.search_result
             ├─core.entity_view_mode.node.teaser
             ├─field.storage.node.body
             ├─system.action.node_delete_action
@@ -142,8 +140,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             node
             ├─core.entity_view_mode.node.full
             ├─core.entity_view_mode.node.rss
-            ├─core.entity_view_mode.node.search_index
-            ├─core.entity_view_mode.node.search_result
             ├─core.entity_view_mode.node.teaser
             ├─field.storage.node.body
             ├─field.storage.node.latin_name
