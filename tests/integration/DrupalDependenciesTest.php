@@ -54,9 +54,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             │   └─dependent3
             ├─dependent2
             │ └─dependent3 (circular)
-            ├─history
-            │ └─dependent1
-            │   └─dependent2 (circular)
             └─taxonomy
               └─dependent1
                 └─dependent2 (circular)
@@ -77,11 +74,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 ],
                 'dependent2' => [
                     'dependent3' => 'dependent3:***circular***',
-                ],
-                'history' => [
-                    'dependent1' => [
-                        'dependent2' => 'dependent2:***circular***',
-                    ],
                 ],
                 'taxonomy' => [
                     'dependent1' => [
@@ -200,7 +192,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
     protected function tearDown(): void
     {
         try {
-            $this->drush('pmu', ['node,history,taxonomy,comment,dependent3'], ['yes' => null]);
+            $this->drush('pmu', ['node,taxonomy,comment,dependent3'], ['yes' => null]);
         } catch (\Exception) {
             // The modules were not installed.
         }
