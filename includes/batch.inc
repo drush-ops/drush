@@ -345,7 +345,8 @@ function _drush_batch_finished() {
         $operations = $queue->getAllItems();
         $elapsed = $batch_set['elapsed'] / 1000;
         $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
-        call_user_func_array($batch_set['finished'], [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
+        $callable = \Drupal::service('callable_resolver')->getCallableFromDefinition($batch_set['finished']);
+        call_user_func_array($callable, [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
         $results[$id] = $batch_set['results'];
       }
     }
