@@ -14,11 +14,13 @@ use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\StatusCommand;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Filesystem\Path;
 
 #[Group('locale')]
 #[Group('pm')]
 #[Group('config')]
+#[RunTestsInSeparateProcesses]
 class LocaleBatchImportOnInstallTest extends CommandUnishTestCase
 {
     protected string $translationDir;

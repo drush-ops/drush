@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Unish;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class CustomLibraryCommandsAndGeneratorsTest extends UnishIntegrationTestCase
 {
     /**

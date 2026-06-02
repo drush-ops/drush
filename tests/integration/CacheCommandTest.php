@@ -6,11 +6,13 @@ namespace Unish;
 
 use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\CacheCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Cache command testing.
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class CacheCommandTest extends UnishIntegrationTestCase
 {
     public function testCacheGet(): void

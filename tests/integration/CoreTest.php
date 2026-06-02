@@ -9,12 +9,14 @@ use Drush\Commands\core\DrupalCommands;
 use Drush\Commands\core\DrupalDirectoryCommands;
 use Drush\Commands\pm\PmCommands;
 use Drush\Commands\pm\ThemeCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Filesystem\Path;
 
 /**
  * Tests for core commands.
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class CoreTest extends UnishIntegrationTestCase
 {
     public function testCoreRequirements(): void

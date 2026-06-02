@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drush\Commands\core\CoreCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+#[RunTestsInSeparateProcesses]
 class CustomLoggerTest extends UnishIntegrationTestCase
 {
     public function testCustomLogger(): void

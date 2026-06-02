@@ -6,12 +6,14 @@ namespace Unish;
 
 use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\RsyncCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * @file
  *   Tests for rsync command
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class RsyncIntegrationTest extends UnishIntegrationTestCase
 {
     /**

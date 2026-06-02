@@ -8,8 +8,10 @@ use Drush\Commands\sql\SqlCommands;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\LocaleCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Filesystem\Path;
 
+#[RunTestsInSeparateProcesses]
 class LocaleTest extends UnishIntegrationTestCase
 {
     /**

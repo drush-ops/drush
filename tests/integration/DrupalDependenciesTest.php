@@ -7,8 +7,10 @@ namespace Unish;
 use Drush\Commands\core\DrupalDependenciesCommands;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Drupal\Component\Utility\DeprecationHelper;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[CoversClass(DrupalDependenciesCommands::class)]
+#[RunTestsInSeparateProcesses]
 class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
     public function testModuleDependentOfModule(): void

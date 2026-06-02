@@ -13,10 +13,12 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\sql\SqlCliCommand;
 use Drush\Commands\sql\SqlCommands;
 use Drush\Sql\SqlBase;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Filesystem\Path;
 
 #[Group('commands')]
 #[Group('sql')]
+#[RunTestsInSeparateProcesses]
 class SqlCommandsTest extends UnishIntegrationTestCase
 {
     public function testSqlQuery(): void

@@ -8,8 +8,10 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class WatchdogTest extends UnishIntegrationTestCase
 {
     public function testWatchdogShow(): void
