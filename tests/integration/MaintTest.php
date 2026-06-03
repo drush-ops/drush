@@ -6,11 +6,13 @@ namespace Unish;
 
 use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\MaintCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests Maintenance commands
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class MaintTest extends UnishIntegrationTestCase
 {
     public function testMaint(): void

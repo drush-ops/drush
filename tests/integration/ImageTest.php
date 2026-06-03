@@ -8,12 +8,14 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\ImageDeriveCommand;
 use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Console\Tester\ApplicationTester;
 
 /**
  * Tests image:flush and image:derive commands.
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class ImageTest extends UnishApplicationTesterTestCase
 {
     public function testImage(): void

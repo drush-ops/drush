@@ -9,7 +9,9 @@ use Drush\Commands\field\FieldTypesCommand;
 use Drush\Commands\field\FieldWidgetsCommand;
 use Drush\Commands\pm\PmInstallCommand;
 use Drush\Commands\pm\PmUninstallCommand;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+#[RunTestsInSeparateProcesses]
 class FieldDefinitionTest extends UnishIntegrationTestCase
 {
     public function testFieldDefinition(): void
