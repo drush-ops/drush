@@ -392,7 +392,7 @@ final class UpdateDBCommand extends Command
                 ];
             }
         } else {
-            $ret['#abort'] = ['success' => false];
+            $ret['#abort'] = ['success' => true];
             Drush::logger()->warning(dt('Post update function @function not found.', [
                 '@function' => $function
             ]));
