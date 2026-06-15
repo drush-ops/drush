@@ -42,7 +42,7 @@
     "consolidation/output-formatters": "^4.6.1",
     "consolidation/robo": "^4.0.6 || ^5.1.0",
     "consolidation/site-alias": "^4.1.1",
-    "consolidation/site-process": "^5.4.2",
+    "consolidation/site-process": "^5.4.2 || ^6.1",
     "dflydev/dot-access-data": "^3.0.2",
     "grasmash/yaml-cli": "^3.2",
     "guzzlehttp/guzzle": "^7.0",
