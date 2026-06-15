@@ -341,12 +341,7 @@ function _drush_batch_finished() {
       if (isset($batch_set['file']) && is_file($batch_set['file'])) {
         include_once DRUPAL_ROOT . '/' . $batch_set['file'];
       }
-      try {
-        $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($batch_set['finished']);
-      }
-      catch (\InvalidArgumentException) {
-        continue;
-      }
+      $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($batch_set['finished']);
       $queue = _batch_queue($batch_set);
       $operations = $queue->getAllItems();
       $elapsed = $batch_set['elapsed'] / 1000;
