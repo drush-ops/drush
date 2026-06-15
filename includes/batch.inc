@@ -340,15 +340,13 @@ function _drush_batch_finished() {
       if (isset($batch_set['file']) && is_file($batch_set['file'])) {
         include_once DRUPAL_ROOT . '/' . $batch_set['file'];
       }
-      if (is_callable($batch_set['finished'])) {
-        $queue = _batch_queue($batch_set);
-        $operations = $queue->getAllItems();
-        $elapsed = $batch_set['elapsed'] / 1000;
-        $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
-        $callable = \Drupal::service('callable_resolver')->getCallableFromDefinition($batch_set['finished']);
-        call_user_func_array($callable, [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
-        $results[$id] = $batch_set['results'];
-      }
+      $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($batch_set['finished']);
+      $queue = _batch_queue($batch_set);
+      $operations = $queue->getAllItems();
+      $elapsed = $batch_set['elapsed'] / 1000;
+      $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
+      call_user_func_array($callable, [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
+      $results[$id] = $batch_set['results'];
     }
   }
 
