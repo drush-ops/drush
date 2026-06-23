@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Runtime\ErrorHandler | Drush API 14</title>
+    <title>Drush\Runtime\ErrorHandler | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>ErrorHandler</strong>        implements        <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../../Drush/Runtime/HandlerInterface.html"><abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/ErrorHandler.php">View source</a>)
+    <strong>ErrorHandler</strong>        implements        <abbr title="Psr\Log\LoggerAwareInterface">LoggerAwareInterface</abbr>, <a href="../../Drush/Runtime/HandlerInterface.html"><abbr title="Drush\Runtime\HandlerInterface">HandlerInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Runtime/ErrorHandler.php">View source</a>)
 </p>
 
         
@@ -130,7 +130,7 @@ handler takes over.</p></p>                    </div>
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_errorHandler">errorHandler</a>($errno, string $message, $filename, string|int $line)
+                    <a href="#method_errorHandler">errorHandler</a>($errno, $message, $filename, $line)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -144,7 +144,7 @@ handler takes over.</p></p>                    </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_installHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/ErrorHandler.php#L20">at line 20</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Runtime/ErrorHandler.php#L20">at line 20</a></div>
         <code>                    
     <strong>installHandler</strong>()
         </code>
@@ -169,9 +169,9 @@ handler takes over.</p></p>                    </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_errorHandler">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/ErrorHandler.php#L25">at line 25</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Runtime/ErrorHandler.php#L25">at line 25</a></div>
         <code>                    
-    <strong>errorHandler</strong>($errno, string $message, $filename, string|int $line)
+    <strong>errorHandler</strong>($errno, $message, $filename, $line)
         </code>
     </h3>
     <div class="details">    
@@ -193,7 +193,7 @@ handler takes over.</p></p>                    </div>
                 <td></td>
             </tr>
                     <tr>
-                <td>string</td>
+                <td></td>
                 <td>$message</td>
                 <td></td>
             </tr>
@@ -203,7 +203,7 @@ handler takes over.</p></p>                    </div>
                 <td></td>
             </tr>
                     <tr>
-                <td>string|int</td>
+                <td></td>
                 <td>$line</td>
                 <td></td>
             </tr>
