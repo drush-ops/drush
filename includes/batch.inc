@@ -27,6 +27,7 @@
 
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\IntegrityConstraintViolationException;
+use Drupal\Core\Utility\CallableResolver;
 use Drush\Drush;
 
 /**
@@ -254,7 +255,7 @@ function _drush_batch_worker() {
       // See https://github.com/drush-ops/drush/issues/1930
       $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', TRUE);
       \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
-      $callable = \Drupal::service('callable_resolver')->getCallableFromDefinition($callback);
+      $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($callback);
       call_user_func_array($callable, array_merge($args, [&$batch_context]));
       if (!empty($task_message)) {
         Drush::logger()->notice(strip_tags($task_message));
