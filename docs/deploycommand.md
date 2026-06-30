@@ -19,11 +19,11 @@ need. **Exercise caution when implementing `HOOK_update_N()`** — the full API 
 documentation][HOOK_update_N()] for more details.
 
 
-| Function | Provided by | Purpose |
-| --- | --- | --- |
-| [HOOK_update_N()] | Drupal | Low level changes. |
-| [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Drupal | Runs *before* config is imported. |
-| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/drush.api.php) | Drush | Runs *after* config is imported. | 
+| Function | Provided by | File location | Executed by | Purpose |
+| --- | --- | --- | --- | --- |
+| [HOOK_update_N()] | Drupal | `MODULE.install`  | `drush updatedb` | Low level changes. |
+| [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Drupal | `MODULE_OR_THEME.post_update.php` | `drush updatedb`  | Runs *before* config is imported. |
+| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/drush.api.php) | Drush | `MODULE.deploy.php` | `drush deploy:hook` | Runs *after* config is imported. |
 
 ## Configuration
 
