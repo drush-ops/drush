@@ -212,6 +212,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 ├─dependent2
                 │ ├─dependent3
                 │ └─dependent4
+                ├─search_node
                 └─taxonomy
                   └─dependent1
                     └─dependent2 (circular)
@@ -226,6 +227,9 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 ├─dependent2
                 │ ├─dependent3
                 │ └─dependent4
+                ├─history
+                ├─node_storage_body_field
+                ├─search_node
                 └─taxonomy
                   └─dependent1
                     └─dependent2 (circular)
