@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Log\Logger | Drush API 13</title>
+    <title>Drush\Log\Logger | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Logger</strong>        extends <a href="../../Robo/Log/RoboLogger.html"><abbr title="Robo\Log\RoboLogger">RoboLogger</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Log/Logger.php">View source</a>)
+    <strong>Logger</strong>        extends <abbr title="Consolidation\Log\Logger">Logger</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Log/Logger.php">View source</a>)
 </p>
 
         
@@ -128,7 +128,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
                     void
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_log">log</a>($level, $message, array $context = [])
+                    <a href="#method_log">log</a>($level, string|<a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a> $message, array $context = [])
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -153,7 +153,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Log/Logger.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Log/Logger.php#L30">at line 30</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -188,9 +188,9 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_log">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Log/Logger.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Log/Logger.php#L39">at line 39</a></div>
         <code>                    void
-    <strong>log</strong>($level, $message, array $context = [])
+    <strong>log</strong>($level, string|<a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a> $message, array $context = [])
         </code>
     </h3>
     <div class="details">    
@@ -212,7 +212,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
                 <td></td>
             </tr>
                     <tr>
-                <td></td>
+                <td>string|<a target="_blank" rel="noopener" href="https://www.php.net/Stringable">Stringable</a></td>
                 <td>$message</td>
                 <td></td>
             </tr>
@@ -242,7 +242,7 @@ was the only thing that needed to be swapped out.</p></p>        </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_formatSize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.4/src/Log/Logger.php#L48">at line 48</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Log/Logger.php#L53">at line 53</a></div>
         <code>        static            
     <strong>formatSize</strong>($size)
         </code>
