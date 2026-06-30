@@ -159,8 +159,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             node
             ├─core.entity_view_mode.node.full
             ├─core.entity_view_mode.node.rss
-            ├─core.entity_view_mode.node.search_index
-            ├─core.entity_view_mode.node.search_result
             ├─core.entity_view_mode.node.teaser
             ├─field.storage.node.body
             ├─field.storage.node.latin_name
@@ -236,7 +234,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 $nodeStorageBodyField = DeprecationHelper::backwardsCompatibleCall(
                     \Drupal::VERSION,
                     '11.3.0',
-                    fn(): string => "├─node_storage_body_field\n",
+                    fn(): string => "├─node_storage_body_field\n├─search_node\n",
                     fn(): string => '',
                 );
 
