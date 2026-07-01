@@ -4,7 +4,7 @@
     "command": "sh",
     "args": [
       "-c",
-      "echo \"name: drush-$(basename $(dirname $PWD))\" > .ddev/config.local.yaml",
+      "echo \"name: drush-$(basename $(dirname $ZED_WORKTREE_ROOT))\" > .ddev/config.local.yaml",
     ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "hooks": ["create_worktree"],
