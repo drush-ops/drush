@@ -13,7 +13,7 @@
     "command": "sh",
     "args": [
       "-c",
-      "NAME=drush-$(basename $(dirname $PWD)) && echo 'name: $NAME' > .ddev/config.local.yaml",
+      "echo 'name: drush-$(basename $(dirname $PWD))' > .ddev/config.local.yaml",
     ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "hooks": ["create_worktree"],
