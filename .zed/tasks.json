@@ -2,10 +2,7 @@
   {
     "label": "Worktree setup: ddev config",
     "command": "sh",
-    "args": [
-      "-c",
-      "echo $ZED_WORKTREE_ROOT | sed 's|.*/\\([^/]*\\)/[^/]*$|name: drush-\\1|' > .ddev/config.local.yaml",
-    ],
+    "args": [".zed/ddev-config.sh"],
     "cwd": "$ZED_WORKTREE_ROOT",
     "hooks": ["create_worktree"],
     "reveal": "no_focus",
