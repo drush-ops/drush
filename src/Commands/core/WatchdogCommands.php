@@ -223,7 +223,7 @@ final class WatchdogCommands extends DrushCommands
             if (!$this->io()->confirm(dt('Do you really want to continue?'))) {
                 throw new UserAbortException();
             }
-            $ret = $this->connection->truncate('watchdog')->execute();
+            $this->connection->truncate('watchdog')->execute();
             $this->logger()->success(dt('All watchdog messages have been deleted.'));
         } elseif (is_numeric($substring)) {
             $this->output()->writeln(dt('Watchdog message #!wid will be deleted.', ['!wid' => $substring]));
