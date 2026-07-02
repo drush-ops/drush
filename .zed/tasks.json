@@ -1,0 +1,20 @@
+[
+  {
+    "label": "Worktree setup: ddev config",
+    "command": "sh",
+    "args": [".zed/ddev-config.sh"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "hooks": ["create_worktree"],
+    "reveal": "no_focus",
+    "hide": "on_success",
+  },
+  {
+    "label": "Worktree setup: composer install",
+    "command": "composer",
+    "args": ["install"],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "hooks": ["create_worktree"],
+    "reveal": "no_focus",
+    "hide": "on_success",
+  },
+]

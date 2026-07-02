@@ -315,6 +315,12 @@ class DrupalBoot8 extends DrupalBoot
                 $response = new HtmlResponse();
             }
             assert($this->kernel instanceof TerminableInterface);
+            // Kernel termination may trigger a deferred router rebuild, which
+            // discovers plugins (e.g. entity types) using directory paths that
+            // are relative to the Drupal root. Ensure the working directory is
+            // the Drupal root so that discovery does not silently come up empty
+            // when Drush is invoked from elsewhere (e.g. under PHPUnit).
+            chdir($this->kernel->getAppRoot());
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }

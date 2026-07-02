@@ -278,6 +278,7 @@ Drush provides transport for running drush commands on your Kubernetes cluster v
  ```yml
  prod: 
    kubectl:
+     context: "gke_production_cluster"
      namespace: 'my-drupal-namespace'
      resource: 'pods/my-drupal-pod' 
      container: 'drupal'
@@ -285,6 +286,7 @@ Drush provides transport for running drush commands on your Kubernetes cluster v
 
 #### Key options
 
+  * **context:** The context name defined in the `kubeconfig`.
   * **namespace:** The namespace where your Drupal deployment resides.
   * **resource:**  Kubernetes resource type (usually 'pods').
   * **container:** The specific container within the pod where Drupal runs.
