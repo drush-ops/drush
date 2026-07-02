@@ -66,7 +66,7 @@ final class WatchdogDeleteCommand extends Command
             if (!$io->confirm('Do you really want to continue?')) {
                 throw new UserAbortException();
             }
-            $ret = $this->connection->truncate('watchdog')->execute();
+            $this->connection->truncate('watchdog')->execute();
             $io->success('All watchdog messages have been deleted.');
         } elseif (is_numeric($substring)) {
             $output->writeln(sprintf('Watchdog message #%s will be deleted.', $substring));
