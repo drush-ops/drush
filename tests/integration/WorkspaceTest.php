@@ -13,11 +13,13 @@ use Drush\Commands\core\WorkspacePublishCommand;
 use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\pm\PmInstallCommand;
 use Drush\Commands\pm\PmUninstallCommand;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 /**
  * Tests Workspace commands
  */
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class WorkspaceTest extends UnishIntegrationTestCase
 {
     private WorkspaceManagerInterface $workspaceManager;

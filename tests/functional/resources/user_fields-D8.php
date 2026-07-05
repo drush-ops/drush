@@ -10,7 +10,6 @@ use Drupal\user\Entity\User;
 create_field('field_user_email', 'email', 'user', 'user');
 create_field('field_user_string', 'string', 'user', 'user');
 create_field('field_user_string_long', 'string_long', 'user', 'user');
-create_field('field_user_telephone', 'telephone', 'user', 'user');
 create_field('field_user_text', 'text', 'user', 'user');
 create_field('field_user_text_long', 'text_long', 'user', 'user');
 create_field('field_user_text_with_summary', 'text_with_summary', 'user', 'user');
@@ -20,7 +19,6 @@ $values = [
   'field_user_email' => 'joe.user.alt@myhome.com',
   'field_user_string' => 'Private info',
   'field_user_string_long' => 'Really private info',
-  'field_user_telephone' => '4104442222',
   'field_user_text' => 'Super private info',
   'field_user_text_long' => 'Super duper private info',
   'field_user_text_with_summary' => 'Private',

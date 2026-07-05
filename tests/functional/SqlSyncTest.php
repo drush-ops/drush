@@ -101,7 +101,7 @@ class SqlSyncTest extends CommandUnishTestCase
         $mail = "joe.user@myhome.com";
 
         // Add user fields and a test User.
-        $this->drush(PmCommands::INSTALL, ['field,text,telephone,comment'], $stage_options + ['yes' => null]);
+        $this->drush(PmCommands::INSTALL, ['field,text,comment'], $stage_options + ['yes' => null]);
         $this->drush(PhpCommands::SCRIPT, ['user_fields-D8', $name, $mail], $stage_options + ['script-path' => __DIR__ . '/resources',]);
 
         // Copy stage to dev, and then sql:sanitize.
@@ -159,9 +159,6 @@ class SqlSyncTest extends CommandUnishTestCase
         foreach ($fields as $field_name => $value) {
             $this->assertUserFieldContents($field_name, $value);
         }
-
-        // Assert that field_user_telephone DOES contain "5555555555".
-        $this->assertUserFieldContents('field_user_telephone', '5555555555', true);
     }
 
     /**

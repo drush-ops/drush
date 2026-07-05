@@ -8,8 +8,10 @@ use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\core\LanguageCommands;
 use Drush\Commands\core\WatchdogCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Filesystem\Path;
 
+#[RunTestsInSeparateProcesses]
 class LanguageAddTest extends UnishIntegrationTestCase
 {
     protected function setup(): void

@@ -249,7 +249,10 @@ class DrupalBoot8 extends DrupalBoot
             $commandsInThisModule = $this->serviceManager->discoverModuleCommands([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             // TODO: Maybe $bootstrapCommandClasses could use a better name.
             // These are commandhandlers that have static create factory methods.
-            $bootstrapCommandClasses = array_merge($bootstrapCommandClasses, $commandsInThisModule);
+            // array_unique() prevents classes already found pre-bootstrap by
+            // ServiceManager::discoverPsr4Commands() from being instantiated a
+            // second time when their namespace is a Composer PSR-4 prefix.
+            $bootstrapCommandClasses = array_unique(array_merge($bootstrapCommandClasses, $commandsInThisModule));
             // TODO: Support PSR-4 command info alterers, like bootstrapCommandClasses?
             $commandInfoAlterersInThisModule = $this->serviceManager->discoverModuleCommandInfoAlterers([$path], "\\Drupal\\" . $moduleId . "\\Drush");
             $commandInfoAlterers = array_merge($commandInfoAlterers, $commandInfoAlterersInThisModule);
@@ -312,6 +315,12 @@ class DrupalBoot8 extends DrupalBoot
                 $response = new HtmlResponse();
             }
             assert($this->kernel instanceof TerminableInterface);
+            // Kernel termination may trigger a deferred router rebuild, which
+            // discovers plugins (e.g. entity types) using directory paths that
+            // are relative to the Drupal root. Ensure the working directory is
+            // the Drupal root so that discovery does not silently come up empty
+            // when Drush is invoked from elsewhere (e.g. under PHPUnit).
+            chdir($this->kernel->getAppRoot());
             $this->kernel->terminate($this->getRequest(), $response);
         }
     }

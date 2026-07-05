@@ -119,17 +119,15 @@ jobs:
       - when:
           condition:
             and:
-              - equal: [ lowest, << parameters.release >> ]
+              - equal: [lowest, << parameters.release >>]
           steps:
             - run: composer -n update --prefer-lowest
       - unless:
           condition:
             and:
-              - equal: [ lowest, << parameters.release >> ]
+              - equal: [lowest, << parameters.release >>]
           steps:
-            - run: composer -n config platform.php --unset
-            - run: composer -n require --dev drupal/core-recommended:dev-main --no-update
-            - run: composer -n update --with-all-dependencies
+            - run: .circleci/highest.sh
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
@@ -159,9 +157,9 @@ workflows:
           <<: *poststeps
           matrix:
             parameters:
-              dbms: [ mysql, postgres, sqlite ]
+              dbms: [mysql, postgres, sqlite]
               suite: [integration, functional]
-              release: [ lowest, highest ]
+              release: [lowest, highest]
 #            exclude:
 #              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
 #              - release: highest

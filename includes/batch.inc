@@ -27,6 +27,7 @@
 
 use Drupal\Core\Database\Database;
 use Drupal\Core\Database\IntegrityConstraintViolationException;
+use Drupal\Core\Utility\CallableResolver;
 use Drush\Drush;
 
 /**
@@ -254,7 +255,8 @@ function _drush_batch_worker() {
       // See https://github.com/drush-ops/drush/issues/1930
       $halt_on_error = \Drush\Drush::config()->get('runtime.php.halt-on-error', TRUE);
       \Drush\Drush::config()->set('runtime.php.halt-on-error', FALSE);
-      call_user_func_array($callback, array_merge($args, [&$batch_context]));
+      $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($callback);
+      call_user_func_array($callable, array_merge($args, [&$batch_context]));
       if (!empty($task_message)) {
         Drush::logger()->notice(strip_tags($task_message));
       }
@@ -339,14 +341,13 @@ function _drush_batch_finished() {
       if (isset($batch_set['file']) && is_file($batch_set['file'])) {
         include_once DRUPAL_ROOT . '/' . $batch_set['file'];
       }
-      if (is_callable($batch_set['finished'])) {
-        $queue = _batch_queue($batch_set);
-        $operations = $queue->getAllItems();
-        $elapsed = $batch_set['elapsed'] / 1000;
-        $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
-        call_user_func_array($batch_set['finished'], [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
-        $results[$id] = $batch_set['results'];
-      }
+      $callable = \Drupal::service(CallableResolver::class)->getCallableFromDefinition($batch_set['finished']);
+      $queue = _batch_queue($batch_set);
+      $operations = $queue->getAllItems();
+      $elapsed = $batch_set['elapsed'] / 1000;
+      $elapsed = \Drupal::service('date.formatter')->formatInterval($elapsed);
+      call_user_func_array($callable, [$batch_set['success'], $batch_set['results'], $operations, $elapsed]);
+      $results[$id] = $batch_set['results'];
     }
   }
 

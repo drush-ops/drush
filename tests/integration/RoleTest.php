@@ -8,7 +8,9 @@ use Drupal\Core\Site\Settings;
 use Drush\Commands\core\CoreCommands;
 use Drush\Commands\core\RoleCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
+#[RunTestsInSeparateProcesses]
 class RoleTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;

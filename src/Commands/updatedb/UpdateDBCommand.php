@@ -129,18 +129,17 @@ final class UpdateDBCommand extends Command
         $severity = drush_drupal_requirements_severity($requirements);
 
         // If there are issues, report them.
-        // @todo - use enum values instead of ints when we drop support for d11.
         if ($severity != 0) {
             if ($severity === 2) {
                 $return = false;
             }
             foreach ($requirements as $requirement) {
-                if (isset($requirement['severity']) && $requirement['severity'] != 0) {
+                if (isset($requirement['severity']) && drush_drupal_requirement_severity_int($requirement['severity']) !== 0) {
                     $message = isset($requirement['description']) ? DrupalUtil::drushRender($requirement['description']) : '';
                     if (isset($requirement['value']) && $requirement['value']) {
                         $message .= ' (Currently using ' . $requirement['title'] . ' ' . DrupalUtil::drushRender($requirement['value']) . ')';
                     }
-                    $log_level = $requirement['severity'] === 2 ? LogLevel::ERROR : LogLevel::WARNING;
+                    $log_level = drush_drupal_requirement_severity_int($requirement['severity']) === 2 ? LogLevel::ERROR : LogLevel::WARNING;
                     $this->logger->log($log_level, $message);
                 }
             }
@@ -392,7 +391,7 @@ final class UpdateDBCommand extends Command
                 ];
             }
         } else {
-            $ret['#abort'] = ['success' => false];
+            $ret['results']['success'] = true;
             Drush::logger()->warning(dt('Post update function @function not found.', [
                 '@function' => $function
             ]));

@@ -8,8 +8,10 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\QueueCommands;
 use Drush\Commands\pm\PmCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class QueueTest extends UnishIntegrationTestCase
 {
     use TestModuleHelperTrait;

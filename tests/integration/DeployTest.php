@@ -7,8 +7,10 @@ namespace Unish;
 use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\config\ConfigExportCommand;
 use Drush\Commands\core\DeployCommands;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
+#[RunTestsInSeparateProcesses]
 class DeployTest extends UnishIntegrationTestCase
 {
     /**

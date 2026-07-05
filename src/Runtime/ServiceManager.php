@@ -200,12 +200,12 @@ class ServiceManager
     {
         $classes = (new RelativeNamespaceDiscovery($this->autoloader))
             ->setRelativeNamespace('Drush\Commands')
-            ->setSearchPattern('/.*Commands\.php$/')
+            ->setSearchPattern('/.*(Command)s?\.php$/')
             ->getClasses();
 
         return array_filter($classes, function (string $class): bool {
             $reflectionClass = new \ReflectionClass($class);
-            return $reflectionClass->isSubclassOf(DrushCommands::class)
+            return ($reflectionClass->isSubclassOf(DrushCommands::class) || $reflectionClass->isSubclassOf(Command::class))
                 && !$reflectionClass->isAbstract()
                 && !$reflectionClass->isInterface()
                 && !$reflectionClass->isTrait();
@@ -454,7 +454,7 @@ class ServiceManager
             foreach ($attributes as $attribute) {
                 $attributeInstance = $attribute->newInstance();
                 $method = $attributeInstance->method ?? '__invoke';
-                $priority = $attributeInstance->priority ?? 0;
+                $priority = $attributeInstance->priority;
                 $reflectionMethod = $reflectionObject->getMethod($method);
                 $reflectionParameters = $reflectionMethod->getParameters();
                 $paramType = $reflectionParameters[0]->getType();

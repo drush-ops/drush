@@ -7,8 +7,10 @@ namespace Unish;
 use Drush\Commands\core\DrupalDependenciesCommands;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Drupal\Component\Utility\DeprecationHelper;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[CoversClass(DrupalDependenciesCommands::class)]
+#[RunTestsInSeparateProcesses]
 class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
     public function testModuleDependentOfModule(): void
@@ -54,9 +56,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             │   └─dependent3
             ├─dependent2
             │ └─dependent3 (circular)
-            ├─history
-            │ └─dependent1
-            │   └─dependent2 (circular)
             └─taxonomy
               └─dependent1
                 └─dependent2 (circular)
@@ -77,11 +76,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 ],
                 'dependent2' => [
                     'dependent3' => 'dependent3:***circular***',
-                ],
-                'history' => [
-                    'dependent1' => [
-                        'dependent2' => 'dependent2:***circular***',
-                    ],
                 ],
                 'taxonomy' => [
                     'dependent1' => [
@@ -129,8 +123,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             node
             ├─core.entity_view_mode.node.full
             ├─core.entity_view_mode.node.rss
-            ├─core.entity_view_mode.node.search_index
-            ├─core.entity_view_mode.node.search_result
             ├─core.entity_view_mode.node.teaser
             ├─field.storage.node.body
             ├─system.action.node_delete_action
@@ -150,8 +142,6 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             node
             ├─core.entity_view_mode.node.full
             ├─core.entity_view_mode.node.rss
-            ├─core.entity_view_mode.node.search_index
-            ├─core.entity_view_mode.node.search_result
             ├─core.entity_view_mode.node.teaser
             ├─field.storage.node.body
             ├─field.storage.node.latin_name
@@ -200,7 +190,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
     protected function tearDown(): void
     {
         try {
-            $this->drush('pmu', ['node,history,taxonomy,comment,dependent3'], ['yes' => null]);
+            $this->drush('pmu', ['node,taxonomy,comment,dependent3'], ['yes' => null]);
         } catch (\Exception) {
             // The modules were not installed.
         }
@@ -209,46 +199,12 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
 
     protected function getModuleDependentOfUninstalledModuleExpectation(): string
     {
-        // In Drupal 10, book, forum, statistics and tracker modules were part
-        // of Drupal core. Ensure a backwards compatible expectation.
-        // @todo Remove the BC layer when Drupal 10 support is dropped.
+        // @todo Remove the BC layer when Drupal 11 support is dropped.
         return DeprecationHelper::backwardsCompatibleCall(
             \Drupal::VERSION,
-            '11.0.0',
-            function (): string {
-                // Starting with 11.3.x the field.storage.node.body is no longer
-                // shipped but, for backwards compatibility reasons, a new and
-                // deprecated `node_storage_body_field` module is offered.
-                // @see https://www.drupal.org/node/3540814
-                // @todo Remove when 11.3.0 is the minimum Drupal requirement.
-                $nodeStorageBodyField = DeprecationHelper::backwardsCompatibleCall(
-                    \Drupal::VERSION,
-                    '11.3.0',
-                    fn(): string => "├─node_storage_body_field\n",
-                    fn(): string => '',
-                );
-
-                return <<<EXPECTED
-                    node
-                    ├─dependent1
-                    │ └─dependent2
-                    │   ├─dependent3
-                    │   └─dependent4
-                    ├─dependent2
-                    │ ├─dependent3
-                    │ └─dependent4
-                    ├─history
-                    │ └─dependent1
-                    │   └─dependent2 (circular)
-                    {$nodeStorageBodyField}└─taxonomy
-                      └─dependent1
-                        └─dependent2 (circular)
-                    EXPECTED;
-            },
-            // @deprecated
+            '12.0.0',
             fn(): string => <<<EXPECTED
                 node
-                ├─book
                 ├─dependent1
                 │ └─dependent2
                 │   ├─dependent3
@@ -256,17 +212,27 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
                 ├─dependent2
                 │ ├─dependent3
                 │ └─dependent4
-                ├─forum
+                ├─search_node
+                └─taxonomy
+                  └─dependent1
+                    └─dependent2 (circular)
+                EXPECTED,
+            // @deprecated
+            fn(): string => <<<EXPECTED
+                node
+                ├─dependent1
+                │ └─dependent2
+                │   ├─dependent3
+                │   └─dependent4
+                ├─dependent2
+                │ ├─dependent3
+                │ └─dependent4
                 ├─history
-                │ ├─dependent1
-                │ │ └─dependent2 (circular)
-                │ └─forum
-                ├─statistics
-                ├─taxonomy
-                │ ├─dependent1
-                │ │ └─dependent2 (circular)
-                │ └─forum
-                └─tracker
+                ├─node_storage_body_field
+                ├─search_node
+                └─taxonomy
+                  └─dependent1
+                    └─dependent2 (circular)
                 EXPECTED,
         );
     }
