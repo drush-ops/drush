@@ -123,7 +123,7 @@ final class ConfigExportCommand extends Command
 
             if ($input->getOption('diff')) {
                 $diff = $this->getDiff($target_storage, $this->configStorageExport, $output);
-                $this->logger->notice($preamble . $diff);
+                $output->writeln($diff);
                 $preview = $diff;
             } else {
                 $change_list = [];
