@@ -291,6 +291,9 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
 
     protected function getNodeSearchExpectation(): string
     {
+        // As for 11.4.x, node search plugin node_search moved to a submodule
+        // Search Node.
+        // @see https://www.drupal.org/node/3590298
         return DeprecationHelper::backwardsCompatibleCall(
             \Drupal::VERSION,
             '11.4.0',
