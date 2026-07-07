@@ -370,13 +370,13 @@ class ServiceManager
         /** @disregard P1009 */
         if (class_exists(ContentExportCommand::class)) {
             /** @disregard P1009 */
-            $instance = new ContentExportCommand($this->autoloader)->setHelp($help);
+            $instance = (new ContentExportCommand($this->autoloader))->setHelp($help);
             $instances[] = $instance;
         }
         /** @disregard P1009 */
         if (class_exists(RecipeCommand::class)) {
             /** @disregard P1009 */
-            $instance = new RecipeCommand($this->autoloader)->setHelp($help);
+            $instance = (new RecipeCommand($this->autoloader))->setHelp($help);
             $instances[] = $instance;
         }
 
