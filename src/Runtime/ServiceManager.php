@@ -13,9 +13,7 @@ use Consolidation\Filter\Hooks\FilterHooks;
 use Consolidation\SiteAlias\SiteAliasManagerAwareInterface;
 use Consolidation\SiteProcess\ProcessManagerAwareInterface;
 use Drupal\Component\DependencyInjection\ContainerInterface as DrupalContainer;
-/** @disregard P1009 */
 use Drupal\Core\DefaultContent\ContentExportCommand;
-/** @disregard P1009 */
 use Drupal\Core\Recipe\RecipeCommand;
 use DrupalCodeGenerator\Command\BaseGenerator;
 use Drush\Attributes\Bootstrap;
