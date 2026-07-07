@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Runtime\RedispatchHook | Drush API 13</title>
+    <title>Drush\Runtime\RedispatchHook | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>RedispatchHook</strong>        implements        <a href="../../Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a>, <a href="../../Robo/Contract/ConfigAwareInterface.html"><abbr title="Robo\Contract\ConfigAwareInterface">ConfigAwareInterface</abbr></a>, <a href="../../Consolidation/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php">View source</a>)
+    <strong>RedispatchHook</strong>        implements        <a href="../../Consolidation/AnnotatedCommand/Hooks/InitializeHookInterface.html"><abbr title="Consolidation\AnnotatedCommand\Hooks\InitializeHookInterface">InitializeHookInterface</abbr></a>, <abbr title="Consolidation\Config\ConfigAwareInterface">ConfigAwareInterface</abbr>, <a href="../../Consolidation/SiteAlias/SiteAliasManagerAwareInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareInterface">SiteAliasManagerAwareInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php">View source</a>)
 </p>
 
         
@@ -116,7 +116,7 @@ current command and instead run the command remotely.</p></p>                   
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="../../Robo/Common/ConfigAwareTrait.html"><abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a>    </div>
+                    <abbr title="Consolidation\Config\ConfigAwareTrait">ConfigAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
             </div>
@@ -125,16 +125,6 @@ current command and instead run the command remotely.</p></p>                   
             <h2>Properties</h2>
 
             <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_config">
-                                        protected                                        <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$config</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#property_config">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></td>
-            </tr>
                     <tr>
                 <td class="type" id="property_siteAliasManager">
                                         protected                                        
@@ -153,87 +143,15 @@ current command and instead run the command remotely.</p></p>                   
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    $this
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setConfig">setConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
-        
-                                            <p><p>Set the config management object.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p><p>Get the config management object.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configPrefix">configPrefix</a>()
-        
-                                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
-, and define a prefix for its configuration items. This is usually
-done in a base class. When used, this method should return a string
-that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configClassIdentifier">configClassIdentifier</a>($classname)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configPostfix">configPostfix</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configure">configure</a>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configure">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    mixed|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getConfigValue">getConfigValue</a>(string $key, mixed|null $default = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -341,54 +259,10 @@ shutdown handler.</p></p>                </div>
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_setConfig">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L22">at line 22</a></div>
-        <code>                    $this
-    <strong>setConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Set the config management object.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
-                <td>$config</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>$this</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getConfig">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L34">at line 34</a></div>
-        <code>                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+        <div class="location">in <a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
+        <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
     </h3>
@@ -398,7 +272,8 @@ shutdown handler.</p></p>                </div>
             
 
         <div class="method-description">
-                            <p><p>Get the config management object.</p></p>                        
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
         </div>
         <div class="tags">
             
@@ -406,208 +281,24 @@ shutdown handler.</p></p>                </div>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+            <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
             <td></td>
         </tr>
     </table>
 
             
             
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configPrefix">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L47">at line 47</a></div>
-        <code>        static    protected        string
-    <strong>configPrefix</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
-, and define a prefix for its configuration items. This is usually
-done in a base class. When used, this method should return a string
-that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configClassIdentifier">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L52">at line 52</a></div>
-        <code>        static    protected        
-    <strong>configClassIdentifier</strong>($classname)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
+                            <h4>See also</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$classname</td>
+                <td>
+                                            <a href="https://stackoverflow.com/a/37687295.">https://stackoverflow.com/a/37687295.</a>
+                                    </td>
                 <td></td>
             </tr>
             </table>
 
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configPostfix">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L60">at line 60</a></div>
-        <code>        static    protected        
-    <strong>configPostfix</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configure">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configure">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L84">at line 84</a></div>
-        <code>        static            
-    <strong>configure</strong>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>mixed</td>
-                <td>$value</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null</td>
-                <td>$config</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getConfigValue">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L98">at line 98</a></div>
-        <code>            protected        mixed|null
-    <strong>getConfigValue</strong>(string $key, mixed|null $default = null)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>mixed|null</td>
-                <td>$default</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>mixed|null</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
             
                     </div>
     </div>
@@ -616,7 +307,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_setSiteAliasManager">
         <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasManagerAwareTrait.html#method_setSiteAliasManager">
-<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L14">at line 14</a></div>
+<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L14">at line 14</a></div>
         <code>                    
     <strong>setSiteAliasManager</strong>(<a href="../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a> $siteAliasManager)
         </code>
@@ -652,7 +343,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_siteAliasManager">
         <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasManagerAwareTrait.html#method_siteAliasManager">
-<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L22">at line 22</a></div>
+<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L22">at line 22</a></div>
         <code>                    <a href="../../Consolidation/SiteAlias/SiteAliasManagerInterface.html"><abbr title="Consolidation\SiteAlias\SiteAliasManagerInterface">SiteAliasManagerInterface</abbr></a>
     <strong>siteAliasManager</strong>()
         </code>
@@ -687,7 +378,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
                     <div class="method-item">
                     <h3 id="method_hasSiteAliasManager">
         <div class="location">in <a href="../../Consolidation/SiteAlias/SiteAliasManagerAwareTrait.html#method_hasSiteAliasManager">
-<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L30">at line 30</a></div>
+<abbr title="Consolidation\SiteAlias\SiteAliasManagerAwareTrait">SiteAliasManagerAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/site-alias/src/SiteAliasManagerAwareTrait.php#L30">at line 30</a></div>
         <code>                    
     <strong>hasSiteAliasManager</strong>()
         </code>
@@ -712,7 +403,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L30">at line 30</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L30">at line 30</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Drush/SiteAlias/ProcessManager.html"><abbr title="Drush\SiteAlias\ProcessManager">ProcessManager</abbr></a> $processManager)
         </code>
@@ -747,7 +438,7 @@ that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_initialize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L41">at line 41</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L41">at line 41</a></div>
         <code>                    
     <strong>initialize</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <a href="../../Consolidation/AnnotatedCommand/AnnotationData.html"><abbr title="Consolidation\AnnotatedCommand\AnnotationData">AnnotationData</abbr></a> $annotationData)
         </code>
@@ -788,7 +479,7 @@ is needed, it happens in the RedispatchToSiteLocal class.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatchIfRemote">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L61">at line 61</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L61">at line 61</a></div>
         <code>                    
     <strong>redispatchIfRemote</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -823,7 +514,7 @@ if it is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_redispatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L73">at line 73</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L73">at line 73</a></div>
         <code>                    <abbr title="Drush\Runtime\never">never</abbr>
     <strong>redispatch</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input)
         </code>
@@ -866,7 +557,7 @@ if it is.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_alterArgsForRedispatch">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L107">at line 107</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L107">at line 107</a></div>
         <code>            protected        array
     <strong>alterArgsForRedispatch</strong>(array $redispatchArgs)
         </code>
@@ -910,7 +601,7 @@ provided via -D.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_exitEarly">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/RedispatchHook.php#L120">at line 120</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/RedispatchHook.php#L118">at line 118</a></div>
         <code>            protected        <abbr title="Drush\Runtime\never">never</abbr>
     <strong>exitEarly</strong>(int $exit_code)
         </code>
