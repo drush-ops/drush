@@ -33,6 +33,9 @@ use Psr\Log\LoggerInterface;
 use Robo\ClassDiscovery\RelativeNamespaceDiscovery;
 use Robo\Contract\ConfigAwareInterface;
 use Robo\Contract\OutputAwareInterface;
+use Drupal;
+use Drupal\Core\DefaultContent\Command\ContentExportCommand as CommandContentExportCommand;
+use Drupal\Core\Recipe\Command\RecipeCommand as CommandRecipeCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -351,14 +354,32 @@ class ServiceManager
     public function instantiateDrupalCoreBootstrappedCommands(): array
     {
         $instances = [];
+        $container = \Drupal::getContainer();
+        $help = 'See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.';
+
+        // Drupal 11.4+
+        /** @disregard P1009 */
+        if ($container->has(CommandRecipeCommand::class)) {
+            /** @disregard P1009 */
+            $instances[] = Drupal::service(CommandRecipeCommand::class)->setHelp($help);
+        }
+        /** @disregard P1009 */
+        if ($container->has(CommandContentExportCommand::class)) {
+            /** @disregard P1009 */
+            $instances[] = Drupal::service(CommandContentExportCommand::class)->setHelp($help);
+        }
+
+        // Drupal 11.3-
+        /** @disregard P1009 */
         if (class_exists(ContentExportCommand::class)) {
-            $instance = new ContentExportCommand($this->autoloader);
-            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            /** @disregard P1009 */
+            $instance = (new ContentExportCommand($this->autoloader))->setHelp($help);
             $instances[] = $instance;
         }
+        /** @disregard P1009 */
         if (class_exists(RecipeCommand::class)) {
-            $instance = new RecipeCommand($this->autoloader);
-            $instance->setHelp('See https://drupal.org/project/issues/drupal for bug reports and feature requests for this command.');
+            /** @disregard P1009 */
+            $instance = (new RecipeCommand($this->autoloader))->setHelp($help);
             $instances[] = $instance;
         }
 
