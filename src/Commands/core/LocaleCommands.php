@@ -13,6 +13,7 @@ use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\language\Entity\ConfigurableLanguage;
+use Drupal\locale\LocaleSource;
 use Drupal\locale\PoDatabaseReader;
 use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
@@ -134,7 +135,11 @@ final class LocaleCommands extends DrushCommands
         // If the status was updated recently we can immediately start fetching the
         // translation updates. If the status is expired we clear it an run a batch to
         // update the status and then fetch the translation updates.
-        $last_checked = $this->getState()->get('locale.translation_last_checked');
+        if (version_compare(\Drupal::VERSION, '11.4.0', '<')) {
+            $last_checked = $this->getState()->get('locale.translation_last_checked');
+        } else {
+            $last_checked = \Drupal::service(LocaleSource::class)->getLastChecked();
+        }
         if ($last_checked < time() - LOCALE_TRANSLATION_STATUS_TTL) {
             locale_translation_clear_status();
             $batch = locale_translation_batch_update_build([], $langcodes, $translationOptions);
