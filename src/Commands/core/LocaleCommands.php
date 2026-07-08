@@ -137,8 +137,7 @@ final class LocaleCommands extends DrushCommands
         // update the status and then fetch the translation updates.
         if (version_compare(\Drupal::VERSION, '11.4.0', '<')) {
             $last_checked = $this->getState()->get('locale.translation_last_checked');
-        }
-        else {
+        } else {
             $last_checked = \Drupal::service(LocaleSource::class)->getLastChecked();
         }
         if ($last_checked < time() - LOCALE_TRANSLATION_STATUS_TTL) {
