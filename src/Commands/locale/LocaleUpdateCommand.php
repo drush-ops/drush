@@ -79,7 +79,7 @@ final class LocaleUpdateCommand extends Command
         // translation updates. If the status is expired we clear it an run a batch to
         // update the status and then fetch the translation updates.
         if (version_compare(\Drupal::VERSION, '11.4.0', '<')) {
-            $last_checked = $this->getState()->get('locale.translation_last_checked');
+            $last_checked = $this->state->get('locale.translation_last_checked');
         } else {
             $last_checked = \Drupal::service(LocaleSource::class)->getLastChecked();
         }
