@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Utils\StringUtils | Drush API 13</title>
+    <title>Drush\Utils\StringUtils | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>StringUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.7.6/src/Utils/StringUtils.php">View source</a>)
+    <strong>StringUtils</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/StringUtils.php">View source</a>)
 </p>
 
         
@@ -127,7 +127,7 @@ may contain csv strings, into an array of items.</p></p>                </div>
                     static&nbsp;string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_replaceTilde">replaceTilde</a>(mixed $path, mixed $home)
+                    <a href="#method_replaceTilde">replaceTilde</a>(mixed $path, string $home)
         
                                             <p><p>Replace tilde in a path with the HOME directory.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -150,7 +150,7 @@ may contain csv strings, into an array of items.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_csvToArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.6/src/Utils/StringUtils.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/StringUtils.php#L18">at line 18</a></div>
         <code>        static            array
     <strong>csvToArray</strong>(mixed $args)
         </code>
@@ -196,7 +196,7 @@ or some combination; e.g. array('a,b','c') or array('a,','b,','c,').</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_interpolate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.6/src/Utils/StringUtils.php#L44">at line 44</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/StringUtils.php#L44">at line 44</a></div>
         <code>        static            string
     <strong>interpolate</strong>(string $message, array $context = [])
         </code>
@@ -247,9 +247,9 @@ The resulting string with all placeholders filled in.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_replaceTilde">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.6/src/Utils/StringUtils.php#L90">at line 90</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/StringUtils.php#L90">at line 90</a></div>
         <code>        static            string
-    <strong>replaceTilde</strong>(mixed $path, mixed $home)
+    <strong>replaceTilde</strong>(mixed $path, string $home)
         </code>
     </h3>
     <div class="details">    
@@ -270,7 +270,7 @@ The resulting string with all placeholders filled in.</p></td>
                 <td><p>A path that may contain a ~ at front.</p></td>
             </tr>
                     <tr>
-                <td>mixed</td>
+                <td>string</td>
                 <td>$home</td>
                 <td><p>The effective home dir for this request.</p></td>
             </tr>
@@ -296,7 +296,7 @@ The path with tilde replaced, if applicable.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_generatePassword">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.7.6/src/Utils/StringUtils.php#L105">at line 105</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Utils/StringUtils.php#L105">at line 105</a></div>
         <code>        static            string
     <strong>generatePassword</strong>(int $length = 10)
         </code>
