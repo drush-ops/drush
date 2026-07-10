@@ -106,6 +106,11 @@ class DrupalBoot8 extends DrupalBoot
         ] + $_SERVER;
         $request = Request::create($uri, 'GET', [], [], [], $server);
         $request->overrideGlobals();
+
+        // Remove HTTP_ACCEPT, as things such as the Symfony var-dumper will
+        // incorrectly sniff that we're in a browser request.
+        unset($_SERVER['HTTP_ACCEPT']);
+
         $this->setRequest($request);
         return true;
     }
