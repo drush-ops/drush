@@ -45,7 +45,7 @@
     "consolidation/site-process": "^5.4.2 || ^6.1",
     "dflydev/dot-access-data": "^3.0.2",
     "grasmash/yaml-cli": "4.x-dev",
-    "guzzlehttp/guzzle": "^7.0",
+    "guzzlehttp/guzzle": "^7.8.2 || ^8.0",
     "laravel/prompts": "^0.3.5",
     "league/container": "^4.2",
     "psy/psysh": "~0.12",
