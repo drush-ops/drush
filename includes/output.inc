@@ -16,7 +16,7 @@ use Drush\Utils\StringUtils;
  * @param array
  *  An associative array of replacement items.
  *
- * @return
+ * @return string
  *   The processed string.
  */
 function dt($string, $args = []) {
