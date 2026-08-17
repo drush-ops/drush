@@ -7481,17 +7481,17 @@ for teams to share short names that refer to the live and staging sites
 where <code>$PROJECT</code> is the project root (location of composer.json file). The site alias file should be named <code>self.site.yml</code> because this name is special, and is used to define the different environments (usually remote)
 of the current Drupal site.</p>
 <p>The contents of the alias file should look something like the example below:</p>
-<div class="highlight"><pre><span></span><code># File: self.site.yml
-live:
-  host: server.domain.com
-  user: www-admin
-  root: /other/path/to/live/drupal
-  uri: http://example.com
-stage:
-  host: server.domain.com
-  user: www-admin
-  root: /other/path/to/stage/drupal
-  uri: http://stage.example.com
+<div class="highlight"><pre><span></span><code><span class="c1"># File: self.site.yml</span>
+<span class="nt">live</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">server.domain.com</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/other/path/to/live/drupal</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://example.com</span>
+<span class="nt">stage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">server.domain.com</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/other/path/to/stage/drupal</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://stage.example.com</span>
 </code></pre></div>
 <p>The top-level element names (<code>live</code> and <code>stage</code> in the example above) are
 used to identify the different environments available for this site. These
@@ -7528,18 +7528,18 @@ not search this location for alias files by default. To use this location,
 you must add the path in your <a href="../using-drush-configuration/">Drush configuration file</a>. For example,
 to re-add both of the default user alias path from Drush 8, put the following
 in your <code>~/.drush/drush.yml</code> configuration file:</p>
-<div class="highlight"><pre><span></span><code>drush:
-  paths:
-    alias-path:
-      - &#39;${env.HOME}/.drush/sites&#39;
-      - /etc/drush/sites
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">alias-path</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/sites'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/drush/sites</span>
 </code></pre></div>
 <p>A canonical alias named <em>example</em> that points to a local
 Drupal site named at <a href="http://example.com">http://example.com</a> like this:</p>
-<div class="highlight"><pre><span></span><code># File: example.site.yml
-dev:
-  root: /path/to/drupal
-  uri: http://example.com
+<div class="highlight"><pre><span></span><code><span class="c1"># File: example.site.yml</span>
+<span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/drupal</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://example.com</span>
 </code></pre></div>
 <p>Note that the first part of the filename (in this case <em>example</em>
 defines the name of the site alias, and the top-level key <em>dev</em>
@@ -7609,24 +7609,24 @@ is really nothing more than a collection of options.</p>
 <li><strong>env-vars</strong>: An array of key / value pairs that will be set as environment variables.</li>
 </ul>
 <p>Complex example:</p>
-<div class="highlight"><pre><span></span><code># File: remote.site.yml
-live:
-  host: server.domain.com
-  user: www-admin
-  root: /other/path/to/drupal
-  uri: http://example.com
-  ssh:
-    options: &#39;-p 100&#39;
-  paths:
-    drush-script: &#39;/path/to/drush&#39;
-  env-vars:
-    PATH: /bin:/usr/bin:/home/www-admin/.composer/vendor/bin
-    DRUPAL_ENV: live
-  command:
-    site:
-      install:
-        options:
-          admin-password: &#39;secret-secret&#39;
+<div class="highlight"><pre><span></span><code><span class="c1"># File: remote.site.yml</span>
+<span class="nt">live</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">server.domain.com</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/other/path/to/drupal</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://example.com</span>
+<span class="w">  </span><span class="nt">ssh</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="s">'-p</span><span class="nv"> </span><span class="s">100'</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">drush-script</span><span class="p">:</span><span class="w"> </span><span class="s">'/path/to/drush'</span>
+<span class="w">  </span><span class="nt">env-vars</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">PATH</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/bin:/usr/bin:/home/www-admin/.composer/vendor/bin</span>
+<span class="w">    </span><span class="nt">DRUPAL_ENV</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">live</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">site</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">install</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">admin-password</span><span class="p">:</span><span class="w"> </span><span class="s">'secret-secret'</span>
 </code></pre></div>
 <h3 id="site-alias-files-for-service-providers">Site Alias Files for Service Providers<a class="headerlink" href="#site-alias-files-for-service-providers" title="Permanent link">&para;</a></h3>
 <p>There are a number of service providers that manage Drupal sites as a
@@ -7634,10 +7634,10 @@ service. Drush allows service providers to create collections of site alias
 files to reference all of the sites available to a single user. In order
 to do this, a new location must be defined in your Drush configuration
 file:</p>
-<div class="highlight"><pre><span></span><code>drush:
-  paths:
-    alias-path:
-      - &#39;${env.HOME}/.drush/sites/provider-name&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">alias-path</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/sites/provider-name'</span>
 </code></pre></div>
 <p>Site aliases stored in this directory may then be referenced by its
 full alias name, including its location, e.g.:
@@ -7664,12 +7664,12 @@ environment alias are identical save for the name of the environment in
 one or more values. The variable <code>${env-name}</code> will be substituted with the
 environment name wherever it appears.</p>
 <p>Example wildcard record:</p>
-<div class="highlight"><pre><span></span><code># File: remote-example.site.yml
-&#39;*&#39;:
-  host: ${env-name}.server.domain.com
-  user: www-admin
-  root: /path/to/${env-name}
-  uri: http://${env-name}.remote-example.com
+<div class="highlight"><pre><span></span><code><span class="c1"># File: remote-example.site.yml</span>
+<span class="s">'*'</span><span class="p p-Indicator">:</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${env-name}.server.domain.com</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">www-admin</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/${env-name}</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://${env-name}.remote-example.com</span>
 </code></pre></div>
 <p>With a wildcard record, any environment name may be used, and will always
 match. This is not desirable in instances where the specified environment
@@ -7680,39 +7680,39 @@ See <a href="https://www.drush.org/latest/examples/SiteAliasAlterCommands.php/">
 <p>The example below shows drush calling into a Docker hosted site. See the <a href="https://github.com/consolidation/site-alias">https://github.com/consolidation/site-alias</a> and <a href="https://github.com/consolidation/site-process">https://github.com/consolidation/site-process</a> projects for more developer
 information about transports. </p>
 <p>An example appears below. Edit to suit:</p>
-<div class="highlight"><pre><span></span><code># File: mysite.site.yml
-local:
-This environment is an example of the DockerCompose transport.
-  docker:
-    service: drupal
-    exec:
-      options: --user USER
-stage:
-  uri: http://stage.example.com
-  root: /path/to/remote/drupal/root
-  host: mystagingserver.myisp.com
-  user: publisher
-  os: Linux
-  paths:
-   - files: sites/mydrupalsite.com/files
-   - custom: /my/custom/path
-  command:
-    sql:
-      sync:
-        options:
-          no-dump: true
-dev:
-  root: /path/to/docroot
-  uri: https://dev.example.com
+<div class="highlight"><pre><span></span><code><span class="c1"># File: mysite.site.yml</span>
+<span class="nt">local</span><span class="p">:</span>
+<span class="l l-Scalar l-Scalar-Plain">This environment is an example of the DockerCompose transport.</span>
+<span class="w">  </span><span class="l l-Scalar l-Scalar-Plain">docker</span><span class="p p-Indicator">:</span>
+<span class="w">    </span><span class="nt">service</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">drupal</span>
+<span class="w">    </span><span class="nt">exec</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">--user USER</span>
+<span class="nt">stage</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://stage.example.com</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/remote/drupal/root</span>
+<span class="w">  </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mystagingserver.myisp.com</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">publisher</span>
+<span class="w">  </span><span class="nt">os</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Linux</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">files</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sites/mydrupalsite.com/files</span>
+<span class="w">   </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/my/custom/path</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">sql</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">sync</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">no-dump</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/docroot</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://dev.example.com</span>
 </code></pre></div>
 <h3 id="kubernetes">Kubernetes<a class="headerlink" href="#kubernetes" title="Permanent link">&para;</a></h3>
 <p>Drush provides transport for running drush commands on your Kubernetes cluster via <a href="https://kubernetes.io/docs/reference/kubectl/">kubectl</a>. See an example and options below.</p>
-<div class="highlight"><pre><span></span><code>prod: 
-  kubectl:
-    context: &quot;gke_production_cluster&quot;
-    namespace: &#39;my-drupal-namespace&#39;
-    resource: &#39;pods/my-drupal-pod&#39; 
-    container: &#39;drupal&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">prod</span><span class="p">:</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">kubectl</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">context</span><span class="p">:</span><span class="w"> </span><span class="s">"gke_production_cluster"</span>
+<span class="w">    </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="s">'my-drupal-namespace'</span>
+<span class="w">    </span><span class="nt">resource</span><span class="p">:</span><span class="w"> </span><span class="s">'pods/my-drupal-pod'</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">container</span><span class="p">:</span><span class="w"> </span><span class="s">'drupal'</span>
 </code></pre></div>
 <h4 id="key-options">Key options<a class="headerlink" href="#key-options" title="Permanent link">&para;</a></h4>
 <ul>
@@ -7736,15 +7736,15 @@ it is not possible to set default arguments in an alias record. The
 <code>drush rsync</code> command does support two options, <code>--mode</code> and <code>--exclude-paths</code>,
 which are interpreted directly by Drush. Default values for these options
 may be specified in an alias record, as shown below.</p>
-<div class="highlight"><pre><span></span><code>dev:
-  root: /path/to/docroot
-  uri: https://dev.example.com
-  command:
-    core:
-      rsync:
-        options:
-          mode: rlptz
-          exclude-paths: &#39;css:imagecache:ctools:js:tmp:php:styles&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">root</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/docroot</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://dev.example.com</span>
+<span class="w">  </span><span class="nt">command</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">core</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">rsync</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rlptz</span>
+<span class="w">          </span><span class="nt">exclude-paths</span><span class="p">:</span><span class="w"> </span><span class="s">'css:imagecache:ctools:js:tmp:php:styles'</span>
 </code></pre></div>
 
 

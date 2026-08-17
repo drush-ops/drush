@@ -7452,8 +7452,8 @@ high quality, our tests are run on every push. See <a href="https://circleci.com
 <p>Once you successfully have <code>use Drush\TestTraits\DrushTestTrait</code> in your test class, you are able to write simple tests that call your extension's commands and makes assertions against the output.
 <div class="highlight"><pre><span></span><code>    <span class="k">public</span> <span class="k">function</span> <span class="nf">testMyCommand</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">drush</span><span class="p">(</span><span class="s1">&#39;my:command&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;param&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;flag&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;value&#39;</span><span class="p">]);</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertOutputEquals</span><span class="p">(</span><span class="s1">&#39;The parameter is &quot;param&quot; and the &quot;flag&quot; option is &quot;value&quot;&#39;</span><span class="p">);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">drush</span><span class="p">(</span><span class="s1">'my:command'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'param'</span><span class="p">],</span> <span class="p">[</span><span class="s1">'flag'</span> <span class="o">=&gt;</span> <span class="s1">'value'</span><span class="p">]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertOutputEquals</span><span class="p">(</span><span class="s1">'The parameter is "param" and the "flag" option is "value"'</span><span class="p">);</span>
     <span class="p">}</span>
 </code></pre></div></p>
 
