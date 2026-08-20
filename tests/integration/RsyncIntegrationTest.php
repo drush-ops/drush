@@ -38,6 +38,16 @@ class RsyncIntegrationTest extends UnishIntegrationTestCase
         $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/stage /path/to/dev";
         $this->assertErrorOutputContains($expected);
 
+        // Test source docker rsync with two local sites
+        $this->drush(RsyncCommands::RSYNC, ['@example.stage-docker', '@example.dev'], $options, self::EXIT_SUCCESS, '');
+        $expected = "[notice] Simulating: rsync -e 'docker-compose -H ssh://user@host -p project exec -i' -akz php:/path/to/stage /path/to/dev";
+        $this->assertErrorOutputContains($expected);
+
+        // Test source docker rsync with two local sites
+        $this->drush(RsyncCommands::RSYNC, ['@example.dev', '@example.stage-docker'], $options, self::EXIT_SUCCESS, '');
+        $expected = "[notice] Simulating: rsync -e 'docker-compose -H ssh://user@host -p project exec -i' -akz /path/to/dev php:/path/to/stage";
+        $this->assertErrorOutputContains($expected);
+
         // Test simulated rsync with relative paths
         $this->drush(RsyncCommands::RSYNC, ['@example.dev:files', '@example.stage:files'], $options, self::EXIT_SUCCESS, '');
         $expected = "[notice] Simulating: rsync -e 'ssh ' -akz /path/to/dev/files /path/to/stage/files";
