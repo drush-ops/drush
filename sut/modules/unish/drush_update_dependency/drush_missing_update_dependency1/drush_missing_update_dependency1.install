@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Provides install and update functions for drush_missing_update_dependency1.
+ */
+
+/**
+ * Update hook 1.
+ */
+function drush_missing_update_dependency1_update_8001() {
+  return 'The first update ran';
+}
+
+/**
+ * Update hook 2.
+ */
+function drush_missing_update_dependency1_update_8002() {
+  return 'The second update ran';
+}
