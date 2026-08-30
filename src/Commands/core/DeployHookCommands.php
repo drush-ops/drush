@@ -20,6 +20,8 @@ use Drush\Exceptions\UserAbortException;
 use Drush\Log\SuccessInterface;
 use Psr\Log\LogLevel;
 
+use function OpenTelemetry\Instrumentation\hook;
+
 final class DeployHookCommands extends DrushCommands
 {
     use AutowireTrait;
@@ -28,6 +30,10 @@ final class DeployHookCommands extends DrushCommands
     const HOOK = 'deploy:hook';
     const BATCH_PROCESS = 'deploy:batch-process';
     const MARK_COMPLETE = 'deploy:mark-complete';
+    const HOOK_LIST = 'deploy:hook-list';
+    const HOOK_UNSET =   'deploy:hook-unset';
+    const UPDATE_TYPE = '_deploy_';
+    const HOOK_REDEPLOY = 'deploy:redeploy';
 
     public function __construct(
         private readonly SiteAliasManagerInterface $siteAliasManager
@@ -119,38 +125,7 @@ final class DeployHookCommands extends DrushCommands
             throw new UserAbortException();
         }
 
-        $success = true;
-        if (!$this->getConfig()->simulate()) {
-            $operations = [];
-            foreach ($pending as $function) {
-                $operations[] = ['\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook', [$function]];
-            }
-
-            $batch = [
-                'operations' => $operations,
-                'title' => 'Updating',
-                'init_message' => 'Starting deploy hooks',
-                'error_message' => 'An unrecoverable error has occurred. You can find the error message below. It is advised to copy it to the clipboard for reference.',
-                'finished' => [$this, 'updateFinished'],
-            ];
-            batch_set($batch);
-            $result = drush_backend_batch_process(self::BATCH_PROCESS);
-
-            $success = false;
-            if (!is_array($result)) {
-                $this->logger()->error(dt('Batch process did not return a result array. Returned: !type', ['!type' => gettype($result)]));
-            } elseif (!empty($result[0]['#abort'])) {
-                // Whenever an error occurs the batch process does not continue, so
-                // this array should only contain a single item, but we still output
-                // all available data for completeness.
-                $this->logger()->error(dt('Update aborted by: !process', [
-                    '!process' => implode(', ', $result[0]['#abort']),
-                ]));
-            } else {
-                $success = true;
-            }
-        }
-
+        $success = $this->batchOperation($pending);
         $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
         $this->logger()->log($level, dt('Finished performing deploy hooks.'));
         return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
@@ -282,5 +257,202 @@ final class DeployHookCommands extends DrushCommands
 
         $this->logger()->success(dt('Marked %count pending deploy hooks as complete.', ['%count' => count($pending)]));
         return self::EXIT_SUCCESS;
+    }
+
+  /**
+   * Prints information about deployed hooks.
+   *
+   * @return \Consolidation\OutputFormatters\StructuredData\RowsOfFields
+   */
+    #[CLI\Command(name: self::HOOK_LIST)]
+    #[CLI\Usage(name: 'drush deploy:hook-list', description: 'Prints information about deployed hooks.')]
+    #[CLI\FieldLabels(labels: [
+    'module'      => 'Module',
+    'hook'        => 'Hook',
+    ])]
+    #[CLI\DefaultTableFields(fields: ['module', 'hook'])]
+    #[CLI\FilterDefaultField(field: 'hook')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function list(): RowsOfFields
+    {
+        $update_functions = $this->getDeployedHooks();
+
+        $updates = [];
+        foreach ($update_functions as $function) {
+          // Validate function name format.
+            if (!str_contains($function, self::UPDATE_TYPE)) {
+                $this->logger()->warning("Skipping invalid hook function: {function}", ['function' => $function]);
+                continue;
+            }
+
+          // Split function name into extension and update.
+            [$extension, $update] = explode(self::UPDATE_TYPE, $function);
+            if (empty($extension) || empty($update)) {
+                $this->logger()->warning("Invalid hook function format: {function}", ['function' => $function]);
+                continue;
+            }
+
+          // Store the update data.
+            $updates[$extension]['deployed'][$update] = true;
+            if (!isset($updates[$extension]['start'])) {
+                $updates[$extension]['start'] = $update;
+            }
+        }
+        $rows = [];
+        foreach ($updates as $module => $update_data) {
+            foreach ($update_data['deployed'] as $hook => $value) {
+                $rows[] = [
+                'module' => $module,
+                'hook' => $hook,
+                ];
+            }
+        }
+        return new RowsOfFields($rows);
+    }
+
+  /**
+   * Unsets a hook from the deployed hooks list.
+   *
+   * @param string $hook_name The name of the hook to remove (e.g., hook_deploy_NAME)
+   *
+   * @return int Exit code
+   */
+    #[CLI\Command(name: self::HOOK_UNSET)]
+    #[CLI\Argument(name: 'hook_name', description: 'The name of the hook to remove (e.g., hook_deploy_NAME)')]
+    #[CLI\Usage(
+        name: 'drush deploy:hook-unset hook_deploy_NAME',
+        description: 'Removes the specified hook from the deployed hooks list'
+    )]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function unset(string $hook_name): int
+    {
+        $deployed_hooks = $this->getDeployedHooks();
+        // Check if the hook exists.
+        if (!in_array($hook_name, $deployed_hooks, true)) {
+            $this->logger()->warning("Hook {hook} not found in deployed hooks.", [
+              'hook' => $hook_name
+            ]);
+            return self::EXIT_SUCCESS;
+        }
+        // Remove the hook from the list.
+        $update_functions = array_filter($deployed_hooks, function ($function) use ($hook_name) {
+            return $function !== $hook_name;
+        });
+
+        // Update the deployed hook list.
+        \Drupal::service('keyvalue')->get('deploy_hook')->set('existing_updates', $update_functions);
+        $this->logger()->success(dt('Hook !hook_name removed from deployed hooks list.', [
+        '!hook_name' => $hook_name
+        ]));
+        return self::EXIT_SUCCESS;
+    }
+
+  /**
+   * Redeploys a hook.
+   *
+   * @param string $hook_name
+   * The name of the hook to redeploy (e.g., hook_deploy_NAME)
+   *
+   * @return int
+   *  Exit code.
+   * @throws \Drush\Exceptions\UserAbortException
+   */
+    #[CLI\Command(name: self::HOOK_REDEPLOY)]
+    #[CLI\Argument(name: 'hook_name', description: 'The name of the hook to redeploy (e.g., hook_deploy_NAME)')]
+    #[CLI\Usage(
+        name: 'drush deploy:redeploy hook_deploy_NAME',
+        description: 'Redeploys the specified hook'
+    )]
+    #[CLI\Version(version: '10.3')]
+    #[CLI\Topics(topics: [DocsCommands::DEPLOY])]
+    #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
+    public function redeploy(string $hook_name): int
+    {
+        $deployed_hooks = $this->getDeployedHooks();
+        if (!in_array($hook_name, $deployed_hooks)) {
+            $this->logger()->success("Hook {$hook_name} not found in deployed hooks.", [
+              'hook' => $hook_name
+            ]);
+            return self::EXIT_SUCCESS;
+        }
+
+        if (!$this->io()->confirm(dt('Do you wish to run the specified deployed hooks?'))) {
+            throw new UserAbortException();
+        }
+        // Build and run the batch process.
+        $success = $this->batchOperation([$hook_name]);
+        $level = $success ? SuccessInterface::SUCCESS : LogLevel::ERROR;
+        $this->logger()->log($level, dt('Finished performing re-deploy hooks.'));
+        return $success ? self::EXIT_SUCCESS : self::EXIT_FAILURE;
+    }
+
+
+  /**
+   * Get all deployed hooks.
+   *
+   * @return array
+   */
+    public function getDeployedHooks(): array
+    {
+        $store = \Drupal::service('keyvalue')->get('deploy_hook');
+        return $store->get('existing_updates', []);
+    }
+
+  /**
+   * Build the batch process to run the deployment hooks.
+   *
+   * @param array<int, string> $hooks
+   * An array of function names to be executed as deploy hooks.
+   *
+   * @return bool
+   * TRUE if the batch process was started successfully, FALSE otherwise.
+   */
+    public function batchOperation(array $hooks): bool
+    {
+        $success = true;
+        if (!$this->getConfig()->simulate()) {
+            $operations = [];
+            foreach ($hooks as $function) {
+                $operations[]
+                = [
+                '\Drush\Commands\core\DeployHookCommands::updateDoOneDeployHook',
+                [$function]
+                ];
+            }
+
+            $batch = [
+            'operations'    => $operations,
+            'title'         => 'Updating',
+            'init_message'  => 'Starting deploy hooks',
+            'error_message' => 'An unrecoverable error has occurred. You can find the error message below. 
+            It is advised to copy it to the clipboard for reference.',
+            'finished'      => [$this, 'updateFinished'],
+            ];
+            batch_set($batch);
+            $result = drush_backend_batch_process(self::BATCH_PROCESS);
+
+            $success = false;
+            if (!is_array($result)) {
+                $this->logger()->error(
+                    dt(
+                        'Batch process did not return a result array. Returned: !type',
+                        ['!type' => gettype($result)]
+                    )
+                );
+            } elseif (!empty($result[0]['#abort'])) {
+              // Whenever an error occurs, the batch process does not continue, so
+              // this array should only contain a single item, but we still output
+              // all available data for completeness.
+                $this->logger()->error(dt('Update aborted by: !process', [
+                '!process' => implode(', ', $result[0]['#abort']),
+                ]));
+            } else {
+                $success = true;
+            }
+        }
+
+        return $success;
     }
 }
