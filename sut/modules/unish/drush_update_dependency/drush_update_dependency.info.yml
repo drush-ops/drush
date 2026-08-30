@@ -1,0 +1,6 @@
+name: Drush update dependency
+type: module
+description: Module with hook_update_dependencies() entry.
+core_version_requirement: '>=8'
+package: Other
+dependencies: []
