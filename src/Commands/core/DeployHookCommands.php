@@ -61,6 +61,12 @@ final class DeployHookCommands extends DrushCommands
                 $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
                 $this->keyValue = $key_value_factory->get('deploy_hook');
                 $this->updateType = 'deploy';
+                // Drupal 11.5+ adds a typed $memoryCache property that the
+                // parent constructor would normally set. Older core has
+                // neither the property nor the cache.memory service.
+                if (property_exists(UpdateRegistry::class, 'memoryCache')) {
+                    $this->memoryCache = \Drupal::service('cache.memory');
+                }
             }
         };
     }
