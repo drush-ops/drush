@@ -7415,20 +7415,20 @@
 <span class="c1"># Preflight configuration.</span>
 <span class="nt">drush</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">include</span><span class="p">:</span>
-<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;${env.HOME}/.drush/commands&#39;</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/commands'</span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/usr/share/drush/commands</span>
 <span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">config</span><span class="p">:</span>
 <span class="w">      </span><span class="c1"># Load additional config files. Is silently skipped if not found. Filename must be drush.yml</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${env.HOME}/.drush/config/drush.yml</span>
 <span class="w">    </span><span class="nt">alias-path</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;${env.HOME}/.drush/sites&#39;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/sites'</span>
 <span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/drush/sites</span>
 
 <span class="c1"># Global options.</span>
 <span class="nt">options</span><span class="p">:</span>
 <span class="w">  </span><span class="c1"># Specify the base_url that should be used when generating links.</span>
-<span class="w">  </span><span class="c1"># uri: &#39;https://example.com/subdir&#39;</span>
+<span class="w">  </span><span class="c1"># uri: 'https://example.com/subdir'</span>
 
 <span class="c1"># Command-specific options.</span>
 <span class="nt">command</span><span class="p">:</span>
@@ -7451,9 +7451,9 @@
 <span class="w">  </span><span class="c1"># Specify options to pass to ssh.  The default is to prohibit</span>
 <span class="w">  </span><span class="c1"># password authentication, and is included here, so you may add additional</span>
 <span class="w">  </span><span class="c1"># parameters without losing the default configuration.</span>
-<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;-o</span><span class="nv"> </span><span class="s">PasswordAuthentication=no&#39;</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="s">'-o</span><span class="nv"> </span><span class="s">PasswordAuthentication=no'</span>
 <span class="w">  </span><span class="c1"># This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.</span>
-<span class="w">  </span><span class="nt">pipefail</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;set</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">pipefail;</span><span class="nv"> </span><span class="s">&#39;</span>
+<span class="w">  </span><span class="nt">pipefail</span><span class="p">:</span><span class="w"> </span><span class="s">'set</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">pipefail;</span><span class="nv"> </span><span class="s">'</span>
 </code></pre></div>
 
 

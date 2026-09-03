@@ -7478,21 +7478,21 @@
 <p>First, the command must implement CustomEventAwareInterface and use CustomEventAwareTrait, as described in the <a href="../dependency-injection/#inflection">dependency injection</a> documentation.</p>
 <p>Then, the command may ask the provided hook manager to return a list of handlers with a certain attribute. In the example below, the <code>my-event</code> label is used:
 <div class="highlight"><pre><span></span><code>    <span class="sd">/**</span>
-<span class="sd">     * This command uses a custom event &#39;my-event&#39; to collect data.  Note that</span>
+<span class="sd">     * This command uses a custom event 'my-event' to collect data.  Note that</span>
 <span class="sd">     * the event handlers will not be found unless the hook manager is</span>
 <span class="sd">     * injected into this command handler object via `setHookManager()`</span>
 <span class="sd">     * (defined in CustomEventAwareTrait).</span>
 <span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;example:command&#39;</span><span class="p">)]</span>  
+    <span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'example:command'</span><span class="p">)]</span>  
     <span class="k">public</span> <span class="k">function</span> <span class="nf">exampleCommand</span><span class="p">()</span>
     <span class="p">{</span>
-        <span class="nv">$myEventHandlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">&#39;my-event&#39;</span><span class="p">);</span>
+        <span class="nv">$myEventHandlers</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getCustomEventHandlers</span><span class="p">(</span><span class="s1">'my-event'</span><span class="p">);</span>
         <span class="nv">$result</span> <span class="o">=</span> <span class="p">[];</span>
         <span class="k">foreach</span> <span class="p">(</span><span class="nv">$myEventHandlers</span> <span class="k">as</span> <span class="nv">$handler</span><span class="p">)</span> <span class="p">{</span>
             <span class="nv">$result</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$handler</span><span class="p">();</span>
         <span class="p">}</span>
         <span class="nb">sort</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
-        <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">);</span>
+        <span class="k">return</span> <span class="nb">implode</span><span class="p">(</span><span class="s1">','</span><span class="p">,</span> <span class="nv">$result</span><span class="p">);</span>
     <span class="p">}</span>
 </code></pre></div></p>
 <p>Other commandfiles may provide implementations via a PHP8 Attribute or an Annotation.</p>
@@ -7500,11 +7500,11 @@
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="sd">/**</span>
-<span class="sd"> * #[CLI\Hook(type: HookManager::ON_EVENT, target: &#39;my-event&#39;)]</span>
+<span class="sd"> * #[CLI\Hook(type: HookManager::ON_EVENT, target: 'my-event')]</span>
 <span class="sd"> */</span>
 <span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="s1">'one'</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>
@@ -7514,7 +7514,7 @@
 <span class="sd"> */</span>
 <span class="k">public</span> <span class="k">function</span> <span class="nf">hookOne</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="k">return</span> <span class="s1">&#39;one&#39;</span><span class="p">;</span>
+    <span class="k">return</span> <span class="s1">'one'</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div>
 </div>

@@ -7435,30 +7435,30 @@
     <span class="sd">/**</span>
 <span class="sd">     * A few example alterations to site aliases.</span>
 <span class="sd">     */</span>
-    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_INITIALIZE</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">&#39;*&#39;</span><span class="p">)]</span>
+    <span class="p">#[</span><span class="nd">CLI\Hook</span><span class="p">(</span><span class="nx">type</span><span class="o">:</span> <span class="nx">HookManager</span><span class="o">::</span><span class="na">PRE_INITIALIZE</span><span class="p">,</span> <span class="nx">target</span><span class="o">:</span> <span class="s1">'*'</span><span class="p">)]</span>
     <span class="k">public</span> <span class="k">function</span> <span class="nf">alter</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">AnnotationData</span> <span class="nv">$annotationData</span><span class="p">)</span>
     <span class="p">{</span>
         <span class="nv">$self</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">siteAliasManager</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
         <span class="k">if</span> <span class="p">(</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">isRemote</span><span class="p">())</span> <span class="p">{</span>
             <span class="c1">// Always pass along ssh keys.</span>
-            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">&#39;ssh.options&#39;</span><span class="p">))</span> <span class="p">{</span>
-                <span class="c1">// Don&#39;t edit the alias - edit the general config service instead.</span>
-                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getConfig</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">&#39;ssh.options&#39;</span><span class="p">,</span> <span class="s1">&#39;-o ForwardAgent=yes&#39;</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">'ssh.options'</span><span class="p">))</span> <span class="p">{</span>
+                <span class="c1">// Don't edit the alias - edit the general config service instead.</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">getConfig</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">set</span><span class="p">(</span><span class="s1">'ssh.options'</span><span class="p">,</span> <span class="s1">'-o ForwardAgent=yes'</span><span class="p">);</span>
             <span class="p">}</span>
 
             <span class="c1">// Change the SSH user.</span>
-            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">&#39;remote-user&#39;</span><span class="p">,</span> <span class="s1">&#39;mw2&#39;</span><span class="p">);</span>
+            <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">setOption</span><span class="p">(</span><span class="s1">'remote-user'</span><span class="p">,</span> <span class="s1">'mw2'</span><span class="p">);</span>
 
             <span class="c1">// Test to see if specific environment really exists in wildcard</span>
             <span class="c1">// aliases, but only if the target is a specific host.</span>
-            <span class="nv">$host</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;host&#39;</span><span class="p">);</span>
-            <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s1">&#39;#\.myserver.com$#&#39;</span><span class="p">,</span> <span class="nv">$host</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$host</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'host'</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">preg_match</span><span class="p">(</span><span class="s1">'#\.myserver.com$#'</span><span class="p">,</span> <span class="nv">$host</span><span class="p">))</span> <span class="p">{</span>
                 <span class="nv">$ip</span> <span class="o">=</span> <span class="nb">gethostbyname</span><span class="p">(</span><span class="nv">$host</span><span class="p">);</span>
                 <span class="c1">// If the return value of gethostbyname equals its input parameter,</span>
                 <span class="c1">// that indicates failure.</span>
                 <span class="k">if</span> <span class="p">(</span><span class="nv">$host</span> <span class="o">==</span> <span class="nv">$ip</span><span class="p">)</span> <span class="p">{</span>
                     <span class="nv">$aliasName</span> <span class="o">=</span> <span class="nv">$self</span><span class="o">-&gt;</span><span class="na">name</span><span class="p">();</span>
-                    <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="s2">&quot;The alias </span><span class="si">$aliasName</span><span class="s2"> refers to an environment that does not exist.&quot;</span><span class="p">);</span>
+                    <span class="k">throw</span> <span class="k">new</span> <span class="nx">\Exception</span><span class="p">(</span><span class="s2">"The alias </span><span class="si">$aliasName</span><span class="s2"> refers to an environment that does not exist."</span><span class="p">);</span>
                 <span class="p">}</span>
             <span class="p">}</span>
         <span class="p">}</span>

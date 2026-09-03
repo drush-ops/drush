@@ -7500,7 +7500,7 @@
 
     <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">create</span><span class="p">(</span><span class="nx">Psr\Container\ContainerInterface</span> <span class="nv">$container</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
     <span class="p">{</span>
-        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;config.factory&#39;</span><span class="p">));</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="k">static</span><span class="p">(</span><span class="nv">$container</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'config.factory'</span><span class="p">));</span>
     <span class="p">}</span>
 </code></pre></div>
 See the <a href="https://www.drupal.org/docs/drupal-apis/services-and-dependency-injection/services-and-dependency-injection-in-drupal-8#s-injecting-dependencies-into-controllers-forms-and-blocks">Drupal Documentation</a> for details on how to inject Drupal services into your command file. This approach mimics Drupal's blocks, forms, and controllers.</p>

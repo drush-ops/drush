@@ -7537,19 +7537,19 @@
 
 <span class="p">#[</span><span class="nd">AsCommand</span><span class="p">(</span>
     <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="o">::</span><span class="na">NAME</span><span class="p">,</span>
-    <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Find potentially unused Twig templates.&#39;</span><span class="p">,</span>
-    <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;twu&#39;</span><span class="p">],</span>
+    <span class="nx">description</span><span class="o">:</span> <span class="s1">'Find potentially unused Twig templates.'</span><span class="p">,</span>
+    <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">'twu'</span><span class="p">],</span>
 <span class="p">)]</span>
-<span class="p">#[</span><span class="nd">CLI\FieldLabels</span><span class="p">(</span><span class="nx">labels</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;template&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Template&#39;</span><span class="p">,</span> <span class="s1">&#39;compiled&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;Compiled&#39;</span><span class="p">])]</span>
-<span class="p">#[</span><span class="nd">CLI\DefaultTableFields</span><span class="p">(</span><span class="nx">fields</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;template&#39;</span><span class="p">,</span> <span class="s1">&#39;compiled&#39;</span><span class="p">])]</span>
-<span class="p">#[</span><span class="nd">CLI\FilterDefaultField</span><span class="p">(</span><span class="nx">field</span><span class="o">:</span> <span class="s1">&#39;template&#39;</span><span class="p">)]</span>
-<span class="p">#[</span><span class="nd">CLI\Formatter</span><span class="p">(</span><span class="nx">returnType</span><span class="o">:</span> <span class="nx">RowsOfFields</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nx">defaultFormatter</span><span class="o">:</span> <span class="s1">&#39;table&#39;</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\FieldLabels</span><span class="p">(</span><span class="nx">labels</span><span class="o">:</span> <span class="p">[</span><span class="s1">'template'</span> <span class="o">=&gt;</span> <span class="s1">'Template'</span><span class="p">,</span> <span class="s1">'compiled'</span> <span class="o">=&gt;</span> <span class="s1">'Compiled'</span><span class="p">])]</span>
+<span class="p">#[</span><span class="nd">CLI\DefaultTableFields</span><span class="p">(</span><span class="nx">fields</span><span class="o">:</span> <span class="p">[</span><span class="s1">'template'</span><span class="p">,</span> <span class="s1">'compiled'</span><span class="p">])]</span>
+<span class="p">#[</span><span class="nd">CLI\FilterDefaultField</span><span class="p">(</span><span class="nx">field</span><span class="o">:</span> <span class="s1">'template'</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Formatter</span><span class="p">(</span><span class="nx">returnType</span><span class="o">:</span> <span class="nx">RowsOfFields</span><span class="o">::</span><span class="na">class</span><span class="p">,</span> <span class="nx">defaultFormatter</span><span class="o">:</span> <span class="s1">'table'</span><span class="p">)]</span>
 <span class="k">final</span> <span class="k">class</span> <span class="nc">TwigUnusedCommand</span> <span class="k">extends</span> <span class="nx">Command</span>
 <span class="p">{</span>
     <span class="k">use</span> <span class="nx">AutowireTrait</span><span class="p">;</span>
     <span class="k">use</span> <span class="nx">FormatterTrait</span><span class="p">;</span>    
 
-    <span class="k">public</span> <span class="k">const</span> <span class="no">NAME</span> <span class="o">=</span> <span class="s1">&#39;twig:unused&#39;</span><span class="p">;</span>    
+    <span class="k">public</span> <span class="k">const</span> <span class="no">NAME</span> <span class="o">=</span> <span class="s1">'twig:unused'</span><span class="p">;</span>    
 
     <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
         <span class="k">protected</span> <span class="k">readonly</span> <span class="nx">FormatterManager</span> <span class="nv">$formatterManager</span><span class="p">,</span>
@@ -7561,20 +7561,20 @@
 
     <span class="nd">protected</span> <span class="nd">function</span> <span class="nd">configure</span><span class="p">()</span><span class="o">:</span> <span class="nd">void</span> <span class="p">{</span>
         <span class="nv">$this</span>
-            <span class="o">-&gt;</span><span class="na">setHelp</span><span class="p">(</span><span class="s1">&#39;Immediately before running this command, web crawl your entire web site.&#39;</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="s1">&#39;searchpaths&#39;</span><span class="p">,</span> <span class="nx">InputArgument</span><span class="o">::</span><span class="na">REQUIRED</span><span class="p">,</span> <span class="s1">&#39;A comma delimited list of paths to recursively search.&#39;</span><span class="p">)</span>
-            <span class="o">-&gt;</span><span class="na">addUsage</span><span class="p">(</span><span class="s1">&#39;twig:unused /var/www/mass.local/docroot/modules/custom&#39;</span><span class="p">);</span>
+            <span class="o">-&gt;</span><span class="na">setHelp</span><span class="p">(</span><span class="s1">'Immediately before running this command, web crawl your entire web site.'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addArgument</span><span class="p">(</span><span class="s1">'searchpaths'</span><span class="p">,</span> <span class="nx">InputArgument</span><span class="o">::</span><span class="na">REQUIRED</span><span class="p">,</span> <span class="s1">'A comma delimited list of paths to recursively search.'</span><span class="p">)</span>
+            <span class="o">-&gt;</span><span class="na">addUsage</span><span class="p">(</span><span class="s1">'twig:unused /var/www/mass.local/docroot/modules/custom'</span><span class="p">);</span>
     <span class="p">}</span>    
 
     <span class="nd">public</span> <span class="nd">function</span> <span class="nd">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span><span class="o">:</span> <span class="nd">int</span> <span class="p">{</span>
-        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doExecute</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">,</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">&#39;searchpaths&#39;</span><span class="p">));</span>
+        <span class="nv">$data</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doExecute</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">,</span> <span class="nv">$input</span><span class="o">-&gt;</span><span class="na">getArgument</span><span class="p">(</span><span class="s1">'searchpaths'</span><span class="p">));</span>
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">writeFormattedOutput</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
         <span class="nd">return</span> <span class="nd">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
     <span class="p">}</span>    
 
     <span class="nd">public</span> <span class="nd">function</span> <span class="nd">doExecute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">,</span> <span class="nx">string</span> <span class="nv">$searchpaths</span><span class="p">)</span><span class="o">:</span> <span class="nd">RowsOfFields</span>
     <span class="p">{</span>
-        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">notice</span><span class="p">(</span><span class="s1">&#39;Found {count} unused&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;count&#39;</span> <span class="o">=&gt;</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$rows</span><span class="p">)]);</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">logger</span><span class="o">-&gt;</span><span class="na">notice</span><span class="p">(</span><span class="s1">'Found {count} unused'</span><span class="p">,</span> <span class="p">[</span><span class="s1">'count'</span> <span class="o">=&gt;</span> <span class="nb">count</span><span class="p">(</span><span class="nv">$rows</span><span class="p">)]);</span>
         <span class="nd">return</span> <span class="nd">new</span> <span class="nd">RowsOfFields</span><span class="p">(</span><span class="nv">$unused</span><span class="p">);</span>
     <span class="p">}</span>
 </code></pre></div>
@@ -7585,13 +7585,13 @@
 <span class="sd">/**</span>
 <span class="sd"> * Retrieve and display xkcd cartoons</span>
 <span class="sd"> */</span>
-<span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;xkcd:fetch&#39;</span><span class="p">,</span> <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;xkcd&#39;</span><span class="p">])]</span>
-<span class="p">#[</span><span class="nd">CLI\Argument</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;search&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Optional argument to retrieve the cartoons matching an index, keyword, or &quot;random&quot;.&#39;</span><span class="p">)]</span>
-<span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;image-viewer&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Command to use to view images (e.g. xv, firefox).&#39;</span><span class="p">,</span> <span class="nx">suggestedValues</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;xv&#39;</span><span class="p">,</span> <span class="s1">&#39;firefox&#39;</span><span class="p">])]</span>
-<span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Google Custom Search API Key&#39;</span><span class="p">)]</span>
-<span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display the latest cartoon&#39;</span><span class="p">)]</span>
-<span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;drush xkcd sandwich&#39;</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;Retrieve and display cartoons about sandwiches.&#39;</span><span class="p">)]</span>
-<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
+<span class="p">#[</span><span class="nd">CLI\Command</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'xkcd:fetch'</span><span class="p">,</span> <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">'xkcd'</span><span class="p">])]</span>
+<span class="p">#[</span><span class="nd">CLI\Argument</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'search'</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">'Optional argument to retrieve the cartoons matching an index, keyword, or "random".'</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'image-viewer'</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">'Command to use to view images (e.g. xv, firefox).'</span><span class="p">,</span> <span class="nx">suggestedValues</span><span class="o">:</span> <span class="p">[</span><span class="s1">'open'</span><span class="p">,</span> <span class="s1">'xv'</span><span class="p">,</span> <span class="s1">'firefox'</span><span class="p">])]</span>
+<span class="p">#[</span><span class="nd">CLI\Option</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'google-custom-search-api-key'</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">'Google Custom Search API Key'</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'drush xkcd'</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">'Retrieve and display the latest cartoon'</span><span class="p">)]</span>
+<span class="p">#[</span><span class="nd">CLI\Usage</span><span class="p">(</span><span class="nx">name</span><span class="o">:</span> <span class="s1">'drush xkcd sandwich'</span><span class="p">,</span> <span class="nx">description</span><span class="o">:</span> <span class="s1">'Retrieve and display cartoons about sandwiches.'</span><span class="p">)]</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'image-viewer'</span> <span class="o">=&gt;</span> <span class="s1">'open'</span><span class="p">,</span> <span class="s1">'google-custom-search-api-key'</span> <span class="o">=&gt;</span> <span class="s1">'AIza'</span><span class="p">])</span> <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7599,7 +7599,7 @@
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="sd">/**</span>
 <span class="sd"> * @command xkcd:fetch</span>
-<span class="sd"> * @param $search Optional argument to retrieve the cartoons matching an index number, keyword, or &quot;random&quot;.</span>
+<span class="sd"> * @param $search Optional argument to retrieve the cartoons matching an index number, keyword, or "random".</span>
 <span class="sd"> * @option image-viewer Command to use to view images (e.g. xv, firefox).</span>
 <span class="sd"> * @option google-custom-search-api-key Google Custom Search API Key.</span>
 <span class="sd"> * @usage drush xkcd</span>
@@ -7608,7 +7608,7 @@
 <span class="sd"> *   Retrieve and display cartoons about sandwiches.</span>
 <span class="sd"> * @aliases xkcd</span>
 <span class="sd">*/</span>
-<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;image-viewer&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;google-custom-search-api-key&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;AIza&#39;</span><span class="p">])</span> <span class="p">{</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">fetch</span><span class="p">(</span><span class="nv">$search</span> <span class="o">=</span> <span class="k">null</span><span class="p">,</span> <span class="nv">$options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'image-viewer'</span> <span class="o">=&gt;</span> <span class="s1">'open'</span><span class="p">,</span> <span class="s1">'google-custom-search-api-key'</span> <span class="o">=&gt;</span> <span class="s1">'AIza'</span><span class="p">])</span> <span class="p">{</span>
     <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">doFetch</span><span class="p">(</span><span class="nv">$search</span><span class="p">,</span> <span class="nv">$options</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7626,27 +7626,27 @@
 
 <span class="p">#[</span><span class="nd">AsCommand</span><span class="p">(</span>
   <span class="nx">name</span><span class="o">:</span> <span class="nx">self</span><span class="o">::</span><span class="na">NAME</span><span class="p">,</span>
-  <span class="nx">description</span><span class="o">:</span> <span class="s1">&#39;This command will concatenate two parameters.&#39;</span><span class="p">,</span>
-  <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;my-cat&#39;</span><span class="p">],</span>
-  <span class="nx">help</span><span class="o">:</span> <span class="s1">&#39;If the --flip flag is provided, then the result is the concatenation of two and one.&#39;</span><span class="p">,</span>
-  <span class="nx">usages</span><span class="o">:</span> <span class="p">[</span><span class="s1">&#39;bet alpha --flip&#39;</span><span class="p">],</span>
+  <span class="nx">description</span><span class="o">:</span> <span class="s1">'This command will concatenate two parameters.'</span><span class="p">,</span>
+  <span class="nx">aliases</span><span class="o">:</span> <span class="p">[</span><span class="s1">'my-cat'</span><span class="p">],</span>
+  <span class="nx">help</span><span class="o">:</span> <span class="s1">'If the --flip flag is provided, then the result is the concatenation of two and one.'</span><span class="p">,</span>
+  <span class="nx">usages</span><span class="o">:</span> <span class="p">[</span><span class="s1">'bet alpha --flip'</span><span class="p">],</span>
 <span class="p">)]</span>
 <span class="k">final</span> <span class="k">class</span> <span class="nc">MyCatCommand</span> <span class="p">{</span>
 
-  <span class="k">const</span> <span class="no">NAME</span> <span class="o">=</span> <span class="s1">&#39;my:cat&#39;</span><span class="p">;</span>
+  <span class="k">const</span> <span class="no">NAME</span> <span class="o">=</span> <span class="s1">'my:cat'</span><span class="p">;</span>
 
   <span class="k">public</span> <span class="k">function</span> <span class="fm">__invoke</span><span class="p">(</span>
     <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">,</span>
-    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">&#39;The first parameter.&#39;</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$one</span><span class="p">,</span>
-    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">&#39;The second parameter.&#39;</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$two</span><span class="p">,</span>
-    <span class="p">#[</span><span class="nd">Option</span><span class="p">(</span><span class="s1">&#39;Whether or not the second parameter should come first in the result&#39;</span><span class="p">)]</span> <span class="nx">bool</span> <span class="nv">$flip</span> <span class="o">=</span> <span class="k">FALSE</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">'The first parameter.'</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$one</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Argument</span><span class="p">(</span><span class="s1">'The second parameter.'</span><span class="p">)]</span> <span class="nx">string</span> <span class="nv">$two</span><span class="p">,</span>
+    <span class="p">#[</span><span class="nd">Option</span><span class="p">(</span><span class="s1">'Whether or not the second parameter should come first in the result'</span><span class="p">)]</span> <span class="nx">bool</span> <span class="nv">$flip</span> <span class="o">=</span> <span class="k">FALSE</span><span class="p">,</span>
   <span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
   <span class="p">{</span>
     <span class="k">if</span> <span class="p">(</span><span class="nv">$flip</span><span class="p">)</span> <span class="p">{</span>
-      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{</span><span class="nv">$two</span><span class="si">}{</span><span class="nv">$one</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">);</span>
+      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">"</span><span class="si">{</span><span class="nv">$two</span><span class="si">}{</span><span class="nv">$one</span><span class="si">}</span><span class="s2">"</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">else</span> <span class="p">{</span>
-      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{</span><span class="nv">$one</span><span class="si">}{</span><span class="nv">$two</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">);</span>
+      <span class="nv">$output</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">"</span><span class="si">{</span><span class="nv">$one</span><span class="si">}{</span><span class="nv">$two</span><span class="si">}</span><span class="s2">"</span><span class="p">);</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
   <span class="p">}</span>
@@ -7672,8 +7672,8 @@
 </ul>
 </li>
 <li>Add the following snippet to your project's composer.json. 
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;13.7&quot;</span>
+<div class="highlight"><pre><span></span><code><span class="nt">"conflict"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"drush/drush"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;13.7"</span>
 <span class="p">},</span>
 </code></pre></div></li>
 <li><a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes">Numerous Optionset and Validate Attributes are provided by Drush core</a>. Custom code can supply additional Attributes+Listeners, which any command may choose to use.</li>
@@ -7689,9 +7689,9 @@
 <ul>
 <li>The commands class is PSR4 auto-loadable.</li>
 <li>The commands class namespace, relative to base namespace, is <code>Drush\Commands</code>. For instance, if a Drush command provider third party library maps this PSR4 autoload entry:
-  <div class="highlight"><pre><span></span><code><span class="nt">&quot;autoload&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;psr-4&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;My\\Custom\\Library\\&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;src&quot;</span>
+  <div class="highlight"><pre><span></span><code><span class="nt">"autoload"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"psr-4"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">"My\\Custom\\Library\\"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src"</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -7699,8 +7699,8 @@
 <li>The class and file name ends with <code>*Commands</code>, e.g. <code>FooCommands</code>.</li>
 </ul>
 <p>Auto-discovered commandfiles should declare their Drush version compatibility via a <code>conflict</code> directive. For example, a Composer-managed site-wide command that works with both Drush 11 and Drush 12 might contain something similar to the following in its composer.json file:
-<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">&quot;conflict&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="nt">&quot;drush/drush&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&lt;11.0&quot;</span><span class="p">,</span>
+<div class="highlight"><pre><span></span><code><span class="w">    </span><span class="nt">"conflict"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">"drush/drush"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;11.0"</span><span class="p">,</span>
 <span class="w">    </span><span class="p">}</span>
 </code></pre></div>
 Using <code>require</code> in place of <code>conflict</code> is not recommended.</p>
@@ -7741,7 +7741,7 @@ Using <code>require</code> in place of <code>conflict</code> is not recommended.
 <p><div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">include</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&#39;${env.home}/.drush/commands&#39;</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.home}/.drush/commands'</span>
 </code></pre></div>
 With this configuration in place, global commands may be placed as described in the Site-Wide Drush Commands section above. Global commandfiles may not declare any dependencies of their own; they may only use those dependencies already available via the autoloader.</p>
 <div class="admonition tip">

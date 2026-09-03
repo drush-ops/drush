@@ -7578,11 +7578,11 @@ create an environment variable <code>DRUSH_OPTIONS_URI=http://example.com</code>
 </div>
 <h3 id="config-examples">Config examples<a class="headerlink" href="#config-examples" title="Permanent link">&para;</a></h3>
 <h4 id="specify-config-files-to-load">Specify config files to load<a class="headerlink" href="#specify-config-files-to-load" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>drush:
-  paths:
-    config:
-      # Load any personal config files. Is silently skipped if not found. Filename must be drush.yml
-      - ${env.HOME}/.drush/config/drush.yml
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="c1"># Load any personal config files. Is silently skipped if not found. Filename must be drush.yml</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${env.HOME}/.drush/config/drush.yml</span>
 </code></pre></div>
 <ul>
 <li>The value may be path to a file, or to a directory containing drush.yml file(s).</li>
@@ -7595,10 +7595,10 @@ by a colon <code>:</code> on Unix-based systems or a semi-colon <code>;</code> o
 or multiple <code>--include</code> options may be provided. Drush 8 and earlier did
 a deep search in <code>~/.drush</code> and <code>/usr/share/drush/commands</code> when loading
 command files, so we mimic that here as an example.</p>
-<div class="highlight"><pre><span></span><code>drush:
-  include:
-    - &#39;${env.HOME}/.drush/commands&#39;
-    - /usr/share/drush/commands
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">include</span><span class="p">:</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/commands'</span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/usr/share/drush/commands</span>
 </code></pre></div>
 <ul>
 <li>View all loaded commands: <code>drush list</code></li>
@@ -7610,118 +7610,118 @@ command files, so we mimic that here as an example.</p>
  Windows, or multiple <code>--alias-path</code> options may be provided. Note that
  Drush 8 and earlier did a deep search in <code>~/.drush</code> and <code>/etc/drush</code> when
  loading alias files.
-<div class="highlight"><pre><span></span><code>drush:
-  paths:
-    alias-path:
-      - &#39;${env.HOME}/.drush/sites&#39;
-      - /etc/drush/sites
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">alias-path</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'${env.HOME}/.drush/sites'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/etc/drush/sites</span>
 </code></pre></div>
 - View all loaded site aliases: <code>drush site:alias</code></p>
 <h4 id="backup-directory">Backup directory<a class="headerlink" href="#backup-directory" title="Permanent link">&para;</a></h4>
 <p>Specify a folder where Drush should store backup files, including
 temporary sql dump files created during <a href="../commands/sql_sync/">sql:sync</a>. If unspecified,
 defaults to <code>$HOME/drush-backups</code>.
-<div class="highlight"><pre><span></span><code>drush:
-  paths:
-    backup-dir: /tmp/drush-backups
+<div class="highlight"><pre><span></span><code><span class="nt">drush</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">paths</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">backup-dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/tmp/drush-backups</span>
 </code></pre></div></p>
 <h4 id="global-options">Global options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>options:
-  # Specify the base_url that should be used when generating links.
-  uri: &#39;https://example.com/subdir&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">options</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Specify the base_url that should be used when generating links.</span>
+<span class="w">  </span><span class="nt">uri</span><span class="p">:</span><span class="w"> </span><span class="s">'https://example.com/subdir'</span>
 
-  # Load Drush config from a non-standard location
-  config: &#39;/home/USER/workspace/drupal&#39;
+<span class="w">  </span><span class="c1"># Load Drush config from a non-standard location</span>
+<span class="w">  </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="s">'/home/USER/workspace/drupal'</span>
 
-  # Enable verbose mode.
-  verbose: true
+<span class="w">  </span><span class="c1"># Enable verbose mode.</span>
+<span class="w">  </span><span class="nt">verbose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
 </code></pre></div>
 <h4 id="command-specific-options">Command-specific options<a class="headerlink" href="#command-specific-options" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>command:
-  # Disabling the admin super user account (uid #1) is recommended.
-  # Use this to specify another admin account for the uli command.
-  # See https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-the-admin-super-user-1
-  user:
-    login:
-      options:
-        name: newadmin
-  sql:
-    cli:
-      options:
-        # Enable auto-complete in MySQL.
-        extra: &quot;--auto-rehash&quot;
-    dump:
-      options:
-        # Omit cache and similar tables (including during a sql:sync).
-        structure-tables-key: common
-  php:
-    script:
-      options:
-        # Additional folders to search for scripts.
-        script-path: &#39;sites/all/scripts:profiles/myprofile/scripts&#39;
-  core:
-    rsync:
-      options:
-        # Ensure all rsync commands use verbose output.
-        verbose: true
-  site:
-    install:
-      options:
-        # Set a predetermined username and password when using site:install.
-        account-name: &#39;alice&#39;
-        account-pass: &#39;secret&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">command</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Disabling the admin super user account (uid #1) is recommended.</span>
+<span class="w">  </span><span class="c1"># Use this to specify another admin account for the uli command.</span>
+<span class="w">  </span><span class="c1"># See https://www.drupal.org/docs/administering-a-drupal-site/security-in-drupal/securing-the-admin-super-user-1</span>
+<span class="w">  </span><span class="nt">user</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">login</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">newadmin</span>
+<span class="w">  </span><span class="nt">sql</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cli</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Enable auto-complete in MySQL.</span>
+<span class="w">        </span><span class="nt">extra</span><span class="p">:</span><span class="w"> </span><span class="s">"--auto-rehash"</span>
+<span class="w">    </span><span class="nt">dump</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Omit cache and similar tables (including during a sql:sync).</span>
+<span class="w">        </span><span class="nt">structure-tables-key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">common</span>
+<span class="w">  </span><span class="nt">php</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">script</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Additional folders to search for scripts.</span>
+<span class="w">        </span><span class="nt">script-path</span><span class="p">:</span><span class="w"> </span><span class="s">'sites/all/scripts:profiles/myprofile/scripts'</span>
+<span class="w">  </span><span class="nt">core</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">rsync</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Ensure all rsync commands use verbose output.</span>
+<span class="w">        </span><span class="nt">verbose</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">site</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">install</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">        </span><span class="c1"># Set a predetermined username and password when using site:install.</span>
+<span class="w">        </span><span class="nt">account-name</span><span class="p">:</span><span class="w"> </span><span class="s">'alice'</span>
+<span class="w">        </span><span class="nt">account-pass</span><span class="p">:</span><span class="w"> </span><span class="s">'secret'</span>
 </code></pre></div>
 <h4 id="non-options">Non-options<a class="headerlink" href="#non-options" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code>sql:
-  # An explicit list of tables which should be included in sql-dump and sql-sync.
-  tables:
-    common:
-      - user
-      - permissions
-      - role_permissions
-      - role
-  # List of tables whose *data* is skipped by the &#39;sql-dump&#39; and &#39;sql-sync&#39;
-  # commands when the &quot;--structure-tables-key=common&quot; option is provided.
-  # You may add specific tables to the existing array or add a new element.
-  structure-tables:
-    common:
-      - cache
-      - &#39;cache_*&#39;
-      - history
-      - &#39;search_*&#39;
-      - &#39;sessions&#39;
-      - &#39;watchdog&#39;
-  # List of tables to be omitted entirely from SQL dumps made by the &#39;sql-dump&#39;
-  # and &#39;sql-sync&#39; commands when the &quot;--skip-tables-key=common&quot; option is
-  # provided on the command line.  This is useful if your database contains
-  # non-Drupal tables used by some other application or during a migration for
-  # example.  You may add new tables to the existing array or add a new element.
-  skip-tables:
-    common:
-      - &#39;migration_*&#39;
+<div class="highlight"><pre><span></span><code><span class="nt">sql</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># An explicit list of tables which should be included in sql-dump and sql-sync.</span>
+<span class="w">  </span><span class="nt">tables</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">common</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">user</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">permissions</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">role_permissions</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">role</span>
+<span class="w">  </span><span class="c1"># List of tables whose *data* is skipped by the 'sql-dump' and 'sql-sync'</span>
+<span class="w">  </span><span class="c1"># commands when the "--structure-tables-key=common" option is provided.</span>
+<span class="w">  </span><span class="c1"># You may add specific tables to the existing array or add a new element.</span>
+<span class="w">  </span><span class="nt">structure-tables</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">common</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">cache</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'cache_*'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">history</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'search_*'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'sessions'</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'watchdog'</span>
+<span class="w">  </span><span class="c1"># List of tables to be omitted entirely from SQL dumps made by the 'sql-dump'</span>
+<span class="w">  </span><span class="c1"># and 'sql-sync' commands when the "--skip-tables-key=common" option is</span>
+<span class="w">  </span><span class="c1"># provided on the command line.  This is useful if your database contains</span>
+<span class="w">  </span><span class="c1"># non-Drupal tables used by some other application or during a migration for</span>
+<span class="w">  </span><span class="c1"># example.  You may add new tables to the existing array or add a new element.</span>
+<span class="w">  </span><span class="nt">skip-tables</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">common</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">'migration_*'</span>
 
-ssh:
-  # Specify options to pass to ssh.  The default is to prohibit
-  # password authentication, and is included here, so you may add additional
-  # parameters without losing the default configuration.
-  options: &#39;-o PasswordAuthentication=no&#39;
-  # This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.
-  pipefail: &#39;set -o pipefail; &#39;
+<span class="nt">ssh</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Specify options to pass to ssh.  The default is to prohibit</span>
+<span class="w">  </span><span class="c1"># password authentication, and is included here, so you may add additional</span>
+<span class="w">  </span><span class="c1"># parameters without losing the default configuration.</span>
+<span class="w">  </span><span class="nt">options</span><span class="p">:</span><span class="w"> </span><span class="s">'-o</span><span class="nv"> </span><span class="s">PasswordAuthentication=no'</span>
+<span class="w">  </span><span class="c1"># This string is valid for Bash shell. Override in case you need something different. See https://github.com/drush-ops/drush/issues/3816.</span>
+<span class="w">  </span><span class="nt">pipefail</span><span class="p">:</span><span class="w"> </span><span class="s">'set</span><span class="nv"> </span><span class="s">-o</span><span class="nv"> </span><span class="s">pipefail;</span><span class="nv"> </span><span class="s">'</span>
 
-notify:
-  # Notify when command takes more than 30 seconds.
-  duration: 30
-  # Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)
-  cmd: /path/to/program
-  # See https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/NotifyCommands.php for more settings.
+<span class="nt">notify</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Notify when command takes more than 30 seconds.</span>
+<span class="w">  </span><span class="nt">duration</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="w">  </span><span class="c1"># Specify a command to run. Defaults to Notification Center (OSX) or libnotify (Linux)</span>
+<span class="w">  </span><span class="nt">cmd</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/path/to/program</span>
+<span class="w">  </span><span class="c1"># See https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/NotifyCommands.php for more settings.</span>
 
-xh:
-  # Start profiling via xhprof/tideways and show a link to the run report.
-  link: http://xhprof.local
-  # See https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/XhprofCommands.php for more settings.
-  profile-builtins: true
-  profile-cpu: false
-  profile-memory: false
+<span class="nt">xh</span><span class="p">:</span>
+<span class="w">  </span><span class="c1"># Start profiling via xhprof/tideways and show a link to the run report.</span>
+<span class="w">  </span><span class="nt">link</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">http://xhprof.local</span>
+<span class="w">  </span><span class="c1"># See https://github.com/drush-ops/drush/blob/13.x/src/Commands/core/XhprofCommands.php for more settings.</span>
+<span class="w">  </span><span class="nt">profile-builtins</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">profile-cpu</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">  </span><span class="nt">profile-memory</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 </code></pre></div>
 <h3 id="misc">Misc<a class="headerlink" href="#misc" title="Permanent link">&para;</a></h3>
 <ul>

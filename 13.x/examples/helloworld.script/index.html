@@ -7415,21 +7415,21 @@
 <span class="c1">//</span>
 <span class="k">use</span> <span class="nx">Drush\Drush</span><span class="p">;</span>
 
-<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;Hello world!&quot;</span><span class="p">);</span>
-<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">&quot;The extra options/arguments to this command were:&quot;</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">"Hello world!"</span><span class="p">);</span>
+<span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s2">"The extra options/arguments to this command were:"</span><span class="p">);</span>
 <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="nb">print_r</span><span class="p">(</span><span class="nv">$extra</span><span class="p">,</span> <span class="k">true</span><span class="p">));</span>
 
 <span class="c1">//</span>
 <span class="c1">// We can check which site was bootstrapped via</span>
-<span class="c1">// the &#39;@self&#39; alias, which is defined only if</span>
+<span class="c1">// the '@self' alias, which is defined only if</span>
 <span class="c1">// there is a bootstrapped site.</span>
 <span class="c1">//</span>
 <span class="nv">$self</span> <span class="o">=</span> <span class="nx">Drush</span><span class="o">::</span><span class="na">aliasManager</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">getSelf</span><span class="p">();</span>
 <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">hasRoot</span><span class="p">())</span> <span class="p">{</span>
-  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;No bootstrapped site.&#39;</span><span class="p">);</span>
+  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">'No bootstrapped site.'</span><span class="p">);</span>
 <span class="p">}</span>
 <span class="k">else</span> <span class="p">{</span>
-  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">&#39;The following site is bootstrapped:&#39;</span><span class="p">);</span>
+  <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="s1">'The following site is bootstrapped:'</span><span class="p">);</span>
   <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">output</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">writeln</span><span class="p">(</span><span class="nb">print_r</span><span class="p">(</span><span class="nv">$self</span><span class="o">-&gt;</span><span class="na">legacyRecord</span><span class="p">(),</span> <span class="k">true</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div>

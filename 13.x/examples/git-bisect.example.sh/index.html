@@ -7423,13 +7423,13 @@
 <span class="c1">#   $ git bisect good bcadd5a     # Tell drush that the commithash 12345 worked fine</span>
 <span class="c1">#   $ git bisect run mytestscript.sh</span>
 <span class="c1">#</span>
-<span class="c1"># &#39;git bisect run&#39; will continue to call &#39;git bisect good&#39; and &#39;git bisect bad&#39;,</span>
-<span class="c1"># based on whether the script&#39;s exit code was 0 or 1, respectively.</span>
+<span class="c1"># 'git bisect run' will continue to call 'git bisect good' and 'git bisect bad',</span>
+<span class="c1"># based on whether the script's exit code was 0 or 1, respectively.</span>
 <span class="c1">#</span>
-<span class="c1"># Replace &#39;mytestscript.sh&#39; in the example above with a custom script that you</span>
+<span class="c1"># Replace 'mytestscript.sh' in the example above with a custom script that you</span>
 <span class="c1"># write yourself.  Use the example script at the end of this document as a</span>
 <span class="c1"># guide.  Replace the example command with one that calls the Drush command</span>
-<span class="c1"># that you would like to test, and replace the &#39;grep&#39; string with a value</span>
+<span class="c1"># that you would like to test, and replace the 'grep' string with a value</span>
 <span class="c1"># that appears when the error exists in the commit, but does not appear when</span>
 <span class="c1"># commit is okay.</span>
 <span class="c1">#</span>
@@ -7437,21 +7437,21 @@
 <span class="c1">#</span>
 <span class="c1">#   $ git bisect run drush mycommand --strict=2</span>
 <span class="c1">#</span>
-<span class="c1"># This presumes that there is one or more &#39;[warning]&#39; or &#39;[error]&#39;</span>
+<span class="c1"># This presumes that there is one or more '[warning]' or '[error]'</span>
 <span class="c1"># messages emitted when there is a problem, and no warnings or errors</span>
-<span class="c1"># when the commit is okay.  Omit &#39;--strict=2&#39; to ignore warnings, and</span>
-<span class="c1"># signal failure only when &#39;error&#39; messages are emitted.</span>
+<span class="c1"># when the commit is okay.  Omit '--strict=2' to ignore warnings, and</span>
+<span class="c1"># signal failure only when 'error' messages are emitted.</span>
 <span class="c1">#</span>
 <span class="c1"># If you need to test for an error condition explicitly, to find errors</span>
 <span class="c1"># that do not return any warning or error log messages on their own, you</span>
 <span class="c1"># can use the Drush php-eval command to force an error when `myfunction()`</span>
-<span class="c1"># returns FALSE. Replace &#39;myfunction()&#39; with the name of an appropriate</span>
+<span class="c1"># returns FALSE. Replace 'myfunction()' with the name of an appropriate</span>
 <span class="c1"># function in your module that can be used to detect the error condition</span>
 <span class="c1"># you are looking for.</span>
 <span class="c1">#</span>
-<span class="c1">#   $ git bisect run drush ev &#39;if(!myfunction()) { return drush_set_error(&quot;ERR&quot;); }&#39;</span>
+<span class="c1">#   $ git bisect run drush ev 'if(!myfunction()) { return drush_set_error("ERR"); }'</span>
 <span class="c1">#</span>
-drush<span class="w"> </span>mycommand<span class="w"> </span>--myoption<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">&#39;string that indicates there was a problem&#39;</span>
+drush<span class="w"> </span>mycommand<span class="w"> </span>--myoption<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s1">'string that indicates there was a problem'</span>
 <span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span><span class="nv">$?</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">else</span>
