@@ -13,6 +13,22 @@ use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 #[RunTestsInSeparateProcesses]
 class DrupalDependenciesTest extends UnishIntegrationTestCase
 {
+    /**
+     * Removes the body field storage line from a dependency tree.
+     *
+     * Drupal 11 installs field.storage.node.body along with the node module,
+     * but Drupal 12 no longer does. Drop the line from both the expected and
+     * the actual output so this test passes on either version.
+     */
+    private static function withoutBodyField(string $output): string
+    {
+        $lines = array_filter(
+            explode("\n", $output),
+            static fn(string $line): bool => !str_contains($line, 'field.storage.node.body')
+        );
+        return implode("\n", $lines);
+    }
+
     public function testModuleDependentOfModule(): void
     {
         $this->drush('list');
@@ -134,7 +150,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             ├─system.action.node_unpromote_action
             └─system.action.node_unpublish_action
             EXPECTED;
-        $this->assertSame($expected, $this->getOutput());
+        $this->assertSame(self::withoutBodyField($expected), self::withoutBodyField($this->getOutput()));
 
         $this->drush('pm:install', ['dependent3'], ['yes' => null]);
         $this->drush('wm', ['node'], ['type' => 'config']);
@@ -161,7 +177,7 @@ class DrupalDependenciesTest extends UnishIntegrationTestCase
             ├─system.action.node_unpromote_action
             └─system.action.node_unpublish_action
             EXPECTED;
-        $this->assertSame($expected, $this->getOutput());
+        $this->assertSame(self::withoutBodyField($expected), self::withoutBodyField($this->getOutput()));
     }
 
     public function testConfigDependentOfConfig(): void

@@ -12,7 +12,13 @@ create_field('field_user_string', 'string', 'user', 'user');
 create_field('field_user_string_long', 'string_long', 'user', 'user');
 create_field('field_user_text', 'text', 'user', 'user');
 create_field('field_user_text_long', 'text_long', 'user', 'user');
-create_field('field_user_text_with_summary', 'text_with_summary', 'user', 'user');
+
+// The text_with_summary field type was removed in Drupal 12.
+$has_text_with_summary = \Drupal::service('plugin.manager.field.field_type')
+  ->hasDefinition('text_with_summary');
+if ($has_text_with_summary) {
+    create_field('field_user_text_with_summary', 'text_with_summary', 'user', 'user');
+}
 
 // Create a user.
 $values = [
@@ -21,8 +27,10 @@ $values = [
   'field_user_string_long' => 'Really private info',
   'field_user_text' => 'Super private info',
   'field_user_text_long' => 'Super duper private info',
-  'field_user_text_with_summary' => 'Private',
 ];
+if ($has_text_with_summary) {
+    $values['field_user_text_with_summary'] = 'Private';
+}
 
 $user = User::create([
   'name' => $extra[0],

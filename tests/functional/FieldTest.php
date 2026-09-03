@@ -59,9 +59,9 @@ class FieldTest extends CommandUnishTestCase
         $this->assertStringContainsString('--existing option', $this->getSimplifiedErrorOutput());
 
         // Existing storage
-        $this->drush(FieldCreateCommand::NAME, ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'text_textarea_with_summary']);
+        $this->drush(FieldCreateCommand::NAME, ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'entity_reference_autocomplete']);
         $this->assertStringContainsString('Success', $this->getErrorOutputRaw());
-        $this->drush(FieldCreateCommand::NAME, ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'text_textarea_with_summary'], null, null, self::EXIT_ERROR);
+        $this->drush(FieldCreateCommand::NAME, ['unish_article', 'beta'], ['existing-field-name' => 'field_test3', 'field-label' => 'Body', 'field-widget' => 'entity_reference_autocomplete'], null, null, self::EXIT_ERROR);
         $this->assertStringContainsString('Field with name \'field_test3\' already exists on bundle \'beta\'', $this->getErrorOutputRaw());
         if (version_compare(\Drupal::VERSION, '10.1.0') < 0) {
             $this->markTestSkipped('Allowed formats available since Drupal 10.1.0');

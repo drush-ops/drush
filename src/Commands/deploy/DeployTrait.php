@@ -2,6 +2,7 @@
 
 namespace Drush\Commands\deploy;
 
+use Drupal\Core\Cache\MemoryCache\MemoryCacheInterface;
 use Drupal\Core\Extension\ThemeHandlerInterface;
 use Drupal\Core\KeyValueStore\KeyValueFactoryInterface;
 use Drupal\Core\Update\UpdateRegistry;
@@ -19,6 +20,7 @@ trait DeployTrait
             \Drupal::service('module_handler')->getModuleList(),
             \Drupal::service('keyvalue'),
             \Drupal::service('theme_handler'),
+            \Drupal::service('cache.memory'),
         ) extends UpdateRegistry {
             public function __construct(
                 $root,
@@ -26,6 +28,7 @@ trait DeployTrait
                 $module_list,
                 KeyValueFactoryInterface $key_value_factory,
                 ThemeHandlerInterface $theme_handler,
+                MemoryCacheInterface $memory_cache,
             ) {
                 // Do not call the parent constructor, we set the properties directly.
                 // We need a different key value store and set the update type.
@@ -33,6 +36,7 @@ trait DeployTrait
                 $this->sitePath = $site_path;
                 $this->enabledExtensions = array_merge(array_keys($module_list), array_keys($theme_handler->listInfo()));
                 $this->keyValue = $key_value_factory->get('deploy_hook');
+                $this->memoryCache = $memory_cache;
                 $this->updateType = 'deploy';
             }
         };
