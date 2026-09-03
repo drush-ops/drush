@@ -153,8 +153,13 @@ class SqlSyncTest extends CommandUnishTestCase
             'field_user_string_long' => 'Really private info',
             'field_user_text' => 'Super private info',
             'field_user_text_long' => 'Super duper private info',
-            'field_user_text_with_summary' => 'Private',
         ];
+        // The text_with_summary field type was removed in Drupal 12, so the
+        // fixture only creates this field when the type is available.
+        $this->drush(PhpCommands::EVAL, ["return ['exists' => \Drupal::service('plugin.manager.field.field_type')->hasDefinition('text_with_summary')];"], ['format' => 'json'] + $stage_options);
+        if ($this->getOutputFromJSON('exists')) {
+            $fields['field_user_text_with_summary'] = 'Private';
+        }
         // Assert that field DO NOT contain values.
         foreach ($fields as $field_name => $value) {
             $this->assertUserFieldContents($field_name, $value);

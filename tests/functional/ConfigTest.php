@@ -169,8 +169,7 @@ YAML_FRAGMENT;
         $this->assertFileExists($extensionFile);
         $extension = Yaml::decode(file_get_contents($extensionFile));
         $extension['module']['drush_empty_module'] = 0;
-        require_once $root . "/core/includes/module.inc";
-        $extension['module'] = module_config_sort($extension['module']);
+        $extension['module'] = self::sortModules($extension['module']);
         file_put_contents($extensionFile, Yaml::encode($extension));
 
         // When importing config, the 'woot' module should warn about a validation error.
@@ -190,6 +189,27 @@ YAML_FRAGMENT;
         // We make sure that the service inside the newly enabled module exists now. A fatal
         // error will be thrown by Drupal if the service does not exist.
         $this->drush(PhpCommands::EVAL, ['Drupal::service("drush_empty_module.service");']);
+    }
+
+    /**
+     * Sorts a module list by weight and then name.
+     *
+     * Mirrors the sorting that Drupal applies when writing core.extension.yml.
+     * Drupal's module_config_sort() is not used because it is deprecated and
+     * now proxies to a container service, which is not available in this
+     * process.
+     */
+    protected static function sortModules(array $modules): array
+    {
+        $sort = [];
+        foreach ($modules as $name => $weight) {
+            // Prefix negative weights with 0, positive weights with 1, since
+            // the +/- signs cannot be used for a string sort.
+            $prefix = (int) ($weight >= 0);
+            $sort[] = $prefix . sprintf('%019d', abs($weight)) . $name;
+        }
+        array_multisort($sort, SORT_STRING, $modules);
+        return $modules;
     }
 
     protected function getConfigSyncDir(): string

@@ -81,7 +81,9 @@ class CoreTest extends UnishIntegrationTestCase
         $json = $this->getOutputFromJSON();
         $this->assertSame('/user/login', $json['path']);
         $this->assertSame('user.login', $json['name']);
-        $this->assertSame('\Drupal\user\Form\UserLoginForm', $json['defaults']['_form']);
+        // Core declares this route via a PHP attribute, so the class name has
+        // no leading backslash. Older core declared it in YAML, with one.
+        $this->assertSame('Drupal\user\Form\UserLoginForm', ltrim($json['defaults']['_form'], '\\'));
         $this->assertSame("FALSE", $json['requirements']['_user_is_logged_in']);
         $this->assertSame('access_check.user.login_status', $json['options']['_access_checks'][0]);
 
