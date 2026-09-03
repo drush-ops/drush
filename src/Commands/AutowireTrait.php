@@ -44,6 +44,6 @@ trait AutowireTrait
             }
         }
 
-        return new self(...$args);
+        return new static(...$args);
     }
 }
