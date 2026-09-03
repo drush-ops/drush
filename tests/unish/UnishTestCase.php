@@ -44,10 +44,14 @@ abstract class UnishTestCase extends TestCase
 
     private static ?string $usergroup = null;
 
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    /**
+     * Initializes the sandbox paths and environment variables.
+     *
+     * PHPUnit 12 makes TestCase::__construct() final, so this one-time setup
+     * runs from setUpBeforeClass() instead.
+     */
+    private static function initEnvironment(): void
     {
-        parent::__construct($name, $data, $dataName);
-
         // We read from env then globals then default to mysql.
         self::$db_url = getenv('UNISH_DB_URL') ?: ($GLOBALS['UNISH_DB_URL'] ?? 'mysql://root:@127.0.0.1');
 
@@ -167,6 +171,8 @@ abstract class UnishTestCase extends TestCase
      */
     public static function setUpBeforeClass(): void
     {
+        self::initEnvironment();
+
         self::cleanDirs();
 
         // Create all the dirs.
