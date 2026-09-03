@@ -698,7 +698,7 @@ final class MigrateRunnerCommands extends DrushCommands
 
         // If --tag was not passed, don't group on tags, use a single empty tag.
         if ($tags === null) {
-            return [null => $migrations];
+            return ['' => $migrations];
         }
 
         $tags = array_filter(array_map('trim', explode(',', $tags)));
