@@ -117,14 +117,12 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         // @see \Drupal\woot\EventSubscriber\PreRowDeleteTestSubscriber::onPreRowDelete()
         $this->drush('state:set', ['woot.migrate_runner.trigger_failures', true]);
 
-        if (!$this->isDrupalGreaterThanOrEqualTo('11.1.0')) {
-            // Warm-up the 'migrate_prepare_row' hook implementations cache to
-            // test that system_migrate_prepare_row() is picked-up during
-            // import. See MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW test, later.
-            // @see system_migrate_prepare_row()
-            // @see \Drupal\woot\EventSubscriber\ProcessRowTestSubscriber::onPrepareRow()
-            $this->drush('php:eval', ["Drupal::moduleHandler()->invokeAll('migrate_prepare_row');"]);
-        }
+        // Drush must not register a migrate_prepare_row hook: since Drupal
+        // 11.3, hook lists persist in shared keyvalue storage and would
+        // conflict with containers built by web requests.
+        // @see https://github.com/drush-ops/drush/issues/6595
+        $this->drush('php:eval', ["return var_export(Drupal::moduleHandler()->hasImplementations('migrate_prepare_row', ['system']), true);"]);
+        $this->assertStringContainsString('false', $this->getOutput());
 
         // Expect that this command will fail because the 2nd row fails.
         // @see \Drupal\woot\Plugin\migrate\process\TestFailProcess
