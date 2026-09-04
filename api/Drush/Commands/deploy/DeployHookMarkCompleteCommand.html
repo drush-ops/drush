@@ -139,7 +139,7 @@
                     
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___construct">__construct</a>($root, $site_path, $module_list, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $key_value_factory, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $theme_handler)
+                    <a href="#method___construct">__construct</a>($root, $site_path, $module_list, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $key_value_factory, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $theme_handler, <abbr title="Drupal\Core\Cache\MemoryCache\MemoryCacheInterface">MemoryCacheInterface</abbr> $memory_cache)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -166,7 +166,7 @@
                     <div class="method-item">
                     <h3 id="method_getRegistry">
         <div class="location">in <a href="../../../Drush/Commands/deploy/DeployTrait.html#method_getRegistry">
-<abbr title="Drush\Commands\deploy\DeployTrait">DeployTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/deploy/DeployTrait.php#L14">at line 14</a></div>
+<abbr title="Drush\Commands\deploy\DeployTrait">DeployTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/deploy/DeployTrait.php#L15">at line 15</a></div>
         <code>        static            <abbr title="Drupal\Core\Update\UpdateRegistry">UpdateRegistry</abbr>
     <strong>getRegistry</strong>()
         </code>
@@ -200,9 +200,9 @@
                     <div class="method-item">
                     <h3 id="method___construct">
         <div class="location">in <a href="../../../Drush/Commands/deploy/DeployTrait.html#method___construct">
-<abbr title="Drush\Commands\deploy\DeployTrait">DeployTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/deploy/DeployTrait.php#L23">at line 23</a></div>
+<abbr title="Drush\Commands\deploy\DeployTrait">DeployTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/deploy/DeployTrait.php#L25">at line 25</a></div>
         <code>                    
-    <strong>__construct</strong>($root, $site_path, $module_list, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $key_value_factory, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $theme_handler)
+    <strong>__construct</strong>($root, $site_path, $module_list, <abbr title="Drupal\Core\KeyValueStore\KeyValueFactoryInterface">KeyValueFactoryInterface</abbr> $key_value_factory, <abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr> $theme_handler, <abbr title="Drupal\Core\Cache\MemoryCache\MemoryCacheInterface">MemoryCacheInterface</abbr> $memory_cache)
         </code>
     </h3>
     <div class="details">    
@@ -241,6 +241,11 @@
                     <tr>
                 <td><abbr title="Drupal\Core\Extension\ThemeHandlerInterface">ThemeHandlerInterface</abbr></td>
                 <td>$theme_handler</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Cache\MemoryCache\MemoryCacheInterface">MemoryCacheInterface</abbr></td>
+                <td>$memory_cache</td>
                 <td></td>
             </tr>
             </table>
