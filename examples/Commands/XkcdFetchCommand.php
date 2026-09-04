@@ -26,7 +26,7 @@ final class XkcdFetchCommand extends Command
     protected function configure(): void
     {
         $this
-        ->addArgument('search', mode: InputArgument::OPTIONAL, description: 'Optional argument to retrieve the cartoons matching an index number, keyword search or "random". If omitted the latest cartoon will be retrieved.')
+        ->addArgument('search', mode: InputArgument::REQUIRED, description: 'Argument to retrieve the cartoons matching an index number, keyword search or "random".')
         ->addOption('image-viewer', null, InputOption::VALUE_REQUIRED, 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).', 'open')
         ->addUsage('drush xkcd sandwich')
         ->addUsage('drush xkcd 123 --image-viewer=eog')
