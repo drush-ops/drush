@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+
+# In Drush's own repo, `drush` lives at repo root - not vendor/bin/drush.
+ddev exec ./drush $@
