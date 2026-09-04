@@ -12,7 +12,6 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Drupal\Migrate\MigrateRunnerServiceProvider;
 use Drush\Style\DrushStyle;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -68,9 +67,6 @@ class CacheRebuildCommand extends Command
 
         // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
         $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
-        // Implement a hook in behalf of 'system' module until #2952291 lands.
-        // @see https://www.drupal.org/project/drupal/issues/2952291
-        $GLOBALS['conf']['container_service_providers'][] = MigrateRunnerServiceProvider::class;
 
         // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
         drupal_rebuild($this->autoloader, $request);

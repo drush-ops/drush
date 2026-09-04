@@ -17,6 +17,7 @@ use Drupal\migrate\MigrateExecutable as MigrateExecutableBase;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
+use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateEvents as MigrateRunnerEvents;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -162,6 +163,43 @@ class MigrateExecutable extends MigrateExecutableBase
         foreach ($this->listeners as $event => $listener) {
             $eventDispatcher->addListener($event, $listener);
         }
+
+        if (!$this->interceptPrepareRow($migration) && $this->deleteMissingSourceRows) {
+            throw new \RuntimeException(sprintf(
+                "Cannot use --delete: the source plugin of the '%s' migration does not extend %s, so Drush cannot track which source rows still exist.",
+                $migration->id(),
+                SourcePluginBase::class,
+            ));
+        }
+    }
+
+    /**
+     * Routes 'migrate_prepare_row' hook invocations to the Drush event.
+     *
+     * Swaps the source plugin's lazy module handler for a decorator that
+     * dispatches MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW for every scanned
+     * source row, including rows skipped by track_changes/high-water. The
+     * interception is per-instance and in-memory; unlike the former
+     * compile-time hook registration it cannot leak into the hook lists that
+     * Drupal >= 11.3 persists in shared keyvalue storage.
+     *
+     * @return bool
+     *   Whether the interception could be attached.
+     */
+    private function interceptPrepareRow(MigrationInterface $migration): bool
+    {
+        $source = $migration->getSourcePlugin();
+        if (!$source instanceof SourcePluginBase) {
+            return false;
+        }
+        $property = new \ReflectionProperty(SourcePluginBase::class, 'moduleHandler');
+        $moduleHandler = $property->getValue($source) ?? \Drupal::moduleHandler();
+        if (!$moduleHandler instanceof MigratePrepareRowModuleHandler) {
+            $eventDispatcher = $this->getEventDispatcher();
+            assert($eventDispatcher instanceof EventDispatcherInterface);
+            $property->setValue($source, new MigratePrepareRowModuleHandler($moduleHandler, $eventDispatcher));
+        }
+        return true;
     }
 
     /**

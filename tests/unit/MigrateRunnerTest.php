@@ -6,9 +6,12 @@ namespace Drush\Drupal\Migrate;
 
 use Composer\Autoload\ClassLoader;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
+use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
+use Drupal\migrate\Row;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +21,7 @@ use Unish\TestSqlIdMap;
 
 // Not yet supported by Lowest #[CoversMethod(\Drush\Drupal\Migrate\MigrateUtils::class, 'parseIdList')]
 #[CoversClass(MigrateIdMapFilter::class)]
+#[CoversClass(MigratePrepareRowModuleHandler::class)]
 class MigrateRunnerTest extends TestCase
 {
     #[DataProvider('dataProviderParseIdList')]
@@ -53,6 +57,26 @@ class MigrateRunnerTest extends TestCase
             [['1', 'foo'], ['235', 'bar'], ['543', 'x:o']],
           ],
         ];
+    }
+
+    public function testPrepareRowModuleHandler(): void
+    {
+        $args = [
+            $this->createStub(Row::class),
+            $this->createStub(MigrateSourceInterface::class),
+            $this->createStub(MigrationInterface::class),
+        ];
+        $decorated = $this->createMock(ModuleHandlerInterface::class);
+        $decorated->expects($this->exactly(2))->method('invokeAll')->willReturn([]);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        // The Drush event is dispatched only for migrate_prepare_row.
+        $eventDispatcher->expects($this->once())->method('dispatch')
+            ->with($this->isInstanceOf(MigratePrepareRowEvent::class), MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW)
+            ->willReturnArgument(0);
+
+        $handler = new MigratePrepareRowModuleHandler($decorated, $eventDispatcher);
+        $this->assertSame([], $handler->invokeAll('migrate_prepare_row', $args));
+        $this->assertSame([], $handler->invokeAll('other_hook'));
     }
 
     #[DataProvider('dataProviderMigrateIdMapFilter')]
