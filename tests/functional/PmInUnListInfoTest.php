@@ -82,6 +82,9 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->assertEquals($extensionProperties['drush_empty_module']['status'], 'Enabled');
         $this->assertEquals($extensionProperties['drush_empty_module']['type'], 'module');
 
+        // Drupal 11.x refuses to uninstall a module a theme depends on.
+        $this->drush(ThemeCommands::UNINSTALL, ['drush_theme_with_dependency']);
+
         // Test uninstall of installed module.
         $this->drush(PmCommands::UNINSTALL, ['drush_empty_module']);
         $out = $this->getErrorOutput();
