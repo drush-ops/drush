@@ -72,6 +72,11 @@ final class ThemeCommands extends DrushCommands
                 if (!$this->getModuleInstaller()->install($modules, true)) {
                     throw new \Exception('Unable to install modules.');
                 }
+                // Installing modules rebuilds the container. The injected theme
+                // installer still holds the old config factory, whose cached
+                // core.extension predates the module install, so it would
+                // report the modules we just installed as unmet dependencies.
+                $this->themeInstaller = \Drupal::service('theme_installer');
             }
         }
 
