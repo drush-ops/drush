@@ -52,7 +52,7 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->drush(ThemeCommands::INSTALL, ['drush_theme_with_dependency']);
         $this->drush(PmCommands::LIST, [], ['status' => 'enabled']);
         $out = $this->getOutput();
-        $this->assertStringContainsString('dependent1', $out);
+        $this->assertStringContainsString('drush_empty_module', $out);
 
         $this->drush(StatusCommands::STATUS, [], ['field' => 'drupal-version']);
         $drupal_version = $this->getOutputRaw();
@@ -81,6 +81,9 @@ class PmInUnListInfoTest extends CommandUnishTestCase
         $this->assertEquals($extensionProperties['drush_empty_module']['package'], 'Other');
         $this->assertEquals($extensionProperties['drush_empty_module']['status'], 'Enabled');
         $this->assertEquals($extensionProperties['drush_empty_module']['type'], 'module');
+
+        // Drupal 11.x refuses to uninstall a module a theme depends on.
+        $this->drush(ThemeCommands::UNINSTALL, ['drush_theme_with_dependency']);
 
         // Test uninstall of installed module.
         $this->drush(PmCommands::UNINSTALL, ['drush_empty_module']);

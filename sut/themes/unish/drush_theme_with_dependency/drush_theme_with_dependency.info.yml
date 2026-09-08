@@ -6,4 +6,4 @@ type: theme
 base theme: stark
 dependencies:
   - drupal:filter
-  - dependent1:dependent1
+  - drush_empty_module:drush_empty_module
