@@ -167,4 +167,14 @@ class MigratePrepareRowModuleHandler implements ModuleHandlerInterface
     {
         return $this->decorated->getName($module);
     }
+
+    /**
+     * Required by Drupal < 11, where the interface extends DestructableInterface.
+     */
+    public function destruct()
+    {
+        if ($this->decorated instanceof \Drupal\Core\DestructableInterface) {
+            $this->decorated->destruct();
+        }
+    }
 }
