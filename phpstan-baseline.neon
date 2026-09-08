@@ -18,12 +18,6 @@ parameters:
 			count: 1
 			path: src/Commands/watchdog/WatchdogTailCommand.php
 		-
-			message: '#^Method Psr\\EventDispatcher\\EventDispatcherInterface\:\:dispatch\(\) invoked with 2 parameters, 1 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: src/Drupal/Migrate/MigrateRunnerHooks.php
-
-		-
 			message: '#^Strict comparison using \=\=\= between ''\='' and ''\='' will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1

@@ -10,7 +10,6 @@ use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Attributes as CLI;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Drupal\Migrate\MigrateExecutable;
 use Drush\Drupal\Migrate\MigrateUtils;
 use Psr\Container\ContainerInterface;
@@ -22,7 +21,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Path;
 
 #[AsCommand(
     name: self::NAME,
@@ -43,7 +41,6 @@ final class MigrateImportCommand extends Command
         #[Autowire(service: 'keyvalue')]
         protected readonly KeyValueFactoryInterface $keyValueFactory,
         protected readonly ContainerInterface $container,
-        protected readonly DrushConfig $drushConfig,
         protected readonly LoggerInterface $logger,
     ) {
         parent::__construct();
@@ -111,14 +108,6 @@ final class MigrateImportCommand extends Command
             'execute_dependencies' => $input->getOption('execute-dependencies'),
             'output' => $output,
         ];
-
-        if (version_compare(\Drupal::VERSION, '11.1.0', '<')) {
-            // Include the migrate_prepare_row hook implementation.
-            require_once Path::join($this->drushConfig->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
-            // If the 'migrate_prepare_row' hook implementations are already
-            // cached, make sure that system_migrate_prepare_row() is picked-up.
-            \Drupal::moduleHandler()->resetImplementations();
-        }
 
         foreach ($list as $migrations) {
             array_walk($migrations, [$this, 'executeMigration'], $userData);
