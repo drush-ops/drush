@@ -267,6 +267,17 @@ class MigrateExecutable extends MigrateExecutableBase
      */
     protected function handleMissingSourceRows(MigrationInterface $migration): void
     {
+        // Zero observed rows with a non-empty source means the prepare-row
+        // interception is broken: every destination row would be considered
+        // missing and rolled back. Fail loudly instead.
+        // @see https://github.com/drush-ops/drush/issues/6595
+        if ($this->allSourceIdValues === [] && (clone $migration->getSourcePlugin())->count() > 0) {
+            throw new \RuntimeException(sprintf(
+                "No source rows were observed during the '%s' import, but the source is not empty. Refusing to detect missing source rows; nothing was rolled back.",
+                $migration->id(),
+            ));
+        }
+
         $idMap = $migration->getIdMap();
         $idMap->rewind();
 

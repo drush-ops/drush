@@ -79,6 +79,22 @@ class MigrateRunnerTest extends TestCase
         $this->assertSame([], $handler->invokeAll('other_hook'));
     }
 
+    public function testMissingSourceRowsGuard(): void
+    {
+        $source = $this->createStub(MigrateSourceInterface::class);
+        $source->method('count')->willReturn(2);
+        $migration = $this->createStub(MigrationInterface::class);
+        $migration->method('getSourcePlugin')->willReturn($source);
+        $migration->method('id')->willReturn('foo');
+
+        // Bypass the constructor: zero observed source rows plus a non-empty
+        // source must refuse to detect missing rows.
+        $executable = (new \ReflectionClass(MigrateExecutable::class))->newInstanceWithoutConstructor();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Refusing to detect missing source rows/');
+        (new \ReflectionMethod($executable, 'handleMissingSourceRows'))->invoke($executable, $migration);
+    }
+
     #[DataProvider('dataProviderMigrateIdMapFilter')]
     public function testMigrateIdMapFilter(array $sourceIdList, array $destinationIdList, array $expectedRows): void
     {
