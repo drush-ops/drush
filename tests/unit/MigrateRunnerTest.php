@@ -6,8 +6,11 @@ namespace Drush\Drupal\Migrate;
 
 use Composer\Semver\Comparator;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
+use Drupal\migrate\Row;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
@@ -54,6 +57,45 @@ class MigrateRunnerTest extends TestCase
             [['1', 'foo'], ['235', 'bar'], ['543', 'x:o']],
           ],
         ];
+    }
+
+    /**
+     * @covers \Drush\Drupal\Migrate\MigratePrepareRowModuleHandler
+     */
+    public function testPrepareRowModuleHandler(): void
+    {
+        $args = [
+            $this->createStub(Row::class),
+            $this->createStub(MigrateSourceInterface::class),
+            $this->createStub(MigrationInterface::class),
+        ];
+        $decorated = $this->createMock(ModuleHandlerInterface::class);
+        $decorated->expects($this->exactly(2))->method('invokeAll')->willReturn([]);
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        // The Drush event is dispatched only for migrate_prepare_row.
+        $eventDispatcher->expects($this->once())->method('dispatch')
+            ->with($this->isInstanceOf(MigratePrepareRowEvent::class), MigrateEvents::DRUSH_MIGRATE_PREPARE_ROW)
+            ->willReturnArgument(0);
+
+        $handler = new MigratePrepareRowModuleHandler($decorated, $eventDispatcher);
+        $this->assertSame([], $handler->invokeAll('migrate_prepare_row', $args));
+        $this->assertSame([], $handler->invokeAll('other_hook'));
+    }
+
+    public function testMissingSourceRowsGuard(): void
+    {
+        $source = $this->createStub(MigrateSourceInterface::class);
+        $source->method('count')->willReturn(2);
+        $migration = $this->createStub(MigrationInterface::class);
+        $migration->method('getSourcePlugin')->willReturn($source);
+        $migration->method('id')->willReturn('foo');
+
+        // Bypass the constructor: zero observed source rows plus a non-empty
+        // source must refuse to detect missing rows.
+        $executable = (new \ReflectionClass(MigrateExecutable::class))->newInstanceWithoutConstructor();
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessageMatches('/Refusing to detect missing source rows/');
+        (new \ReflectionMethod($executable, 'handleMissingSourceRows'))->invoke($executable, $migration);
     }
 
     /**

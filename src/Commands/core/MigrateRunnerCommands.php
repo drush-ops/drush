@@ -28,7 +28,6 @@ use Drush\Drupal\Migrate\ValidateMigrationId;
 use Drush\Drush;
 use Drush\Utils\StringUtils;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\Filesystem\Path;
 
 final class MigrateRunnerCommands extends DrushCommands
 {
@@ -347,14 +346,6 @@ final class MigrateRunnerCommands extends DrushCommands
             ])),
             'execute_dependencies' => $options['execute-dependencies'],
         ];
-
-        if (version_compare(\Drupal::VERSION, '11.1.0', '<')) {
-            // Include the migrate_prepare_row hook implementation.
-            require_once Path::join($this->getConfig()->get('drush.base-dir'), 'src/Drupal/Migrate/migrate_runner.inc');
-            // If the 'migrate_prepare_row' hook implementations are already
-            // cached, make sure that system_migrate_prepare_row() is picked-up.
-            \Drupal::moduleHandler()->resetImplementations();
-        }
 
         foreach ($list as $migrations) {
             array_walk($migrations, [static::class, 'executeMigration'], $userData);
