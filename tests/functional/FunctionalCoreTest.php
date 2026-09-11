@@ -207,4 +207,52 @@ class FunctionalCoreTest extends CommandUnishTestCase
             unlink($drush_config_file);
         }
     }
+
+    /**
+     * Tests that status exposes the deployment identifier.
+     */
+    public function testDeploymentIdentifierStatus(): void
+    {
+        $settings_file = $this->webroot()
+          . '/sites/dev/settings.php';
+        $original_settings = file_get_contents($settings_file);
+
+        $this->assertNotFalse($original_settings);
+
+        chmod(dirname($settings_file), 0777);
+        chmod($settings_file, 0777);
+
+        try {
+            $write_result = file_put_contents(
+                $settings_file,
+                "\n\$settings['deployment_identifier']"
+                  . " = 'test-deployment';\n",
+                FILE_APPEND,
+            );
+
+            $this->assertNotFalse($write_result);
+
+            $this->drush(
+                StatusCommand::NAME,
+                [],
+                [
+                  'uri' => 'dev',
+                  'format' => 'json',
+                  'fields' => 'deployment-identifier',
+                ],
+            );
+
+            $output = $this->getOutputFromJSON();
+
+            $this->assertSame(
+                'test-deployment',
+                $output['deployment-identifier'],
+            );
+        } finally {
+            file_put_contents(
+                $settings_file,
+                $original_settings,
+            );
+        }
+    }
 }
