@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\QueueCommands;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\state\StateDeleteCommand;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
@@ -124,6 +125,9 @@ class QueueTest extends UnishIntegrationTestCase
 
     public function tearDown(): void
     {
+        // The workers record progress in state; clear it so a rerun starts fresh.
+        $this->drush(StateDeleteCommand::NAME, ['woot_requeue_exception']);
+        $this->drush(StateDeleteCommand::NAME, ['woot_custom_exception']);
         $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
         parent::tearDown();
     }
