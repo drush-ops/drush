@@ -73,7 +73,7 @@ final class QueueRunCommand extends Command
         while ((!$timeLimit || $remaining > 0) && (!$itemsLimit || $count < $itemsLimit) && ($item = $queue->claimItem($leaseTime))) {
             try {
                 assert($item instanceof stdClass);
-                $io->note(sprintf('Processing item %s from %s queue.', $name, $item->item_id ?? $item->qid));
+                $io->note(sprintf('Processing item %s from %s queue.', $item->item_id ?? $item->qid, $name));
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;
