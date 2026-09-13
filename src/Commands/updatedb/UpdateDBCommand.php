@@ -415,7 +415,7 @@ final class UpdateDBCommand extends Command
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
             Drush::logger()->error("Update failed: $function");
-        } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
+        } elseif ($context['finished'] == 1) {
             $context['message'] = "Update completed: $function";
         }
     }
