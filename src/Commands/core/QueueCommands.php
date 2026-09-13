@@ -86,10 +86,12 @@ final class QueueCommands extends DrushCommands
                 // The worker requested the task to be immediately requeued.
                 $queue->releaseItem($item);
             } catch (SuspendQueueException $e) {
-                // If the worker indicates there is a problem with the whole queue,
-                // release the item.
+                // The worker asked to skip the rest of this queue for this run.
+                // Like core's cron runner, release the item and stop; this is
+                // not a failure. See https://www.drupal.org/i/2867001.
                 $queue->releaseItem($item);
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
+                $this->logger()->warning(dt('Suspended the @name queue: @message', ['@name' => $name, '@message' => $e->getMessage()]));
+                break;
             } catch (DelayedRequeueException $e) {
                 // The worker requested the task not be immediately re-queued.
                 // - If the queue doesn't support ::delayItem(), we should leave the
