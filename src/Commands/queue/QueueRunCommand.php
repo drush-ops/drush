@@ -80,8 +80,12 @@ final class QueueRunCommand extends Command
             } catch (RequeueException) {
                 $queue->releaseItem($item);
             } catch (SuspendQueueException $e) {
+                // The worker asked to skip the rest of this queue for this run.
+                // Like core's cron runner, release the item and stop; this is
+                // not a failure. See https://www.drupal.org/i/2867001.
                 $queue->releaseItem($item);
-                throw new \Exception($e->getMessage(), $e->getCode(), $e);
+                $io->getErrorStyle()->warning(sprintf('Suspended the %s queue: %s', $name, $e->getMessage()));
+                break;
             } catch (DelayedRequeueException $e) {
                 if ($queue instanceof DelayableQueueInterface) {
                     $queue->delayItem($item, $e->getDelay());
