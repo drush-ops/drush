@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Preflight\PreflightVerify | Drush API 14</title>
+    <title>Drush\Preflight\PreflightVerify | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>PreflightVerify</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php">View source</a>)
+    <strong>PreflightVerify</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php">View source</a>)
 </p>
 
         
@@ -111,6 +111,16 @@
                     <a href="#method_verify">verify</a>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         
                                             <p><p>Throw an exception if the environment is not right for running Drush.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_confirmPhpVersion">confirmPhpVersion</a>(string|null $minimumPhpVersion)
+        
+                                            <p><p>Fail fast if the php version does not meet the minimum requirements.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -165,7 +175,7 @@ is available or not.</p></p>                </div>
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_verify">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L18">at line 18</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L18">at line 18</a></div>
         <code>                    void
     <strong>verify</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
@@ -207,8 +217,51 @@ is available or not.</p></p>                </div>
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_confirmPhpVersion">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L39">at line 39</a></div>
+        <code>                    void
+    <strong>confirmPhpVersion</strong>(string|null $minimumPhpVersion)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Fail fast if the php version does not meet the minimum requirements.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$minimumPhpVersion</td>
+                <td><p>The minimum allowable php version</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_confirmUsingCLI">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L31">at line 31</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L52">at line 52</a></div>
         <code>            protected        void
     <strong>confirmUsingCLI</strong>(<a href="../../Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a> $environment)
         </code>
@@ -251,7 +304,7 @@ is available or not.</p></p>                </div>
             </div>
                     <div class="method-item">
                     <h3 id="method_checkPhpIni">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L43">at line 43</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L64">at line 64</a></div>
         <code>            protected        void
     <strong>checkPhpIni</strong>()
         </code>
@@ -286,7 +339,7 @@ notify the user that a setting change is needed and abort.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_invalidIniValue">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L69">at line 69</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L90">at line 90</a></div>
         <code>            protected        bool
     <strong>invalidIniValue</strong>(mixed $ini_value, string|array $disallowed_value)
         </code>
@@ -335,7 +388,7 @@ values that cannot appear in the setting.</p></td>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadedPhpIniMessage">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Preflight/PreflightVerify.php#L88">at line 88</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Preflight/PreflightVerify.php#L109">at line 109</a></div>
         <code>            protected        string
     <strong>loadedPhpIniMessage</strong>()
         </code>
