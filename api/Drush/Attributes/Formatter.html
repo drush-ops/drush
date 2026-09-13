@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Attributes\Formatter | Drush API 13</title>
+    <title>Drush\Attributes\Formatter | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Formatter</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php">View source</a>)
+    <strong>Formatter</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php">View source</a>)
 </p>
 
         
@@ -122,7 +122,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/Formatter.php#L21">at line 21</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/Formatter.php#L23">at line 23</a></div>
         <code>                    
     <strong>__construct</strong>(string|null $returnType = null, string|null $defaultFormatter = &#039;table&#039;)
         </code>
@@ -143,12 +143,14 @@
                     <tr>
                 <td>string|null</td>
                 <td>$returnType</td>
-                <td><p>The command's return type, before formatting.</p></td>
+                <td><p>The command's return type, before formatting. Usually this is a class
+name like RowsOfFields::class.</p></td>
             </tr>
                     <tr>
                 <td>string|null</td>
                 <td>$defaultFormatter</td>
-                <td><p>The fallback formatter.</p></td>
+                <td><p>The fallback formatter name. See the list at
+<a href="https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57">https://github.com/consolidation/output-formatters/blob/a112df9a74854c8438b33b334ed619fa43edf31a/src/FormatterManager.php#L43-L57</a></p></td>
             </tr>
             </table>
 
