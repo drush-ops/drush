@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\QueueCommands;
 use Drush\Commands\pm\PmCommands;
+use Drush\Commands\state\StateDeleteCommand;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 
 #[Group('commands')]
@@ -103,8 +104,30 @@ class QueueTest extends UnishIntegrationTestCase
         $this->assertEquals(0, $output['items'], 'Queue was successfully deleted.');
     }
 
+    /**
+     * Tests that a SuspendQueueException stops the run without failing it.
+     */
+    public function testSuspendQueueException(): void
+    {
+        $this->drush(QueueCommands::DELETE, ['woot_suspend_queue_exception']);
+        $this->drush(PhpCommands::SCRIPT, ['queue_suspend_script'], ['script-path' => __DIR__ . '/resources']);
+
+        // The first item suspends the queue. Drush releases it, logs a warning,
+        // stops processing, and still exits 0.
+        $this->drush(QueueCommands::RUN, ['woot_suspend_queue_exception'], [], self::EXIT_SUCCESS);
+        $this->assertStringContainsString('Suspended the woot_suspend_queue_exception queue', $this->getErrorOutput());
+
+        // Neither item was consumed.
+        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
+        $output = $this->getOutputFromJSON('woot_suspend_queue_exception');
+        $this->assertEquals(2, $output['items'], 'Items were released when the queue was suspended.');
+    }
+
     public function tearDown(): void
     {
+        // The workers record progress in state; clear it so a rerun starts fresh.
+        $this->drush(StateDeleteCommand::NAME, ['woot_requeue_exception']);
+        $this->drush(StateDeleteCommand::NAME, ['woot_custom_exception']);
         $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
         parent::tearDown();
     }
