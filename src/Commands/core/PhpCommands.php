@@ -24,7 +24,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
      */
     #[CLI\Command(name: self::EVAL, aliases: ['eval', 'ev', 'php-eval'])]
     #[CLI\Argument(name: 'code', description: 'PHP code. If shell escaping gets too tedious, consider using the php:script command.')]
-    #[CLI\Usage(name: "drush php:eval '\$node = \Drupal\node\Entity\Node::load(1); print \$node->getTitle();'", description: 'Loads node with nid 1 and then prints its title.')]
+    #[CLI\Usage(name: "drush php:eval '\$node = \Drupal\\node\Entity\Node::load(1); print \$node->getTitle();'", description: 'Loads node with nid 1 and then prints its title.')]
     #[CLI\Usage(name: 'drush php:eval "\Drupal::service(\'file_system\')->copy(\'$HOME/Pictures/image.jpg\', \'public://image.jpg\');"', description: 'Copies a file whose path is determined by an environment\'s variable. Use of double quotes so the variable $HOME gets replaced by its value.')]
     #[CLI\Usage(name: 'drush php:eval "node_access_rebuild();"', description: 'Rebuild node access permissions.')]
     #[CLI\Bootstrap(level: DrupalBootLevels::MAX)]
