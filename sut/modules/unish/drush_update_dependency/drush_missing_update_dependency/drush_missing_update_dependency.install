@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * @file
+ * Provides install and update functions for drush_missing_update_dependency.
+ */
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function drush_missing_update_dependency_update_dependencies() {
+  // Flag that update hooks in this module will never resolve due to the
+  // missing "drush_non_existent_update_dependency" module dependency.
+  $dependencies['drush_missing_update_dependency'][8001] = [
+    'drush_non_existent_update_dependency' => 8001,
+  ];
+  $dependencies['drush_missing_update_dependency'][8002] = [
+    'drush_non_existent_update_dependency' => 8002,
+  ];
+  return $dependencies;
+}
+
+
+/**
+ * This should never have run (missing dependency).
+ */
+function drush_missing_update_dependency_update_8001() {
+  throw new \LogicException('This update function is not allowed to run, since the schema version should already be at least 8001.');
+}
+
+/**
+ * This should never run (missing dependency).
+ */
+function drush_missing_update_dependency_update_8002() {
+  throw new \LogicException('This update function is not allowed to run, since it has a direct dependency on a missing update.');
+}
+

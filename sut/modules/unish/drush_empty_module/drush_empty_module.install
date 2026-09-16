@@ -11,3 +11,17 @@
 function drush_empty_module_update_8001() {
   return 'The update ran';
 }
+
+/**
+ * Fake update hook 2.
+ */
+function drush_empty_module_update_8002() {
+  return 'The second update ran';
+}
+
+/**
+ * Fake update hook 3.
+ */
+function drush_empty_module_update_8003() {
+  return 'The third update ran';
+}

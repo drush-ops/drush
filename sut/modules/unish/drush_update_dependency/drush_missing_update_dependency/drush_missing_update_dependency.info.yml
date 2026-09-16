@@ -1,0 +1,6 @@
+name: Missing Drush update
+type: module
+description: Module to always trigger a missing update dependency.
+core_version_requirement: '>=8'
+package: Other
+dependencies: []
