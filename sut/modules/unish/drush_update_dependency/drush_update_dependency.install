@@ -1,0 +1,73 @@
+<?php
+
+/**
+ * @file
+ * Provides install and update functions for drush_update_dependency.
+ */
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function drush_update_dependency_update_dependencies() {
+  // When this module is enabled, we are declaring here that modules run
+  // updates in the following order:
+  // 1. drush_empty_module_update_8001()
+  // 2. drush_update_dependency_update_8001()
+  // 3. drush_update_dependency_update_8002()
+  // ...
+  // 7. drush_empty_module_update_8002()
+  $dependencies['drush_update_dependency'][8001] = [
+    'drush_empty_module' => 8001,
+  ];
+
+  // These are coordinated with the corresponding dependencies declared in
+  // update_test_1_update_dependencies().
+  $dependencies['drush_missing_update_dependency1'][8002] = [
+    'drush_update_dependency' => 8002,
+  ];
+  // Ensure the two update hooks won't run until the module exists.
+  $dependencies['drush_update_dependency'][8003] = [
+    'drush_missing_update_dependency1' => 8001,
+  ];
+  $dependencies['drush_update_dependency'][8004] = [
+    'drush_missing_update_dependency2' => 8001,
+  ];
+
+  return $dependencies;
+}
+
+/**
+ * Dependency update hook 1.
+ */
+function drush_update_dependency_update_8001() {
+  return 'The first update ran';
+}
+
+/**
+ * Dependency update hook 2.
+ */
+function drush_update_dependency_update_8002() {
+  return 'The second update ran';
+}
+
+/**
+ * Dependency update hook 3.
+ */
+function drush_update_dependency_update_8003() {
+  return 'The third update ran';
+}
+
+/**
+ * Dependency update hook 4.
+ */
+function drush_update_dependency_update_8004() {
+  return 'The fourth update ran';
+}
+
+/**
+ * Dependency update hook 5 (blocked).
+ */
+function drush_update_dependency_update_8005() {
+  // This will not be ran until the previous hooks have been successfully ran.
+  return 'The fifth update ran';
+}
