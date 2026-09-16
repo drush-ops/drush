@@ -92,12 +92,20 @@ class SqlPgsql extends SqlBase
 
     public function drop(array $tables): ?bool
     {
-        $return = true;
         if ($tables) {
-            $sql = 'DROP TABLE ' . implode(', ', $tables) . ' CASCADE';
-            $return = $this->query($sql);
+            $return = $this->alwaysQuery('DROP SCHEMA public CASCADE');
+            if ($return) {
+                $return = $this->alwaysQuery('CREATE SCHEMA public');
+            }
+            if ($return) {
+                $dbSpec = $this->getDbSpec();
+                $username = $dbSpec['username'] ?? 'public';
+                $this->alwaysQuery("GRANT ALL ON SCHEMA public TO {$username}");
+                $this->alwaysQuery('GRANT ALL ON SCHEMA public TO public');
+            }
+            return $return;
         }
-        return $return;
+        return true;
     }
 
     public function createdbSql($dbname, $quoted = false): string
