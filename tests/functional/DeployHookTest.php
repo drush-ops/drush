@@ -115,4 +115,134 @@ class DeployHookTest extends CommandUnishTestCase
         $this->assertStringContainsString('[notice] Performed: woot_deploy_deploy_function', $this->getErrorOutput());
         $this->assertStringContainsString('[success] Finished performing deploy hooks.', $this->getErrorOutput());
     }
+
+    /**
+     * Test the deploy:hook-list command.
+     */
+    public function testDeployHookList()
+    {
+        $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+        ];
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
+
+        // Run deploy hooks to create some deployed hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_ERROR);
+
+        // Set the drupal state so that the failing hook passes
+        $this->drush(StateCommands::SET, ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
+
+        // Run deploy hooks again to complete all hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
+
+        // Test the hook-list command.
+        $options = [
+            'format' => 'json'
+        ];
+        $this->drush(DeployHookCommands::HOOK_LIST, [], $options, null, null, self::EXIT_SUCCESS);
+
+        $output = $this->getOutputFromJSON();
+        $this->assertNotEmpty($output);
+
+        // Check that the expected hooks are in the list
+        $found_hooks = [
+            'woot_deploy_a' => false,
+            'woot_deploy_batch' => false,
+            'woot_deploy_failing' => false,
+        ];
+
+        foreach ($output as $hook) {
+            if ($hook['module'] === 'woot' && $hook['hook'] === 'a') {
+                $found_hooks['woot_deploy_a'] = true;
+            }
+            if ($hook['module'] === 'woot' && $hook['hook'] === 'batch') {
+                $found_hooks['woot_deploy_batch'] = true;
+            }
+            if ($hook['module'] === 'woot' && $hook['hook'] === 'failing') {
+                $found_hooks['woot_deploy_failing'] = true;
+            }
+        }
+
+        $this->assertTrue($found_hooks['woot_deploy_a'], 'Hook woot_deploy_a should be in the list');
+        $this->assertTrue($found_hooks['woot_deploy_batch'], 'Hook woot_deploy_batch should be in the list');
+        $this->assertTrue($found_hooks['woot_deploy_failing'], 'Hook woot_deploy_failing should be in the list');
+    }
+
+    /**
+     * Test the deploy:hook-unset command.
+     */
+    public function testDeployHookUnset()
+    {
+        $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+        ];
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
+
+        // Run deploy hooks to create some deployed hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_ERROR);
+
+        // Set the drupal state so that the failing hook passes
+        $this->drush(StateCommands::SET, ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
+
+        // Run deploy hooks again to complete all hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
+
+        // Test the hook-unset command.
+        $this->drush(DeployHookCommands::HOOK_UNSET, ['woot_deploy_a'], [], null, null, self::EXIT_SUCCESS);
+        $this->assertStringContainsString(
+            '[success] Hook woot_deploy_a removed from deployed hooks list.',
+            $this->getErrorOutput()
+        );
+
+        // Verify the hook is no longer in the list
+        $options = [
+            'format' => 'json'
+        ];
+        $this->drush(DeployHookCommands::HOOK_LIST, [], $options, null, null, self::EXIT_SUCCESS);
+
+        $output = $this->getOutputFromJSON();
+        $found_hook_a = false;
+
+        foreach ($output as $hook) {
+            if ($hook['module'] === 'woot' && $hook['hook'] === 'a') {
+                $found_hook_a = true;
+                break;
+            }
+        }
+
+        $this->assertFalse($found_hook_a, 'Hook woot_deploy_a should not be in the list after unset');
+    }
+
+    /**
+     * Test the deploy:redeploy command.
+     */
+    public function testDeployHookRedeploy()
+    {
+        $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+        ];
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
+
+        // Run deploy hooks to create some deployed hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_ERROR);
+
+        // Set the drupal state so that the failing hook passes
+        $this->drush(StateCommands::SET, ['woot_deploy_pass', 'true'], [], null, null, self::EXIT_SUCCESS);
+
+        // Run deploy hooks again to complete all hooks.
+        $this->drush(DeployHookCommands::HOOK, [], $options, null, null, self::EXIT_SUCCESS);
+
+        // Test the redeploy command.
+        $this->drush(DeployHookCommands::HOOK_REDEPLOY, ['woot_deploy_a'], $options, null, null, self::EXIT_SUCCESS);
+
+        $this->assertStringContainsString('[notice] Deploy hook started: woot_deploy_a', $this->getErrorOutput());
+        $this->assertStringContainsString(
+            '[notice] This is the update message from woot_deploy_a',
+            $this->getErrorOutput()
+        );
+        $this->assertStringContainsString('[success] Finished performing re-deploy hooks.', $this->getErrorOutput());
+    }
 }
