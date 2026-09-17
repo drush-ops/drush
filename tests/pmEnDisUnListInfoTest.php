@@ -7,11 +7,11 @@
 
 namespace Unish;
 
-/**
- *  @group slow
- *  @group pm
- */
-class EnDisUnListInfoCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('slow')]
+#[Group('pm')]
+class pmEnDisUnListInfoTest extends CommandUnishTestCase {
 
   public function testEnDisUnList() {
     $moduleToTest = 'devel';

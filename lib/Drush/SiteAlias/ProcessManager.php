@@ -12,7 +12,7 @@ use Drush\Drush;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * The Drush ProcessManager adds a few Drush-specific service methods.

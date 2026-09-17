@@ -3,17 +3,13 @@
 namespace Drush\Tests\Make\Parser;
 
 use Drush\Make\Parser\ParserYaml;
-
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Yoast\PHPUnitPolyfills\TestCases\TestCase;
 
-/**
- * @coversDefaultClass \Drush\Make\Parser\ParserYaml
- */
+#[CoversClass(ParserYaml::class)]
 class ParserYamlTest extends TestCase {
 
-  /**
-   * @covers ::supportedFile
-   */
   public function testSupportedFile() {
     // @todo allow stdin support for Yaml files as well.
     $this->assertFalse(ParserYaml::supportedFile('-'));
@@ -21,10 +17,7 @@ class ParserYamlTest extends TestCase {
     $this->assertFalse(ParserYaml::supportedFile('./baz/foo.make'));
   }
 
-  /**
-   * @dataProvider providerParse
-   * @covers ::parse
-   */
+  #[DataProvider('providerParse')]
   public function testParse($yaml, $expected) {
     $parsed = ParserYaml::parse($yaml);
     $this->assertSame($expected, $parsed);
@@ -33,7 +26,7 @@ class ParserYamlTest extends TestCase {
   /**
    * Provides YAML snippets to test the parser.
    */
-  public function providerParse() {
+  public static function providerParse() {
     $yaml = <<<'YAML'
 foo:
   bar:

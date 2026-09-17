@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
   * Cache command testing.
   *
-  * @group base
   */
-class cacheCommandCase extends CommandUnishTestCase {
+#[Group('base')]
+class cacheCommandTest extends CommandUnishTestCase {
 
   function set_up() {
     if (!$this->getSites()) {

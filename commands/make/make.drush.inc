@@ -923,6 +923,11 @@ function make_prepare_projects($recursion, $info, $contrib_destination = '', $bu
         if ($release === FALSE) {
           return FALSE;
         }
+        if ($release === NULL) {
+          // No release found (e.g. project has no releases at all). Skip download info.
+          $projects[$project_type][$project['name']] = $project;
+          continue;
+        }
         // Override default project type with data from update service.
         if (!isset($info['projects'][$project['name']]['type'])) {
           $project['type'] = $release_info->get($request)->getType();

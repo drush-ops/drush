@@ -2,9 +2,9 @@
 
 namespace Unish;
 
-/**
- * @group base
- */
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('base')]
 class siteSetUnitTest extends UnitUnishTestCase {
 
   function testSiteSet() {

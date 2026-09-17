@@ -6,13 +6,14 @@
 *  do have some edges that need explicit testing.
 *
 *  @see drush/includes/context.inc.
-*
-*  @group base
 */
 
 namespace Unish;
 
-class contextCase extends CommandUnishTestCase {
+use PHPUnit\Framework\Attributes\Group;
+
+#[Group('base')]
+class contextTest extends CommandUnishTestCase {
 
   function setUpPaths() {
     $this->log("webroot: " . $this->webroot() . "\n", 'warning');

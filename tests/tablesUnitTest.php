@@ -2,11 +2,13 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
   *   Unit tests for table formatting.
   *
-  * @group base
   */
+#[Group('base')]
 class tablesUnitTest extends UnitUnishTestCase {
   function set_up() {
     // Bootstrap to ensure the auto-loaded is running so that Console_Table is found.

@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Make makefile tests.
- * @group make
- * @group slow
  */
-class lockMakefileCase extends CommandUnishTestCase {
+#[Group('make')]
+#[Group('slow')]
+class lockMakeTest extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */

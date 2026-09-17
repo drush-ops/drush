@@ -129,6 +129,24 @@ EOT;
     return $tables;
   }
 
+  /**
+   * Check whether the MySQL server has GTID mode enabled.
+   * When it does, mysqldump includes SET @@GLOBAL.GTID_PURGED which
+   * causes errors on re-import if the server already has GTID history.
+   */
+  protected function isGtidEnabled() {
+    $result = $this->query("SELECT @@GLOBAL.gtid_mode AS gtid_mode");
+    if ($result) {
+      $output = drush_shell_exec_output();
+      foreach ($output as $line) {
+        if (preg_match('/^(ON|ON_PERMISSIVE|OFF_PERMISSIVE)/i', trim($line))) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
+  }
+
   public function dumpCmd($table_selection) {
     $parens = FALSE;
     $skip_tables = $table_selection['skip'];
@@ -151,6 +169,11 @@ EOT;
     // We had --skip-add-locks here for a while to help people with insufficient permissions,
     // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
     $extra = ' --no-autocommit --single-transaction --opt -Q';
+    // Suppress GTID_PURGED statements in the dump; they break re-import on
+    // servers with GTID mode enabled (MySQL 5.6+).
+    if ($this->isGtidEnabled()) {
+      $extra .= ' --set-gtid-purged=OFF';
+    }
     if (isset($data_only)) {
       $extra .= ' --no-create-info';
     }
