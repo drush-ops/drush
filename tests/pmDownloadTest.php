@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
-  * @group pm
-  */
-class pmDownloadCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('pm')]
+class pmDownloadTest extends CommandUnishTestCase {
   public function testPmDownload() {
     $this->drush('pm-download', array('devel'), array('cache' => NULL, 'skip' => NULL)); // No FirePHP
     $this->assertFileExists(UNISH_SANDBOX . '/devel/README.txt');

@@ -76,7 +76,7 @@ class DrushCommand extends BaseCommand {
   /**
    * {@inheritdoc}
    */
-  protected function execute(InputInterface $input, OutputInterface $output) {
+  protected function execute(InputInterface $input, OutputInterface $output): int {
     $args = $input->getArguments();
     $first = array_shift($args);
 
@@ -105,9 +105,11 @@ class DrushCommand extends BaseCommand {
       }
       // Add a newline after so the shell returns on a new line.
       $output->writeln('');
+      return 1;
     }
     else {
       $output->page(drush_backend_get_result());
+      return 0;
     }
   }
 

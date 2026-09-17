@@ -7,11 +7,11 @@
 
 namespace Unish;
 
-/**
- *  @group slow
- *  @group commands
- */
-class roleCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('slow')]
+#[Group('commands')]
+class roleTest extends CommandUnishTestCase {
 
   /**
    * Create, edit, block, and cancel users.

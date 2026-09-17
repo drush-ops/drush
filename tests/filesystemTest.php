@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Filesystem related testing.
  *
- * @group base
  */
-class FilesystemCase extends CommandUnishTestCase {
+#[Group('base')]
+class filesystemTest extends CommandUnishTestCase {
 
   public function testSbit() {
     if ($this->is_windows()) {

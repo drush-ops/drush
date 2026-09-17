@@ -2,13 +2,15 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * core-quick-drupal tests.
  *
- * @group quick-drupal
- * @group slow
  */
-class quickDrupalCase extends CommandUnishTestCase {
+#[Group('quick-drupal')]
+#[Group('slow')]
+class quickDrupalTest extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */

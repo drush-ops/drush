@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
   * Unit tests for sitealias.inc
   *
-  * @group base
   */
-class saUnitCase extends UnitUnishTestCase {
+#[Group('base')]
+class siteAliasUnitTest extends UnitUnishTestCase {
 
   /**
    * Tests _sitealias_array_merge().

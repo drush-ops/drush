@@ -2,9 +2,9 @@
 
 namespace Unish;
 
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
-class commandUnitCase extends UnitUnishTestCase {
+class commandUnitTest extends UnitUnishTestCase {
   /**
    * Assure that matching version-specific command files are loaded and others are ignored.
    */

@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
-  * @group pm
-  */
-class pmReleaseNotesCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('pm')]
+class pmReleaseNotesTest extends CommandUnishTestCase {
 
   /**
    * Tests for pm-releasenotes command.

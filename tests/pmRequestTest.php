@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
-  * @group pm
-  */
-class pmRequestCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('pm')]
+class pmRequestTest extends CommandUnishTestCase {
 
   /**
    * Tests for pm_parse_version() on a bootstrapped site.

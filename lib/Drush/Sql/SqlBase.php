@@ -3,7 +3,7 @@
 namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class SqlBase {
 

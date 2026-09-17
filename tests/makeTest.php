@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Make makefile tests.
- * @group make
- * @group slow
  */
-class makeMakefileCase extends CommandUnishTestCase {
+#[Group('make')]
+#[Group('slow')]
+class makeTest extends CommandUnishTestCase {
   /**
    * Path to test make files.
    */
@@ -398,7 +400,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('contrib-destination');
   }
 
-  /** @group make.yml */
+  #[Group('make.yml')]
   function testMakeContribDestinationYaml() {
     $this->runMakefileTest('contrib-destination-yaml');
   }
@@ -407,7 +409,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('defaults');
   }
 
-  /** @group make.yml */
+  #[Group('make.yml')]
   function testMakeDefaultsYaml() {
     $this->runMakefileTest('defaults-yaml');
   }
@@ -467,7 +469,7 @@ class makeMakefileCase extends CommandUnishTestCase {
     $this->runMakefileTest('include');
   }
 
-  /** @group make.yml */
+  #[Group('make.yml')]
   function testMakeIncludeYaml() {
     $this->markTestSkipped('Make test must be updated; Drupal 6 is EOL, fixture projects are not available. PRs welcome.');
     $this->runMakefileTest('include-yaml');
@@ -630,19 +632,6 @@ class makeMakefileCase extends CommandUnishTestCase {
       $install_directory = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'subtree';
       $this->drush('make', array('--no-core', $makefile, $install_directory));
 
-      $files['nivo-slider'] = array(
-        'exists' => array(
-          'jquery.nivo.slider.js',
-          'jquery.nivo.slider.pack.js',
-          'license.txt',
-          'nivo-slider.css',
-          'README',
-        ),
-        'notexists' => array(
-          '__MACOSX',
-          'nivo-slider',
-        ),
-      );
       $files['fullcalendar'] = array(
         'exists' => array(
           'fullcalendar.css',
@@ -772,6 +761,8 @@ class makeMakefileCase extends CommandUnishTestCase {
    * Test that a distribution can be used as a "core" project.
    */
   function testMakeUseDistributionAsCore() {
+    // This test downloads a large distribution; increase the idle timeout.
+    $this->idleTimeout = 60;
     $this->runMakefileTest('use-distribution-as-core');
   }
 

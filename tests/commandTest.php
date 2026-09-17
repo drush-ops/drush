@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group base
- */
-class commandCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('base')]
+class commandTest extends CommandUnishTestCase {
   public function testInvoke() {
     $expected = array(
       'unit_drush_init',

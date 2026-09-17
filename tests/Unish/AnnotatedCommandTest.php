@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group base
- */
-class annotatedCommandCase extends CommandUnishTestCase {
+use PHPUnit\Framework\Attributes\Group;
+
+#[Group('base')]
+class AnnotatedCommandTest extends CommandUnishTestCase {
 
   public function testGlobal() {
     $globalExtensions = $this->setupGlobalExtensionsForTests();
@@ -173,7 +173,7 @@ EOT;
   }
 
   public function setupGlobalExtensionsForTests() {
-    $globalExtension = __DIR__ . '/resources/global-includes';
+    $globalExtension = __DIR__ . '/../resources/global-includes';
     $targetDir = UNISH_SANDBOX . DIRECTORY_SEPARATOR . 'global-includes';
     $this->mkdir($targetDir);
     $this->recursive_copy($globalExtension, $targetDir);
@@ -182,7 +182,7 @@ EOT;
 
   public function setupModulesForTests($root) {
     $wootMajor = UNISH_DRUPAL_MAJOR_VERSION;
-    $wootModule = __DIR__ . '/resources/modules/d' . $wootMajor . '/woot';
+    $wootModule = __DIR__ . '/../resources/modules/d' . $wootMajor . '/woot';
     $targetDir = $root . DIRECTORY_SEPARATOR . $this->drupalSitewideDirectory() . '/modules/woot';
     $this->mkdir($targetDir);
     $this->recursive_copy($wootModule, $targetDir);

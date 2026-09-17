@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group commands
- */
-class QueueCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('commands')]
+class queueTest extends CommandUnishTestCase {
 
   function testQueue() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

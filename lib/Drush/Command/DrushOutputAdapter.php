@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\Output;
  * the Drush 8.x branch.
  */
 class DrushOutputAdapter extends Output {
-    protected function doWrite($message, $newline)
+    protected function doWrite($message, $newline): void
     {
         drush_print($message, 0, null, $newline);
     }

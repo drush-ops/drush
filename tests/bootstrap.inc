@@ -25,7 +25,7 @@ unish_init();
  */
 function unish_init() {
   // Default drupal major version to run tests over.
-  $unish_drupal_major = '8';
+  $unish_drupal_major = '7';
   $unish_drupal_minor = '';
   if (getenv('UNISH_DRUPAL_VERSION')) {
     if (preg_match('#([0-9]+)(\..*)*#', getenv('UNISH_DRUPAL_VERSION'), $matches)) {

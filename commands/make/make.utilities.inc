@@ -674,12 +674,12 @@ function _make_determine_format($data) {
   // preg_match in INI parser.
   $yaml_parse_exception = FALSE;
   try {
-    if ($parsed = ParserYaml::parse($data)) {
+    if (($parsed = ParserYaml::parse($data)) && is_array($parsed)) {
       $parsed['format'] = 'yaml';
       return $parsed;
     }
   }
-  catch (\Drush\Internal\Symfony\Yaml\Exception\ParseException $e) {
+  catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
     // Note that an exception was thrown, and display after .ini parsing.
     $yaml_parse_exception = $e;
   }

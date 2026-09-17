@@ -165,7 +165,10 @@ class ReleaseInfo {
           return drush_set_error('DRUSH_PM_NO_STABLE_RELEASE', $message);
         }
         drush_log($message, LogLevel::WARNING);
-        if ($select == 'ignore') {
+        // For EOL Drupal versions, fall through to the best-release auto-select
+        // below rather than returning NULL immediately for 'ignore' strategy.
+        $version_major_early = drush_drupal_major_version();
+        if ($select == 'ignore' && $version_major_early > 7) {
           return NULL;
         }
       }
@@ -183,11 +186,11 @@ class ReleaseInfo {
     }
     $releases = $project_release_info->filterReleases($filter, $version);
 
-    // Special checking: Drupal 6 is EOL, so there are no stable
+    // Special checking: Drupal 6 and 7 are EOL, so there are no stable
     // releases for ANY contrib project. In this case, we'll default
     // to the best release, unless the user specified --select.
     $version_major = drush_drupal_major_version();
-    if (($select != 'always') && ($version_major < 7)) {
+    if (($select != 'always') && ($version_major <= 7)) {
       $bestRelease = Project::getBestRelease($releases);
       if (!empty($bestRelease)) {
         $message = dt('Drupal !major has reached EOL, so there are no stable releases for any contrib projects. Selected the best release, !project.', array('!major' => $version_major, '!project' => $bestRelease['name']));

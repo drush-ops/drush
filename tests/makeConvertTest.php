@@ -2,12 +2,15 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Make makefile tests.
- * @group make
- * @group slow
  */
-class makeConvertCase extends CommandUnishTestCase {
+#[Group('make')]
+#[Group('slow')]
+class makeConvertTest extends CommandUnishTestCase {
 
   /**
    * Tests the conversion of make file to various formats.
@@ -20,9 +23,8 @@ class makeConvertCase extends CommandUnishTestCase {
    *
    * @param $expected_lines
    *   An array of lines expected to be present in the command output.
-   *
-   * @dataProvider providerTestMakeConvert
    */
+  #[DataProvider('providerTestMakeConvert')]
   public function testMakeConvert($source_filename, $options, $expected_lines) {
     $makefile_dir =  dirname(__FILE__) . DIRECTORY_SEPARATOR . 'makefiles';
     $source_file = $makefile_dir . DIRECTORY_SEPARATOR . $source_filename;
@@ -39,7 +41,7 @@ class makeConvertCase extends CommandUnishTestCase {
    * @return array
    *   An array of test case data. See testMakeConvert() signature.
    */
-  public function providerTestMakeConvert() {
+  public static function providerTestMakeConvert() {
     return array(
       array(
         // Source filename in makefiles directory.

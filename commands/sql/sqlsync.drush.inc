@@ -1,7 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Implementation of hook_drush_command().

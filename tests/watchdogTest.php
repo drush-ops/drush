@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group commands
- */
-class WatchdogCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('commands')]
+class watchdogTest extends CommandUnishTestCase {
 
   function  testWatchdog() {
     $sites = $this->setUpDrupal(1, TRUE);

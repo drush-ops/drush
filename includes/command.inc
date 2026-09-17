@@ -1,7 +1,7 @@
 <?php
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Drush\Command\DrushInputAdapter;
 use Drush\Command\DrushOutputAdapter;
