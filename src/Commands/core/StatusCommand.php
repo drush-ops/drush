@@ -75,7 +75,7 @@ use Symfony\Component\Filesystem\Path;
     'deployment-identifier' => 'Deployment identifier',
     '%paths' => 'Other paths'
 ])]
-#[CLI\DefaultTableFields(fields: ['drupal-version', 'deployment-identifier', 'uri', 'db-driver', 'db-hostname', 'db-port', 'db-username', 'db-name', 'db-status', 'bootstrap', 'theme', 'admin-theme', 'php-bin', 'php-conf', 'php-os', 'php-version', 'drush-script', 'drush-version', 'drush-temp', 'drush-conf', 'install-profile', 'root', 'site', 'files', 'private', 'temp', 'config'])]
+#[CLI\DefaultTableFields(fields: ['drupal-version', 'uri', 'db-driver', 'db-hostname', 'db-port', 'db-username', 'db-name', 'db-status', 'bootstrap', 'theme', 'admin-theme', 'php-bin', 'php-conf', 'php-os', 'php-version', 'drush-script', 'drush-version', 'drush-temp', 'drush-conf', 'install-profile', 'root', 'site', 'files', 'private', 'temp', 'config'])]
 #[CLI\HelpLinks(links: [HelpLinks::Readme])]
 class StatusCommand extends Command
 {
