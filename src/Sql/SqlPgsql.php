@@ -6,8 +6,6 @@ namespace Drush\Sql;
 
 use Drush\Drush;
 
-define('PSQL_SHOW_TABLES', "SELECT tablename FROM pg_tables WHERE schemaname='public';");
-
 class SqlPgsql extends SqlBase
 {
     public string $queryExtra = "--no-align --field-separator=\"\t\" --pset tuples_only=on";
@@ -130,14 +128,14 @@ class SqlPgsql extends SqlBase
     public function queryFormat($query)
     {
         if (strtolower($query) === 'show tables;') {
-            return PSQL_SHOW_TABLES;
+            return $this->showTablesSql();
         }
         return $query;
     }
 
     public function listTables(): array
     {
-        $this->alwaysQuery(PSQL_SHOW_TABLES);
+        $this->alwaysQuery($this->showTablesSql());
         $tables = explode(PHP_EOL, trim($this->getProcess()->getOutput()));
         return array_filter($tables);
     }
@@ -198,5 +196,23 @@ class SqlPgsql extends SqlBase
     public function getPasswordFile(): ?string
     {
         return $this->password_file;
+    }
+
+    private function schemaName(): string
+    {
+        $dbSpec = $this->getDbSpec();
+
+        return $dbSpec['schema']
+            ?? $dbSpec['database']
+            ?? 'public';
+    }
+
+    private function showTablesSql(): string
+    {
+        $schema = str_replace("'", "''", $this->schemaName());
+
+        return "SELECT quote_ident(schemaname) || '.' || quote_ident(tablename)
+                FROM pg_tables
+                WHERE schemaname='{$schema}';";
     }
 }
