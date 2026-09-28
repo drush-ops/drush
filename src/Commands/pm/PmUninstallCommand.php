@@ -50,7 +50,9 @@ final class PmUninstallCommand extends Command
         $this
             ->addArgument('modules', InputArgument::IS_ARRAY, 'A comma delimited list of modules.')
             ->addOption(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Outputs the operations but will not execute anything.')
-            ->addUsage('pm:uninstall --dry-run field_ui');
+            ->addOption(name: 'force', shortcut: 'f', mode: InputOption::VALUE_NONE, description: 'Do not fail when none of the modules are installed.')
+            ->addUsage('pm:uninstall --dry-run field_ui')
+            ->addUsage('pm:uninstall --force field_ui');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -62,7 +64,12 @@ final class PmUninstallCommand extends Command
 
         $installed_modules = array_filter($modules, $this->moduleHandler->moduleExists(...));
         if ($installed_modules === []) {
-            throw new \Exception(sprintf('The following module(s) are not installed: %s. No modules to uninstall.', implode(', ', $modules)));
+            $message = sprintf('The following module(s) are not installed: %s. No modules to uninstall.', implode(', ', $modules));
+            if ($input->getOption('force')) {
+                $this->logger->notice($message);
+                return self::SUCCESS;
+            }
+            throw new \Exception($message);
         }
         if ($installed_modules !== $modules) {
             $this->logger->warning('The following module(s) are not installed and will not be uninstalled: {list}', ['list' => implode(', ', array_diff($modules, $installed_modules))]);
