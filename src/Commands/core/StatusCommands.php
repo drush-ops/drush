@@ -87,6 +87,7 @@ final class StatusCommands extends DrushCommands
         // config-sync is deprecated. Use 'config' instead.
         'config-sync' => 'Drupal config',
         'config' => 'Drupal config',
+        'deployment-identifier' => 'Deployment identifier',
         '%paths' => 'Other paths'
     ])]
     #[CLI\DefaultTableFields(fields: ['drupal-version', 'uri', 'db-driver', 'db-hostname', 'db-port', 'db-username', 'db-name', 'db-status', 'bootstrap', 'theme', 'admin-theme', 'php-bin', 'php-conf', 'php-os', 'php-version', 'drush-script', 'drush-version', 'drush-temp', 'drush-conf', 'install-profile', 'root', 'site', 'files', 'private', 'temp', 'config'])]
@@ -128,6 +129,7 @@ final class StatusCommands extends DrushCommands
                         $status_table['db-port'] = isset($db_spec['port']) ? $db_spec['port'] : null;
                     }
                     if ($boot_manager->hasBootstrapped(DrupalBootLevels::CONFIGURATION)) {
+                        $status_table['deployment-identifier'] = Settings::get('deployment_identifier');
                         $status_table['install-profile'] = \Drupal::installProfile();
                         if ($boot_manager->hasBootstrapped(DrupalBootLevels::DATABASE)) {
                             $status_table['db-status'] = dt('Connected');
