@@ -44,7 +44,7 @@ class SqlPgsql extends SqlBase
 
     public function command(): string
     {
-        return 'psql -q ON_ERROR_STOP=1 ';
+        return 'psql -q --set=ON_ERROR_STOP=1 ';
     }
 
     public function getEnv(): array
