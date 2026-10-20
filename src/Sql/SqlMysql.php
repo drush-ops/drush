@@ -143,7 +143,9 @@ EOT;
         }
 
         if (isset($attribs['ssl_verify_server_cert']) && isset($dbSpec['pdo'][$attribs['ssl_verify_server_cert']])) {
-            $parameters['ssl-verify-server-cert'] = (bool) $dbSpec['pdo'][$attribs['ssl_verify_server_cert']];
+            // Render as 0/1 rather than a bool: Escape::shellArg() casts the value
+            // to string, and (string) FALSE is "" which mysql rejects as a boolean.
+            $parameters['ssl-verify-server-cert'] = $dbSpec['pdo'][$attribs['ssl_verify_server_cert']] ? '1' : '0';
         }
 
         return $this->paramsToOptions($parameters);
