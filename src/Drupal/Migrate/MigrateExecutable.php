@@ -279,6 +279,13 @@ class MigrateExecutable extends MigrateExecutableBase
         // missing and rolled back. Fail loudly instead.
         // @see https://github.com/drush-ops/drush/issues/6595
         if ($this->allSourceIdValues === [] && (clone $migration->getSourcePlugin())->count() > 0) {
+            // SqlBase sources that can join the map table only return the rows
+            // that still need importing, so an up-to-date migration observes no
+            // rows at all. Missing rows can't be detected then, which only
+            // matters when they would be rolled back.
+            if (!$this->deleteMissingSourceRows) {
+                return;
+            }
             throw new \RuntimeException(sprintf(
                 "No source rows were observed during the '%s' import, but the source is not empty. Refusing to detect missing source rows; nothing was rolled back.",
                 $migration->id(),
