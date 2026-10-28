@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for site-install on a Drupal 6 installation.
  *
- * @group commands
  */
-class siteInstallD6Case extends CommandUnishTestCase {
+#[Group('commands')]
+class siteIntallD6Test extends CommandUnishTestCase {
 
   function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION != 6) {

@@ -7,12 +7,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * pm testing
  *
- * @group pm
  */
-class releaseInfoCase extends UnitUnishTestCase {
+#[Group('pm')]
+class releaseInfoTest extends UnitUnishTestCase {
 
   /**
    * Pick right release from the XML (dev, latest published+recommended, ...).

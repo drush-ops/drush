@@ -3,7 +3,7 @@
 namespace Drush\Sql;
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 class SqlBase {
 
@@ -60,6 +60,12 @@ class SqlBase {
   public function dump($file = '') {
     $file_suffix = '';
     $table_selection = $this->get_expanded_table_selection();
+    // If the tables could not be listed, the selection is unreliable (an empty
+    // list would dump the whole database, including excluded tables). The
+    // error has already been reported by listTables().
+    if (drush_cmp_error('DRUSH_SQL_LIST_TABLES_FAILED')) {
+      return FALSE;
+    }
     $file = $this->dumpFile($file);
     $cmd = $this->dumpCmd($table_selection);
     // Gzip the output from dump command(s) if requested.
@@ -318,6 +324,11 @@ class SqlBase {
    */
   public function get_expanded_table_selection() {
     $table_selection = drush_sql_get_table_selection();
+    // Without any skip/structure/tables selection there is nothing to expand,
+    // so don't list the tables (an unfiltered dump doesn't depend on it).
+    if (!array_filter($table_selection)) {
+      return $table_selection;
+    }
     // Get the existing table names in the specified database.
     $db_tables = $this->listTables();
     if (isset($table_selection['skip'])) {

@@ -37,11 +37,13 @@ abstract class UnishTestCase extends TestCase {
       unish_file_delete_recursive($sandbox);
     }
     $ret = mkdir($sandbox, 0777, TRUE);
-    chdir(UNISH_SANDBOX);
+    // Stay in the parent of the sandbox (a stable, permanent directory) so that
+    // subprocesses never inherit a cwd that may be deleted between test classes.
+    // execute() always passes an explicit cwd to Process, so this is safe.
 
-    mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
-    mkdir($sandbox . '/etc/drush', 0777, TRUE);
-    mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
+    @mkdir(getenv('HOME') . '/.drush', 0777, TRUE);
+    @mkdir($sandbox . '/etc/drush', 0777, TRUE);
+    @mkdir($sandbox . '/share/drush/commands', 0777, TRUE);
 
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
       // Hack to make git use unix line endings on windows
@@ -227,6 +229,9 @@ abstract class UnishTestCase extends TestCase {
 
   public function recursive_copy($src, $dst) {
     $dir = opendir($src);
+    if ($dir === false) {
+      throw new \RuntimeException("Could not open directory: $src");
+    }
     $this->mkdir($dst);
     while(false !== ( $file = readdir($dir)) ) {
       if (( $file != '.' ) && ( $file != '..' )) {
@@ -293,6 +298,10 @@ abstract class UnishTestCase extends TestCase {
       $this->log('Cache HIT. Environment: ' . $source, 'verbose');
       try {
         $this->drush('archive-restore', array($source), array('destination' => $root, 'overwrite' => NULL));
+        // Re-apply the D7 MySQL reserved-word patch after archive restore.
+        if ($major_version == 7) {
+          $this->patchDrupal7MysqlReservedWords($root);
+        }
         $fetchAndInstall = false;
       }
       catch (\Exception $e) {
@@ -375,6 +384,13 @@ abstract class UnishTestCase extends TestCase {
       $this->drush('pm-download', array("drupal-$version_string"), $options);
       // @todo This path is not proper in D8.
       mkdir($root . '/sites/all/drush', 0777, TRUE);
+      // Patch Drupal 7 core's MySQL reserved-keyword list to include words
+      // that became reserved in MySQL 8.x+ but were missing from D7's list.
+      // Without this patch, site-install fails on modern MySQL with SQL errors
+      // on column names like 'external'.
+      if (substr($version_string, 0, 1) == 7) {
+        $this->patchDrupal7MysqlReservedWords($root);
+      }
     }
 
     // If specified, install Drupal as a multi-site.
@@ -394,6 +410,32 @@ abstract class UnishTestCase extends TestCase {
     else {
       @mkdir($site);
       touch("$site/settings.php");
+    }
+  }
+
+  /**
+   * Patch Drupal 7 core's MySQL driver to add reserved words introduced in
+   * MySQL 8.x+ that were absent from D7's original list. Without this,
+   * site-install fails with SQL syntax errors on column names like 'external'.
+   */
+  protected function patchDrupal7MysqlReservedWords($root) {
+    $file = $root . '/includes/database/mysql/database.inc';
+    if (!file_exists($file)) {
+      return;
+    }
+    $content = file_get_contents($file);
+    // New reserved words in MySQL 8.x+ not present in D7's list.
+    $missing = array('external', 'library', 'qualify', 'tablesample');
+    $changed = false;
+    foreach ($missing as $word) {
+      if (strpos($content, "'$word'") === false) {
+        // Insert after 'zerofill' (the last entry in the original list).
+        $content = str_replace("'zerofill',", "'zerofill',\n    '$word',", $content);
+        $changed = true;
+      }
+    }
+    if ($changed) {
+      file_put_contents($file, $content);
     }
   }
 

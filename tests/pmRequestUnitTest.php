@@ -7,12 +7,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * pm testing
  *
- * @group pm
  */
-class pmRequestUnitCase extends UnitUnishTestCase {
+#[Group('pm')]
+class pmRequestUnitTest extends UnitUnishTestCase {
 
   /**
    * Tests for pm_parse_version() with semantic versioning.

@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for Configuration Management commands for D8+.
- * @group commands
- * @group config
  */
-class ConfigCase extends CommandUnishTestCase {
+#[Group('commands')]
+#[Group('config')]
+class configTest extends CommandUnishTestCase {
 
   function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {

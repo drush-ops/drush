@@ -5,12 +5,7 @@ namespace Unish;
 /**
  * Base class for Drush unit tests
  *
- * Those tests will run in a bootstrapped Drush environment
- *
- * This should be ran in separate processes, which the following
- * annotation should do in 3.6 and above:
- *
- * @runTestsInSeparateProcesses
+ * Those tests will run in a bootstrapped Drush environment.
  */
 abstract class UnitUnishTestCase extends UnishTestCase {
 

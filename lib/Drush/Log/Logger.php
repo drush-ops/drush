@@ -12,7 +12,7 @@
  * As such, it takes responsibility for passing log messages
  * to backend invoke, as necessary (c.f. drush_backend_packet()).
  *
- * Drush supports all of the required log levels from Psr\Log\LogLevel,
+ * Drush supports all the required log levels from Psr\Log\LogLevel,
  * and also defines its own. See Drush\Log\LogLevel.
  *
  * Those who may wish to change the way logging works in Drush
@@ -30,7 +30,8 @@ use Psr\Log\AbstractLogger;
 
 class Logger extends AbstractLogger {
 
-    public function log($level, $message, array $context = array()) {
+    public function log($level, string|\Stringable $message, array $context = []): void
+    {
       // Convert to old $entry array for b/c calls
       $entry = $context;
       $entry['type'] = $level;
@@ -84,7 +85,7 @@ class Logger extends AbstractLogger {
         case 'status': // Obsolete; only here in case contrib is using it.
           // In quiet mode, suppress progress messages
           if (drush_get_context('DRUSH_QUIET')) {
-            return TRUE;
+            return;
           }
           $type_msg = sprintf($green, $level);
           break;
@@ -93,7 +94,7 @@ class Logger extends AbstractLogger {
         case LogLevel::INFO :
           if (!$verbose) {
             // print nothing. exit cleanly.
-            return TRUE;
+            return;
           }
           $type_msg = sprintf("[%s]", $level);
           break;
@@ -102,7 +103,7 @@ class Logger extends AbstractLogger {
         case LogLevel::PREFLIGHT :
           if (!$debugnotify) {
             // print nothing unless --debug AND --verbose. exit cleanly.
-            return TRUE;
+            return;
           }
           $type_msg = sprintf("[%s]", $level);
           break;
@@ -111,7 +112,7 @@ class Logger extends AbstractLogger {
         default :
           if (!$debug) {
             // print nothing. exit cleanly.
-            return TRUE;
+            return;
           }
           $type_msg = sprintf("[%s]", $level);
           break;

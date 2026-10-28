@@ -10,7 +10,7 @@
  */
 
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Check to see if the user specified an alias
@@ -485,6 +485,7 @@ function drush_sitealias_local_site_path($alias_record) {
  * @param $alias_path_context
  *   When looking up a relative alias, the alias path context is
  *   the primary alias that we will start our search from.
+ * @return array
  */
 function _drush_sitealias_load_alias($alias, $alias_path_context = NULL) {
   $all_site_aliases = drush_get_context('site-aliases');
@@ -2364,7 +2365,7 @@ function drush_sitealias_get_root($alias_record) {
  */
 function drush_get_runner($source, $destination, $runner = FALSE) {
   if (is_string($source)) {
-    $source = drush_sitealias_get_record($site);
+    $source = drush_sitealias_get_record($source);
   }
   if (is_string($destination)) {
     $destination = drush_sitealias_get_record($destination);

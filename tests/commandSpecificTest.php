@@ -2,15 +2,17 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
 *  Assure that context API behaves as designed. Mostly implicitly tested, but we
 *  do have some edges that need explicit testing.
 *
 *  @see drush/includes/context.inc.
 *
-*  @group base
 */
-class commandSpecificCase extends CommandUnishTestCase {
+#[Group('base')]
+class commandSpecificTest extends CommandUnishTestCase {
 
   /**
    * Try to write a tiny drushrc.php to each place that drush checks. Also

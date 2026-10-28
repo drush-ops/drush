@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for field.drush.inc
  *
- * @group commands
  */
-class fieldCase extends CommandUnishTestCase {
+#[Group('commands')]
+class fieldTest extends CommandUnishTestCase {
 
   public function testField() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

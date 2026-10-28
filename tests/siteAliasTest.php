@@ -2,12 +2,27 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for sitealias.inc
  *
- * @group base
  */
-class saCase extends CommandUnishTestCase {
+#[Group('base')]
+class siteAliasTest extends CommandUnishTestCase {
+
+  public static function set_up_before_class() {
+    parent::set_up_before_class();
+  }
+
+  public function set_up() {
+    parent::set_up();
+    // Ensure a single installed Drupal site (@dev) is available for all tests
+    // in this class that depend on it.
+    if (!$this->getSites()) {
+      $this->setUpDrupal(1, TRUE);
+    }
+  }
   /**
    * Covers the following responsibilities.
    *   - Dispatching a Drush command that uses strict option handling
@@ -161,6 +176,8 @@ EOD;
 #dev   >> bon";
     $actual = implode("\n", $output);
     $actual = trim(preg_replace('/^#[a-z]* *>> *$/m', '', $actual)); // ignore blank lines
+    $actual = trim(preg_replace('/^#[a-z]* *>> Executing:.*$/m', '', $actual)); // ignore verbose sql output
+    $actual = trim(preg_replace('/\n+/', "\n", $actual)); // collapse multiple blank lines
     $this->assertEquals($expected, $actual);
   }
 

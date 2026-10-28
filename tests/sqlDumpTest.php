@@ -2,14 +2,16 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for sql-dump commands.
  *
- * @group commands
- * @group sql
- * @group slow
  */
-class SqlDumpTest extends CommandUnishTestCase {
+#[Group('commands')]
+#[Group('sql')]
+#[Group('slow')]
+class sqlDumpTest extends CommandUnishTestCase {
 
   /**
    * Test that a dump file is created successfully.

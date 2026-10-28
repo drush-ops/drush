@@ -8,11 +8,11 @@
 
 namespace Unish;
 
-/**
- *  @group slow
- *  @group pm
- */
-class pmUpdateCode extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('slow')]
+#[Group('pm')]
+class pmUpdateCodeTest extends CommandUnishTestCase {
 
   /*
    * An array of modules to be downloaded and enabled.

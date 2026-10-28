@@ -2,13 +2,15 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * @file
  *   Tests for ssh.drush.inc
  *
- * @group commands
  */
-class siteSshCase extends CommandUnishTestCase {
+#[Group('commands')]
+class siteSshTest extends CommandUnishTestCase {
 
   /**
    * Test drush ssh --simulate. No additional bash passed.

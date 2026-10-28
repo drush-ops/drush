@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for core commands.
  *
- * @group commands
  */
-class coreCase extends CommandUnishTestCase {
+#[Group('commands')]
+class coreTest extends CommandUnishTestCase {
 
   function set_up() {
     if (!$this->getSites()) {

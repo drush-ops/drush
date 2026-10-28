@@ -15,7 +15,7 @@ use Drupal\Core\Site\Settings;
 use Drupal\Component\Utility\NestedArray;
 use Drush\Config\StorageWrapper;
 use Drush\Config\CoreExtensionFilter;
-use Drush\Internal\Symfony\Yaml\Parser;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Implementation of hook_drush_help().
@@ -326,7 +326,7 @@ function drush_config_set($config_name, $key = NULL, $data = NULL) {
   switch (drush_get_option('format', 'string')) {
     case 'yaml':
       $parser = new Parser();
-      $data = $parser->parse($data, TRUE);
+      $data = $parser->parse($data);
   }
 
   if (is_array($data) && drush_confirm(dt('Do you want to update or set multiple keys on !name config.', array('!name' => $config_name)))) {

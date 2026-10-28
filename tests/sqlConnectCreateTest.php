@@ -2,15 +2,17 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests sql-connect command
  *
  *   Installs Drupal and checks that the given URL by sql-connect is correct.
  *
- * @group commands
- * @group sql
  */
-class SqlConnectCase extends CommandUnishTestCase {
+#[Group('commands')]
+#[Group('sql')]
+class sqlConnectCreateTest extends CommandUnishTestCase {
 
   function testSqlConnect() {
     $sites = $this->setUpDrupal(1, TRUE);

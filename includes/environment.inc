@@ -12,7 +12,7 @@
 
 use Drush\Drush;
 use Drush\Log\LogLevel;
-use Webmozart\PathUtil\Path;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Log PHP errors to the Drush log. This is in effect until Drupal's error

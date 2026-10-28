@@ -2,14 +2,16 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
   * Unit tests for drush_sql_expand_wildcard_tables and
   *   drush_sql_filter_tables.
   *
-  * @group base
-  * @group sql
   */
-class WildcardUnitCase extends UnitUnishTestCase {
+#[Group('base')]
+#[Group('sql')]
+class expandWildcardTablesUnitTest extends UnitUnishTestCase {
 
   public static function set_up_before_class() {
     parent::set_up_before_class();

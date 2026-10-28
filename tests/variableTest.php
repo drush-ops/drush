@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group commands
- */
-class VariableCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('commands')]
+class variableTest extends CommandUnishTestCase {
 
   function testVariable() {
     if (UNISH_DRUPAL_MAJOR_VERSION >= 8) {

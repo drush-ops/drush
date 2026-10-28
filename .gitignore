@@ -1,4 +1,4 @@
-tests/phpunit.xml
+phpunit.xml
 vendor
 /lib/Console_Table-*
 box.phar
@@ -8,3 +8,4 @@ isolation/
 site
 # IDE config
 .idea/
+.phpunit.result.cache

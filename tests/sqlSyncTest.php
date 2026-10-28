@@ -10,11 +10,11 @@
 
 namespace Unish;
 
-/**
- *  @group slow
- *  @group commands
- *  @group sql
- */
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('slow')]
+#[Group('commands')]
+#[Group('sql')]
 class sqlSyncTest extends CommandUnishTestCase {
 
   /**

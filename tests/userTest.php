@@ -2,11 +2,11 @@
 
 namespace Unish;
 
-/**
- *  @group slow
- *  @group commands
- */
-class userCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('slow')]
+#[Group('commands')]
+class userTest extends CommandUnishTestCase {
 
   const NAME = 'example';
   private static $authenticated;

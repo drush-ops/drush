@@ -3,6 +3,7 @@
 namespace Drush\Sql;
 
 use PDO;
+use Symfony\Component\Process\Process;
 
 class Sqlmysql extends SqlBase {
 
@@ -112,13 +113,57 @@ EOT;
     return $return;
   }
 
+  /**
+   * List the tables in the database.
+   *
+   * The client is run through Symfony Process rather than drush_shell_exec()
+   * so that stdout is read separately from stderr. drush_shell_exec() merges
+   * the two (2>&1), which lets client warnings (e.g. MariaDB's "mysql:
+   * Deprecated program name" notice) end up in the list as bogus table names.
+   *
+   * @return string[]
+   *   The table names. An empty array if the query fails, in which case a
+   *   Drush error is also set so that the command exits with a failure status.
+   */
   public function listTables() {
-    $current = drush_get_context('DRUSH_SIMULATE');
-    drush_set_context('DRUSH_SIMULATE', FALSE);
-    $return = $this->query('SHOW TABLES;');
-    $tables = drush_shell_exec_output();
-    drush_set_context('DRUSH_SIMULATE', $current);
-    return $tables;
+    // The --extra option is deliberately not passed along. It carries options
+    // for the command being run (e.g. mysqldump flags for sql-dump), which the
+    // mysql client may reject.
+    $command = implode(' ', array_filter([
+      $this->command(),
+      $this->creds(),
+      $this->silent(),
+    ]));
+
+    $process = Process::fromShellCommandline($command);
+    $process->setTimeout(NULL);
+    $process->setInput('SHOW TABLES;');
+    $process->run();
+
+    if (!$process->isSuccessful()) {
+      drush_set_error('DRUSH_SQL_LIST_TABLES_FAILED', dt('Failed to list tables: !error', ['!error' => trim($process->getErrorOutput())]));
+      return [];
+    }
+
+    return $this->parseTableList($process->getOutput());
+  }
+
+  /**
+   * Parse the output of "SHOW TABLES" into a list of table names.
+   *
+   * Lines are split on "\n" or "\r\n" only. PCRE's \R must not be used here: in
+   * non-UTF mode it also matches the single byte 0x85, which is part of the
+   * UTF-8 encoding of characters such as "Å" (C3 85) and would split table
+   * names containing them.
+   *
+   * @param string $output
+   *   The standard output of the client.
+   *
+   * @return string[]
+   *   The table names.
+   */
+  protected function parseTableList($output) {
+    return preg_split('/\r?\n/', $output, -1, PREG_SPLIT_NO_EMPTY);
   }
 
   public function listTablesQuoted() {
@@ -127,6 +172,24 @@ EOT;
       $table = "`$table`";
     }
     return $tables;
+  }
+
+  /**
+   * Check whether the MySQL server has GTID mode enabled.
+   * When it does, mysqldump includes SET @@GLOBAL.GTID_PURGED which
+   * causes errors on re-import if the server already has GTID history.
+   */
+  protected function isGtidEnabled() {
+    $result = $this->query("SELECT @@GLOBAL.gtid_mode AS gtid_mode");
+    if ($result) {
+      $output = drush_shell_exec_output();
+      foreach ($output as $line) {
+        if (preg_match('/^(ON|ON_PERMISSIVE|OFF_PERMISSIVE)/i', trim($line))) {
+          return TRUE;
+        }
+      }
+    }
+    return FALSE;
   }
 
   public function dumpCmd($table_selection) {
@@ -151,6 +214,11 @@ EOT;
     // We had --skip-add-locks here for a while to help people with insufficient permissions,
     // but removed it because it slows down the import a lot.  See http://drupal.org/node/1283978
     $extra = ' --no-autocommit --single-transaction --opt -Q';
+    // Suppress GTID_PURGED statements in the dump; they break re-import on
+    // servers with GTID mode enabled (MySQL 5.6+).
+    if ($this->isGtidEnabled()) {
+      $extra .= ' --set-gtid-purged=OFF';
+    }
     if (isset($data_only)) {
       $extra .= ' --no-create-info';
     }

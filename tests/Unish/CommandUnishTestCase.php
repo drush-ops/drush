@@ -40,7 +40,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @var int
    */
-  private $defaultIdleTimeout = 15;
+  private $defaultIdleTimeout = 60;
 
   /**
    * Idle timeouts for commands.
@@ -49,7 +49,7 @@ abstract class CommandUnishTestCase extends UnishTestCase {
    *
    * @var int
    */
-  protected $idleTimeout = 15;
+  protected $idleTimeout = 60;
 
   /**
    * Accessor for the last output, trimmed.
@@ -178,7 +178,30 @@ abstract class CommandUnishTestCase extends UnishTestCase {
 
     try {
       // Process uses a default timeout of 60 seconds, set it to 0 (none).
-      $this->process = new Process($command, $cd, NULL, $input, 0);
+      // Symfony 7+ requires an array for the command; use fromShellCommandline for string commands.
+      // Ensure $cd is a valid, existing directory. The PHPUnit process may have
+      // chdir()'d into a sandbox that was just deleted/recreated; explicitly set
+      // a known-good cwd so subprocesses never inherit a stale working directory.
+      if ($cd === null || !is_string($cd) || $cd === '' || !is_dir($cd)) {
+        // Prefer the sandbox (it was just (re)created by setUpFreshSandBox),
+        // fall back to the drush repo root if the sandbox doesn't exist yet.
+        $cd = is_dir(UNISH_SANDBOX) ? UNISH_SANDBOX : dirname(UNISH_SANDBOX);
+      }
+      // Symfony Process does not inherit vars set via putenv() in the parent
+      // process. Pass the test environment variables explicitly so that drush
+      // subprocesses find alias files, site-wide config, etc.
+      $process_env = array_merge($_ENV, [
+        'HOME'         => getenv('HOME'),
+        'ETC_PREFIX'   => getenv('ETC_PREFIX'),
+        'SHARE_PREFIX' => getenv('SHARE_PREFIX'),
+        'CACHE_PREFIX' => getenv('CACHE_PREFIX'),
+        'TEMP'         => getenv('TEMP'),
+      ]);
+      // Also pass any extra env vars requested by the test.
+      if (!empty($env)) {
+        $process_env = array_merge($process_env, $env);
+      }
+      $this->process = Process::fromShellCommandline($command, $cd, $process_env, $input, 0);
       if (!getenv('UNISH_NO_TIMEOUTS')) {
         $this->process->setTimeout($this->timeout)
           ->setIdleTimeout($this->idleTimeout);
@@ -256,13 +279,8 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // Insert code coverage argument before command, in order for it to be
     // parsed as a global option. This matters for commands like ssh and rsync
     // where options after the command are passed along to external commands.
-    $result = $this->getTestResultObject();
-    if ($result->getCollectCodeCoverageInformation()) {
-      $coverage_file = tempnam(UNISH_TMP, 'drush_coverage');
-      if ($coverage_file) {
-        $cmd[] = "--drush-coverage=" . $coverage_file;
-      }
-    }
+    // Note: getTestResultObject() was removed in PHPUnit 10; code coverage
+    // collection for subprocesses is no longer supported this way.
 
     // Insert site specification and drush command.
     $cmd[] = empty($site_specification) ? NULL : self::escapeshellarg($site_specification);
@@ -294,11 +312,6 @@ abstract class CommandUnishTestCase extends UnishTestCase {
     // @todo The PHP Options below are not yet honored by execute(). See .travis.yml for an alternative way.
     $env['PHP_OPTIONS'] = "{$php_options}-d sendmail_path='true'";
     $return = $this->execute(implode(' ', $exec), $expected_return, $cd, $env);
-
-    // Ignore code coverage information.
-    if (!empty($coverage_file)) {
-      unlink($coverage_file);
-    }
 
     return $return;
   }

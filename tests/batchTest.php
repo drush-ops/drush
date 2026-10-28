@@ -2,14 +2,16 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests the drush batch subsystem.
  *
  * @see includes/batch.inc
  *
- * @group base
  */
-class batchCase extends CommandUnishTestCase {
+#[Group('base')]
+class batchTest extends CommandUnishTestCase {
 
   public function testBatch() {
     $sites = $this->setUpDrupal(1, TRUE);

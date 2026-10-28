@@ -2,13 +2,15 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for config-pull command. Sets up two Drupal sites.
- * @group commands
- * @group slow
- * @group config
  */
-class ConfigPullCase extends CommandUnishTestCase {
+#[Group('commands')]
+#[Group('slow')]
+#[Group('config')]
+class configPulltest extends CommandUnishTestCase {
 
   function set_up() {
     if (UNISH_DRUPAL_MAJOR_VERSION < 8) {

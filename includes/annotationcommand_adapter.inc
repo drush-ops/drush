@@ -248,6 +248,7 @@ function annotationcommand_adapter_process_command() {
     $output
   );
   $commandData->setIncludeOptionsInArgs($command['add-options-to-arguments']);
+  $commandData->setFormatterOptions(new FormatterOptions());
   $names = annotationcommand_adapter_command_names($command);
 
   // For now, the only thing that can be injected is the InputInterface.

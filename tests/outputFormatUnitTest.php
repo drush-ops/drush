@@ -7,19 +7,20 @@
 
 namespace Unish;
 
-class outputFormatUnitCase extends UnitUnishTestCase {
+use PHPUnit\Framework\Attributes\DataProvider;
+
+class outputFormatUnitTest extends UnitUnishTestCase {
 
 /**
  * Test various output formats using php-eval with no Drupal site.
- *
- * @dataProvider provider
  **/
+  #[DataProvider('provider')]
   public function testOutputFormat($name, $format, $data, $expected) {
     drush_preflight();
     $this->assertEquals($expected, trim(drush_format($data, array(), $format)), $name . ': '. $format);
   }
 
-  public function provider() {
+  public static function provider() {
     $json = '{"a":{"b":2,"c":3},"d":{"e":5,"f":6}}';
     if (version_compare(phpversion(), '5.4.0', '>=')) {
       $json = json_encode(json_decode($json), JSON_PRETTY_PRINT);

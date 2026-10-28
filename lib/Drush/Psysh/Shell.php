@@ -19,7 +19,7 @@ class Shell extends BaseShell {
    *
    * @return null|Command
    */
-  protected function getCommand($input) {
+  protected function getCommand(string $input) {
     if ($name = $this->getCommandFromInput($input)) {
       return $this->get($name);
     }
@@ -32,7 +32,7 @@ class Shell extends BaseShell {
    *
    * @return bool True if the shell has a command for the given input.
    */
-  protected function hasCommand($input) {
+  public function hasCommand(string $input): bool {
     if ($name = $this->getCommandFromInput($input)) {
       return $this->has($name);
     }

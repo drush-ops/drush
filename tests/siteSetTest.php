@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group base
- */
-class siteSetCommandCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('base')]
+class siteSetTest extends CommandUnishTestCase {
 
   function testSiteSet() {
     if ($this->is_windows()) {

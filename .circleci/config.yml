@@ -9,41 +9,20 @@ defaults: &defaults
 version: 2.1
 
 executors:
-  linux82:
+  linux83:
     docker:
-      - image: wodby/php:8.2
+      - image: wodby/php:8.3
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.31
-  linux81:
+      - image: cimg/mysql:8.0
+  linux83-mariadb:
     docker:
-      - image: wodby/php:8.1
+      - image: wodby/php:8.3
         environment:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.31
-  linux80:
-    docker:
-      - image: wodby/php:8.0
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.31
-  linux74:
-    docker:
-      - image: wodby/php:7.4
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.7.31
-  linux56:
-    docker:
-      - image: wodby/php:5.6
-        environment:
-          - MYSQL_HOST=127.0.0.1
-          - UNISH_DB_URL=mysql://root:@127.0.0.1
-      - image: circleci/mysql:5.6.50
+      - image: cimg/mariadb:11.4
 
 commands:
   prepare_php:
@@ -56,7 +35,7 @@ jobs:
   lint:
     <<: *defaults
     docker:
-      - image: circleci/php:7.1-apache-node
+      - image:  wodby/php:8.4
     steps:
       - checkout
       - run: composer install --prefer-dist --no-interaction
@@ -71,36 +50,22 @@ jobs:
     executor: << parameters.os >>
     environment:
       UNISH_NO_TIMEOUTS: y
-      UNISH_DB_URL: mysql://root:@127.0.0.1
       UNISH_DRUPAL_VERSION: << parameters.drupal >>
     steps:
       - checkout
       - prepare_php
       - run: composer install --prefer-dist --no-interaction
-      - run: if [[ -n "$(php --version | grep 'PHP 8')" ]] ; then composer config --unset platform.php && composer remove --dev --no-update symfony/var-dumper && composer update symfony/var-dumper phpunit/phpunit --with-dependencies ; fi
-      - run: vendor/bin/phpunit --configuration tests
+      - run: vendor/bin/phpunit --testsuite all
 
 workflows:
   build_test:
     jobs:
       - lint
       - test:
-          name: test-drupal-8-php-7.4
-          drupal: "8.9.20"
-          os: linux74
-      - test:
-          name: test-drupal-7-php-8.2
+          name: test-drupal-7-php-8.3
           drupal: "7"
-          os: linux82
+          os: linux83
       - test:
-          name: test-drupal-7-php-8.1
+          name: test-drupal-7-php-8.3-mariadb
           drupal: "7"
-          os: linux81
-      - test:
-          name: test-drupal-7-php-7.4
-          drupal: "7"
-          os: linux74
-      - test:
-          name: test-drupal-7-php-5.6
-          drupal: "7"
-          os: linux56
+          os: linux83-mariadb

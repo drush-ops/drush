@@ -2,6 +2,8 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  *  We choose to test the backend system in two parts.
  *    - Origin. These tests assure that we are generate a proper ssh command
@@ -13,9 +15,9 @@ namespace Unish;
  *    - No network calls and thus more robust.
  *    - No network calls and thus faster.
  *
- *  @group base
  */
-class backendCase extends CommandUnishTestCase {
+#[Group('base')]
+class backendTest extends CommandUnishTestCase {
   // Test to insure that calling drush_invoke_process() with 'dispatch-using-alias'
   // will build a command string that uses the alias instead of --root and --uri.
   function testDispatchUsingAlias() {

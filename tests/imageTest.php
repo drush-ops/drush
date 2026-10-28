@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests image-flush command
  *
- * @group commands
  */
-class ImageCase extends CommandUnishTestCase {
+#[Group('commands')]
+class imageTest extends CommandUnishTestCase {
 
   function testImage() {
     if (UNISH_DRUPAL_MAJOR_VERSION == 6) {

@@ -2,10 +2,10 @@
 
 namespace Unish;
 
-/**
- * @group base
- */
-class completeCase extends CommandUnishTestCase {
+
+use PHPUnit\Framework\Attributes\Group;
+#[Group('base')]
+class completeTest extends CommandUnishTestCase {
   /**
    * Write a config file that contains our configuration file.
    */

@@ -2,13 +2,15 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  *  Test to see if the `drush init` command does the
  *  setup that it is supposed to do.
  *
- *  @group base
  */
-class initCommandCase extends CommandUnishTestCase {
+#[Group('base')]
+class initCommandTest extends CommandUnishTestCase {
 
   function testInitCommand() {
     // Call `drush core-init`

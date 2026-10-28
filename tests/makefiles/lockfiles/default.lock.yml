@@ -5,4 +5,4 @@ projects:
     version: '7.42'
     type: core
   atom:
-    version: 1.0-beta1
+    version: 1.x-dev

@@ -1,15 +1,17 @@
 <?php
 
 namespace Unish;
-use Webmozart\PathUtil\Path;
+
+use PHPUnit\Framework\Attributes\Group;
+use Symfony\Component\Filesystem\Path;
 
 /**
  * Generate makefile tests
  *
- * @group make
- * @group slow
  */
-class generateMakeCase extends CommandUnishTestCase {
+#[Group('make')]
+#[Group('slow')]
+class generateMakeTest extends CommandUnishTestCase {
   function testGenerateMake() {
     return $this->_testGenerateMake('devel', 'bootstrap');
   }

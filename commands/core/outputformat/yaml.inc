@@ -1,6 +1,7 @@
 <?php
 
-use Drush\Internal\Symfony\Yaml\Dumper;
+use Symfony\Component\Yaml\Dumper;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Output formatter 'yaml'
@@ -14,13 +15,10 @@ use Drush\Internal\Symfony\Yaml\Dumper;
  */
 class drush_outputformat_yaml extends drush_outputformat {
   function format($input, $metadata) {
-    $dumper = new Dumper();
-    // Set Yaml\Dumper's default indentation for nested nodes/collections to
-    // 2 spaces for consistency with Drupal coding standards.
-    $dumper->setIndentation(2);
-    // The level where you switch to inline YAML is set to PHP_INT_MAX to
-    // ensure this does not occur.
-    $output = $dumper->dump($input, PHP_INT_MAX, NULL, NULL, TRUE);
+    // Indentation of 2 spaces for consistency with Drupal coding standards.
+    // PHP_INT_MAX inline level ensures output is never collapsed to inline YAML.
+    $dumper = new Dumper(2);
+    $output = $dumper->dump($input, PHP_INT_MAX, 0, Yaml::DUMP_OBJECT_AS_MAP);
     return $output;
   }
 }

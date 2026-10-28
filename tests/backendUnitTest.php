@@ -2,7 +2,7 @@
 
 namespace Unish;
 
-class backendUnitCase extends UnitUnishTestCase {
+class backendUnitTest extends UnitUnishTestCase {
 
   /**
    * Covers the following target responsibilities.

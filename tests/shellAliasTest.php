@@ -2,12 +2,14 @@
 
 namespace Unish;
 
+
+use PHPUnit\Framework\Attributes\Group;
 /**
  * Tests for Shell aliases.
  *
- * @group base
  */
-class shellAliasesCase extends CommandUnishTestCase {
+#[Group('base')]
+class shellAliasTest extends CommandUnishTestCase {
 
   /**
    * Write a config file that contains the shell-aliases array.
