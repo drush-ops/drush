@@ -4,13 +4,23 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use PHPUnit\Framework\Attributes\Group;
-use Drush\Commands\core\PhpCommands;
-use Drush\Commands\core\QueueCommands;
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drush\Commands\pm\PmCommands;
-use Drush\Commands\state\StateDeleteCommand;
+use Drush\Commands\queue\QueueDeleteCommand;
+use Drush\Commands\queue\QueueListCommand;
+use Drush\Commands\queue\QueueRunCommand;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * Tests the queue commands the way Drupal core tests its console commands:
+ * each command is built from container services and driven with a
+ * CommandTester, so no Drush runtime is involved beyond bootstrapping the
+ * SUT and installing the woot module, which provides the test workers.
+ */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
 class QueueTest extends UnishIntegrationTestCase
@@ -19,116 +29,164 @@ class QueueTest extends UnishIntegrationTestCase
 
     const WOOT = 'woot';
 
+    protected QueueWorkerManagerInterface $workerManager;
+    protected QueueFactory $queueFactory;
+
     public function setUp(): void
     {
         parent::setUp();
 
-        // Enable woot module, which contains a queue worker that throws a RequeueException.
+        // Bootstraps Drupal and enables woot, whose queue workers throw the
+        // exceptions under test.
         $this->drush(PmCommands::INSTALL, [self::WOOT], ['yes' => true], null, '');
-    }
-
-    /**
-   * Tests the RequeueException.
-   */
-    public function testRequeueException(): void
-    {
-        // Start with empty queue.
-        $this->drush(QueueCommands::DELETE, ['woot_requeue_exception']);
-
-        // Add an item to the queue.
-        $this->drush(PhpCommands::SCRIPT, ['requeue_script'], ['script-path' => __DIR__ . '/resources']);
-
-        // Check that the queue exists and it has one item in it.
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertEquals(1, $output['items'], 'Item was successfully added to the queue.');
-        // Process the queue.
-        $this->drush(QueueCommands::RUN, ['woot_requeue_exception']);
-
-        // Check that the item was processed after being requeued once.
-        // Here is the detailed workflow of what the above command did.
-        // 1. Drush calls drush queue-run woot_requeue_exception.
-        // 2. Drush claims the item. The worker sets a state variable (see below)
-        // and throws the RequeueException.
-        // 3. Drush catches the exception and puts it back in the queue.
-        // 4. Drush claims the next item, which is the one that we just requeued.
-        // 5. The worker finds the state variable, so it does not throw the
-        // RequeueException this time (see below).
-        // 6. Drush removes the item from the queue.
-        // 7. Command finishes. The queue is empty.
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON('woot_requeue_exception');
-        $this->assertEquals(0, $output['items'], 'Queue item processed after being requeued.');
-    }
-
-  /**
-   * Tests that CustomExceptions do not hold up the queue. Also queue:run, queue:list, queue:delete
-   */
-    public function testCustomExceptionAndCommands(): void
-    {
-        // Start with empty queue.
-        $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
-
-        // Add a couple of items to the queue.
-        $this->drush(PhpCommands::SCRIPT, ['queue_custom_exception_script'], ['script-path' => __DIR__ . '/resources']);
-
-        // Check that the queue exists and it has two items in it.
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        // The woot module, which contains a queue worker that throws a custom exception.
-        $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertEquals(2, $output['items'], 'Items were successfully added to the queue.');
-
-        // Process the queue.
-        $this->drush(QueueCommands::RUN, ['woot_custom_exception']);
-
-        // Check that the item was processed after being requeued once.
-        // Here is the detailed workflow of what the above command did. Note
-        // there are two items in the queue when we begin.
-        // 1. Drush calls drush queue-run woot_custom_exception.
-        // 2. Drush claims the item. The worker sets a state variable (see below)
-        // and throws a CustomException.
-        // 3. Drush catches the exception and skips the item.
-        // 4. Drush claims the second item.
-        // 5. The worker finds the state variable, so it does not throw the
-        // CustomException this time (see below).
-        // 6. Drush removes the second item from the queue.
-        // 7. Command finishes. The queue is left with the first item, which was
-        // skipped.
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertEquals(1, $output['items'], 'Last queue item processed after first threw custom exception.');
-
-        $this->drush(QueueCommands::DELETE, ['woot_custom_exception']);
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON('woot_custom_exception');
-        $this->assertEquals(0, $output['items'], 'Queue was successfully deleted.');
-    }
-
-    /**
-     * Tests that a SuspendQueueException stops the run without failing it.
-     */
-    public function testSuspendQueueException(): void
-    {
-        $this->drush(QueueCommands::DELETE, ['woot_suspend_queue_exception']);
-        $this->drush(PhpCommands::SCRIPT, ['queue_suspend_script'], ['script-path' => __DIR__ . '/resources']);
-
-        // The first item suspends the queue. Drush releases it, logs a warning,
-        // stops processing, and still exits 0.
-        $this->drush(QueueCommands::RUN, ['woot_suspend_queue_exception'], [], self::EXIT_SUCCESS);
-        $this->assertStringContainsString('Suspended the woot_suspend_queue_exception queue', $this->getErrorOutput());
-
-        // Neither item was consumed.
-        $this->drush(QueueCommands::LIST, [], ['format' => 'json']);
-        $output = $this->getOutputFromJSON('woot_suspend_queue_exception');
-        $this->assertEquals(2, $output['items'], 'Items were released when the queue was suspended.');
+        $this->workerManager = \Drupal::service('plugin.manager.queue_worker');
+        $this->queueFactory = \Drupal::service('queue');
     }
 
     public function tearDown(): void
     {
         // The workers record progress in state; clear it so a rerun starts fresh.
-        $this->drush(StateDeleteCommand::NAME, ['woot_requeue_exception']);
-        $this->drush(StateDeleteCommand::NAME, ['woot_custom_exception']);
+        \Drupal::state()->delete('woot_requeue_exception');
+        \Drupal::state()->delete('woot_custom_exception');
         $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
         parent::tearDown();
+    }
+
+    /**
+     * An item that throws RequeueException is released and processed again.
+     */
+    public function testRequeueException(): void
+    {
+        $this->resetQueue('woot_requeue_exception', [['foo' => 'bar']]);
+        $this->assertSame(1, $this->itemCount('woot_requeue_exception'));
+
+        // The worker throws RequeueException the first time it sees the item
+        // and records that in state. The command releases the item, claims
+        // it again, and the second attempt succeeds.
+        $tester = $this->runQueue('woot_requeue_exception');
+        $this->assertStringContainsString('Processed 1 items from the woot_requeue_exception queue', $tester->getDisplay());
+        $this->assertSame(0, $this->itemCount('woot_requeue_exception'));
+    }
+
+    /**
+     * An item that throws DelayedRequeueException is delayed, not consumed.
+     */
+    public function testDelayedRequeueException(): void
+    {
+        $this->resetQueue('woot_delayed_requeue_exception', [['foo' => 'bar']]);
+
+        // The item is delayed for an hour, so the run processes nothing and
+        // the item stays in the queue.
+        $tester = $this->runQueue('woot_delayed_requeue_exception');
+        $this->assertStringContainsString('Processed 0 items from the woot_delayed_requeue_exception queue', $tester->getDisplay());
+        $this->assertSame(1, $this->itemCount('woot_delayed_requeue_exception'));
+    }
+
+    /**
+     * Any other exception skips the item without stopping the run.
+     */
+    public function testCustomException(): void
+    {
+        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->assertSame(2, $this->itemCount('woot_custom_exception'));
+
+        // The worker throws a CustomException on the first item and records
+        // that in state, so the second item succeeds. The first item is left
+        // in the queue.
+        $tester = $this->runQueue('woot_custom_exception');
+        $display = $tester->getDisplay();
+        $this->assertStringContainsString('Something went wrong, skip me!', $display);
+        $this->assertStringContainsString('Processed 1 items from the woot_custom_exception queue', $display);
+        $this->assertSame(1, $this->itemCount('woot_custom_exception'));
+    }
+
+    /**
+     * A SuspendQueueException stops the run without failing it.
+     */
+    public function testSuspendQueueException(): void
+    {
+        $this->resetQueue('woot_suspend_queue_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+
+        // The first item suspends the queue. The command releases it, warns,
+        // stops processing, and still exits 0. Neither item is consumed.
+        $tester = $this->runQueue('woot_suspend_queue_exception');
+        $this->assertStringContainsString('Suspended the woot_suspend_queue_exception queue', $tester->getDisplay());
+        $this->assertSame(2, $this->itemCount('woot_suspend_queue_exception'));
+    }
+
+    public function testDelete(): void
+    {
+        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->assertSame(2, $this->itemCount('woot_custom_exception'));
+
+        $tester = new CommandTester(new QueueDeleteCommand($this->workerManager, $this->queueFactory));
+        $code = $tester->execute(['name' => 'woot_custom_exception']);
+        $this->assertSame(Command::SUCCESS, $code);
+        $this->assertStringContainsString('All items in woot_custom_exception queue deleted.', $tester->getDisplay());
+        $this->assertSame(0, $this->itemCount('woot_custom_exception'));
+    }
+
+    public function testList(): void
+    {
+        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->resetQueue('woot_requeue_exception', []);
+
+        $tester = new CommandTester(new QueueListCommand($this->workerManager, $this->queueFactory));
+        $code = $tester->execute([]);
+        $this->assertSame(Command::SUCCESS, $code);
+        $display = $tester->getDisplay();
+        $this->assertMatchesRegularExpression('/Queue\s+\|\s+Items\s+\|\s+Class/', $display);
+        $this->assertMatchesRegularExpression('/woot_custom_exception\s+\|\s+2\s+\|\s+Drupal\\\\Core\\\\Queue\\\\DatabaseQueue/', $display);
+        $this->assertMatchesRegularExpression('/woot_requeue_exception\s+\|\s+0\s+\|/', $display);
+
+        $tester = new CommandTester(new QueueListCommand($this->workerManager, $this->queueFactory));
+        $code = $tester->execute(['--format' => 'json']);
+        $this->assertSame(Command::SUCCESS, $code);
+        $json = json_decode($tester->getDisplay(), true, flags: JSON_THROW_ON_ERROR);
+        $this->assertSame(2, $json['woot_custom_exception']['items']);
+        $this->assertSame(0, $json['woot_requeue_exception']['items']);
+        $this->assertSame('Drupal\Core\Queue\DatabaseQueue', $json['woot_custom_exception']['class']);
+    }
+
+    public function testUnknownQueue(): void
+    {
+        foreach ([QueueRunCommand::class, QueueDeleteCommand::class] as $class) {
+            $tester = new CommandTester(new $class($this->workerManager, $this->queueFactory));
+            try {
+                $tester->execute(['name' => 'no_such_queue']);
+                $this->fail("$class accepted an unknown queue name.");
+            } catch (\InvalidArgumentException $e) {
+                $this->assertSame('Queue not found: no_such_queue', $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Runs queue:run against the named queue and asserts it exited 0.
+     */
+    protected function runQueue(string $name): CommandTester
+    {
+        $tester = new CommandTester(new QueueRunCommand($this->workerManager, $this->queueFactory));
+        $code = $tester->execute(['name' => $name]);
+        $this->assertSame(Command::SUCCESS, $code, $tester->getDisplay());
+        return $tester;
+    }
+
+    /**
+     * Empties the named queue and fills it with the given items.
+     */
+    protected function resetQueue(string $name, array $items): void
+    {
+        $queue = $this->queueFactory->get($name, true);
+        $queue->deleteQueue();
+        $queue->createQueue();
+        foreach ($items as $item) {
+            $queue->createItem($item);
+        }
+    }
+
+    protected function itemCount(string $name): int
+    {
+        return $this->queueFactory->get($name)->numberOfItems();
     }
 }

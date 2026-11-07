@@ -6,21 +6,19 @@ namespace Drush\Commands\queue;
 
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Delete all items in a specific queue.',
     aliases: ['queue-delete']
 )]
-#[CLI\ValidateQueueName(argumentName: 'name')]
 final class QueueDeleteCommand extends Command
 {
     use AutowireTrait;
@@ -43,8 +41,9 @@ final class QueueDeleteCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new DrushStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
         $name = $input->getArgument('name');
+        $this->validateQueueName($name);
         $queue = $this->queueService->get($name);
         $queue->deleteQueue();
         $io->success(sprintf('All items in %s queue deleted.', $name));

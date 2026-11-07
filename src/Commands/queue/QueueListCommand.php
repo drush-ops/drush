@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Drush\Commands\queue;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
@@ -21,13 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
     description: 'Returns a list of all defined queues.',
     aliases: ['queue-list']
 )]
-#[CLI\FieldLabels(labels: ['queue' => 'Queue', 'items' => 'Items', 'class' => 'Class'])]
-#[CLI\FilterDefaultField(field: 'queue')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
 final class QueueListCommand extends Command
 {
     use AutowireTrait;
-    use FormatterTrait;
     use QueueTrait;
 
     const string NAME = 'queue:list';
@@ -35,29 +29,41 @@ final class QueueListCommand extends Command
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,
         protected QueueFactory $queueService,
-        protected readonly FormatterManager $formatterManager,
     ) {
         parent::__construct();
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
+    protected function configure(): void
     {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
+        $this
+            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Output format: table or json.', 'table', ['table', 'json']);
     }
 
-    public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $result = [];
+        $rows = [];
         foreach (array_keys($this->getQueues()) as $name) {
-            $q = $this->queueService->get($name);
-            $result[$name] = [
+            $queue = $this->queueService->get($name);
+            $rows[$name] = [
                 'queue' => $name,
-                'items' => $q->numberOfItems(),
-                'class' => $q::class,
+                'items' => $queue->numberOfItems(),
+                'class' => $queue::class,
             ];
         }
-        return new RowsOfFields($result);
+
+        $format = $input->getOption('format');
+        if ($format === 'json') {
+            $output->writeln(json_encode($rows, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR), OutputInterface::OUTPUT_RAW);
+            return self::SUCCESS;
+        }
+        if ($format !== 'table') {
+            throw new \InvalidArgumentException(sprintf('Unknown format: %s. Use table or json.', $format));
+        }
+
+        $table = new Table($output);
+        $table->setHeaders(['Queue', 'Items', 'Class']);
+        $table->setRows(array_map(array_values(...), $rows));
+        $table->render();
+        return self::SUCCESS;
     }
 }

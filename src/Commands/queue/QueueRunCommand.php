@@ -11,9 +11,7 @@ use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use stdClass;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,13 +19,13 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Run a specific queue by name.',
     aliases: ['queue-run']
 )]
-#[CLI\ValidateQueueName(argumentName: 'name')]
 final class QueueRunCommand extends Command
 {
     use AutowireTrait;
@@ -53,8 +51,9 @@ final class QueueRunCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new DrushStyle($input, $output);
+        $io = new SymfonyStyle($input, $output);
         $name = $input->getArgument('name');
+        $this->validateQueueName($name);
         $timeLimit = (int) $input->getOption('time-limit');
         $itemsLimit = (int) $input->getOption('items-limit');
         $start = microtime(true);
