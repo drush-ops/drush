@@ -13,20 +13,20 @@ use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
 use Drush\Commands\AutowireTrait;
 use stdClass;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Run a specific queue by name.',
-    aliases: ['queue-run']
+    aliases: ['queue-run'],
 )]
-final class QueueRunCommand extends Command
+final class QueueRunCommand
 {
     use AutowireTrait;
     use QueueTrait;
@@ -35,27 +35,24 @@ final class QueueRunCommand extends Command
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,
-        protected QueueFactory $queueService
+        protected QueueFactory $queueService,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the queue to run.')
-            ->addOption('time-limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of seconds allowed to run the queue.')
-            ->addOption('items-limit', null, InputOption::VALUE_REQUIRED, 'The maximum number of items allowed to run the queue.')
-            ->addOption('lease-time', null, InputOption::VALUE_REQUIRED, 'The maximum number of seconds that an item remains claimed.');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The name of the queue to run.', suggestedValues: [self::class, 'suggestQueueNames'])]
+        string $name,
+        #[Option('The maximum number of seconds allowed to run the queue.')]
+        int $timeLimit = 0,
+        #[Option('The maximum number of items allowed to run the queue.')]
+        int $itemsLimit = 0,
+        #[Option('The maximum number of seconds that an item remains claimed.')]
+        ?int $leaseTime = null,
+    ): int {
         $io = new SymfonyStyle($input, $output);
-        $name = $input->getArgument('name');
         $this->validateQueueName($name);
-        $timeLimit = (int) $input->getOption('time-limit');
-        $itemsLimit = (int) $input->getOption('items-limit');
         $start = microtime(true);
         $worker = $this->workerManager->createInstance($name);
         $info = $this->workerManager->getDefinition($name);
@@ -63,7 +60,7 @@ final class QueueRunCommand extends Command
         $queue = $this->queueService->get($name);
         $count = 0;
         $remaining = $timeLimit;
-        $leaseTime = $input->getOption('lease-time') ?? $info['cron']['time'] ?? 30;
+        $leaseTime ??= $info['cron']['time'] ?? 30;
 
         if ($queue instanceof QueueGarbageCollectionInterface) {
             $queue->garbageCollection();
@@ -97,6 +94,6 @@ final class QueueRunCommand extends Command
         $elapsed = microtime(true) - $start;
         $io->success(sprintf('Processed %s items from the %s queue in %s sec.', $count, $name, round($elapsed, 2)));
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }

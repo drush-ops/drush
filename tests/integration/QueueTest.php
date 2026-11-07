@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drush\Commands\pm\PmCommands;
@@ -18,7 +19,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Tests the queue commands the way Drupal core tests its console commands:
  * each command is built from container services and driven with a
- * CommandTester, so no Drush runtime is involved beyond bootstrapping the
+ * CommandTester (which wraps an invokable in a Command), so no Drush runtime is involved beyond bootstrapping the
  * SUT and installing the woot module, which provides the test workers.
  */
 #[Group('commands')]
@@ -146,6 +147,12 @@ class QueueTest extends UnishIntegrationTestCase
         $this->assertSame(2, $json['woot_custom_exception']['items']);
         $this->assertSame(0, $json['woot_requeue_exception']['items']);
         $this->assertSame('Drupal\Core\Queue\DatabaseQueue', $json['woot_custom_exception']['class']);
+
+        $tester = new CommandTester(new QueueListCommand($this->workerManager, $this->queueFactory));
+        $code = $tester->execute(['--format' => 'yaml']);
+        $this->assertSame(Command::SUCCESS, $code);
+        $yaml = Yaml::decode($tester->getDisplay());
+        $this->assertSame(2, $yaml['woot_custom_exception']['items']);
     }
 
     public function testUnknownQueue(): void

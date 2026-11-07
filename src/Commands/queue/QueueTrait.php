@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\queue;
 
 use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
 
 trait QueueTrait
 {
@@ -25,7 +24,7 @@ trait QueueTrait
     /**
      * Throws when no queue worker is defined for the given queue name.
      *
-     * Call this at the top of execute() instead of relying on a validation
+     * Call this at the top of __invoke() instead of relying on a validation
      * attribute, so the command behaves the same under any console runner.
      */
     protected function validateQueueName(string $name): void
@@ -35,10 +34,13 @@ trait QueueTrait
         }
     }
 
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    /**
+     * Shell completion for the queue name argument.
+     *
+     * Referenced from #[Argument(suggestedValues: [self::class, 'suggestQueueNames'])].
+     */
+    public function suggestQueueNames(CompletionInput $input): array
     {
-        if ($input->mustSuggestArgumentValuesFor('name')) {
-            $suggestions->suggestValues(array_keys($this->getQueues()));
-        }
+        return array_keys($this->getQueues());
     }
 }
