@@ -7,10 +7,11 @@ namespace Unish;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Commands\pm\PmCommands;
+use Drupal\KernelTests\KernelTestBase;
 use Drush\Commands\queue\QueueDeleteCommand;
 use Drush\Commands\queue\QueueListCommand;
 use Drush\Commands\queue\QueueRunCommand;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Console\Command\Command;
@@ -19,38 +20,25 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Tests the queue commands the way Drupal core tests its console commands:
  * each command is built from container services and driven with a
- * CommandTester (which wraps an invokable in a Command), so no Drush runtime is involved beyond bootstrapping the
- * SUT and installing the woot module, which provides the test workers.
+ * CommandTester. The woot module provides the queue workers under test.
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
-class QueueTest extends UnishIntegrationTestCase
+#[CoversClass(QueueListCommand::class)]
+#[CoversClass(QueueRunCommand::class)]
+#[CoversClass(QueueDeleteCommand::class)]
+class QueueTest extends KernelTestBase
 {
-    use TestModuleHelperTrait;
-
-    const WOOT = 'woot';
+    protected static $modules = ['system', 'woot'];
 
     protected QueueWorkerManagerInterface $workerManager;
     protected QueueFactory $queueFactory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
-
-        // Bootstraps Drupal and enables woot, whose queue workers throw the
-        // exceptions under test.
-        $this->drush(PmCommands::INSTALL, [self::WOOT], ['yes' => true], null, '');
-        $this->workerManager = \Drupal::service('plugin.manager.queue_worker');
-        $this->queueFactory = \Drupal::service('queue');
-    }
-
-    public function tearDown(): void
-    {
-        // The workers record progress in state; clear it so a rerun starts fresh.
-        \Drupal::state()->delete('woot_requeue_exception');
-        \Drupal::state()->delete('woot_custom_exception');
-        $this->drush(PmCommands::UNINSTALL, [self::WOOT]);
-        parent::tearDown();
+        $this->workerManager = $this->container->get('plugin.manager.queue_worker');
+        $this->queueFactory = $this->container->get('queue');
     }
 
     /**
@@ -58,7 +46,7 @@ class QueueTest extends UnishIntegrationTestCase
      */
     public function testRequeueException(): void
     {
-        $this->resetQueue('woot_requeue_exception', [['foo' => 'bar']]);
+        $this->fillQueue('woot_requeue_exception', [['foo' => 'bar']]);
         $this->assertSame(1, $this->itemCount('woot_requeue_exception'));
 
         // The worker throws RequeueException the first time it sees the item
@@ -74,7 +62,7 @@ class QueueTest extends UnishIntegrationTestCase
      */
     public function testDelayedRequeueException(): void
     {
-        $this->resetQueue('woot_delayed_requeue_exception', [['foo' => 'bar']]);
+        $this->fillQueue('woot_delayed_requeue_exception', [['foo' => 'bar']]);
 
         // The item is delayed for an hour, so the run processes nothing and
         // the item stays in the queue.
@@ -88,7 +76,7 @@ class QueueTest extends UnishIntegrationTestCase
      */
     public function testCustomException(): void
     {
-        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->fillQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
         $this->assertSame(2, $this->itemCount('woot_custom_exception'));
 
         // The worker throws a CustomException on the first item and records
@@ -106,7 +94,7 @@ class QueueTest extends UnishIntegrationTestCase
      */
     public function testSuspendQueueException(): void
     {
-        $this->resetQueue('woot_suspend_queue_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->fillQueue('woot_suspend_queue_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
 
         // The first item suspends the queue. The command releases it, warns,
         // stops processing, and still exits 0. Neither item is consumed.
@@ -117,7 +105,7 @@ class QueueTest extends UnishIntegrationTestCase
 
     public function testDelete(): void
     {
-        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->fillQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
         $this->assertSame(2, $this->itemCount('woot_custom_exception'));
 
         $tester = new CommandTester(new QueueDeleteCommand($this->workerManager, $this->queueFactory));
@@ -129,8 +117,8 @@ class QueueTest extends UnishIntegrationTestCase
 
     public function testList(): void
     {
-        $this->resetQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
-        $this->resetQueue('woot_requeue_exception', []);
+        $this->fillQueue('woot_custom_exception', [['foo' => 'bar'], ['baz' => 'qux']]);
+        $this->fillQueue('woot_requeue_exception', []);
 
         $tester = new CommandTester(new QueueListCommand($this->workerManager, $this->queueFactory));
         $code = $tester->execute([]);
@@ -180,12 +168,11 @@ class QueueTest extends UnishIntegrationTestCase
     }
 
     /**
-     * Empties the named queue and fills it with the given items.
+     * Creates the named queue and fills it with the given items.
      */
-    protected function resetQueue(string $name, array $items): void
+    protected function fillQueue(string $name, array $items): void
     {
         $queue = $this->queueFactory->get($name, true);
-        $queue->deleteQueue();
         $queue->createQueue();
         foreach ($items as $item) {
             $queue->createItem($item);

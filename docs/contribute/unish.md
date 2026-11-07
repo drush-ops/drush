@@ -20,6 +20,7 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 ## Advanced usage
 - Run only one test suite
     - `composer unit`
+    - `composer kernel`
     - `composer integration`
     - `composer functional`
 - Run only tests matching a regex: `composer functional -- --filter testUserRole`
@@ -32,6 +33,7 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 
 ## About the Test Suites
 - **Unit tests** operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up.
+- **Kernel tests** extend Drupal core's `KernelTestBase` and drive a command directly with Symfony's `CommandTester`, the way Drupal core tests its own console commands. They run from `tests/phpunit.kernel.xml.dist`, whose bootstrap chains core's test bootstrap and derives `SIMPLETEST_DB` from `UNISH_DB_URL`. Each test gets a fresh, minimal Drupal with only the modules it lists.
 - **Integration tests** set up a test dependency injection container and operate by calling the Symfony Application APIs directly. A Drupal site called the System Under Test is set up and used for the tests. The SUT is set up and installed only once, and then is re-used for all tests. Integration tests therefore cannot make destructive changes to the SUT database. Also, Drupal is bootstrapped only once (always using the standard Drupal kernel, never the install or update kernel). This means that all commands run at `@bootstrap full`, and it is not possible to test loading different Drush configuration files and so on. It is not possible to test argument / option parsing. The shutdown and error handlers are not installed, so PHP deprecation warnings will be evidenced in the integration tests.
 - **Functional tests** operate by `exec`ing the Drush executable. All functional tests therefore run in their own separate processes. The Drupal System Under Test is set up every time it is needed by any functional test. It is therefore okay if a functional test changes the state of the SUT. The codebase is re-used, so no destructive changes should be made to the code.
 

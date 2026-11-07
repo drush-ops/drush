@@ -129,6 +129,7 @@ jobs:
           steps:
             - run: .circleci/highest.sh
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
+      - run: composer -n kernel -- --log-junit /tmp/results/kernel/junit.xml
       - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
   # Drupal 9.2.8 for Security test coverage for drupal/core
