@@ -20,9 +20,23 @@ if (!file_exists($coreBootstrap)) {
 // KernelTestBase reads SIMPLETEST_DB. Derive it from UNISH_DB_URL so one
 // variable configures every suite. Kernel tests open a second connection,
 // which an in-memory sqlite database cannot share, so use a file instead.
+//
+// This runs once in the main phpunit process; isolated test processes
+// inherit the variable and skip this block, so the cleanup below runs
+// only after the whole suite has finished.
 if (!getenv('SIMPLETEST_DB') && ($url = getenv('UNISH_DB_URL'))) {
     if (str_starts_with($url, 'sqlite:') && str_contains($url, ':memory:')) {
+        $dir = "$root/sut/sites/simpletest";
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
         $url = 'sqlite://localhost/sites/simpletest/kernel.sqlite';
+        // KernelTestBase drops each test's tables, but the sqlite driver
+        // keeps one file per table prefix. Remove them when the run ends.
+        register_shutdown_function(static function () use ($dir): void {
+            array_map(unlink(...), glob("$dir/kernel.sqlite*") ?: []);
+            @rmdir($dir);
+        });
     }
     putenv("SIMPLETEST_DB=$url");
     $_ENV['SIMPLETEST_DB'] = $_SERVER['SIMPLETEST_DB'] = $url;
