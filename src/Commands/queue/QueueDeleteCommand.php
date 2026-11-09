@@ -14,12 +14,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Delete all items in a specific queue.',
     aliases: ['queue-delete'],
 )]
-final class QueueDeleteCommand
+class QueueDeleteCommand
 {
     use AutowireTrait;
     use QueueTrait;

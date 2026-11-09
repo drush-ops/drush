@@ -29,7 +29,7 @@ composer functional      # execs ./drush per test, slow; filter with -- --filter
 
 ## Writing commands
 
-- New commands are one class per command, an invokable `final class FooCommand` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they use nothing from `Drush\Attributes`, validate input inside `__invoke()`, and render output themselves (`--format` via `Drush\Commands\OutputFormat`). Older commands still extend `Command` and use Drush attributes; `docs/commands.md` documents those.
+- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they use nothing from `Drush\Attributes`, validate input inside `__invoke()`, and render output themselves (`--format` via `Drush\Commands\OutputFormat`). Older commands still extend `Command` and use Drush attributes; `docs/commands.md` documents those.
 - Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
 - `includes/*.inc` is legacy procedural code, excluded from phpcs. Add nothing there.
