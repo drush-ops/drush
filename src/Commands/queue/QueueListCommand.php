@@ -16,13 +16,16 @@ use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Returns a list of all defined queues.',
     aliases: ['queue-list'],
     usages: ['queue:list --format=json'],
 )]
-final class QueueListCommand
+class QueueListCommand
 {
     use AutowireTrait;
     use QueueTrait;

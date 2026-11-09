@@ -21,12 +21,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Run a specific queue by name.',
     aliases: ['queue-run'],
 )]
-final class QueueRunCommand
+class QueueRunCommand
 {
     use AutowireTrait;
     use QueueTrait;
