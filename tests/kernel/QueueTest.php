@@ -53,7 +53,7 @@ class QueueTest extends KernelTestBase
         // and records that in state. The command releases the item, claims
         // it again, and the second attempt succeeds.
         $tester = $this->runQueue('woot_requeue_exception');
-        $this->assertStringContainsString('Processed 1 items from the woot_requeue_exception queue', $tester->getDisplay());
+        $this->assertStringContainsString('Processed 1 item from the woot_requeue_exception queue', $tester->getDisplay());
         $this->assertSame(0, $this->itemCount('woot_requeue_exception'));
     }
 
@@ -85,7 +85,7 @@ class QueueTest extends KernelTestBase
         $tester = $this->runQueue('woot_custom_exception');
         $display = $tester->getDisplay();
         $this->assertStringContainsString('Something went wrong, skip me!', $display);
-        $this->assertStringContainsString('Processed 1 items from the woot_custom_exception queue', $display);
+        $this->assertStringContainsString('Processed 1 item from the woot_custom_exception queue', $display);
         $this->assertSame(1, $this->itemCount('woot_custom_exception'));
     }
 

@@ -30,6 +30,7 @@ composer functional      # execs ./drush per test, slow; filter with -- --filter
 ## Writing commands
 
 - New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they use nothing from `Drush\Attributes`, validate input inside `__invoke()`, and render output themselves (`--format` via `Drush\Commands\OutputFormat`). Older commands still extend `Command` and use Drush attributes; `docs/commands.md` documents those.
+- User-facing strings go through Drupal's `StringTranslationTrait`, as core's console commands do: `(string) $this->t('Deleted @name.', ['@name' => $name])`, and `formatPlural()` for counts. Attribute descriptions stay plain strings because attributes need constant expressions.
 - Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
 - `includes/*.inc` is legacy procedural code, excluded from phpcs. Add nothing there.

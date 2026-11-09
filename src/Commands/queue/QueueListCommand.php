@@ -68,7 +68,7 @@ class QueueListCommand
         $buffer = new BufferedOutput();
         $table = new Table($buffer);
         $table
-            ->setHeaders(['Queue', 'Items', 'Class'])
+            ->setHeaders([(string) $this->t('Queue'), (string) $this->t('Items'), (string) $this->t('Class')])
             ->setRows($rows)
             ->render();
         return $buffer->fetch();
