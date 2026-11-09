@@ -4,64 +4,56 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
-use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\user\Entity\Role;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\PermissionHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Remove specified permission(s) from a role.',
-    aliases: ['rmp', 'role-remove-perm']
+    aliases: ['rmp', 'role-remove-perm'],
+    usages: ["role:perm:remove anonymous 'post comments,access content'"],
 )]
-#[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
-#[CLI\ValidatePermissions(argName: 'permissions')]
-final class RolePermRemoveCommand extends Command
+class RolePermRemoveCommand
 {
     use AutowireTrait;
+    use RoleTrait;
 
     const string NAME = 'role:perm:remove';
 
     public function __construct(
-        protected DateFormatterInterface $dateFormatter,
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected PermissionHandlerInterface $permissionHandler,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('machine_name', InputArgument::REQUIRED, 'The role to modify.')
-            ->addArgument('permissions', InputArgument::REQUIRED, 'The list of permission to grant, delimited by commas.')
-            ->addUsage("role:remove-perm anonymous 'post comments,access content'");
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $machineName = $input->getArgument('machine_name');
-        $permissions = $input->getArgument('permissions');
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The role to modify.', suggestedValues: [self::class, 'suggestRoleNames'])]
+        string $machineName,
+        #[Argument('The list of permission to revoke, delimited by commas.')]
+        string $permissions,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
+        $role = $this->loadRole($machineName);
         $perms = StringUtils::csvToArray($permissions);
-        user_role_revoke_permissions($machineName, $perms);
-        $io->success(sprintf('Removed "%s" permission from "%s" role', $permissions, $machineName));
-        drupal_flush_all_caches();
-        return self::SUCCESS;
-    }
+        $this->validatePermissions($this->permissionHandler, $perms);
 
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
-    {
-        if ($input->mustSuggestArgumentValuesFor('machine_name')) {
-            $suggestions->suggestValues(array_keys(Role::loadMultiple()));
-        }
+        $role->revokePermissions($perms)->save();
+
+        $io->success((string) $this->t('Removed "@perms" permission from "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
+
+        return Command::SUCCESS;
     }
 }
