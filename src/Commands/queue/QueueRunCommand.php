@@ -72,7 +72,7 @@ class QueueRunCommand
         while ((!$timeLimit || $remaining > 0) && (!$itemsLimit || $count < $itemsLimit) && ($item = $queue->claimItem($leaseTime))) {
             try {
                 assert($item instanceof stdClass);
-                $io->note(sprintf('Processing item %s from %s queue.', $item->item_id ?? $item->qid, $name));
+                $io->note((string) $this->t('Processing item @id from @name queue.', ['@id' => $item->item_id ?? $item->qid, '@name' => $name]));
                 $worker->processItem($item->data);
                 $queue->deleteItem($item);
                 $count++;
@@ -83,7 +83,7 @@ class QueueRunCommand
                 // Like core's cron runner, release the item and stop; this is
                 // not a failure. See https://www.drupal.org/i/2867001.
                 $queue->releaseItem($item);
-                $io->getErrorStyle()->warning(sprintf('Suspended the %s queue: %s', $name, $e->getMessage()));
+                $io->getErrorStyle()->warning((string) $this->t('Suspended the @name queue: @message', ['@name' => $name, '@message' => $e->getMessage()]));
                 break;
             } catch (DelayedRequeueException $e) {
                 if ($queue instanceof DelayableQueueInterface) {
@@ -95,7 +95,12 @@ class QueueRunCommand
             $remaining = $end - time();
         }
         $elapsed = microtime(true) - $start;
-        $io->success(sprintf('Processed %s items from the %s queue in %s sec.', $count, $name, round($elapsed, 2)));
+        $io->success((string) $this->formatPlural(
+            $count,
+            'Processed 1 item from the @name queue in @elapsed sec.',
+            'Processed @count items from the @name queue in @elapsed sec.',
+            ['@name' => $name, '@elapsed' => round($elapsed, 2)],
+        ));
 
         return Command::SUCCESS;
     }

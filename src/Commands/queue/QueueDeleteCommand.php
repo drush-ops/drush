@@ -44,7 +44,7 @@ class QueueDeleteCommand
         $io = new SymfonyStyle($input, $output);
         $this->validateQueueName($name);
         $this->queueService->get($name)->deleteQueue();
-        $io->success(sprintf('All items in %s queue deleted.', $name));
+        $io->success((string) $this->t('All items in @name queue deleted.', ['@name' => $name]));
         return Command::SUCCESS;
     }
 }

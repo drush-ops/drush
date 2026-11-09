@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Drush\Commands\queue;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\Console\Completion\CompletionInput;
 
 trait QueueTrait
 {
+    use StringTranslationTrait;
+
     protected static array $queues;
 
     public function getQueues(): array
@@ -30,7 +33,7 @@ trait QueueTrait
     protected function validateQueueName(string $name): void
     {
         if (!array_key_exists($name, $this->getQueues())) {
-            throw new \InvalidArgumentException(sprintf('Queue not found: %s', $name));
+            throw new \InvalidArgumentException((string) $this->t('Queue not found: @name', ['@name' => $name]));
         }
     }
 
