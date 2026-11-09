@@ -59,13 +59,13 @@
     "behat/mink": "^1.11",
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "dev-main",
+    "drupal/core-recommended": "11.x-dev",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^2",
     "mikey179/vfsstream": "^1.6.11",
     "phpspec/prophecy-phpunit": "^2.4",
-    "phpunit/phpunit": "^12",
+    "phpunit/phpunit": "^11.5",
     "rector/rector": "^2",
     "squizlabs/php_codesniffer": "^3.7"
   },
@@ -104,6 +104,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
+      "php": "8.3"
     }
   },
   "scripts": {
