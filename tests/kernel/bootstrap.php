@@ -42,6 +42,13 @@ if (!getenv('SIMPLETEST_DB') && ($url = getenv('UNISH_DB_URL'))) {
     $_ENV['SIMPLETEST_DB'] = $_SERVER['SIMPLETEST_DB'] = $url;
 }
 
+// Core's deprecation handler also reads SYMFONY_DEPRECATIONS_HELPER. Any value
+// other than "disabled" (such as CI's "disabled=1") turns project ignores
+// on, and Drush has no ignore file to load. The kernel suite handles
+// deprecations through the extension parameters in phpunit.kernel.xml.dist.
+putenv('SYMFONY_DEPRECATIONS_HELPER=disabled');
+$_ENV['SYMFONY_DEPRECATIONS_HELPER'] = $_SERVER['SYMFONY_DEPRECATIONS_HELPER'] = 'disabled';
+
 // Core's bootstrap scans these for contrib test namespaces and fails when
 // one is missing; composer install only creates the ones Drupal needs.
 foreach (['modules', 'profiles', 'themes'] as $dir) {

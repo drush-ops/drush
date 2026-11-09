@@ -49,6 +49,9 @@ executors:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:8.0
+        environment:
+          # The kernel suite runs before anything creates the Unish database.
+          MYSQL_DATABASE: unish_dev
   mysql-highest:
     docker:
       - image: wodby/php:latest
@@ -56,6 +59,9 @@ executors:
           - MYSQL_HOST=127.0.0.1
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:9.5
+        environment:
+          # The kernel suite runs before anything creates the Unish database.
+          MYSQL_DATABASE: unish_dev
   postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
