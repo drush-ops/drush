@@ -6,22 +6,20 @@ namespace Drush\Commands\queue;
 
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Delete all items in a specific queue.',
-    aliases: ['queue-delete']
+    aliases: ['queue-delete'],
 )]
-#[CLI\ValidateQueueName(argumentName: 'name')]
-final class QueueDeleteCommand extends Command
+final class QueueDeleteCommand
 {
     use AutowireTrait;
     use QueueTrait;
@@ -30,24 +28,20 @@ final class QueueDeleteCommand extends Command
 
     public function __construct(
         protected QueueWorkerManagerInterface $workerManager,
-        protected QueueFactory $queueService
+        protected QueueFactory $queueService,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the queue to delete.');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $name = $input->getArgument('name');
-        $queue = $this->queueService->get($name);
-        $queue->deleteQueue();
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The name of the queue to delete.', suggestedValues: [self::class, 'suggestQueueNames'])]
+        string $name,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
+        $this->validateQueueName($name);
+        $this->queueService->get($name)->deleteQueue();
         $io->success(sprintf('All items in %s queue deleted.', $name));
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }
