@@ -45,14 +45,14 @@ class RoleCreateCommand
         $io = new SymfonyStyle($input, $output);
         $storage = $this->entityTypeManager->getStorage('user_role');
         if ($storage->load($machineName)) {
-            throw new \InvalidArgumentException(sprintf('The user_role already exists: %s', $machineName));
+            throw new \InvalidArgumentException((string) $this->t('The user_role already exists: @name', ['@name' => $machineName]));
         }
         $storage->create([
             'id' => $machineName,
             'label' => $humanReadableName ?: ucfirst($machineName),
         ])->save();
 
-        $io->success(sprintf('Created "%s" role', $machineName));
+        $io->success((string) $this->t('Created "@name" role', ['@name' => $machineName]));
 
         return Command::SUCCESS;
     }

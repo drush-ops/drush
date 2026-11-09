@@ -52,7 +52,7 @@ class RolePermRemoveCommand
 
         $role->revokePermissions($perms)->save();
 
-        $io->success(sprintf('Removed "%s" permission from "%s" role', $permissions, $machineName));
+        $io->success((string) $this->t('Removed "@perms" permission from "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
 
         return Command::SUCCESS;
     }

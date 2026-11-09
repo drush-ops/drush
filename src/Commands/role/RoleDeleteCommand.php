@@ -42,7 +42,7 @@ class RoleDeleteCommand
     ): int {
         $io = new SymfonyStyle($input, $output);
         $this->loadRole($machineName)->delete();
-        $io->success(sprintf('Deleted %s role', $machineName));
+        $io->success((string) $this->t('Deleted @name role', ['@name' => $machineName]));
 
         return Command::SUCCESS;
     }

@@ -55,7 +55,7 @@ class RolePermAddCommand
 
         $role->grantPermissions($perms)->save();
 
-        $io->success(sprintf('Added "%s" permission to "%s" role', $permissions, $machineName));
+        $io->success((string) $this->t('Added "@perms" permission to "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
 
         return Command::SUCCESS;
     }

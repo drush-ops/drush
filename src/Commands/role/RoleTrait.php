@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\user\PermissionHandlerInterface;
 use Drupal\user\RoleInterface;
 use Symfony\Component\Console\Completion\CompletionInput;
@@ -16,6 +17,8 @@ use Symfony\Component\Console\Completion\CompletionInput;
  */
 trait RoleTrait
 {
+    use StringTranslationTrait;
+
     /**
      * Loads a role or throws when no role has the given machine name.
      *
@@ -26,7 +29,7 @@ trait RoleTrait
     {
         $role = $this->entityTypeManager->getStorage('user_role')->load($machineName);
         if (!$role instanceof RoleInterface) {
-            throw new \InvalidArgumentException(sprintf('Unable to load the user_role: %s', $machineName));
+            throw new \InvalidArgumentException((string) $this->t('Unable to load the user_role: @name', ['@name' => $machineName]));
         }
         return $role;
     }
@@ -41,7 +44,7 @@ trait RoleTrait
     {
         $known = array_keys($permissionHandler->getPermissions());
         if ($missing = array_diff($permissions, $known)) {
-            throw new \InvalidArgumentException(sprintf('Permission(s) not found: %s', implode(', ', $missing)));
+            throw new \InvalidArgumentException((string) $this->t('Permission(s) not found: @perms', ['@perms' => implode(', ', $missing)]));
         }
     }
 
