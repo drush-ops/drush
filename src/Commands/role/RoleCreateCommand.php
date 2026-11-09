@@ -4,48 +4,56 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
-use Drupal\user\Entity\Role;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Create a new role.',
-    aliases: ['rcrt', 'role-create']
+    aliases: ['rcrt', 'role-create'],
+    usages: ["role:create 'test_role' 'Test role'"],
 )]
-final class RoleCreateCommand extends Command
+class RoleCreateCommand
 {
     use AutowireTrait;
+    use RoleTrait;
 
     const string NAME = 'role:create';
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('machine_name', InputArgument::REQUIRED, 'The symbolic machine name for the role.')
-            ->addArgument('human_readable_name', InputArgument::OPTIONAL, 'A descriptive name for the role.')
-            ->addUsage("role:create 'test_role' 'Test role'");
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager,
+    ) {
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $machineName = $input->getArgument('machine_name');
-        $humanReadableName = $input->getArgument('human_readable_name');
-
-        $role = Role::create([
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The symbolic machine name for the role.')]
+        string $machineName,
+        #[Argument('A descriptive name for the role.')]
+        ?string $humanReadableName = null,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
+        $storage = $this->entityTypeManager->getStorage('user_role');
+        if ($storage->load($machineName)) {
+            throw new \InvalidArgumentException(sprintf('The user_role already exists: %s', $machineName));
+        }
+        $storage->create([
             'id' => $machineName,
             'label' => $humanReadableName ?: ucfirst($machineName),
-        ]);
-        $role->save();
+        ])->save();
 
-        $io->success(sprintf('Created "%s', $machineName));
+        $io->success(sprintf('Created "%s" role', $machineName));
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }
