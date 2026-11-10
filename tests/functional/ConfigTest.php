@@ -53,6 +53,20 @@ class ConfigTest extends CommandUnishTestCase
         $this->drush(ConfigGetCommand::NAME, ['system.site', 'page.front']);
         $this->assertEquals("'system.site:page.front': llama", $this->getOutput());
 
+        // Booleans. The words true and false become booleans rather than
+        // strings, which the config schema would cast to TRUE either way.
+        $this->drush(ConfigSetCommand::NAME, ['system.performance', 'css.preprocess', 'false']);
+        $this->drush(ConfigGetCommand::NAME, ['system.performance', 'css.preprocess'], ['format' => 'json']);
+        $this->assertFalse($this->getOutputFromJSON('system.performance:css.preprocess'));
+        $this->drush(ConfigSetCommand::NAME, ['system.performance', 'css.preprocess', 'TRUE']);
+        $this->drush(ConfigGetCommand::NAME, ['system.performance', 'css.preprocess'], ['format' => 'json']);
+        $this->assertTrue($this->getOutputFromJSON('system.performance:css.preprocess'));
+
+        // Null.
+        $this->drush(ConfigSetCommand::NAME, ['system.site', 'slogan', 'NULL']);
+        $this->drush(ConfigGetCommand::NAME, ['system.site', 'slogan'], ['format' => 'json']);
+        $this->assertNull($this->getOutputFromJSON('system.site:slogan'));
+
         // Simple sequence value
         $this->drush(ConfigSetCommand::NAME, ['user.role.authenticated', 'permissions', '[foo,bar]'], ['input-format' => 'yaml']);
         $this->drush(ConfigGetCommand::NAME, ['user.role.authenticated', 'permissions'], ['format' => 'json']);

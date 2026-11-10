@@ -40,12 +40,13 @@ final class ConfigSetCommand extends Command
         $this
             ->addArgument('config_name', InputArgument::REQUIRED, 'The config object name, for example <info>system.site</info>.')
             ->addArgument('key', InputArgument::REQUIRED, 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')
-            ->addArgument('value', InputArgument::REQUIRED, 'The value to assign to the config key. Use <info>-</info> to read from Stdin.')
+            ->addArgument('value', InputArgument::REQUIRED, 'The value to assign to the config key. The words <info>true</info>, <info>false</info> and <info>null</info> are saved as those typed values, not as strings. Use <info>-</info> to read from Stdin.')
             ->addOption('input-format', null, InputOption::VALUE_REQUIRED, 'Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.', 'string')
             // @todo Move the old descriptions of these Usages into setHelp().
             ->addUsage('config:set system.site name MySite')
             ->addUsage('config:set user.role.anonymous permissions \'[]\'')
             ->addUsage('config:set system.site name \'NULL\'')
+            ->addUsage('config:set system.performance css.preprocess false')
             ->addUsage("config:set --input-format=yaml system.site page {403: '403', front: home}")
             ->addUsage('config:set --input-format=yaml user.role.authenticated permissions [foo,bar]')
             ->addUsage('config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}')
@@ -66,19 +67,20 @@ final class ConfigSetCommand extends Command
             $data = stream_get_contents($inputStream);
         }
 
-        // Special handling for null.
-        if (strtolower($data) === 'null') {
-            $data = null;
-        }
-
-        // Special handling for empty array.
-        if ($data == '[]') {
-            $data = [];
-        }
-
         if ($input->getOption('input-format') === 'yaml') {
             $parser = new Parser();
             $data = $parser->parse($data);
+        } else {
+            // Turn the words null, true and false, and the empty array, into
+            // their typed values. Otherwise "false" would be saved as a
+            // non-empty string, which the config schema casts to TRUE.
+            $data = match (strtolower($data)) {
+                'null' => null,
+                'true' => true,
+                'false' => false,
+                '[]' => [],
+                default => $data,
+            };
         }
 
         $config_name = $input->getArgument('config_name');
