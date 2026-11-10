@@ -66,12 +66,12 @@ trait LocaleTrait
     /**
      * Get translatable language object.
      *
-     * @param string $langcode The language code of the language object.
+     * @param string|null $langcode The language code of the language object, or null for none (a template export).
      * @param bool $addLanguage Create language when not available.
      * @return LanguageInterface|null
      * @throws \Exception
      */
-    private function getTranslatableLanguage(string $langcode, bool $addLanguage = false)
+    private function getTranslatableLanguage(?string $langcode, bool $addLanguage = false)
     {
         if (!$langcode) {
             return null;
