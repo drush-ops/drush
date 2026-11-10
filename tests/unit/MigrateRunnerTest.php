@@ -11,6 +11,7 @@ use Drupal\migrate\Plugin\MigrateSourceInterface;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drupal\migrate\Plugin\MigrationPluginManagerInterface;
 use Drupal\migrate\Row;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Path;
@@ -84,18 +85,39 @@ class MigrateRunnerTest extends TestCase
 
     public function testMissingSourceRowsGuard(): void
     {
-        $source = $this->createStub(MigrateSourceInterface::class);
-        $source->method('count')->willReturn(2);
-        $migration = $this->createStub(MigrationInterface::class);
-        $migration->method('getSourcePlugin')->willReturn($source);
-        $migration->method('id')->willReturn('foo');
+        $migration = $this->createMissingSourceRowsMigration();
 
         // Bypass the constructor: zero observed source rows plus a non-empty
-        // source must refuse to detect missing rows.
+        // source must refuse to detect missing rows when --delete is given.
         $executable = (new \ReflectionClass(MigrateExecutable::class))->newInstanceWithoutConstructor();
+        (new \ReflectionProperty($executable, 'deleteMissingSourceRows'))->setValue($executable, true);
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessageMatches('/Refusing to detect missing source rows/');
         (new \ReflectionMethod($executable, 'handleMissingSourceRows'))->invoke($executable, $migration);
+    }
+
+    public function testMissingSourceRowsGuardWithoutDelete(): void
+    {
+        $migration = $this->createMissingSourceRowsMigration();
+        // Without --delete nothing is rolled back, so the detection is skipped
+        // instead of failing: the ID map is never consulted.
+        $migration->expects($this->never())->method('getIdMap');
+
+        $executable = (new \ReflectionClass(MigrateExecutable::class))->newInstanceWithoutConstructor();
+        (new \ReflectionMethod($executable, 'handleMissingSourceRows'))->invoke($executable, $migration);
+    }
+
+    /**
+     * Returns a migration whose source is not empty but was never observed.
+     */
+    private function createMissingSourceRowsMigration(): MockObject&MigrationInterface
+    {
+        $source = $this->createStub(MigrateSourceInterface::class);
+        $source->method('count')->willReturn(2);
+        $migration = $this->createMock(MigrationInterface::class);
+        $migration->method('getSourcePlugin')->willReturn($source);
+        $migration->method('id')->willReturn('foo');
+        return $migration;
     }
 
     /**

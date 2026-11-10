@@ -96,7 +96,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Whether to delete rows missing from source after an import.
      */
-    protected bool $deleteMissingSourceRows;
+    protected bool $deleteMissingSourceRows = false;
 
     /**
      * Static cached ID map.
@@ -281,8 +281,8 @@ class MigrateExecutable extends MigrateExecutableBase
         if ($this->allSourceIdValues === [] && (clone $migration->getSourcePlugin())->count() > 0) {
             // SqlBase sources that can join the map table only return the rows
             // that still need importing, so an up-to-date migration observes no
-            // rows at all. Missing rows can't be detected then, which only
-            // matters when they would be rolled back.
+            // rows at all. Without --delete nothing would be rolled back, so
+            // skip the detection instead of failing.
             if (!$this->deleteMissingSourceRows) {
                 return;
             }
