@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+      Configuration for the kernel suite: tests that extend Drupal core's
+      KernelTestBase and drive commands with Symfony's CommandTester.
+
+      Kept apart from phpunit.xml.dist because core's test bootstrap scans
+      every extension directory under sut/ on startup, which would slow the
+      other suites. Copy and rename to phpunit.kernel.xml to customize.
+
+      Run with: composer kernel
+-->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         bootstrap="kernel/bootstrap.php"
+         backupGlobals="false"
+         colors="true">
+  <testsuites>
+    <testsuite name="kernel">
+      <directory suffix="Test.php">kernel</directory>
+    </testsuite>
+  </testsuites>
+  <extensions>
+    <!-- Core's test bootstrap consults this extension's parameters. Drush has
+         no deprecation ignore file, so project ignores stay off. -->
+    <bootstrap class="Drupal\TestTools\Extension\DeprecationBridge\DeprecationHandler">
+      <parameter name="enableProjectIgnores" value="false"/>
+      <parameter name="enableDebugClassLoader" value="false"/>
+    </bootstrap>
+  </extensions>
+  <php>
+    <!-- KernelTestBase reads SIMPLETEST_DB. When unset, kernel/bootstrap.php
+         derives it from UNISH_DB_URL, so the same variable drives every suite. -->
+    <!-- <env name="SIMPLETEST_DB" value="sqlite://localhost/sites/simpletest/kernel.sqlite"/> -->
+  </php>
+</phpunit>

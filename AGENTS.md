@@ -20,6 +20,7 @@ composer cs              # phpcs, PSR-12 (composer cbf auto-fixes)
 composer lint            # php -l over src, includes, tests
 vendor/bin/phpstan       # level 4, CI fails on new errors
 composer unit            # fast, no database
+composer kernel          # Drupal KernelTestBase tests driving commands with CommandTester
 composer integration     # shared SUT, must not mutate its database
 composer functional      # execs ./drush per test, slow; filter with -- --filter testName
 ```
@@ -28,7 +29,8 @@ composer functional      # execs ./drush per test, slow; filter with -- --filter
 
 ## Writing commands
 
-- New commands are one class per command, `final class FooCommand extends Command` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and Drush attributes from `Drush\Attributes`. `src/Commands/core/CronCommand.php` is a minimal model; `docs/commands.md` documents the options.
+- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they use nothing from `Drush\Attributes`, validate input inside `__invoke()`, and render output themselves (`--format` via `Drush\Commands\OutputFormat`). Older commands still extend `Command` and use Drush attributes; `docs/commands.md` documents those.
+- User-facing strings go through Drupal's `StringTranslationTrait`, as core's console commands do: `(string) $this->t('Deleted @name.', ['@name' => $name])`, and `formatPlural()` for counts. Attribute descriptions stay plain strings because attributes need constant expressions.
 - Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
 - `includes/*.inc` is legacy procedural code, excluded from phpcs. Add nothing there.
@@ -37,6 +39,7 @@ composer functional      # execs ./drush per test, slow; filter with -- --filter
 ## Tests
 
 - Unit: pure functions, no side effects, no Drupal.
+- Kernel: extend `Drupal\KernelTests\KernelTestBase`, build the command from `$this->container` services, drive it with `Symfony\Component\Console\Tester\CommandTester`, assert on `getDisplay()` and the exit code. Preferred for new command tests; `tests/kernel/QueueTest.php` is the model. Needs `UNISH_DB_URL` (or `SIMPLETEST_DB`).
 - Integration: extend `Unish\UnishIntegrationTestCase`; calls the Symfony application directly, Drupal bootstraps once at full level, so argument and option parsing cannot be tested here.
 - Functional: extend `Unish\CommandUnishTestCase`; runs the real `./drush` binary in a subprocess, may change SUT state. Mark network-dependent tests `#[Group('slow')]`.
 - `UNISH_DIRTY=1` keeps the SUT installed after a run for inspection: `./drush @sut.dev status`.

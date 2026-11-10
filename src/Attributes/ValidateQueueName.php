@@ -8,6 +8,10 @@ use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
+/**
+ * @deprecated in Drush 14. Validate inside execute() instead, as the queue
+ *   commands do via QueueTrait::validateQueueName().
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class ValidateQueueName extends ValidatorBase implements ValidatorInterface
 {
