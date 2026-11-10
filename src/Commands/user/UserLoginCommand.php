@@ -70,7 +70,7 @@ final class UserLoginCommand extends Command
         }
 
         if ($account->isBlocked()) {
-            throw new \InvalidArgumentException('Account %s is blocked and thus cannot login. The user:unblock command may be helpful.', $account->getAccountName());
+            throw new \InvalidArgumentException(sprintf('Account %s is blocked and thus cannot login. The user:unblock command may be helpful.', $account->getAccountName()));
         }
 
         // Can't inject dependency because this command instantiates without a bootstrap.
