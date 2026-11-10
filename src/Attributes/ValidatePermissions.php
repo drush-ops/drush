@@ -9,6 +9,10 @@ use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 use Drush\Utils\StringUtils;
 
+/**
+ * @deprecated in Drush 14. Validate inside the command instead, as
+ *   Drush\Commands\role\RoleTrait::validatePermissions() does.
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class ValidatePermissions extends ValidatorBase implements ValidatorInterface
 {

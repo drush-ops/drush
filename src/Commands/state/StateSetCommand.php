@@ -4,72 +4,88 @@ declare(strict_types=1);
 
 namespace Drush\Commands\state;
 
+use Drupal\Core\Render\Markup;
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\AutowireTrait;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
 
 #[AsCommand(
     name: self::NAME,
     description: 'Set a state value.',
-    aliases: ['sset', 'state-set']
+    aliases: ['sset', 'state-set'],
+    usages: [
+        'state:set system.maintenance_mode 1 --input-format=integer',
+        'state:set system.cron_last 1406682882 --input-format=integer',
+        'php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state:set --input-format=json foo.name -',
+        'state:set twig_debug TRUE',
+        'state:set twig_autoreload TRUE',
+        'state:set twig_cache_disable TRUE',
+        'state:set disable_rendered_output_cache_bins TRUE',
+    ],
 )]
-final class StateSetCommand extends Command
+final class StateSetCommand
 {
     use AutowireTrait;
+    use StateTrait;
 
     public const string NAME = 'state:set';
 
+    /**
+     * Accepted values of --input-format.
+     */
+    public const array INPUT_FORMATS = ['auto', 'string', 'integer', 'float', 'boolean', 'json', 'yaml'];
+
     public function __construct(
-        protected StateInterface $state
+        protected StateInterface $state,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('key', InputArgument::REQUIRED, 'The state key, for example: <info>system.cron_last</info>.')
-            ->addArgument('value', InputArgument::REQUIRED, 'The value to assign to the state key. Use <info>-</info> to read from Stdin.')
-            ->addOption('input-format', null, InputOption::VALUE_REQUIRED, 'Type for the value. Other recognized values: string, integer, float, boolean, json, yaml.', 'auto')
-            ->addUsage('sset system.maintenance_mode 1 --input-format=integer')
-            ->addUsage('state:set system.cron_last 1406682882 --input-format=integer')
-            ->addUsage('php -r "print json_encode(array(\'drupal\', \'simpletest\'));"  | drush state-set --input-format=json foo.name -')
-            ->addUsage('state:set twig_debug TRUE')
-            ->addUsage('state:set twig_autoreload TRUE')
-            ->addUsage('state:set twig_cache_disable TRUE')
-            ->addUsage('state:set disable_rendered_output_cache_bins TRUE');
-    }
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The state key, for example system.cron_last.')]
+        string $key,
+        #[Argument('The value to assign to the state key. Use - to read from stdin.')]
+        string $value,
+        #[Option('Type for the value: auto, string, integer, float, boolean, json or yaml. Auto detects numbers and TRUE/FALSE.', suggestedValues: self::INPUT_FORMATS)]
+        string $inputFormat = 'auto',
+    ): int {
+        if (!in_array($inputFormat, self::INPUT_FORMATS, true)) {
+            throw new \InvalidArgumentException((string) $this->t('Unknown input format: @format. Allowed values: @allowed', [
+                '@format' => $inputFormat,
+                '@allowed' => implode(', ', self::INPUT_FORMATS),
+            ]));
+        }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $key = $input->getArgument('key');
-        $value = $input->getArgument('value');
-        $inputFormat = $input->getOption('input-format');
-
-        // Special flag indicating that the value has been passed via STDIN.
+        // Special flag indicating that the value has been passed via stdin.
         if ($value === '-') {
             // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
-            // If testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
-            $value = stream_get_contents($inputStream);
+            // Under CommandTester this reads what setInputs() provided.
+            $stream = $input instanceof StreamableInputInterface ? $input->getStream() : null;
+            $value = stream_get_contents($stream ?? STDIN);
         }
 
-        // If the value is a string (usual case, unless we are called from code),
-        // then format the input.
-        if (is_string($value)) {
-            $value = self::format($value, $inputFormat);
-        }
-
+        $value = self::format($value, $inputFormat);
         $this->state->set($key, $value);
 
-        return self::SUCCESS;
+        // The rendered value is console text, not HTML, so keep t() from
+        // escaping its quotes.
+        $rendered = is_scalar($value) ? var_export($value, true) : json_encode($value, JSON_THROW_ON_ERROR);
+        $io = new SymfonyStyle($input, $output);
+        $io->success((string) $this->t('Set state entry @key to @value', [
+            '@key' => $key,
+            '@value' => Markup::create($rendered),
+        ]));
+
+        return Command::SUCCESS;
     }
 
     /**

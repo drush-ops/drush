@@ -86,21 +86,9 @@ glossary
 ## Output Filters
 A number of Drush commands that output tabular data support a `--filter` option that allows rows from the output to be selected with simple logic expressions.
 
-In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [role:list command](commands/role_list.md) specifies `perms` as its default filter; the output of the `role:list` command may be limited to only those roles that have a specified permission:
+In its simplest form, the `--filter` option takes a string that indicates the value to filter by in the command's *default filter field*. For example, the [pm:list command](commands/pm_list.md) specifies `display_name` as its default filter; the output of the `pm:list` command may be limited to only those extensions whose display name matches:
 ```shell
-$ drush role:list --filter='post comments'
-authenticated:
-  label: 'Authenticated user'
-  perms:
-    - 'access comments'
-    - 'access content'
-    - 'access shortcuts'
-    - 'access site-wide contact form'
-    - 'access user contact forms'
-    - 'post comments'
-    - 'search content'
-    - 'skip comment approval'
-    - 'use text format basic_html'
+$ drush pm:list --filter=Node
 ```
 Note that not all commands have a default filter field.
 

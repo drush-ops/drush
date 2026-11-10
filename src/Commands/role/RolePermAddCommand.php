@@ -4,61 +4,59 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
-use Drupal\user\Entity\Role;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\PermissionHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Grant specified permission(s) to a role.',
-    aliases: ['rap', 'role-add-perm']
+    aliases: ['rap', 'role-add-perm'],
+    usages: [
+        "role:perm:add anonymous 'post comments'",
+        "role:perm:add anonymous 'post comments,access content'",
+    ],
 )]
-#[CLI\ValidateEntityLoad(entityType: 'user_role', argumentName: 'machine_name')]
-#[CLI\ValidatePermissions(argName: 'permissions')]
-final class RolePermAddCommand extends Command
+class RolePermAddCommand
 {
     use AutowireTrait;
+    use RoleTrait;
 
     const string NAME = 'role:perm:add';
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('machine_name', InputArgument::REQUIRED, 'The role to modify.')
-            ->addArgument('permissions', InputArgument::REQUIRED, 'The list of permission to grant, delimited by commas.')
-            ->addUsage("role:perm:add anonymous 'post comments'")
-            ->addUsage("role:perm:add anonymous 'post comments,access content'");
+    public function __construct(
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected PermissionHandlerInterface $permissionHandler,
+    ) {
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $machineName = $input->getArgument('machine_name');
-        $permissions = $input->getArgument('permissions');
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The role to modify.', suggestedValues: [self::class, 'suggestRoleNames'])]
+        string $machineName,
+        #[Argument('The list of permission to grant, delimited by commas.')]
+        string $permissions,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
+        $role = $this->loadRole($machineName);
         $perms = StringUtils::csvToArray($permissions);
-        user_role_grant_permissions($machineName, $perms);
+        $this->validatePermissions($this->permissionHandler, $perms);
 
-        $io->success(sprintf('Added "%s" permission to "%s" role', $permissions, $machineName));
+        $role->grantPermissions($perms)->save();
 
-        drupal_flush_all_caches();
+        $io->success((string) $this->t('Added "@perms" permission to "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
 
-        return self::SUCCESS;
-    }
-
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
-    {
-        if ($input->mustSuggestArgumentValuesFor('machine_name')) {
-            $suggestions->suggestValues(array_keys(Role::loadMultiple()));
-        }
+        return Command::SUCCESS;
     }
 }

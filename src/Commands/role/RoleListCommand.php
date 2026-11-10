@@ -4,75 +4,85 @@ declare(strict_types=1);
 
 namespace Drush\Commands\role;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
-use Drupal\user\Entity\Role;
-use Drush\Attributes as CLI;
+use Drupal\Component\Serialization\Yaml;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\RoleInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
+use Drush\Commands\OutputFormat;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Display roles and their permissions.',
-    aliases: ['rls', 'role-list']
+    aliases: ['rls', 'role-list'],
+    usages: [
+        "role:list --filter='administer nodes'",
+        'role:list --format=json',
+    ],
 )]
-#[CLI\FieldLabels(labels: ['rid' => 'ID', 'label' => 'Role Label', 'perms' => 'Permissions'])]
-#[CLI\FilterDefaultField(field: 'perms')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'yaml')]
-final class RoleListCommand extends Command
+class RoleListCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
+    use RoleTrait;
 
     const string NAME = 'role:list';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addUsage("role:list --filter='administer nodes'")
-            ->addUsage("role:list --filter='rid=anonymous'");
-
-        $this->setHelp('Display roles and their permissions. Use --filter to show only roles with specific permissions or specific role IDs.');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
-    {
+    public function __invoke(
+        OutputInterface $output,
+        #[Option('Show only roles that hold this permission.')]
+        ?string $filter = null,
+        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
+        ?OutputFormat $format = null,
+    ): int {
         $rows = [];
-        $roles = Role::loadMultiple();
+        /** @var RoleInterface[] $roles */
+        $roles = $this->entityTypeManager->getStorage('user_role')->loadMultiple();
         foreach ($roles as $role) {
+            if ($filter !== null && !$role->hasPermission($filter)) {
+                continue;
+            }
             $rows[$role->id()] = [
                 'rid' => $role->id(),
                 'label' => $role->label(),
                 'perms' => $role->getPermissions(),
             ];
         }
-        return (new RowsOfFields($rows))->addRendererFunction($this->renderPermsCell(...));
-        ;
+
+        $result = match ($format) {
+            OutputFormat::Json => json_encode($rows, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
+            OutputFormat::Yaml => Yaml::encode($rows),
+            default => $this->renderTable($rows),
+        };
+        $output->writeln($result, OutputInterface::OUTPUT_RAW);
+
+        return Command::SUCCESS;
     }
 
-    public function renderPermsCell($key, $cellData, FormatterOptions $options): string
+    protected function renderTable(array $rows): string
     {
-        if (is_array($cellData)) {
-            return implode(',', $cellData);
+        foreach ($rows as &$row) {
+            // One permission per line keeps the table narrow.
+            $row['perms'] = implode("\n", $row['perms']);
         }
-        return $cellData;
+        $buffer = new BufferedOutput();
+        $table = new Table($buffer);
+        $table
+            ->setHeaders(['ID', 'Role Label', 'Permissions'])
+            ->setRows($rows)
+            ->render();
+        return $buffer->fetch();
     }
 }
