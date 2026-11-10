@@ -1,0 +1,14 @@
+id: test_migration_sql
+label: Test SqlBase source
+source:
+  plugin: woot_sql_source
+  # Share the connection with the ID map so that SqlBase joins the map table.
+  key: default
+process:
+  nid: id
+  title: name
+  type:
+    plugin: default_value
+    default_value: page
+destination:
+  plugin: entity:node
