@@ -60,3 +60,27 @@ function woot_update_8106()
     \Drupal::service('module_installer')->install(['taxonomy']);
     return \Drupal::entityTypeManager()->getDefinition('taxonomy_term')->id();
 }
+
+/**
+ * Implements hook_schema().
+ */
+function woot_schema(): array
+{
+    // Source table of the test_migration_sql migration.
+    // @see \Drupal\woot\Plugin\migrate\source\WootSqlSource
+    $schema['woot_migrate_source'] = [
+      'fields' => [
+        'id' => [
+          'type' => 'int',
+          'not null' => TRUE,
+        ],
+        'name' => [
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => TRUE,
+        ],
+      ],
+      'primary key' => ['id'],
+    ];
+    return $schema;
+}
