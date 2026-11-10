@@ -67,7 +67,11 @@ class MigrateExecutable extends MigrateExecutableBase
     protected array $idlist;
 
     /**
-     * List of all source IDs that are found in source during this migration.
+     * All source IDs found in source during this migration.
+     *
+     * Keyed by sourceIdKey(), so handleMissingSourceRows() can look them up.
+     *
+     * @var array<string, true>
      */
     protected array $allSourceIdValues = [];
 
@@ -292,7 +296,7 @@ class MigrateExecutable extends MigrateExecutableBase
         $destinationIds = [];
         while ($idMap->valid()) {
             $mapSourceId = $idMap->currentSource();
-            if (!in_array($mapSourceId, $this->allSourceIdValues)) {
+            if (!isset($this->allSourceIdValues[static::sourceIdKey($mapSourceId)])) {
                 $destinationIds[] = $idMap->currentDestination();
             }
             $idMap->next();
@@ -302,6 +306,20 @@ class MigrateExecutable extends MigrateExecutableBase
             $missingSourceEvent = new MigrateMissingSourceRowsEvent($migration, $destinationIds);
             $this->getEventDispatcher()->dispatch($missingSourceEvent);
         }
+    }
+
+    /**
+     * Builds the lookup key of a source ID, for $allSourceIdValues.
+     *
+     * A keyed lookup instead of in_array() keeps handleMissingSourceRows()
+     * linear: with in_array() it is quadratic in the number of rows and takes
+     * many minutes after an import of 100K+ rows.
+     *
+     * @see https://github.com/drush-ops/drush/issues/5765
+     */
+    protected static function sourceIdKey(array $sourceIdValues): string
+    {
+        return implode("\x1F", array_values($sourceIdValues));
     }
 
     /**
@@ -525,7 +543,7 @@ class MigrateExecutable extends MigrateExecutableBase
 
         // Collect all Source ID values so that we can handle missing source
         // rows post import.
-        $this->allSourceIdValues[] = $sourceId;
+        $this->allSourceIdValues[static::sourceIdKey($sourceId)] = true;
 
         if ($this->feedback && $this->counter && $this->counter % $this->feedback === 0) {
             $this->importFeedbackMessage(false);
