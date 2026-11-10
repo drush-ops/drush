@@ -108,16 +108,21 @@ EOT;
             $parameters['socket'] = $dbSpec['pdo']['unix_socket'];
         }
 
-        // Use updated constants
+        // PHP 8.5 moved the MySQL driver constants from PDO::MYSQL_ATTR_* to
+        // Pdo\Mysql::ATTR_*. Pdo\Mysql is referenced fully qualified because the
+        // `use PDO` import above would otherwise make `Pdo\Mysql` resolve to
+        // `PDO\Mysql`, which phpstan flags as a class name case mismatch.
         $attribs = [
-            'ssl_ca' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA),
-            'ssl_capath' => (defined('Pdo\Mysql::ATTR_SSL_CAPATH') ? Pdo\Mysql::ATTR_SSL_CAPATH : PDO::MYSQL_ATTR_SSL_CAPATH),
-            'ssl_cert' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CERT : PDO::MYSQL_ATTR_SSL_CERT),
-            'ssl_cipher' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_CIPHER : PDO::MYSQL_ATTR_SSL_CIPHER),
-            'ssl_key' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? Pdo\Mysql::ATTR_SSL_KEY : PDO::MYSQL_ATTR_SSL_KEY),
+            'ssl_ca' => (defined('Pdo\Mysql::ATTR_SSL_CA') ? \Pdo\Mysql::ATTR_SSL_CA : PDO::MYSQL_ATTR_SSL_CA),
+            'ssl_capath' => (defined('Pdo\Mysql::ATTR_SSL_CAPATH') ? \Pdo\Mysql::ATTR_SSL_CAPATH : PDO::MYSQL_ATTR_SSL_CAPATH),
+            'ssl_cert' => (defined('Pdo\Mysql::ATTR_SSL_CERT') ? \Pdo\Mysql::ATTR_SSL_CERT : PDO::MYSQL_ATTR_SSL_CERT),
+            'ssl_cipher' => (defined('Pdo\Mysql::ATTR_SSL_CIPHER') ? \Pdo\Mysql::ATTR_SSL_CIPHER : PDO::MYSQL_ATTR_SSL_CIPHER),
+            'ssl_key' => (defined('Pdo\Mysql::ATTR_SSL_KEY') ? \Pdo\Mysql::ATTR_SSL_KEY : PDO::MYSQL_ATTR_SSL_KEY),
         ];
         if (defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')) {
-            $attribs['ssl_verify_server_cert'] = Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT;
+            // Looked up by name because phpstan's PHP 8.5 stubs do not yet
+            // declare this constant, although it exists at runtime.
+            $attribs['ssl_verify_server_cert'] = constant('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT');
         } elseif (defined('PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT')) {
             $attribs['ssl_verify_server_cert'] = PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT;
         }
