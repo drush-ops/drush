@@ -17,7 +17,9 @@ use Drupal\migrate\MigrateExecutable as MigrateExecutableBase;
 use Drupal\migrate\MigrateMessageInterface;
 use Drupal\migrate\MigrateSkipRowException;
 use Drupal\migrate\Plugin\MigrateIdMapInterface;
+use Drupal\migrate\Plugin\Migration;
 use Drupal\migrate\Plugin\migrate\source\SourcePluginBase;
+use Drupal\migrate\Plugin\migrate\source\SqlBase;
 use Drupal\migrate\Plugin\MigrationInterface;
 use Drush\Drupal\Migrate\MigrateEvents as MigrateRunnerEvents;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -100,7 +102,7 @@ class MigrateExecutable extends MigrateExecutableBase
     /**
      * Whether to delete rows missing from source after an import.
      */
-    protected bool $deleteMissingSourceRows;
+    protected bool $deleteMissingSourceRows = false;
 
     /**
      * Static cached ID map.
@@ -175,6 +177,9 @@ class MigrateExecutable extends MigrateExecutableBase
             $eventDispatcher->addListener($event, $listener);
         }
 
+        if ($this->deleteMissingSourceRows) {
+            $this->disableMapJoin($migration);
+        }
         if (!$this->interceptPrepareRow($migration) && $this->deleteMissingSourceRows) {
             throw new \RuntimeException(sprintf(
                 "Cannot use --delete: the source plugin of the '%s' migration does not extend %s, so Drush cannot track which source rows still exist.",
@@ -182,6 +187,31 @@ class MigrateExecutable extends MigrateExecutableBase
                 SourcePluginBase::class,
             ));
         }
+    }
+
+    /**
+     * Stops an SqlBase source from hiding imported rows behind the map join.
+     *
+     * When SqlBase::mapJoinable() is true, SqlBase::initializeIterator() LEFT
+     * JOINs the ID map and yields only rows that are not imported yet or are
+     * flagged NEEDS_UPDATE. Rows that are already imported never reach
+     * prepareRow(), so onPrepareRow() does not record them and
+     * handleMissingSourceRows() would roll back every imported row that still
+     * exists in the source. Setting ignore_map makes the source yield every
+     * row; SourcePluginBase::next() then applies the same "not imported or
+     * needs update" filter per row, so the set of imported rows is unchanged.
+     * The join is only an optimization and only matters when the source and
+     * the map share a database connection.
+     */
+    private function disableMapJoin(MigrationInterface $migration): void
+    {
+        $configuration = $migration->getSourceConfiguration();
+        if (!empty($configuration['ignore_map']) || !$migration instanceof Migration || !$migration->getSourcePlugin() instanceof SqlBase) {
+            return;
+        }
+        // Drops the cached source plugin; the next getSourcePlugin() call
+        // builds one from the new configuration.
+        $migration->set('source', ['ignore_map' => true] + $configuration);
     }
 
     /**
@@ -283,6 +313,13 @@ class MigrateExecutable extends MigrateExecutableBase
         // missing and rolled back. Fail loudly instead.
         // @see https://github.com/drush-ops/drush/issues/6595
         if ($this->allSourceIdValues === [] && (clone $migration->getSourcePlugin())->count() > 0) {
+            // SqlBase sources that can join the map table only return the rows
+            // that still need importing, so an up-to-date migration observes no
+            // rows at all. Without --delete nothing would be rolled back, so
+            // skip the detection instead of failing.
+            if (!$this->deleteMissingSourceRows) {
+                return;
+            }
             throw new \RuntimeException(sprintf(
                 "No source rows were observed during the '%s' import, but the source is not empty. Refusing to detect missing source rows; nothing was rolled back.",
                 $migration->id(),

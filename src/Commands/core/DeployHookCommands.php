@@ -258,7 +258,7 @@ final class DeployHookCommands extends DrushCommands
             // Record this function in the list of updates that were aborted.
             $context['results']['#abort'][] = $function;
             Drush::logger()->error("Deploy hook failed: $function");
-        } elseif ($context['finished'] == 1 && empty($ret['#abort'])) {
+        } elseif ($context['finished'] == 1) {
             $context['message'] = "Performed: $function";
         }
     }
