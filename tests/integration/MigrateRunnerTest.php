@@ -36,10 +36,11 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         ]);
         $output = $this->getOutputFromJSON();
         $actualIds = array_column($output, 'id');
-        $this->assertCount(3, $actualIds);
+        $this->assertCount(4, $actualIds);
         $this->assertContains('test_migration', $actualIds);
         $this->assertContains('test_migration_tagged', $actualIds);
         $this->assertContains('test_migration_untagged', $actualIds);
+        $this->assertContains('test_migration_sql', $actualIds);
 
         // Debug message registered for 'test_migration_source_issues'.
         // @see \Drush\Commands\core\MigrateRunnerCommands::getMigrationList()
@@ -241,6 +242,47 @@ class MigrateRunnerTest extends UnishIntegrationTestCase
         $this->assertStringContainsString('[notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
         $this->drush('sql:query', ['SELECT title FROM node_field_data']);
         $this->assertSame(['Item 1', 'Item 3', 'Item 5'], $this->getOutputAsList());
+    }
+
+    /**
+     * Rows hidden by the SqlBase map join must not count as missing.
+     *
+     * When the source and the ID map share a connection, SqlBase joins the
+     * map table and yields only rows that are not imported yet. Without the
+     * ignore_map override, --delete would roll back every imported row that
+     * still exists in the source.
+     *
+     * @covers \Drush\Drupal\Migrate\MigrateExecutable::handleMissingSourceRows
+     * @see \Drupal\woot\Plugin\migrate\source\WootSqlSource
+     */
+    public function testMissingSourceRowsWithSqlSource(): void
+    {
+        // Reset status just in case.
+        $this->drush('migrate:reset-status', ['test_migration_sql']);
+
+        $this->drush('sql:query', ["INSERT INTO woot_migrate_source (id, name) VALUES (1, 'Row 1'), (2, 'Row 2'), (3, 'Row 3'), (4, 'Row 4'), (5, 'Row 5')"]);
+        $this->drush('migrate:import', ['test_migration_sql'], ['delete' => null]);
+        $this->assertStringContainsString('[notice] Processed 5 items (5 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertStringNotContainsString('missing from source', $this->getErrorOutput());
+
+        // One row added, two removed: only the removed rows are rolled back.
+        // The new row gets past the zero-observed-rows guard, so without the
+        // ignore_map override the three imported rows would go too.
+        $this->drush('sql:query', ["INSERT INTO woot_migrate_source (id, name) VALUES (6, 'Row 6')"]);
+        $this->drush('sql:query', ['DELETE FROM woot_migrate_source WHERE id IN (2, 4)']);
+        $this->drush('migrate:import', ['test_migration_sql'], ['delete' => null]);
+        $this->assertStringContainsString('[notice] Processed 1 item (1 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertStringContainsString('[notice] 2 items are missing from source and will be rolled back', $this->getErrorOutput());
+        $this->assertStringContainsString("[notice] Rolled back 2 items - done with 'test_migration_sql'", $this->getErrorOutput());
+        $this->drush('sql:query', ['SELECT title FROM node_field_data ORDER BY nid']);
+        $this->assertSame(['Row 1', 'Row 3', 'Row 5', 'Row 6'], $this->getOutputAsList());
+
+        // Nothing changed in the source: nothing may be rolled back.
+        $this->drush('migrate:import', ['test_migration_sql'], ['delete' => null]);
+        $this->assertStringContainsString('[notice] Processed 0 items (0 created, 0 updated, 0 failed, 0 ignored)', $this->getErrorOutput());
+        $this->assertStringNotContainsString('missing from source', $this->getErrorOutput());
+        $this->drush('sql:query', ['SELECT title FROM node_field_data ORDER BY nid']);
+        $this->assertSame(['Row 1', 'Row 3', 'Row 5', 'Row 6'], $this->getOutputAsList());
     }
 
     /**
