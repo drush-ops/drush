@@ -161,6 +161,11 @@ class UserTest extends CommandUnishTestCase
         $output = $this->getOutput();
         $url = parse_url($output);
         $this->assertStringContainsString('/user/reset/' . $uid, $url['path'], 'Login with mail option returned a valid reset URL');
+        // A blocked account should produce a clear error, not a TypeError.
+        $this->drush(UserCommands::BLOCK, [self::NAME]);
+        $this->drush(UserLoginCommand::NAME, [], $user_login_options + ['name' => self::NAME], null, null, self::EXIT_ERROR);
+        $this->assertStringContainsString('Account ' . self::NAME . ' is blocked and thus cannot login', $this->getErrorOutput());
+        $this->drush(UserCommands::UNBLOCK, [self::NAME]);
     }
 
     public function testUserCancel(): void
