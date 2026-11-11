@@ -4,110 +4,81 @@ declare(strict_types=1);
 
 namespace Drush\Commands\user;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\user\Entity\User;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
-use Drush\Style\DrushStyle;
-use InvalidArgumentException;
+use Drush\Commands\OutputFormat;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Create a user account.',
-    aliases: ['ucrt', 'user-create']
+    aliases: ['ucrt', 'user-create'],
+    usages: [
+        "user:create newuser --mail='person@example.com' --password='letmein'",
+        'user:create anotheruser --fields=uuid,langcode',
+    ],
 )]
-#[CLI\FieldLabels(labels: self::INF_LABELS)]
-#[CLI\DefaultTableFields(fields: self::INF_DEFAULT_FIELDS)]
-#[CLI\FilterDefaultField(field: 'name')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
-final class UserCreateCommand extends Command
+class UserCreateCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
     use UserTrait;
 
     public const string NAME = 'user:create';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
-        protected readonly LoggerInterface $logger,
-        protected DateFormatterInterface $dateFormatter
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected DateFormatterInterface $dateFormatter,
+        protected LoggerInterface $logger,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the account to add')
-            ->addOption('password', null, InputOption::VALUE_REQUIRED, 'The password for the new account')
-            ->addOption('mail', null, InputOption::VALUE_REQUIRED, 'The email address for the new account')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml', 'table')
-            ->addUsage("user:create newuser --mail='person@example.com' --password='letmein'")
-            ->addUsage("user:create anotheruser --fields=uuid,langcode");
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
-    }
-
-    public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
-    {
-        $io = new DrushStyle($input, $output);
-        $name = $input->getArgument('name');
-        $password = $input->getOption('password');
-        $mail = $input->getOption('mail');
-
-        // Validation
-        if ($mail) {
-            if (user_load_by_mail($mail)) {
-                throw new \Exception(sprintf('There is already a user account with the email %s', $mail));
-            }
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The name of the account to add')]
+        string $name,
+        #[Option('The password for the new account')]
+        ?string $password = null,
+        #[Option('The email address for the new account')]
+        ?string $mail = null,
+        #[Option('A comma delimited list of fields to show. Use * for all. Defaults to uid,name,mail,roles,user_status for the table and to all fields for json and yaml.')]
+        ?string $fields = null,
+        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
+        $storage = $this->entityTypeManager->getStorage('user');
+        if ($mail && $storage->loadByProperties(['mail' => $mail])) {
+            throw new \InvalidArgumentException((string) $this->t('There is already a user account with the email @mail', ['@mail' => $mail]));
         }
-        if (user_load_by_name($name)) {
-            throw new \Exception(sprintf('There is already a user account with the name %s', $name));
+        if ($storage->loadByProperties(['name' => $name])) {
+            throw new \InvalidArgumentException((string) $this->t('There is already a user account with the name @name', ['@name' => $name]));
         }
 
-        $new_user = [
+        $account = $storage->create([
             'name' => $name,
             'pass' => $password,
             'mail' => $mail,
             'access' => '0',
             'status' => 1,
-        ];
+        ]);
+        $account->save();
 
-        if ($account = User::create($new_user)) {
-            $account->save();
-            $io->success(sprintf('Created a new user with uid %s', $account->id()));
-            $outputs[$account->id()] = $this->infoArray($account);
+        // The confirmation goes to stderr so that json and yaml stay parseable.
+        $io->getErrorStyle()->success((string) $this->t('Created a new user with uid @uid', ['@uid' => $account->id()]));
+        $this->writeAccounts($output, [$account->id() => $account], $this->dateFormatter, $format, $fields);
 
-            $result = new RowsOfFields($outputs);
-            $result->addRendererFunction($this->renderRolesCell(...));
-            return $result;
-        } else {
-            throw new InvalidArgumentException(sprintf('Could not create a new user account with the name %s.', $name));
-        }
-    }
-
-    public function renderRolesCell($key, $cellData, FormatterOptions $options)
-    {
-        if (is_array($cellData)) {
-            return implode("\n", $cellData);
-        }
-        return $cellData;
+        return Command::SUCCESS;
     }
 }

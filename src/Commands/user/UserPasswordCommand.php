@@ -5,55 +5,54 @@ declare(strict_types=1);
 namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Set the password for the user account with the specified name.',
-    aliases: ['upwd', 'user-password']
+    aliases: ['upwd', 'user-password'],
+    usages: ["user:password someuser 'correct horse battery staple'"],
 )]
-final class UserPasswordCommand extends Command
+class UserPasswordCommand
 {
     use AutowireTrait;
+    use StringTranslationTrait;
 
     public const string NAME = 'user:password';
 
     public function __construct(
-        protected readonly EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('name', InputArgument::REQUIRED, 'The name of the account to modify.')
-            ->addArgument('password', InputArgument::REQUIRED, 'The new password for the account.')
-            ->addUsage("user:password someuser 'correct horse battery staple'");
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $name = $input->getArgument('name');
-        $password = $input->getArgument('password');
-
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The name of the account to modify.')]
+        string $name,
+        #[Argument('The new password for the account.')]
+        string $password,
+    ): int {
+        $io = new SymfonyStyle($input, $output);
         $accounts = $this->entityTypeManager->getStorage('user')->loadByProperties(['name' => $name]);
         $account = reset($accounts);
-        if ($account) {
-            $account->setpassword($password);
-            $account->save();
-            $io->success(sprintf('Changed password for %s.', $name));
-        } else {
-            throw new \Exception(sprintf('Unable to load user: %s', $name));
+        if (!$account) {
+            throw new \InvalidArgumentException((string) $this->t('Unable to load user: @name', ['@name' => $name]));
         }
+        $account->setPassword($password);
+        $account->save();
+        $io->success((string) $this->t('Changed password for @name.', ['@name' => $name]));
 
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }
