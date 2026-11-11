@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\state;
+namespace Drush\Command\role;
 
-use Drupal\Core\State\StateInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -13,34 +13,36 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Delete a state entry.',
-    aliases: ['sdel', 'state-delete'],
-    usages: ['state:delete system.cron_last'],
+    description: 'Delete a role.',
+    aliases: ['rdel', 'role-delete'],
+    usages: ["role:delete 'test_role'"],
 )]
-final class StateDeleteCommand
+class RoleDeleteCommand
 {
     use AutowireTrait;
-    use StateTrait;
+    use RoleTrait;
 
-    public const string NAME = 'state:delete';
+    const string NAME = 'role:delete';
 
     public function __construct(
-        protected StateInterface $state,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
     }
 
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-        #[Argument('The state key, for example system.cron_last.')]
-        string $key,
+        #[Argument('The machine name for the role.', suggestedValues: [self::class, 'suggestRoleNames'])]
+        string $machineName,
     ): int {
-        $this->state->delete($key);
-
         $io = new SymfonyStyle($input, $output);
-        $io->success((string) $this->t('Deleted state entry @key', ['@key' => $key]));
+        $this->loadRole($machineName)->delete();
+        $io->success((string) $this->t('Deleted @name role', ['@name' => $machineName]));
 
         return Command::SUCCESS;
     }

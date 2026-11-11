@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\user;
+namespace Drush\Command\user;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Datetime\DateFormatterInterface;
@@ -19,6 +19,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * @internal
@@ -72,6 +73,7 @@ class UserInformationCommand
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected DateFormatterInterface $dateFormatter,
+        #[Autowire('@logger.channel.user')]
         protected LoggerInterface $logger,
     ) {
     }

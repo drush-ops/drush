@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\state;
+namespace Drush\Command\state;
 
 use Drupal\Core\Render\Markup;
 use Drupal\Core\State\StateInterface;

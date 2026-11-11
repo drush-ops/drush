@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\user;
+namespace Drush\Command\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
@@ -14,25 +14,27 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * @internal
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Block the specified user(s).',
-    aliases: ['ublk', 'user-block'],
-    usages: ['user:block user3'],
+    description: 'Unblock the specified user(s).',
+    aliases: ['uublk', 'user-unblock'],
+    usages: ['user:unblock user3'],
 )]
-class UserBlockCommand
+class UserUnblockCommand
 {
     use AutowireTrait;
     use UserTrait;
 
-    public const string NAME = 'user:block';
+    public const string NAME = 'user:unblock';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
+        #[Autowire('@logger.channel.user')]
         protected LoggerInterface $logger,
     ) {
     }
@@ -49,9 +51,9 @@ class UserBlockCommand
     ): int {
         $io = new SymfonyStyle($input, $output);
         foreach ($this->getAccounts($names, $uid, $mail) as $account) {
-            $account->block();
+            $account->activate();
             $account->save();
-            $io->success((string) $this->t('Blocked user(s): @name', ['@name' => $account->getAccountName()]));
+            $io->success((string) $this->t('Unblocked user(s): @name', ['@name' => $account->getAccountName()]));
         }
 
         return Command::SUCCESS;

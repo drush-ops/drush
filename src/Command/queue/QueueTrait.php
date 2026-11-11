@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\queue;
+namespace Drush\Command\queue;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Symfony\Component\Console\Completion\CompletionInput;

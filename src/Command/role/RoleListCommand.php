@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\queue;
+namespace Drush\Command\role;
 
 use Drupal\Component\Serialization\Yaml;
-use Drupal\Core\Queue\QueueFactory;
-use Drupal\Core\Queue\QueueWorkerManagerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\RoleInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Commands\OutputFormat;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -21,35 +21,43 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Returns a list of all defined queues.',
-    aliases: ['queue-list'],
-    usages: ['queue:list --format=json'],
+    description: 'Display roles and their permissions.',
+    aliases: ['rls', 'role-list'],
+    usages: [
+        "role:list --filter='administer nodes'",
+        'role:list --format=json',
+    ],
 )]
-class QueueListCommand
+class RoleListCommand
 {
     use AutowireTrait;
-    use QueueTrait;
+    use RoleTrait;
 
-    const string NAME = 'queue:list';
+    const string NAME = 'role:list';
 
     public function __construct(
-        protected QueueWorkerManagerInterface $workerManager,
-        protected QueueFactory $queueService,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
     }
 
     public function __invoke(
         OutputInterface $output,
+        #[Option('Show only roles that hold this permission.')]
+        ?string $filter = null,
         #[Option('An alternative output format such as json or yaml. Defaults to table.')]
         ?OutputFormat $format = null,
     ): int {
         $rows = [];
-        foreach (array_keys($this->getQueues()) as $name) {
-            $queue = $this->queueService->get($name);
-            $rows[$name] = [
-                'queue' => $name,
-                'items' => $queue->numberOfItems(),
-                'class' => $queue::class,
+        /** @var RoleInterface[] $roles */
+        $roles = $this->entityTypeManager->getStorage('user_role')->loadMultiple();
+        foreach ($roles as $role) {
+            if ($filter !== null && !$role->hasPermission($filter)) {
+                continue;
+            }
+            $rows[$role->id()] = [
+                'rid' => $role->id(),
+                'label' => $role->label(),
+                'perms' => $role->getPermissions(),
             ];
         }
 
@@ -65,10 +73,14 @@ class QueueListCommand
 
     protected function renderTable(array $rows): string
     {
+        foreach ($rows as &$row) {
+            // One permission per line keeps the table narrow.
+            $row['perms'] = implode("\n", $row['perms']);
+        }
         $buffer = new BufferedOutput();
         $table = new Table($buffer);
         $table
-            ->setHeaders([(string) $this->t('Queue'), (string) $this->t('Items'), (string) $this->t('Class')])
+            ->setHeaders(['ID', 'Role Label', 'Permissions'])
             ->setRows($rows)
             ->render();
         return $buffer->fetch();

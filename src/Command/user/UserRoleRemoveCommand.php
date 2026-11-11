@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\user;
+namespace Drush\Command\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drush\Command\role\RoleTrait;
 use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -14,25 +15,28 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
  * @internal
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Unblock the specified user(s).',
-    aliases: ['uublk', 'user-unblock'],
-    usages: ['user:unblock user3'],
+    description: 'Remove a role from the specified user accounts.',
+    aliases: ['urrol', 'user-remove-role'],
+    usages: ["user:role:remove 'power_user' user3"],
 )]
-class UserUnblockCommand
+class UserRoleRemoveCommand
 {
     use AutowireTrait;
+    use RoleTrait;
     use UserTrait;
 
-    public const string NAME = 'user:unblock';
+    public const string NAME = 'user:role:remove';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
+        #[Autowire('@logger.channel.user')]
         protected LoggerInterface $logger,
     ) {
     }
@@ -40,6 +44,8 @@ class UserUnblockCommand
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
+        #[Argument('The machine name of the role to remove.', suggestedValues: [self::class, 'suggestRoleNames'])]
+        string $role,
         #[Argument('A comma delimited list of user names.')]
         string $names = '',
         #[Option('A comma delimited list of user ids to lookup (an alternative to names).')]
@@ -48,10 +54,11 @@ class UserUnblockCommand
         ?string $mail = null,
     ): int {
         $io = new SymfonyStyle($input, $output);
+        $this->loadRole($role);
         foreach ($this->getAccounts($names, $uid, $mail) as $account) {
-            $account->activate();
+            $account->removeRole($role);
             $account->save();
-            $io->success((string) $this->t('Unblocked user(s): @name', ['@name' => $account->getAccountName()]));
+            $io->success((string) $this->t('Removed @role role from @name', ['@role' => $role, '@name' => $account->getAccountName()]));
         }
 
         return Command::SUCCESS;

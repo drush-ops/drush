@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\role;
+namespace Drush\Command\role;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\user\PermissionHandlerInterface;
@@ -20,16 +20,19 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Remove specified permission(s) from a role.',
-    aliases: ['rmp', 'role-remove-perm'],
-    usages: ["role:perm:remove anonymous 'post comments,access content'"],
+    description: 'Grant specified permission(s) to a role.',
+    aliases: ['rap', 'role-add-perm'],
+    usages: [
+        "role:perm:add anonymous 'post comments'",
+        "role:perm:add anonymous 'post comments,access content'",
+    ],
 )]
-class RolePermRemoveCommand
+class RolePermAddCommand
 {
     use AutowireTrait;
     use RoleTrait;
 
-    const string NAME = 'role:perm:remove';
+    const string NAME = 'role:perm:add';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -42,7 +45,7 @@ class RolePermRemoveCommand
         OutputInterface $output,
         #[Argument('The role to modify.', suggestedValues: [self::class, 'suggestRoleNames'])]
         string $machineName,
-        #[Argument('The list of permission to revoke, delimited by commas.')]
+        #[Argument('The list of permission to grant, delimited by commas.')]
         string $permissions,
     ): int {
         $io = new SymfonyStyle($input, $output);
@@ -50,9 +53,9 @@ class RolePermRemoveCommand
         $perms = StringUtils::csvToArray($permissions);
         $this->validatePermissions($this->permissionHandler, $perms);
 
-        $role->revokePermissions($perms)->save();
+        $role->grantPermissions($perms)->save();
 
-        $io->success((string) $this->t('Removed "@perms" permission from "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
+        $io->success((string) $this->t('Added "@perms" permission to "@name" role', ['@perms' => $permissions, '@name' => $machineName]));
 
         return Command::SUCCESS;
     }

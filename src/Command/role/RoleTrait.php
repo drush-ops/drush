@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\role;
+namespace Drush\Command\role;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\user\PermissionHandlerInterface;
