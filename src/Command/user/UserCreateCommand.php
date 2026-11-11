@@ -35,7 +35,7 @@ class UserCreateCommand
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         #[Autowire('@logger.channel.user')]
-        protected LoggerInterface $logger,
+        protected ?LoggerInterface $logger = null,
     ) {
     }
 

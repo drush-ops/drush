@@ -37,14 +37,14 @@ trait UserTrait
             if ($account = reset($matches)) {
                 $accounts[$account->id()] = $account;
             } else {
-                $this->logger->warning((string) $this->t('Unable to load user: @mail', ['@mail' => $value]));
+                $this->logger?->warning((string) $this->t('Unable to load user: @mail', ['@mail' => $value]));
             }
         }
         foreach (StringUtils::csvToArray($uid) as $value) {
             if ($account = $storage->load($value)) {
                 $accounts[$account->id()] = $account;
             } else {
-                $this->logger->warning((string) $this->t('Unable to load user: @uid', ['@uid' => $value]));
+                $this->logger?->warning((string) $this->t('Unable to load user: @uid', ['@uid' => $value]));
             }
         }
         foreach (StringUtils::csvToArray($names) as $value) {
@@ -52,7 +52,7 @@ trait UserTrait
             if ($account = reset($matches)) {
                 $accounts[$account->id()] = $account;
             } else {
-                $this->logger->warning((string) $this->t('Unable to load user: @user', ['@user' => $value]));
+                $this->logger?->warning((string) $this->t('Unable to load user: @user', ['@user' => $value]));
             }
         }
         if ($accounts === []) {

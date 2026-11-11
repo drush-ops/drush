@@ -36,7 +36,7 @@ class RolePermAddCommand
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected PermissionHandlerInterface $permissionHandler,
+        protected ?PermissionHandlerInterface $permissionHandler = null,
     ) {
     }
 
@@ -49,6 +49,9 @@ class RolePermAddCommand
         string $permissions,
     ): int {
         $io = new SymfonyStyle($input, $output);
+        if (is_null($this->permissionHandler)) {
+            throw new \InvalidArgumentException((string) $this->t('The user module is not installed'));
+        }
         $role = $this->loadRole($machineName);
         $perms = StringUtils::csvToArray($permissions);
         $this->validatePermissions($this->permissionHandler, $perms);

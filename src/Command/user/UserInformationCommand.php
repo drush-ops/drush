@@ -74,7 +74,7 @@ class UserInformationCommand
         protected EntityTypeManagerInterface $entityTypeManager,
         protected DateFormatterInterface $dateFormatter,
         #[Autowire('@logger.channel.user')]
-        protected LoggerInterface $logger,
+        protected ?LoggerInterface $logger = null,
     ) {
     }
 
