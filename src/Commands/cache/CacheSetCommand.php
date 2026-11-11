@@ -27,7 +27,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     usages: [
         'cache:set my_cid "some value"',
         'cache:set my_cid \'{"key": "value"}\' default CACHE_PERMANENT node:1,user:2 --input-format=json',
-        'cache:set my_cid - --input-format=json --cache-get < item.json',
+        'cache:set my_cid - --input-format=json < value.json',
     ],
 )]
 class CacheSetCommand
@@ -62,8 +62,6 @@ class CacheSetCommand
         ?string $tags = null,
         #[Option('The format of value: string or json. Use json for complex values.', suggestedValues: self::INPUT_FORMATS)]
         string $inputFormat = 'string',
-        #[Option("If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.")]
-        bool $cacheGet = false,
     ): int {
         if (!in_array($inputFormat, self::INPUT_FORMATS, true)) {
             throw new \InvalidArgumentException((string) $this->t('Unknown input format: @format. Allowed values: @allowed', [
@@ -79,7 +77,14 @@ class CacheSetCommand
             $data = stream_get_contents($stream ?? STDIN);
         }
 
-        $value = $this->prepareData($data, $inputFormat, $cacheGet);
+        $value = $data;
+        if ($inputFormat === 'json') {
+            try {
+                $value = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new \InvalidArgumentException((string) $this->t('Unable to parse JSON: @message', ['@message' => $e->getMessage()]), 0, $e);
+            }
+        }
 
         $expire = ($expire === null || $expire === 'CACHE_PERMANENT') ? Cache::PERMANENT : (int) $expire;
         $tags = is_string($tags) ? StringUtils::csvToArray($tags) : [];
@@ -90,33 +95,5 @@ class CacheSetCommand
         $io->success((string) $this->t('Cached @cid in the @bin bin.', ['@cid' => $cid, '@bin' => $bin]));
 
         return Command::SUCCESS;
-    }
-
-    /**
-     * Decodes the data argument and unwraps a cache:get result when asked.
-     */
-    protected function prepareData(string $data, string $inputFormat, bool $cacheGet): mixed
-    {
-        $value = $data;
-        if ($inputFormat === 'json') {
-            try {
-                $value = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $e) {
-                throw new \InvalidArgumentException((string) $this->t('Unable to parse JSON: @message', ['@message' => $e->getMessage()]), 0, $e);
-            }
-        }
-
-        if ($cacheGet) {
-            // The output of `cache:get` decodes to an array with a data key.
-            if (is_object($value) && isset($value->data)) {
-                return $value->data;
-            }
-            if (is_array($value) && array_key_exists('data', $value)) {
-                return $value['data'];
-            }
-            throw new \InvalidArgumentException((string) $this->t("'cache-get' was specified as an option, but the data is neither an object nor an array."));
-        }
-
-        return $value;
     }
 }

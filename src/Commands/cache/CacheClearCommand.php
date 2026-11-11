@@ -58,7 +58,6 @@ class CacheClearCommand
         #[Autowire(service: 'asset.css.collection_optimizer')]
         protected AssetCollectionOptimizerInterface $cssOptimizer,
         protected CachedDiscoveryClearerInterface $pluginCacheClearer,
-        #[Autowire(service: 'kernel')]
         protected DrupalKernelInterface $kernel,
         protected AssetQueryStringInterface $assetQueryString,
         protected EventDispatcherInterface $eventDispatcher,

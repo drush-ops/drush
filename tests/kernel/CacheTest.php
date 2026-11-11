@@ -59,26 +59,24 @@ class CacheTest extends KernelTestBase
         $this->assertSame($json, $yaml);
     }
 
-    public function testJsonFromStdinWithCacheGet(): void
+    public function testJsonFromStdin(): void
     {
         $expected = ['key' => 'value'];
         $tester = new CommandTester(new CacheSetCommand($this->container->get('cache_factory')));
-        $tester->setInputs([json_encode(['data' => $expected])]);
+        $tester->setInputs([json_encode($expected)]);
         $status = $tester->execute([
             'cid' => 'from-stdin',
             'data' => '-',
             'bin' => 'default',
             'expire' => 'CACHE_PERMANENT',
             '--input-format' => 'json',
-            '--cache-get' => true,
         ]);
         $this->assertSame(Command::SUCCESS, $status);
         $this->assertSame($expected, $this->bin->get('from-stdin')->data);
 
-        // A cache:get result round-trips through cache:set.
-        $output = $this->get(['cid' => 'from-stdin'])->getDisplay();
-        $this->set(['cid' => 'copy', 'data' => $output, '--input-format' => 'json', '--cache-get' => true]);
-        $this->assertSame($expected, $this->bin->get('copy')->data);
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unable to parse JSON');
+        $this->setTester()->execute(['cid' => 'bad', 'data' => '{not json', '--input-format' => 'json']);
     }
 
     public function testTagsInvalidate(): void
