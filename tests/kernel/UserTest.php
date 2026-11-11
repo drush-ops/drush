@@ -9,10 +9,13 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\UserInterface;
+use Drush\Boot\BootstrapManager;
+use Drush\Config\DrushConfig;
 use Drush\Commands\user\UserBlockCommand;
 use Drush\Commands\user\UserCancelCommand;
 use Drush\Commands\user\UserCreateCommand;
 use Drush\Commands\user\UserInformationCommand;
+use Drush\Commands\user\UserLoginCommand;
 use Drush\Commands\user\UserPasswordCommand;
 use Drush\Commands\user\UserRoleAddCommand;
 use Drush\Commands\user\UserRoleRemoveCommand;
@@ -21,13 +24,13 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Tests the user commands: each command is built from container services
- * and driven with a CommandTester. user:login is not covered here because
- * it delegates to dr in a subprocess; see tests/functional/UserTest.php.
+ * and driven with a CommandTester.
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
@@ -35,6 +38,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(UserCancelCommand::class)]
 #[CoversClass(UserCreateCommand::class)]
 #[CoversClass(UserInformationCommand::class)]
+#[CoversClass(UserLoginCommand::class)]
 #[CoversClass(UserPasswordCommand::class)]
 #[CoversClass(UserRoleAddCommand::class)]
 #[CoversClass(UserRoleRemoveCommand::class)]
@@ -55,7 +59,6 @@ class UserTest extends KernelTestBase
     {
         parent::setUp();
         $this->installEntitySchema('user');
-        $this->installSchema('system', ['sequences']);
         $this->installSchema('user', ['users_data']);
         $this->installConfig(['system', 'user']);
         $this->entityTypeManager = $this->container->get('entity_type.manager');
@@ -68,44 +71,25 @@ class UserTest extends KernelTestBase
 
     public function testCreate(): void
     {
-        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->dateFormatter, $this->logger));
-        $status = $tester->execute(
-            ['name' => self::NAME, '--mail' => self::MAIL, '--password' => self::PASSWORD],
-            ['capture_stderr_separately' => true],
-        );
-        $this->assertSame(Command::SUCCESS, $status);
-        $this->assertStringContainsString('Created a new user with uid 2', $tester->getErrorOutput());
-        $display = $tester->getDisplay();
-        $this->assertMatchesRegularExpression('/User ID\s+\|\s+User name\s+\|\s+User mail\s+\|\s+User roles\s+\|\s+User status/', $display);
-        $this->assertMatchesRegularExpression('/2\s+\|\s+example\s+\|\s+example@example.com\s+\|\s+authenticated\s+\|\s+1/', $display);
-
-        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->dateFormatter, $this->logger));
-        $status = $tester->execute(
-            ['name' => 'another', '--mail' => 'another@example.com', '--format' => 'json'],
-            ['capture_stderr_separately' => true],
-        );
-        $this->assertSame(Command::SUCCESS, $status);
-        $json = json_decode($tester->getDisplay(), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertSame([3], array_keys($json));
-        $info = $json[3];
-        $this->assertSame('another', $info['name']);
-        $this->assertSame('another@example.com', $info['mail']);
+        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->logger));
+        $this->assertSame(Command::SUCCESS, $tester->execute(['name' => self::NAME, '--mail' => self::MAIL, '--password' => self::PASSWORD]));
+        $this->assertStringContainsString('Created a new user with uid 2', $tester->getDisplay());
+        $info = $this->informationJson(['names' => self::NAME])[2];
+        $this->assertSame(self::NAME, $info['name']);
+        $this->assertSame(self::MAIL, $info['mail']);
         $this->assertEquals(1, $info['user_status']);
-        $this->assertSame('active', $info['status']);
         $this->assertSame(['authenticated'], $info['roles']);
-        $this->assertArrayHasKey('uuid', $info);
-        $this->assertArrayHasKey('created', $info);
+        $this->assertTrue($this->container->get('password')->check(self::PASSWORD, $info['pass']));
 
         // Duplicate names and mails are rejected.
-        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->dateFormatter, $this->logger));
         try {
-            $tester->execute(['name' => 'another']);
+            $tester->execute(['name' => self::NAME]);
             $this->fail('A duplicate user name was accepted.');
         } catch (\InvalidArgumentException $e) {
-            $this->assertSame('There is already a user account with the name another', $e->getMessage());
+            $this->assertSame('There is already a user account with the name example', $e->getMessage());
         }
         try {
-            $tester->execute(['name' => 'third', '--mail' => self::MAIL]);
+            $tester->execute(['name' => 'another', '--mail' => self::MAIL]);
             $this->fail('A duplicate mail was accepted.');
         } catch (\InvalidArgumentException $e) {
             $this->assertSame('There is already a user account with the email ' . self::MAIL, $e->getMessage());
@@ -258,9 +242,44 @@ class UserTest extends KernelTestBase
         }
     }
 
+    /**
+     * user:login forwards its input to dr. A stand-in dr script records what
+     * it received, so the test needs neither core's command nor a site.
+     */
+    public function testLogin(): void
+    {
+        // KernelTestBase's site directory is a vfs:// stream, which cannot
+        // hold an executable, so the stand-in lives in the real temp dir.
+        $vendorDir = sys_get_temp_dir() . '/' . uniqid('drush-user-test-');
+        mkdir("$vendorDir/bin", 0777, true);
+        $script = "#!/usr/bin/env php\n<?php\narray_shift(\$argv);\necho implode(' ', \$argv), \"\\n\";\nexit(3);\n";
+        file_put_contents("$vendorDir/bin/dr", $script);
+        chmod("$vendorDir/bin/dr", 0755);
+        $config = new DrushConfig();
+        $config->set('drush.vendor-dir', $vendorDir);
+        $command = new UserLoginCommand($config, new BootstrapManager(), new NullLogger());
+
+        $tester = new CommandTester($command);
+        $this->assertSame(3, $tester->execute(['path' => 'node/add', '--name' => self::NAME, '--uid' => '7']));
+        $this->assertSame("user:login node/add --name=example --uid=7\n", $tester->getDisplay());
+
+        // Options are only passed when given, and the path is optional.
+        $tester = new CommandTester($command);
+        $tester->execute(['--mail' => self::MAIL]);
+        $this->assertSame("user:login --mail=example@example.com\n", $tester->getDisplay());
+
+        // A missing dr is reported, with the core requirement.
+        unlink("$vendorDir/bin/dr");
+        rmdir("$vendorDir/bin");
+        rmdir($vendorDir);
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage("$vendorDir/bin/dr was not found. user:login runs dr user:login, which requires Drupal core 11.4 or later.");
+        (new CommandTester($command))->execute([]);
+    }
+
     protected function createExampleUser(): UserInterface
     {
-        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->dateFormatter, $this->logger));
+        $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->logger));
         $this->assertSame(Command::SUCCESS, $tester->execute(['name' => self::NAME, '--mail' => self::MAIL, '--password' => self::PASSWORD]));
         return $this->loadExampleUser();
     }

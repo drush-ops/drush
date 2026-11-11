@@ -30,7 +30,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Display a one time login link for user ID 1, or another user, by running dr user:login. Requires Drupal core 11.4+.',
+    description: 'Display a one time login link for user ID 1, or another user, by running `dr`',
     aliases: ['uli', 'user-login'],
     help: 'To avoid the http://default domain in the link, set the [DRUSH_OPTIONS_URI environment variable](https://www.drush.org/latest/using-drush-configuration/#environment-variables).',
     usages: [

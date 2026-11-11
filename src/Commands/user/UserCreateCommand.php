@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Drush\Commands\user;
 
-use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -24,10 +22,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: self::NAME,
     description: 'Create a user account.',
     aliases: ['ucrt', 'user-create'],
-    usages: [
-        "user:create newuser --mail='person@example.com' --password='letmein'",
-        'user:create anotheruser --fields=uuid,langcode',
-    ],
+    usages: ["user:create newuser --mail='person@example.com' --password='letmein'"],
 )]
 class UserCreateCommand
 {
@@ -38,7 +33,6 @@ class UserCreateCommand
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
-        protected DateFormatterInterface $dateFormatter,
         protected LoggerInterface $logger,
     ) {
     }
@@ -52,10 +46,6 @@ class UserCreateCommand
         ?string $password = null,
         #[Option('The email address for the new account')]
         ?string $mail = null,
-        #[Option('A comma delimited list of fields to show. Use * for all. Defaults to uid,name,mail,roles,user_status for the table and to all fields for json and yaml.')]
-        ?string $fields = null,
-        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
-        ?OutputFormat $format = null,
     ): int {
         $io = new SymfonyStyle($input, $output);
         $storage = $this->entityTypeManager->getStorage('user');
@@ -74,10 +64,7 @@ class UserCreateCommand
             'status' => 1,
         ]);
         $account->save();
-
-        // The confirmation goes to stderr so that json and yaml stay parseable.
-        $io->getErrorStyle()->success((string) $this->t('Created a new user with uid @uid', ['@uid' => $account->id()]));
-        $this->writeAccounts($output, [$account->id() => $account], $this->dateFormatter, $format, $fields);
+        $io->success((string) $this->t('Created a new user with uid @uid', ['@uid' => $account->id()]));
 
         return Command::SUCCESS;
     }
