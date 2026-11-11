@@ -106,12 +106,13 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
     #[CLI\Command(name: self::SET, aliases: ['cset', 'config-set'])]
     #[CLI\Argument(name: 'config_name', description: 'The config object name, for example <info>system.site</info>.')]
     #[CLI\Argument(name: 'key', description: 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')]
-    #[CLI\Argument(name: 'value', description: 'The value to assign to the config key. Use <info>-</info> to read from Stdin.')]
+    #[CLI\Argument(name: 'value', description: 'The value to assign to the config key. The words <info>true</info>, <info>false</info> and <info>null</info> are saved as those typed values, not as strings. Use <info>-</info> to read from Stdin.')]
     #[CLI\Option(name: 'input-format', description: 'Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.', suggestedValues: ['string', 'json'])]
     #[CLI\Usage(name: 'drush config:set system.site name MySite', description: 'Sets a value for the key <info>name</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set system.site page.front /path/to/page', description: 'Sets the given URL path as value for the config item with key <info>page.front</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set system.site \'[]\'', description: 'Sets the given key to an empty array.')]
     #[CLI\Usage(name: 'drush config:set system.site \'NULL\'', description: 'Sets the given key to NULL.')]
+    #[CLI\Usage(name: 'drush config:set system.performance css.preprocess false', description: 'Sets the given key to boolean FALSE.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated permissions [foo,bar]', description: 'Use a sequence as value for the key <info>permissions</info> of <info>user.role.authenticated</info> config object.')]
     #[CLI\Usage(name: "drush config:set --input-format=yaml system.site page {403: '403', front: home}", description: 'Use a mapping as value for the key <info>page</info> of <info>system.site</info> config object.')]
     #[CLI\Usage(name: 'drush config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"', description: 'Update two top level keys (label, weight) in the <info>system.site</info> config object.')]
@@ -130,19 +131,20 @@ final class ConfigCommands extends DrushCommands implements StdinAwareInterface
             $data = $this->stdin()->contents();
         }
 
-        // Special handling for null.
-        if (strtolower($data) === 'null') {
-            $data = null;
-        }
-
-        // Special handling for empty array.
-        if ($data == '[]') {
-            $data = [];
-        }
-
         if ($options['input-format'] === 'yaml') {
             $parser = new Parser();
             $data = $parser->parse($data);
+        } else {
+            // Turn the words null, true and false, and the empty array, into
+            // their typed values. Otherwise "false" would be saved as a
+            // non-empty string, which the config schema casts to TRUE.
+            $data = match (strtolower($data)) {
+                'null' => null,
+                'true' => true,
+                'false' => false,
+                '[]' => [],
+                default => $data,
+            };
         }
 
         $config = $this->getConfigFactory()->getEditable($config_name);
