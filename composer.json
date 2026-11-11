@@ -77,8 +77,9 @@
   },
   "autoload": {
     "psr-4": {
-      "Drush\\":            "src/"
-    }
+      "Drush\\": "src/"
+    },
+    "files": ["includes/autoload_file.php"]
   },
   "autoload-dev": {
     "psr-4": {
