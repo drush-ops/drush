@@ -35,6 +35,7 @@ use Consolidation\AnnotatedCommand\Output\OutputAwareInterface;
 use Drupal;
 use Drupal\Core\DefaultContent\Command\ContentExportCommand as CommandContentExportCommand;
 use Drupal\Core\Recipe\Command\RecipeCommand as CommandRecipeCommand;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;
@@ -130,6 +131,7 @@ class ServiceManager
             $this->discoverCommandsFromConfiguration(),
             $this->discoverCommands($commandfileSearchpath, '\Drush'),
             $this->discoverPsr4Commands(),
+            $this->discoverPsr4DrCommands(),
             [FilterHooks::class]
         ));
 
@@ -209,6 +211,28 @@ class ServiceManager
         return array_filter($classes, function (string $class): bool {
             $reflectionClass = new \ReflectionClass($class);
             return ($reflectionClass->isSubclassOf(DrushCommands::class) || $reflectionClass->isSubclassOf(Command::class))
+                && !$reflectionClass->isAbstract()
+                && !$reflectionClass->isInterface()
+                && !$reflectionClass->isTrait();
+        });
+    }
+
+    /**
+     * Discover PSR-4 autoloaded classes that are dr commands.
+     *
+     * @return string[]
+     *   List of command classes
+     */
+    public function discoverPsr4DrCommands(): array
+    {
+        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
+            ->setRelativeNamespace('Command')
+            ->setSearchPattern('/.*(Command)\.php$/')
+            ->getClasses();
+
+        return array_filter($classes, function (string $class): bool {
+            $reflectionClass = new \ReflectionClass($class);
+            return !empty($reflectionClass->getAttributes(AsCommand::class))
                 && !$reflectionClass->isAbstract()
                 && !$reflectionClass->isInterface()
                 && !$reflectionClass->isTrait();
