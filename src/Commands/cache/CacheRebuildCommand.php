@@ -4,73 +4,92 @@ declare(strict_types=1);
 
 namespace Drush\Commands\cache;
 
-use Composer\Autoload\ClassLoader;
-use Drupal\Core\DrupalKernel;
-use Drupal\Core\Site\Settings;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
-use Drush\Drupal\DrushLoggerServiceProvider;
-use Drush\Style\DrushStyle;
+use Drush\Config\DrushConfig;
+use Drush\Doctor\DoctorTrait;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
+/**
+ * Runs `dr cache:rebuild`, the rebuild that ships with Drupal core 11.4+.
+ *
+ * The Bootstrap attribute is the one Drush-specific piece left: without it
+ * Drush's command discovery would bootstrap Drupal fully before loading the
+ * command, and the point of shelling out to dr is to rebuild without a
+ * bootstrapped Drupal. Everything the command needs (the vendor dir and the
+ * selected uri) is known before any bootstrap. For the same reason its
+ * messages are plain strings: t() needs Drupal's container.
+ *
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Rebuild all caches',
+    description: 'Rebuild all caches by running dr cache:rebuild. Requires Drupal core 11.4+.',
     aliases: ['cr', 'rebuild', 'cache-rebuild'],
+    usages: [
+        'cache:rebuild',
+        'cache:rebuild --no-cache-clear',
+    ],
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::SITE)]
-class CacheRebuildCommand extends Command
+#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
+class CacheRebuildCommand
 {
     use AutowireTrait;
+    use DoctorTrait;
 
-    const NAME = 'cache:rebuild';
+    public const string NAME = 'cache:rebuild';
 
-    protected function __construct(
-        private readonly LoggerInterface $logger,
-        private readonly BootstrapManager $bootstrapManager,
-        private ClassLoader $autoloader,
+    public function __construct(
+        protected DrushConfig $drushConfig,
+        protected BootstrapManager $bootstrapManager,
+        protected LoggerInterface $logger,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addOption(name: 'cache-clear', mode: InputOption::VALUE_NEGATABLE, description: 'Use --no-cache-clear to suppress normal cache clearing')
-            ->setHelp('This is a copy of core/rebuild.php');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if (str_contains(strval($input), 'cache-clear') && !$input->getoption('cache-clear')) {
-            $this->logger->info("Skipping cache:rebuild due to --no-cache-clear option.");
-            return self::SUCCESS;
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('Extra arguments and options passed through to dr cache:rebuild. Put them after a -- separator.')]
+        array $args = [],
+        #[Option('Use --no-cache-clear to skip the rebuild; the caller should then rebuild if needed.')]
+        bool $cacheClear = true,
+    ): int {
+        if (!$cacheClear) {
+            $output->writeln('Skipping cache:rebuild due to --no-cache-clear.', OutputInterface::VERBOSITY_VERBOSE);
+            return Command::SUCCESS;
         }
 
-        // We no longer clear APC and similar caches as they are useless on CLI.
-        // See https://github.com/drush-ops/drush/pull/2450
-        $root  = $this->bootstrapManager->getRoot();
-        require_once $root . '/core/includes/utility.inc';
+        $this->logger->info('cache:rebuild is deprecated. Run dr cache:rebuild instead.');
 
-        $request = $this->bootstrapManager->bootstrap()->getRequest();
-        DrupalKernel::bootEnvironment();
+        $binary = $this->drushConfig->get('drush.vendor-dir') . '/bin/dr';
+        if (!is_file($binary)) {
+            throw new \RuntimeException(sprintf('%s was not found. cache:rebuild runs dr cache:rebuild, which requires Drupal core 11.4 or later.', $binary));
+        }
 
-        $site_path = DrupalKernel::findSitePath($request);
-        Settings::initialize($root, $site_path, $this->autoloader);
+        $command = [$binary, 'cache:rebuild', ...$args];
+        if ($output->isDecorated()) {
+            $command[] = '--ansi';
+        }
+        if ($output->isVerbose()) {
+            $command[] = '-' . str_repeat('v', min(3, $output->getVerbosity() / OutputInterface::VERBOSITY_VERBOSE));
+        }
 
-        // Coax \Drupal\Core\DrupalKernel::discoverServiceProviders to add our logger.
-        $GLOBALS['conf']['container_service_providers'][] = DrushLoggerServiceProvider::class;
+        $process = new Process($command, null, $this->siteEnvironment($this->bootstrapManager), null, null);
+        $process->run(function (string $type, string $buffer) use ($output): void {
+            $target = ($type === Process::ERR && $output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
+            $target->write($buffer);
+        });
 
-        // drupal_rebuild() calls drupal_flush_all_caches() itself, so we don't do it manually.
-        drupal_rebuild($this->autoloader, $request);
-        (new DrushStyle($input, $output))->success('Cache rebuild complete.');
-        return Command::SUCCESS;
+        return $process->getExitCode() ?? Command::FAILURE;
     }
 }

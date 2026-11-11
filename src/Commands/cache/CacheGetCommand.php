@@ -4,72 +4,74 @@ declare(strict_types=1);
 
 namespace Drush\Commands\cache;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
-use Drush\Attributes as CLI;
+use Drupal\Component\Serialization\Yaml;
+use Drupal\Core\Cache\CacheFactoryInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
+use Drush\Commands\OutputFormat;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Fetch a cached object and display it.',
     aliases: ['cg', 'cache-get'],
+    usages: [
+        'cache:get hook_info bootstrap',
+        'cache:get update_available_releases update',
+        'cache:get my_cid --format=yaml',
+    ],
 )]
-#[CLI\FieldLabels(labels: [
-    'cid' => 'Cache ID',
-    'data' => 'Data',
-    'created' => 'Created',
-    'expire' => 'Expire',
-    'tags' => 'Tags',
-    'checksum' => 'Checksum',
-    'valid' => 'Valid',
-])]
-#[CLI\DefaultTableFields(fields: ['cid', 'data', 'created', 'expire', 'tags'])]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'json')]
-final class CacheGetCommand extends Command
+class CacheGetCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
+    use CacheTrait;
 
     public const string NAME = 'cache:get';
 
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
+        protected CacheFactoryInterface $cacheFactory,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('cid', InputArgument::REQUIRED, 'The id of the object to fetch.')
-            ->addArgument('bin', InputArgument::OPTIONAL, 'The cache bin to fetch from.', 'default')
-            ->addUsage('cache:get hook_info bootstrap')
-            ->addUsage('cache:get update_available_releases update');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
-    {
-        $cid = $input->getArgument('cid');
-        $bin = $input->getArgument('bin');
-
-        $result = \Drupal::cache($bin)->get($cid);
-        if (empty($result)) {
-            throw new \Exception(sprintf('The %s object in the %s bin was not found.', $cid, $bin));
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('The id of the object to fetch.')]
+        string $cid,
+        #[Argument('The cache bin to fetch from.')]
+        string $bin = 'default',
+        #[Option('Output format: json or yaml. Defaults to json.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $item = $this->cacheFactory->get($bin)->get($cid);
+        if ($item === false) {
+            throw new \InvalidArgumentException((string) $this->t('The @cid object in the @bin bin was not found.', [
+                '@cid' => $cid,
+                '@bin' => $bin,
+            ]));
         }
 
-        return new PropertyList($result);
+        $fields = [
+            'cid' => $item->cid,
+            'data' => $item->data,
+            'created' => $item->created,
+            'expire' => $item->expire,
+            'tags' => $item->tags,
+            'valid' => $item->valid,
+        ];
+
+        $result = match ($format) {
+            OutputFormat::Yaml => Yaml::encode($fields),
+            default => json_encode($fields, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
+        };
+        // Yaml::encode() ends with a newline of its own; writeln adds one.
+        $output->writeln(rtrim($result, "\n"), OutputInterface::OUTPUT_RAW);
+
+        return Command::SUCCESS;
     }
 }
