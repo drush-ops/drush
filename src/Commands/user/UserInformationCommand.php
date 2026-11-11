@@ -4,119 +4,118 @@ declare(strict_types=1);
 
 namespace Drush\Commands\user;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\Options\FormatterOptions;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Datetime\DateFormatterInterface;
-use Drupal\user\Entity\User;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\user\UserInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
+use Drush\Commands\OutputFormat;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Print information about the specified user(s).',
     aliases: ['uinf', 'user-information'],
+    usages: [
+        'user:information someguy,somegal',
+        'user:information --mail=someguy@somegal.com',
+        'user:information --uid=5',
+        'user:information someguy --fields=uid,name,created --format=json',
+        'uinf --uid=$(drush sqlq "SELECT GROUP_CONCAT(entity_id) FROM user__roles WHERE roles_target_id = \'administrator\'")',
+    ],
 )]
-#[CLI\FieldLabels(labels: self::INF_LABELS)]
-#[CLI\DefaultTableFields(fields: self::INF_DEFAULT_FIELDS)]
-#[CLI\FilterDefaultField(field: 'name')]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
-final class UserInformationCommand extends Command
+class UserInformationCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
     use UserTrait;
 
     public const string NAME = 'user:information';
 
+    const array INF_LABELS = [
+        'uid' => 'User ID',
+        'name' => 'User name',
+        'pass' => 'Password',
+        'mail' => 'User mail',
+        'theme' => 'User theme',
+        'signature' => 'Signature',
+        'signature_format' => 'Signature format',
+        'user_created' => 'User created',
+        'created' => 'Created',
+        'user_access' => 'User last access',
+        'access' => 'Last access',
+        'user_login' => 'User last login',
+        'login' => 'Last login',
+        'user_status' => 'User status',
+        'status' => 'Status',
+        'timezone' => 'Time zone',
+        'picture' => 'User picture',
+        'init' => 'Initial user mail',
+        'roles' => 'User roles',
+        'group_audience' => 'Group Audience',
+        'langcode' => 'Language code',
+        'uuid' => 'Uuid',
+    ];
+
+    const array INF_DEFAULT_FIELDS = ['uid', 'name', 'mail', 'roles', 'user_status'];
+
     public function __construct(
-        protected readonly FormatterManager $formatterManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
         protected DateFormatterInterface $dateFormatter,
-        protected readonly LoggerInterface $logger,
+        protected LoggerInterface $logger,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('names', InputArgument::OPTIONAL, 'A comma delimited list of user names.', '')
-            ->addOption('uid', null, InputOption::VALUE_REQUIRED, 'A comma delimited list of user ids to lookup (an alternative to names).')
-            ->addOption('mail', null, InputOption::VALUE_REQUIRED, 'A comma delimited list of emails to lookup (an alternative to names).')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml', 'table')
-            ->addUsage('user:information someguy,somegal')
-            ->addUsage('user:information --mail=someguy@somegal.com')
-            ->addUsage('user:information --uid=5')
-            ->addUsage('uinf --uid=$(drush sqlq "SELECT GROUP_CONCAT(entity_id) FROM user__roles WHERE roles_target_id = \'administrator\'")');
-    }
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('A comma delimited list of user names.')]
+        string $names = '',
+        #[Option('A comma delimited list of user ids to lookup (an alternative to names).')]
+        ?string $uid = null,
+        #[Option('A comma delimited list of emails to lookup (an alternative to names).')]
+        ?string $mail = null,
+        #[Option('A comma delimited list of fields to show. Use * for all. Defaults to uid,name,mail,roles,user_status for the table and to all fields for json and yaml.')]
+        ?string $fields = null,
+        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $rows = [];
+        foreach ($this->getAccounts($names, $uid, $mail) as $id => $account) {
+            $rows[$id] = $this->infoArray($account);
+        }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
-    }
-
-    public function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
-    {
-        $names = $input->getArgument('names');
-        $uidOption = $input->getOption('uid');
-        $mailOption = $input->getOption('mail');
-
-        $accounts = [];
-        if ($mails = StringUtils::csvToArray($mailOption)) {
-            foreach ($mails as $mail) {
-                if ($account = user_load_by_mail($mail)) {
-                    $accounts[$account->id()] = $account;
-                }
+        $selected = $this->selectFields($fields, $format === null ? self::INF_DEFAULT_FIELDS : array_keys(self::INF_LABELS));
+        if ($fields !== null) {
+            foreach ($rows as &$row) {
+                $row = array_intersect_key($row, array_flip($selected));
             }
-        }
-        if ($uids = StringUtils::csvToArray($uidOption)) {
-            if ($loaded = User::loadMultiple($uids)) {
-                $accounts += $loaded;
-            }
-        }
-        if ($names = StringUtils::csvToArray($names)) {
-            foreach ($names as $name) {
-                if ($account = user_load_by_name($name)) {
-                    $accounts[$account->id()] = $account;
-                }
-            }
-        }
-        if ($accounts === []) {
-            throw new \Exception('Unable to find a matching user');
+            unset($row);
         }
 
-        foreach ($accounts as $id => $account) {
-            $outputs[$id] = $this->infoArray($account);
-        }
+        $result = match ($format) {
+            OutputFormat::Json => json_encode($rows, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
+            OutputFormat::Yaml => Yaml::encode($rows),
+            default => $this->renderTable($rows, $selected),
+        };
+        $output->writeln($result, OutputInterface::OUTPUT_RAW);
 
-        $result = new RowsOfFields($outputs);
-        $result->addRendererFunction($this->renderRolesCell(...));
-        return $result;
-    }
-
-    public function renderRolesCell($key, $cellData, FormatterOptions $options)
-    {
-        if (is_array($cellData)) {
-            return implode("\n", $cellData);
-        }
-        return $cellData;
+        return Command::SUCCESS;
     }
 
     /**
      * A flatter and simpler array presentation of a Drupal $user object.
      */
-    public function infoArray($account): array
+    public function infoArray(UserInterface $account): array
     {
         return [
             'uid' => $account->id(),
@@ -136,5 +135,45 @@ final class UserInformationCommand extends Command
             'langcode' => $account->getPreferredLangcode(),
             'uuid' => $account->uuid->value,
         ];
+    }
+
+    /**
+     * Resolves a --fields value against INF_LABELS; '*' selects every field.
+     *
+     * @return string[]
+     */
+    protected function selectFields(?string $fields, array $default): array
+    {
+        if ($fields === null || $fields === '') {
+            return $default;
+        }
+        if ($fields === '*') {
+            return array_keys(self::INF_LABELS);
+        }
+        $selected = StringUtils::csvToArray($fields);
+        if ($unknown = array_diff($selected, array_keys(self::INF_LABELS))) {
+            throw new \InvalidArgumentException((string) $this->t('Unknown field(s): @fields', ['@fields' => implode(', ', $unknown)]));
+        }
+        return $selected;
+    }
+
+    protected function renderTable(array $rows, array $fields): string
+    {
+        $tableRows = [];
+        foreach ($rows as $row) {
+            $tableRow = [];
+            foreach ($fields as $field) {
+                $value = $row[$field] ?? '';
+                $tableRow[] = is_array($value) ? implode(', ', $value) : (string) $value;
+            }
+            $tableRows[] = $tableRow;
+        }
+        $buffer = new BufferedOutput();
+        $table = new Table($buffer);
+        $table
+            ->setHeaders(array_map(fn(string $field) => self::INF_LABELS[$field], $fields))
+            ->setRows($tableRows)
+            ->render();
+        return $buffer->fetch();
     }
 }

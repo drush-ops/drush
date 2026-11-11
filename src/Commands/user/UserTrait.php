@@ -1,98 +1,64 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Drush\Commands\user;
 
-use Drupal\user\Entity\User;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\user\UserInterface;
 use Drush\Utils\StringUtils;
 
+/**
+ * Helpers shared by the user commands.
+ *
+ * Classes using this trait inject EntityTypeManagerInterface as
+ * $this->entityTypeManager and LoggerInterface as $this->logger.
+ */
 trait UserTrait
 {
-    const array INF_LABELS = [
-        'uid' => 'User ID',
-        'name' => 'User name',
-        'pass' => 'Password',
-        'mail' => 'User mail',
-        'theme' => 'User theme',
-        'signature' => 'Signature',
-        'signature_format' => 'Signature format',
-        'user_created' => 'User created',
-        'created' => 'Created',
-        'user_access' => 'User last access',
-        'access' => 'Last access',
-        'user_login' => 'User last login',
-        'login' => 'Last login',
-        'user_status' => 'User status',
-        'status' => 'Status',
-        'timezone' => 'Time zone',
-        'picture' => 'User picture',
-        'init' => 'Initial user mail',
-        'roles' => 'User roles',
-        'group_audience' => 'Group Audience',
-        'langcode' => 'Language code',
-        'uuid' => 'Uuid',
-    ];
+    use StringTranslationTrait;
 
-    const array INF_DEFAULT_FIELDS = ['uid', 'name', 'mail', 'roles', 'user_status'];
-
-    protected function getAccounts(string $names = '', array $options = []): array
+    /**
+     * Loads the accounts selected by a names argument and the --uid and
+     * --mail options, each a comma delimited list.
+     *
+     * Logs a warning for every value that matches no account and throws when
+     * none of them did.
+     *
+     * @return UserInterface[]
+     *   The accounts, keyed by uid.
+     */
+    protected function getAccounts(string $names, ?string $uid = null, ?string $mail = null): array
     {
+        $storage = $this->entityTypeManager->getStorage('user');
         $accounts = [];
-        if (isset($options['mail']) && $mails = StringUtils::csvToArray($options['mail'])) {
-            foreach ($mails as $mail) {
-                if ($account = user_load_by_mail($mail)) {
-                    $accounts[$account->id()] = $account;
-                } else {
-                    $this->logger->warning('Unable to load user: {mail}', ['mail' => $mail]);
-                }
+        foreach (StringUtils::csvToArray($mail) as $value) {
+            $matches = $storage->loadByProperties(['mail' => $value]);
+            if ($account = reset($matches)) {
+                $accounts[$account->id()] = $account;
+            } else {
+                $this->logger->warning((string) $this->t('Unable to load user: @mail', ['@mail' => $value]));
             }
         }
-        if (isset($options['uid']) && $uids = StringUtils::csvToArray($options['uid'])) {
-            foreach ($uids as $uid) {
-                if ($account = User::load($uid)) {
-                    $accounts[$account->id()] = $account;
-                } else {
-                    $this->logger->warning('Unable to load user: {uid}', ['uid' => $uid]);
-                }
+        foreach (StringUtils::csvToArray($uid) as $value) {
+            if ($account = $storage->load($value)) {
+                $accounts[$account->id()] = $account;
+            } else {
+                $this->logger->warning((string) $this->t('Unable to load user: @uid', ['@uid' => $value]));
             }
         }
-        if ($names = StringUtils::csvToArray($names)) {
-            foreach ($names as $name) {
-                if ($account = user_load_by_name($name)) {
-                    $accounts[$account->id()] = $account;
-                } else {
-                    $this->logger->warning('Unable to load user: {user}', ['user' => $name]);
-                }
+        foreach (StringUtils::csvToArray($names) as $value) {
+            $matches = $storage->loadByProperties(['name' => $value]);
+            if ($account = reset($matches)) {
+                $accounts[$account->id()] = $account;
+            } else {
+                $this->logger->warning((string) $this->t('Unable to load user: @user', ['@user' => $value]));
             }
         }
         if ($accounts === []) {
-            throw new \Exception('Unable to find any matching user');
+            throw new \InvalidArgumentException((string) $this->t('Unable to find any matching user'));
         }
 
-        return  $accounts;
-    }
-
-    /**
-     * A flatter and simpler array presentation of a Drupal $user object.
-     */
-    public function infoArray($account): array
-    {
-        return [
-            'uid' => $account->id(),
-            'name' => $account->getAccountName(),
-            'pass' => $account->getPassword(),
-            'mail' => $account->getEmail(),
-            'user_created' => $account->getCreatedTime(),
-            'created' => $this->dateFormatter->format($account->getCreatedTime()),
-            'user_access' => $account->getLastAccessedTime(),
-            'access' => $this->dateFormatter->format($account->getLastAccessedTime()),
-            'user_login' => $account->getLastLoginTime(),
-            'login' => $this->dateFormatter->format($account->getLastLoginTime()),
-            'user_status' => $account->get('status')->value,
-            'status' => $account->isActive() ? 'active' : 'blocked',
-            'timezone' => $account->getTimeZone(),
-            'roles' => $account->getRoles(),
-            'langcode' => $account->getPreferredLangcode(),
-            'uuid' => $account->uuid->value,
-        ];
+        return $accounts;
     }
 }

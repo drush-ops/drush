@@ -16,9 +16,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Process\Process;
 
 /**
  * Runs `dr cache:rebuild`, the rebuild that ships with Drupal core 11.4+.
@@ -71,25 +69,7 @@ class CacheRebuildCommand
 
         $this->logger->info('cache:rebuild is deprecated. Run dr cache:rebuild instead.');
 
-        $binary = $this->drushConfig->get('drush.vendor-dir') . '/bin/dr';
-        if (!is_file($binary)) {
-            throw new \RuntimeException(sprintf('%s was not found. cache:rebuild runs dr cache:rebuild, which requires Drupal core 11.4 or later.', $binary));
-        }
-
-        $command = [$binary, 'cache:rebuild', ...$args];
-        if ($output->isDecorated()) {
-            $command[] = '--ansi';
-        }
-        if ($output->isVerbose()) {
-            $command[] = '-' . str_repeat('v', min(3, $output->getVerbosity() / OutputInterface::VERBOSITY_VERBOSE));
-        }
-
-        $process = new Process($command, null, $this->siteEnvironment($this->bootstrapManager), null, null);
-        $process->run(function (string $type, string $buffer) use ($output): void {
-            $target = ($type === Process::ERR && $output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
-            $target->write($buffer);
-        });
-
-        return $process->getExitCode() ?? Command::FAILURE;
+        $binary = $this->doctorBinary($this->drushConfig, self::NAME);
+        return $this->runDoctor($binary, ['cache:rebuild', ...$args], $this->bootstrapManager, $output);
     }
 }

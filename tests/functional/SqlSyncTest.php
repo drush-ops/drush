@@ -120,8 +120,8 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertEquals($mail, $info['mail'], 'Email address is unchanged on source site.');
         $this->assertEquals($name, $info['name']);
         // Get the unchanged pass.
-        $this->drush(UserCommands::INFORMATION, [$name], $stage_options + ['field' => 'pass']);
-        $original_hashed_pass = $this->getOutput();
+        $this->drush(UserCommands::INFORMATION, [$name], $stage_options + ['fields' => 'pass', 'format' => 'json']);
+        $original_hashed_pass = $this->getOutputFromJSON(2)['pass'];
 
         // Confirm that the sample user's email and password have been sanitized on the dev site
         $this->drush(UserCommands::INFORMATION, [$name], $options + ['fields' => 'uid,name,mail,pass', 'format' => 'json', 'yes' => null], '@sut.dev');
