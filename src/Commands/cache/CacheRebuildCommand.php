@@ -9,6 +9,7 @@ use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
 use Drush\Config\DrushConfig;
+use Drush\Doctor\DoctorTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -44,6 +45,7 @@ use Symfony\Component\Process\Process;
 class CacheRebuildCommand
 {
     use AutowireTrait;
+    use DoctorTrait;
 
     public const string NAME = 'cache:rebuild';
 
@@ -82,36 +84,12 @@ class CacheRebuildCommand
             $command[] = '-' . str_repeat('v', min(3, $output->getVerbosity() / OutputInterface::VERBOSITY_VERBOSE));
         }
 
-        $process = new Process($command, null, $this->siteEnvironment(), null, null);
+        $process = new Process($command, null, $this->siteEnvironment($this->bootstrapManager), null, null);
         $process->run(function (string $type, string $buffer) use ($output): void {
             $target = ($type === Process::ERR && $output instanceof ConsoleOutputInterface) ? $output->getErrorOutput() : $output;
             $target->write($buffer);
         });
 
         return $process->getExitCode() ?? Command::FAILURE;
-    }
-
-    /**
-     * Environment variables that make dr select the same site as Drush.
-     *
-     * dr reads DRUPAL_URI for the commands it boots Drupal for. Its
-     * cache:rebuild builds the request from $_SERVER instead, which in CLI
-     * holds the environment, so the host is passed as HTTP_HOST as well.
-     */
-    protected function siteEnvironment(): array
-    {
-        $uri = $this->bootstrapManager->getUri();
-        if (!is_string($uri) || $uri === '') {
-            return [];
-        }
-        if (!str_contains($uri, '://')) {
-            $uri = 'http://' . $uri;
-        }
-        $env = ['DRUPAL_URI' => $uri];
-        if ($host = parse_url($uri, PHP_URL_HOST)) {
-            $port = parse_url($uri, PHP_URL_PORT);
-            $env['HTTP_HOST'] = $host . ($port ? ':' . $port : '');
-        }
-        return $env;
     }
 }
