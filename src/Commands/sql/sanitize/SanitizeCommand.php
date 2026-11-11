@@ -52,6 +52,7 @@ HELP;
     {
         // To present only one prompt, collect all confirmations first.
         // These are the "new" event listeners.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new SanitizeConfirmsEvent($input);
         $this->eventDispatcher->dispatch($event);
         $messages = $event->getMessages();

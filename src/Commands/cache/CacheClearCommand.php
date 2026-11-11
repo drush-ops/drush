@@ -140,6 +140,7 @@ class CacheClearCommand
         ];
 
         // Listeners may customize $types as desired.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new CacheClearEvent($types);
         $this->eventDispatcher->dispatch($event);
         $types = $event->getTypes();

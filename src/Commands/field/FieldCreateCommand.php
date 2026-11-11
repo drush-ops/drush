@@ -170,6 +170,7 @@ final class FieldCreateCommand extends Command
         }
 
         // Event subscribers may set additional options as desired.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new FieldCreateInputOptionsEvent($this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
 
@@ -400,6 +401,7 @@ final class FieldCreateCommand extends Command
         ];
 
         // Event subscribers may customize $values as desired.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new FieldCreateFieldConfigValuesEvent($values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
@@ -424,6 +426,7 @@ final class FieldCreateCommand extends Command
         ];
 
         // Event subscribers may customize $values as desired.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new FieldCreateFieldStorageConfigValuesEvent($values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
@@ -451,6 +454,7 @@ final class FieldCreateCommand extends Command
         }
 
         // Event subscribers may customize $values as desired.
+        // @todo rework or remove in order for less Drush reliance.
         $event = new FieldCreateEntityDisplayValuesEvent($context, $values, $this->input, $this->output);
         $this->eventDispatcher->dispatch($event);
         $values = $event->getValues();
