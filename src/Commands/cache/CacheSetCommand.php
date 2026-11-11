@@ -8,95 +8,115 @@ use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheFactoryInterface;
 use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Cache an object expressed in JSON or var_export() format.',
+    description: 'Cache an object expressed in JSON or string format.',
     aliases: ['cs', 'cache-set'],
+    usages: [
+        'cache:set my_cid "some value"',
+        'cache:set my_cid \'{"key": "value"}\' default CACHE_PERMANENT node:1,user:2 --input-format=json',
+        'cache:set my_cid - --input-format=json --cache-get < item.json',
+    ],
 )]
-final class CacheSetCommand extends Command
+class CacheSetCommand
 {
     use AutowireTrait;
+    use CacheTrait;
 
     public const string NAME = 'cache:set';
 
+    /**
+     * Accepted values of --input-format.
+     */
+    public const array INPUT_FORMATS = ['string', 'json'];
+
     public function __construct(
-        private readonly CacheFactoryInterface $cacheFactory,
+        protected CacheFactoryInterface $cacheFactory,
     ) {
-        parent::__construct();
     }
 
-
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('cid', InputArgument::REQUIRED, 'id of the object to set.')
-            ->addArgument('data', InputArgument::REQUIRED, 'The object to set in the cache. Use - to read the object from STDIN.')
-            ->addArgument('bin', InputArgument::OPTIONAL, 'The cache bin to store the object in.', 'default')
-            ->addArgument('expire', InputArgument::OPTIONAL, "'CACHE_PERMANENT', or a Unix timestamp.")
-            ->addArgument('tags', InputArgument::OPTIONAL, 'A comma delimited list of cache tags.')
-            ->addOption('input-format', null, InputOption::VALUE_REQUIRED, 'The format of value. Use json for complex values.', 'string')
-            ->addOption('cache-get', null, InputOption::VALUE_NONE, "If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.");
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $cid = $input->getArgument('cid');
-        $data = $input->getArgument('data');
-        $bin = $input->getArgument('bin');
-        $expire = $input->getArgument('expire');
-        $tags = $input->getArgument('tags');
-
-        $tags = is_string($tags) ? StringUtils::csvToArray($tags) : [];
-
-        // In addition to prepare, this also validates.
-        $data = $this->setPrepareData($data, $input);
-
-        if (!isset($expire) || $expire == 'CACHE_PERMANENT') {
-            $expire = Cache::PERMANENT;
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The id of the object to set.')]
+        string $cid,
+        #[Argument('The object to set in the cache. Use - to read the object from STDIN.')]
+        string $data,
+        #[Argument('The cache bin to store the object in.')]
+        string $bin = 'default',
+        #[Argument("'CACHE_PERMANENT', or a Unix timestamp.")]
+        ?string $expire = null,
+        #[Argument('A comma delimited list of cache tags.')]
+        ?string $tags = null,
+        #[Option('The format of value: string or json. Use json for complex values.', suggestedValues: self::INPUT_FORMATS)]
+        string $inputFormat = 'string',
+        #[Option("If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.")]
+        bool $cacheGet = false,
+    ): int {
+        if (!in_array($inputFormat, self::INPUT_FORMATS, true)) {
+            throw new \InvalidArgumentException((string) $this->t('Unknown input format: @format. Allowed values: @allowed', [
+                '@format' => $inputFormat,
+                '@allowed' => implode(', ', self::INPUT_FORMATS),
+            ]));
         }
 
-        $this->cacheFactory->get($bin)->set($cid, $data, $expire, $tags);
+        if ($data === '-') {
+            // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
+            // Under CommandTester this reads what setInputs() provided.
+            $stream = $input instanceof StreamableInputInterface ? $input->getStream() : null;
+            $data = stream_get_contents($stream ?? STDIN);
+        }
+
+        $value = $this->prepareData($data, $inputFormat, $cacheGet);
+
+        $expire = ($expire === null || $expire === 'CACHE_PERMANENT') ? Cache::PERMANENT : (int) $expire;
+        $tags = is_string($tags) ? StringUtils::csvToArray($tags) : [];
+
+        $this->cacheFactory->get($bin)->set($cid, $value, $expire, $tags);
+
+        $io = new SymfonyStyle($input, $output);
+        $io->success((string) $this->t('Cached @cid in the @bin bin.', ['@cid' => $cid, '@bin' => $bin]));
+
         return Command::SUCCESS;
     }
 
-    private function setPrepareData($data, InputInterface $input)
+    /**
+     * Decodes the data argument and unwraps a cache:get result when asked.
+     */
+    protected function prepareData(string $data, string $inputFormat, bool $cacheGet): mixed
     {
-        if ($data == '-') {
-            // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
-            // During testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
-            $data = stream_get_contents($inputStream);
-        }
-
-        if ($input->getOption('input-format') === 'json') {
-            $data = json_decode($data, true);
-            if ($data === false) {
-                throw new \Exception('Unable to parse JSON.');
+        $value = $data;
+        if ($inputFormat === 'json') {
+            try {
+                $value = json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $e) {
+                throw new \InvalidArgumentException((string) $this->t('Unable to parse JSON: @message', ['@message' => $e->getMessage()]), 0, $e);
             }
         }
 
-        if ($input->getOption('cache-get')) {
-            // $data might be an object.
-            if (is_object($data) && $data->data) {
-                $data = $data->data;
-            } elseif (is_array($data) && isset($data['data'])) {
-                // But $data returned from `drush cache:get --format=json` will be an array.
-                $data = $data['data'];
-            } else {
-                // If $data is neither object nor array and cache-get was specified, then
-                // there is a problem.
-                throw new \Exception("'cache-get' was specified as an option, but the data is neither an object or an array.");
+        if ($cacheGet) {
+            // The output of `cache:get` decodes to an array with a data key.
+            if (is_object($value) && isset($value->data)) {
+                return $value->data;
             }
+            if (is_array($value) && array_key_exists('data', $value)) {
+                return $value['data'];
+            }
+            throw new \InvalidArgumentException((string) $this->t("'cache-get' was specified as an option, but the data is neither an object nor an array."));
         }
 
-        return $data;
+        return $value;
     }
 }

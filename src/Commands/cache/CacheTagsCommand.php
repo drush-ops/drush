@@ -6,45 +6,47 @@ namespace Drush\Commands\cache;
 
 use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Invalidate by cache tags.',
     aliases: ['ct'],
+    usages: ['cache:tags node:12,user:4'],
 )]
-final class CacheTagsCommand extends Command
+class CacheTagsCommand
 {
     use AutowireTrait;
+    use CacheTrait;
 
     public const string NAME = 'cache:tags';
 
     public function __construct(
-        private readonly CacheTagsInvalidatorInterface $invalidator,
+        protected CacheTagsInvalidatorInterface $invalidator,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('tags', InputArgument::REQUIRED, 'A comma delimited list of cache tags to clear.')
-            ->addUsage('cache:tag node:12,user:4');
-    }
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('A comma delimited list of cache tags to invalidate.')]
+        string $tags,
+    ): int {
+        $list = StringUtils::csvToArray($tags);
+        $this->invalidator->invalidateTags($list);
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $tags_arg = $input->getArgument('tags');
-        $tags = StringUtils::csvToArray($tags_arg);
+        $io = new SymfonyStyle($input, $output);
+        $io->success((string) $this->t('Invalidated tag(s): @tags.', ['@tags' => implode(' ', $list)]));
 
-        $this->invalidator->invalidateTags($tags);
-        (new DrushStyle($input, $output))->success(sprintf("Invalidated tag(s): %s.", implode(' ', $tags)));
         return Command::SUCCESS;
     }
 }
