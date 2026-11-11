@@ -131,7 +131,7 @@ class ServiceManager
             $this->discoverCommandsFromConfiguration(),
             $this->discoverCommands($commandfileSearchpath, '\Drush'),
             $this->discoverPsr4Commands(),
-            $this->discoverPsr4DrCommands(),
+            $this->discoverDrushDrCommands(),
             [FilterHooks::class]
         ));
 
@@ -218,25 +218,27 @@ class ServiceManager
     }
 
     /**
-     * Discover PSR-4 autoloaded classes that are dr commands.
+     * Discover Dr commands drush adds.
      *
      * @return string[]
      *   List of command classes
      */
-    public function discoverPsr4DrCommands(): array
+    public function discoverDrushDrCommands(): array
     {
-        $classes = (new RelativeNamespaceDiscovery($this->autoloader))
-            ->setRelativeNamespace('Command')
-            ->setSearchPattern('/.*(Command)\.php$/')
-            ->getClasses();
+        $discovery = new CommandFileDiscovery();
+        $discovery
+            ->setIncludeFilesAtBase(true)
+            ->setSearchDepth(3)
+            ->setSearchLocations(['Command'])
+            ->setSearchPattern('#.*(Command).php$#');
+        $directoryList = [
+            'Dr\\early' => __DIR__ . '/../Dr/early' ,
+            'Dr\\standard' => __DIR__ . '/../Dr/standard',
+        ];
+        $commandClasses = $discovery->discover($directoryList, 'Drush');
 
-        return array_filter($classes, function (string $class): bool {
-            $reflectionClass = new \ReflectionClass($class);
-            return !empty($reflectionClass->getAttributes(AsCommand::class))
-                && !$reflectionClass->isAbstract()
-                && !$reflectionClass->isInterface()
-                && !$reflectionClass->isTrait();
-        });
+        $this->loadCommandClasses($commandClasses);
+        return array_values($commandClasses);
     }
 
     /**

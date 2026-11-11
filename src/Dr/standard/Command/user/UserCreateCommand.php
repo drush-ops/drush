@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Command\user;
+namespace Drush\Dr\standard\Command\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;

@@ -6,9 +6,9 @@ namespace Unish;
 
 use Drupal\Core\State\StateInterface;
 use Drupal\KernelTests\KernelTestBase;
-use Drush\Command\state\StateDeleteCommand;
-use Drush\Command\state\StateGetCommand;
-use Drush\Command\state\StateSetCommand;
+use Drush\Dr\standard\Command\state\StateDeleteCommand;
+use Drush\Dr\standard\Command\state\StateGetCommand;
+use Drush\Dr\standard\Command\state\StateSetCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;

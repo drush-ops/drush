@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Command\queue;
+namespace Drush\Dr\standard\Command\queue;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Queue\QueueFactory;

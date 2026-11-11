@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Drush\Command\user;
+namespace Drush\Dr\standard\Command\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Command\role\RoleTrait;
 use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -22,17 +21,16 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Add a role to the specified user accounts.',
-    aliases: ['urol', 'user-add-role'],
-    usages: ["user:role:add 'editor' user3"],
+    description: 'Unblock the specified user(s).',
+    aliases: ['uublk', 'user-unblock'],
+    usages: ['user:unblock user3'],
 )]
-class UserRoleAddCommand
+class UserUnblockCommand
 {
     use AutowireTrait;
-    use RoleTrait;
     use UserTrait;
 
-    public const string NAME = 'user:role:add';
+    public const string NAME = 'user:unblock';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -44,8 +42,6 @@ class UserRoleAddCommand
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-        #[Argument('The machine name of the role to add.', suggestedValues: [self::class, 'suggestRoleNames'])]
-        string $role,
         #[Argument('A comma delimited list of user names.')]
         string $names = '',
         #[Option('A comma delimited list of user ids to lookup (an alternative to names).')]
@@ -54,11 +50,10 @@ class UserRoleAddCommand
         ?string $mail = null,
     ): int {
         $io = new SymfonyStyle($input, $output);
-        $this->loadRole($role);
         foreach ($this->getAccounts($names, $uid, $mail) as $account) {
-            $account->addRole($role);
+            $account->activate();
             $account->save();
-            $io->success((string) $this->t('Added @role role to @name', ['@role' => $role, '@name' => $account->getAccountName()]));
+            $io->success((string) $this->t('Unblocked user(s): @name', ['@name' => $account->getAccountName()]));
         }
 
         return Command::SUCCESS;

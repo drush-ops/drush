@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Dr\early\Command;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Drush\Attributes as CLI;
@@ -30,12 +30,7 @@ final class PhpEvalCommand extends Command
 
     public const string NAME = 'php:eval';
 
-    public function __construct(
-        protected readonly BootstrapManager $bootstrapManager,
-        protected readonly FormatterManager $formatterManager,
-    ) {
-        parent::__construct();
-    }
+    protected readonly FormatterManager $formatterManager;
 
 
     protected function configure(): void
@@ -49,6 +44,7 @@ final class PhpEvalCommand extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        $this->formatterManager = new FormatterManager();
         $data = $this->doExecute($input, $output);
         $this->writeFormattedOutput($input, $output, $data);
         return self::SUCCESS;
@@ -56,8 +52,6 @@ final class PhpEvalCommand extends Command
 
     public function doExecute(InputInterface $input, OutputInterface $output): mixed
     {
-        $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
-
         return eval($input->getArgument('code') . ';');
     }
 }

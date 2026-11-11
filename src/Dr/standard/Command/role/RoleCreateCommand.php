@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Command\role;
+namespace Drush\Dr\standard\Command\role;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drush\Commands\AutowireTrait;

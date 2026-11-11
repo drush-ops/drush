@@ -2,15 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Drush\Commands\core;
+namespace Drush\Dr\early\Command;
 
 use Consolidation\OutputFormatters\FormatterManager;
 use Drush\Attributes as CLI;
-use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
-use Drush\Config\DrushConfig;
 use Drush\Formatters\FormatterTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -20,6 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Finder\Finder;
 
 #[AsCommand(
@@ -37,13 +36,14 @@ final class PhpScriptCommand extends Command
 
     public const string NAME = 'php:script';
 
+    protected FormatterManager $formatterManager;
+
     public function __construct(
-        protected readonly BootstrapManager $bootstrapManager,
-        protected readonly DrushConfig $drushConfig,
-        protected FormatterManager $formatterManager,
-        protected readonly LoggerInterface $logger,
+        #[Autowire('@logger.channel.system')]
+        protected readonly ?LoggerInterface $logger = null,
     ) {
         parent::__construct();
+        $this->formatterManager = new FormatterManager();
     }
 
 
@@ -84,7 +84,7 @@ final class PhpScriptCommand extends Command
             $found = $script;
         } else {
             // Array of paths to search for scripts
-            $searchpath['cwd'] = $this->drushConfig->cwd();
+            $searchpath['cwd'] = getcwd();
 
             // Additional script paths, specified by 'script-path' option
             if ($script_path = $input->getOption('script-path')) {
@@ -92,7 +92,7 @@ final class PhpScriptCommand extends Command
                     $searchpath[] = $path;
                 }
             }
-            $this->logger->notice('Searching for scripts in {paths}', ['paths' => implode(',', $searchpath)]);
+            $this->logger?->notice('Searching for scripts in {paths}', ['paths' => implode(',', $searchpath)]);
 
             if (empty($script)) {
                 $all = [];

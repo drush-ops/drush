@@ -6,8 +6,8 @@ namespace Drush\Listeners;
 
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drush\Attributes\ValidateQueueName;
-use Drush\Command\queue\QueueTrait;
 use Drush\Commands\AutowireTrait;
+use Drush\Dr\standard\Command\queue\QueueTrait;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Event\ConsoleCommandEvent;

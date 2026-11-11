@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Drush\Command\user;
+namespace Drush\Dr\standard\Command\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Command\role\RoleTrait;
 use Drush\Commands\AutowireTrait;
+use Drush\Dr\standard\Command\role\RoleTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,17 +22,17 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
  */
 #[AsCommand(
     name: self::NAME,
-    description: 'Remove a role from the specified user accounts.',
-    aliases: ['urrol', 'user-remove-role'],
-    usages: ["user:role:remove 'power_user' user3"],
+    description: 'Add a role to the specified user accounts.',
+    aliases: ['urol', 'user-add-role'],
+    usages: ["user:role:add 'editor' user3"],
 )]
-class UserRoleRemoveCommand
+class UserRoleAddCommand
 {
     use AutowireTrait;
     use RoleTrait;
     use UserTrait;
 
-    public const string NAME = 'user:role:remove';
+    public const string NAME = 'user:role:add';
 
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
@@ -44,7 +44,7 @@ class UserRoleRemoveCommand
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-        #[Argument('The machine name of the role to remove.', suggestedValues: [self::class, 'suggestRoleNames'])]
+        #[Argument('The machine name of the role to add.', suggestedValues: [self::class, 'suggestRoleNames'])]
         string $role,
         #[Argument('A comma delimited list of user names.')]
         string $names = '',
@@ -56,9 +56,9 @@ class UserRoleRemoveCommand
         $io = new SymfonyStyle($input, $output);
         $this->loadRole($role);
         foreach ($this->getAccounts($names, $uid, $mail) as $account) {
-            $account->removeRole($role);
+            $account->addRole($role);
             $account->save();
-            $io->success((string) $this->t('Removed @role role from @name', ['@role' => $role, '@name' => $account->getAccountName()]));
+            $io->success((string) $this->t('Added @role role to @name', ['@role' => $role, '@name' => $account->getAccountName()]));
         }
 
         return Command::SUCCESS;
