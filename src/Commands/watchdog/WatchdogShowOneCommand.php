@@ -4,73 +4,63 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\PropertyList;
 use Drupal\Core\Database\Connection;
-use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
-use Psr\Log\LoggerInterface;
+use Drush\Commands\OutputFormat;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Shows one log record by id.
+ *
+ * @internal
+ *
+ * @deprecated in drush:14.0.0 and is removed from drush:15.0.0. Use
+ *   `watchdog:show --id=ID` instead.
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Show one log record by ID.',
+    description: 'Show one log record by ID. Deprecated: use `watchdog:show --id=ID`.',
     aliases: ['wd-one', 'watchdog-show-one'],
+    usages: ['watchdog:show-one 42'],
 )]
-#[CLI\ValidateModulesEnabled(modules: ['dblog'])]
-#[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-#[CLI\Formatter(returnType: PropertyList::class, defaultFormatter: 'table')]
-final class WatchdogShowOneCommand extends Command
+final class WatchdogShowOneCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
     use WatchdogTrait;
 
-    const string NAME = 'watchdog:show-one';
+    public const string NAME = 'watchdog:show-one';
 
     public function __construct(
         protected Connection $connection,
-        protected FormatterManager $formatterManager,
-        protected LoggerInterface $logger,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('id', InputArgument::REQUIRED, 'Watchdog Id');
-    }
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('Watchdog Id')]
+        int $id,
+        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $this->requireDblog();
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
+        $notice = (string) $this->t('watchdog:show-one is deprecated and will be removed in Drush 15. Use watchdog:show --id=@id instead.', ['@id' => $id]);
+        @trigger_error($notice, E_USER_DEPRECATED);
+        (new SymfonyStyle($input, $output))->getErrorStyle()->warning($notice);
+
+        $output->writeln($this->renderRecord($this->loadRecord($id), $format), OutputInterface::OUTPUT_RAW);
+
         return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): PropertyList
-    {
-        $id = $input->getArgument('id');
-
-        $rsc = $this->connection->select('watchdog', 'w')
-            ->fields('w')
-            ->condition('wid', (int)$id)
-            ->range(0, 1)
-            ->execute();
-        $result = $rsc->fetchObject();
-
-        if (!$result) {
-            throw new \Exception(sprintf('Watchdog message #%s not found.', $id));
-        }
-
-        $formatted_result = $this->formatResult($result, true);
-        return new PropertyList($formatted_result);
     }
 }
