@@ -33,6 +33,8 @@ final class WatchdogCommands extends DrushCommands
     const DELETE = 'watchdog:delete';
     const SHOW_ONE = 'watchdog:show-one';
 
+    const DEFAULT_DATE_FORMAT = 'd/M H:i';
+
     public function __construct(protected Connection $connection)
     {
     }
@@ -47,6 +49,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Option(name: 'severity-min', description: 'Restrict to messages of a given severity level and higher.')]
     #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
     #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Option(name: 'date-format', description: 'Specify a date format for the date console output.')]
     #[CLI\Usage(name: 'drush watchdog:show', description: 'Show a listing of most recent 10 messages.')]
     #[CLI\Usage(name: 'drush watchdog:show "cron run successful"', description: 'Show a listing of most recent 10 messages containing the string <info>cron run successful</info>.')]
     #[CLI\Usage(name: 'drush watchdog:show --count=46', description: 'Show a listing of most recent 46 messages.')]
@@ -70,7 +73,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false]): ?RowsOfFields
+    public function show($substring = '', $options = ['format' => 'table', 'count' => 10, 'severity' => self::REQ, 'severity-min' => self::REQ, 'type' => self::REQ, 'extended' => false, 'date-format' => self::DEFAULT_DATE_FORMAT]): ?RowsOfFields
     {
         $where = $this->where((string)$options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         $query = $this->connection->select('watchdog', 'w')
@@ -82,7 +85,7 @@ final class WatchdogCommands extends DrushCommands
         }
         $rsc = $query->execute();
         while ($result = $rsc->fetchObject()) {
-            $row = $this->formatResult($result, $options['extended']);
+            $row = $this->formatResult($result, $options['extended'], $options['date-format']);
             $table[$row->wid] = (array)$row;
         }
         if (empty($table)) {
@@ -102,6 +105,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\Option(name: 'severity', description: 'Restrict to messages of a given severity level (numeric or string).')]
     #[CLI\Option(name: 'type', description: 'Restrict to messages of a given type.')]
     #[CLI\Option(name: 'extended', description: 'Return extended information about each message.')]
+    #[CLI\Option(name: 'date-format', description: 'Specify a date format for the date console output.')]
     #[CLI\Usage(name: 'drush watchdog:list', description: 'Prompt for message type or severity, then run watchdog:show.')]
     #[CLI\FieldLabels(labels: [
         'wid' => 'ID',
@@ -118,7 +122,7 @@ final class WatchdogCommands extends DrushCommands
     #[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
     #[CLI\Complete(method_name_or_callable: 'watchdogComplete')]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false]): ?RowsOfFields
+    public function watchdogList($substring = '', $options = ['format' => 'table', 'count' => 10, 'extended' => false, 'date-format' => self::DEFAULT_DATE_FORMAT]): ?RowsOfFields
     {
         $options['severity-min'] = null;
         return $this->show($substring, $options);
@@ -147,8 +151,8 @@ final class WatchdogCommands extends DrushCommands
         $where = $this->where($options['type'], $options['severity'], $substring, 'AND', $options['severity-min']);
         if (empty($where['where'])) {
             $where = [
-              'where' => 'wid > :wid',
-              'args' => [],
+                'where' => 'wid > :wid',
+                'args' => [],
             ];
         } else {
             $where['where'] .= " AND wid > :wid";
@@ -257,9 +261,10 @@ final class WatchdogCommands extends DrushCommands
      */
     #[CLI\Command(name: self::SHOW_ONE, aliases: ['wd-one', 'watchdog-show-one'])]
     #[CLI\Argument(name: 'id', description: 'Watchdog Id')]
+    #[CLI\Option(name: 'date-format', description: 'Specify a date format for the date console output.')]
     #[CLI\ValidateModulesEnabled(modules: ['dblog'])]
     #[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-    public function showOne($id, $options = ['format' => 'yaml']): PropertyList
+    public function showOne($id, $options = ['format' => 'yaml', 'date-format' => self::DEFAULT_DATE_FORMAT]): PropertyList
     {
         $rsc = $this->connection->select('watchdog', 'w')
             ->fields('w')
@@ -270,7 +275,7 @@ final class WatchdogCommands extends DrushCommands
         if (!$result) {
             throw new \Exception(dt('Watchdog message #!wid not found.', ['!wid' => $id]));
         }
-        return new PropertyList($this->formatResult($result, true));
+        return new PropertyList($this->formatResult($result, true, $options['date-format']));
     }
 
     /**
@@ -349,17 +354,19 @@ final class WatchdogCommands extends DrushCommands
      *   A database result object.
      * @param $extended
      *   Return extended message details.
+     * @param $date_format
+     *    Specific date format for the date console output.
      * @return \stdClass
      *   The result object with some attributes themed.
      */
-    protected function formatResult(\stdClass $result, bool $extended = false): \stdClass
+    protected function formatResult(\stdClass $result, bool $extended = false, string $date_format = self::DEFAULT_DATE_FORMAT): \stdClass
     {
         // Severity.
         $severities = RfcLogLevel::getLevels();
         $result->severity = trim(DrupalUtil::drushRender($severities[$result->severity]));
 
         // Date.
-        $result->date = date('d/M H:i', (int)$result->timestamp);
+        $result->date = date($date_format, (int)$result->timestamp);
         unset($result->timestamp);
 
         // Username.
