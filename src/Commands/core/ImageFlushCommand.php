@@ -5,73 +5,83 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Attributes as CLI;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Interact;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Flush all derived images for a given style.',
     aliases: ['if', 'image-flush'],
+    usages: [
+        'image:flush thumbnail,large',
+        'image:flush --all',
+    ],
 )]
-#[CLI\ValidateModulesEnabled(['image'])]
-#[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style-names')]
-final class ImageFlushCommand extends Command
+class ImageFlushCommand
 {
     use AutowireTrait;
+    use ImageTrait;
 
     public const string NAME = 'image:flush';
 
     public function __construct(
-        private readonly EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected ModuleHandlerInterface $moduleHandler,
     ) {
-        parent::__construct();
-    }
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('style-names', InputArgument::OPTIONAL, 'A comma delimited list of image style machine names. If not provided, user may choose from a list of names.')
-            ->addOption('all', null, InputOption::VALUE_NONE, 'Flush all derived images')
-            ->addUsage('image:flush thumbnail,large')
-            ->addUsage('image:flush --all');
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output): void
+    /**
+     * Prompts for the styles to flush when neither names nor --all were given.
+     */
+    #[Interact]
+    public function askForStyles(InputInterface $input, OutputInterface $output): void
     {
-        $io = new DrushStyle($input, $output);
-        $styles = array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple());
-        $style_names = $input->getArgument('style-names');
+        if (!empty($input->getArgument('style-names')) || $input->getOption('all')) {
+            return;
+        }
+        $styles = $this->allStyleNames();
+        $choices = array_merge(['all'], $styles);
+        $io = new SymfonyStyle($input, $output);
+        $choice = $io->choice((string) $this->t('Choose a style to flush'), array_combine($choices, $choices), 'all');
+        $input->setArgument('style-names', $choice === 'all' ? implode(',', $styles) : $choice);
+    }
 
-        if (empty($style_names) && !$input->getOption('all')) {
-            $styles_all = $styles;
-            array_unshift($styles_all, 'all');
-            $choices = array_combine($styles_all, $styles_all);
-            $style_names = $io->choice('Choose a style to flush', $choices, 'all');
-            if ($style_names == 'all') {
-                $style_names = implode(',', $styles);
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('A comma delimited list of image style machine names. If not provided, user may choose from a list of names.', suggestedValues: [self::class, 'suggestStyleNames'])]
+        ?string $styleNames = null,
+        #[Option('Flush all derived images')]
+        bool $all = false,
+    ): int {
+        $this->requireImageModule();
+        if ($all) {
+            $styles = $this->entityTypeManager->getStorage('image_style')->loadMultiple();
+        } else {
+            $names = StringUtils::csvToArray($styleNames);
+            if ($names === []) {
+                throw new \InvalidArgumentException((string) $this->t('Specify image style names to flush, or --all.'));
             }
-            $input->setArgument('style-names', $style_names);
-        }
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        if ($input->getOption('all')) {
-            $input->setArgument('style-names', array_keys($this->entityTypeManager->getStorage('image_style')->loadMultiple()));
+            $styles = $this->loadStyles($names);
         }
 
-        $ids = StringUtils::csvToArray($input->getArgument('style-names'));
-        foreach ($this->entityTypeManager->getStorage('image_style')->loadMultiple($ids) as $style_name => $style) {
+        $io = new SymfonyStyle($input, $output);
+        foreach ($styles as $name => $style) {
             $style->flush();
-            (new DrushStyle($input, $output))->success(sprintf('Image style %s flushed', $style_name));
+            $io->success((string) $this->t('Image style @name flushed.', ['@name' => $name]));
         }
-        return self::SUCCESS;
+        return Command::SUCCESS;
     }
 }

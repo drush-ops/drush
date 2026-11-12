@@ -5,56 +5,60 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Create an image derivative',
     aliases: ['id', 'image-derive'],
+    usages: [
+        'image:derive thumbnail core/themes/bartik/screenshot.png',
+    ],
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::FULL)]
-#[CLI\ValidateModulesEnabled(['image'])]
-#[CLI\ValidateEntityLoad(entityType: 'image_style', argumentName: 'style-name')]
-#[CLI\ValidateFileExists('source')]
-final class ImageDeriveCommand extends Command
+class ImageDeriveCommand
 {
     use AutowireTrait;
+    use ImageTrait;
 
     public const string NAME = 'image:derive';
 
     public function __construct(
-        private readonly EntityTypeManagerInterface $entityTypeManager,
+        protected EntityTypeManagerInterface $entityTypeManager,
+        protected ModuleHandlerInterface $moduleHandler,
     ) {
-        parent::__construct();
     }
 
-    public function configure(): void
-    {
-        $this
-            ->addArgument('style-name', InputArgument::REQUIRED, 'An image style machine name.')
-            ->addArgument('source', InputArgument::REQUIRED, 'Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')
-            ->addUsage('image:derive thumbnail core/themes/bartik/screenshot.png');
-    }
-
-    public function execute(
+    public function __invoke(
         InputInterface $input,
         OutputInterface $output,
+        #[Argument('An image style machine name.', suggestedValues: [self::class, 'suggestStyleNames'])]
+        string $styleName,
+        #[Argument('Path to a source image. Optionally prepend stream wrapper scheme. Relative paths calculated from Drupal root.')]
+        string $source,
     ): int {
-        $image_style = $this->entityTypeManager->getStorage('image_style')->load($input->getArgument('style-name'));
-        $source = $input->getArgument('source');
-        $derivative_uri = $image_style->buildUri($source);
-        if ($image_style->createDerivative($source, $derivative_uri)) {
-            (new DrushStyle($input, $output))->success(sprintf('Derivative image created: %s', $derivative_uri));
-            return Command::SUCCESS;
+        $this->requireImageModule();
+        $style = $this->loadStyle($styleName);
+        if (!file_exists($source)) {
+            throw new \InvalidArgumentException((string) $this->t('File(s) not found: @paths', ['@paths' => $source]));
         }
-        return Command::FAILURE;
+
+        $io = new SymfonyStyle($input, $output);
+        $derivative_uri = $style->buildUri($source);
+        if (!$style->createDerivative($source, $derivative_uri)) {
+            $io->error((string) $this->t('Unable to create the derivative image: @uri', ['@uri' => $derivative_uri]));
+            return Command::FAILURE;
+        }
+        $io->success((string) $this->t('Derivative image created: @uri', ['@uri' => $derivative_uri]));
+        return Command::SUCCESS;
     }
 }

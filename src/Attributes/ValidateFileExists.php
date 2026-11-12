@@ -8,6 +8,10 @@ use Attribute;
 use Consolidation\AnnotatedCommand\CommandData;
 use Consolidation\AnnotatedCommand\CommandError;
 
+/**
+ * @deprecated in Drush 14. Check the path inside the command instead, as
+ *   Drush\Commands\core\ImageDeriveCommand does.
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
 class ValidateFileExists extends ValidatorBase implements ValidatorInterface
 {
