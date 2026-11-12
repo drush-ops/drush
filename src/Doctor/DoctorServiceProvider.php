@@ -59,10 +59,14 @@ class DoctorServiceProvider implements ServiceProviderInterface
             UpdateValueCommand::class,
         ];
 
-        return array_merge(
-            $yaml,
+        $core = [
             PhpEvalCommand::class,
             PhpScriptCommand::class,
+        ];
+
+        return array_merge(
+            $yaml,
+            $core,
         );
     }
 
