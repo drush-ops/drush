@@ -4,64 +4,59 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
-use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Database\Connection;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Tail watchdog messages.',
     aliases: ['wd-tail', 'wt', 'watchdog-tail'],
+    usages: [
+        'watchdog:tail "cron run successful"',
+        'watchdog:tail --severity=Notice',
+        'watchdog:tail --severity-min=Warning',
+        'watchdog:tail --type=php',
+    ],
 )]
-#[CLI\ValidateModulesEnabled(modules: ['dblog'])]
-#[CLI\Version(version: '10.6')]
-final class WatchdogTailCommand extends Command
+final class WatchdogTailCommand
 {
     use AutowireTrait;
     use WatchdogTrait;
 
-    const string NAME = 'watchdog:tail';
+    public const string NAME = 'watchdog:tail';
 
     public function __construct(
         protected Connection $connection,
-        protected LoggerInterface $logger,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('substring', InputArgument::OPTIONAL, 'A substring to look search in error messages.', '')
-            ->addOption('severity', null, InputOption::VALUE_REQUIRED, 'Restrict to messages of a given severity level (numeric or string).')
-            ->addOption('severity-min', null, InputOption::VALUE_REQUIRED, 'Restrict to messages of a given severity level and higher.')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Restrict to messages of a given type.')
-            ->addOption('extended', null, InputOption::VALUE_NONE, 'Return extended information about each message.')
-            ->addUsage('watchdog:tail "cron run successful"')
-            ->addUsage('watchdog:tail --severity=Notice')
-            ->addUsage('watchdog:tail --severity-min=Warning')
-            ->addUsage('watchdog:tail --type=php');
-    }
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('A substring to look search in error messages.')]
+        string $substring = '',
+        #[Option('Restrict to messages of a given severity level (numeric or string).', suggestedValues: [self::class, 'suggestSeverities'])]
+        ?string $severity = null,
+        #[Option('Restrict to messages of a given severity level and higher.', suggestedValues: [self::class, 'suggestSeverities'])]
+        ?string $severityMin = null,
+        #[Option('Restrict to messages of a given type.', suggestedValues: [self::class, 'suggestTypes'])]
+        ?string $type = null,
+        #[Option('Return extended information about each message.')]
+        bool $extended = false,
+    ): int {
+        $this->requireDblog();
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $substring = $input->getArgument('substring');
-        $severity = $input->getOption('severity');
-        $severity_min = $input->getOption('severity-min');
-        $type = $input->getOption('type');
-        $extended = $input->getOption('extended');
-
-        $where = $this->where($type, $severity, $substring, 'AND', $severity_min);
+        $where = $this->where($type, $severity, $substring, 'AND', $severityMin);
         if (empty($where['where'])) {
             $where = [
               'where' => 'wid > :wid',
@@ -82,26 +77,14 @@ final class WatchdogTailCommand extends Command
             }
             $query->where($where['where'], $where['args']);
 
-            $rsc = $query->execute();
-            while ($result = $rsc->fetchObject()) {
+            foreach ($query->execute() as $result) {
                 if ($result->wid > $last_seen_wid) {
-                    $last_seen_wid = $result->wid;
+                    $last_seen_wid = (int) $result->wid;
                 }
                 $row = $this->formatResult($result, $extended);
-                $msg = "$row->wid\t$row->date\t$row->type\t$row->severity\t$row->message";
-                $output->writeln($msg);
+                $output->writeln("{$row['wid']}\t{$row['date']}\t{$row['type']}\t{$row['severity']}\t{$row['message']}");
             }
             sleep(2);
-        }
-    }
-
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
-    {
-        if ($input->mustSuggestOptionValuesFor('severity') || $input->mustSuggestOptionValuesFor('severity-min')) {
-            $suggestions->suggestValues(array_keys(RfcLogLevel::getLevels()));
-        }
-        if ($input->mustSuggestOptionValuesFor('type')) {
-            $suggestions->suggestValues(self::messageTypes());
         }
     }
 }

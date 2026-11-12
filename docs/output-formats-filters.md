@@ -100,7 +100,7 @@ $ drush pm:list --filter='status=enabled'
 Exclude rows via the negation operator `!`:
 
 ```shell
-drush watchdog:show --filter="type!=locale"
+drush views:list --filter="status!=enabled"
 ```
 
 To search for fields that contain a string using the operator `*=`, or match a regular expression with the `~=` operator. For example, to find all views whose machine name contains the word *content*:

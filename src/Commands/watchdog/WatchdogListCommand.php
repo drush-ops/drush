@@ -4,138 +4,96 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\RowsOfFields;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Logger\RfcLogLevel;
-use Drush\Attributes as CLI;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
-use Drush\Style\DrushStyle;
-use Psr\Log\LoggerInterface;
+use Drush\Commands\OutputFormat;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Interact;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Interactively filter the watchdog message listing.',
     aliases: ['wd-list', 'watchdog-list'],
+    usages: ['watchdog:list'],
 )]
-#[CLI\ValidateModulesEnabled(modules: ['dblog'])]
-#[CLI\FieldLabels(labels: [
-    'wid' => 'ID',
-    'type' => 'Type',
-    'message' => 'Message',
-    'severity' => 'Severity',
-    'location' => 'Location',
-    'hostname' => 'Hostname',
-    'date' => 'Date',
-    'username' => 'Username',
-])]
-#[CLI\FilterDefaultField(field: 'message')]
-#[CLI\DefaultTableFields(fields: ['wid', 'date', 'type', 'severity', 'message'])]
-#[CLI\Formatter(returnType: RowsOfFields::class, defaultFormatter: 'table')]
-final class WatchdogListCommand extends Command
+final class WatchdogListCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
     use WatchdogTrait;
 
-    const string NAME = 'watchdog:list';
+    public const string NAME = 'watchdog:list';
 
     public function __construct(
         protected Connection $connection,
-        protected FormatterManager $formatterManager,
-        protected LoggerInterface $logger,
+        protected ModuleHandlerInterface $moduleHandler,
+        protected EntityTypeManagerInterface $entityTypeManager,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * Offers the message types and severity levels when no filter was given.
+     */
+    #[Interact]
+    public function askForFilter(InputInterface $input, OutputInterface $output): void
     {
-        $this
-            ->addArgument('substring', InputArgument::OPTIONAL, 'A substring to look search in error messages.', '')
-            ->addOption('count', null, InputOption::VALUE_REQUIRED, 'The number of messages to show.', 10)
-            ->addOption('severity', null, InputOption::VALUE_REQUIRED, 'Restrict to messages of a given severity level (numeric or string).')
-            ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Restrict to messages of a given type.')
-            ->addOption('extended', null, InputOption::VALUE_NONE, 'Return extended information about each message.')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml', 'table')
-            ->addUsage('watchdog:list');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return Command::SUCCESS;
-    }
-
-    protected function doExecute(InputInterface $input, OutputInterface $output): RowsOfFields
-    {
-        $substring = $input->getArgument('substring');
-        $count = (int)$input->getOption('count');
-        $severity = $input->getOption('severity');
-        $type = $input->getOption('type');
-        $extended = $input->getOption('extended');
-
-        $where = $this->where($type, $severity, $substring, 'AND');
-        $query = $this->connection->select('watchdog', 'w')
-            ->range(0, $count)
-            ->fields('w')
-            ->orderBy('wid', 'DESC');
-        if (!empty($where['where'])) {
-            $query->where($where['where'], $where['args']);
+        if ($input->getOption('type') !== null || $input->getOption('severity') !== null) {
+            return;
         }
-        $rsc = $query->execute();
-
-        $table = [];
-        while ($result = $rsc->fetchObject()) {
-            $row = $this->formatResult($result, $extended);
-            $table[$row->wid] = (array)$row;
-        }
-
-        if ($table === []) {
-            $this->logger->notice('No log messages available.');
-        }
-
-        return new RowsOfFields($table);
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
-        $io = new DrushStyle($input, $output);
-        $choices['-- types --'] = '== message types ==';
+        $this->requireDblog();
         $types = $this->messageTypes();
-        foreach ($types as $key => $type) {
-            $choices[$key] = $type;
-        }
-        $choices['-- levels --'] = '== severity levels ==';
-        $severities = RfcLogLevel::getLevels();
-
-        foreach ($severities as $key => $value) {
-            $choices[$key] = $value;
-        }
-        $option = $io->select('Select a message type or severity level', $choices);
-        if (isset($types[$option])) {
-            $input->setOption('type', $types[$option]);
+        $choice = (new SymfonyStyle($input, $output))->choice(
+            (string) $this->t('Select a message type or severity level'),
+            array_merge($types, array_values($this->severityLabels())),
+        );
+        if (in_array($choice, $types, true)) {
+            $input->setOption('type', $choice);
         } else {
-            $input->setOption('severity', $option);
+            $input->setOption('severity', $choice);
         }
     }
 
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
-    {
-        if ($input->mustSuggestOptionValuesFor('severity')) {
-            $suggestions->suggestValues(array_keys(RfcLogLevel::getLevels()));
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('A substring to look search in error messages.')]
+        string $substring = '',
+        #[Option('The number of messages to show.')]
+        int $count = 10,
+        #[Option('Restrict to messages of a given severity level (numeric or string).', suggestedValues: [self::class, 'suggestSeverities'])]
+        ?string $severity = null,
+        #[Option('Restrict to messages of a given severity level and higher.', suggestedValues: [self::class, 'suggestSeverities'])]
+        ?string $severityMin = null,
+        #[Option('Restrict to messages of a given type.', suggestedValues: [self::class, 'suggestTypes'])]
+        ?string $type = null,
+        #[Option('Return extended information about each message.')]
+        bool $extended = false,
+        #[Option('A comma delimited list of fields to show. Use * for all. Defaults to wid,date,type,severity,message for the table and to all fields for json and yaml.')]
+        ?string $fields = null,
+        #[Option('An alternative output format such as json or yaml. Defaults to table.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $this->requireDblog();
+
+        $records = $this->fetchRecords($this->where($type, $severity, $substring, 'AND', $severityMin), $count, $extended);
+        if ($records === []) {
+            (new SymfonyStyle($input, $output))->getErrorStyle()->note((string) $this->t('No log messages available.'));
+            if ($format === null) {
+                return Command::SUCCESS;
+            }
         }
-        if ($input->mustSuggestOptionValuesFor('type')) {
-            $suggestions->suggestValues(self::messageTypes());
-        }
+        $output->writeln($this->renderRecords($records, $fields, $format), OutputInterface::OUTPUT_RAW);
+
+        return Command::SUCCESS;
     }
 }
