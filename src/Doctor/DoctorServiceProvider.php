@@ -4,9 +4,16 @@ namespace Drush\Doctor;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
+use Drupal\Core\Image\Image;
 use Drush\Commands\cache\CacheRebuildCommand;
 use Drush\Commands\cache\CacheTagsCommand;
+use Drush\Commands\core\BrowseCommand;
+use Drush\Commands\core\ImageCommands;
+use Drush\Commands\core\ImageDeriveCommand;
+use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\core\PhpCommands;
+use Drush\Commands\core\PhpEvalCommand;
+use Drush\Commands\core\PhpScriptCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\user\UserLoginCommand;
 use Grasmash\YamlCli\Command\GetValueCommand;
@@ -44,19 +51,31 @@ class DoctorServiceProvider implements ServiceProviderInterface
 
     public static function getClassesEarly(): array
     {
-        return [
+        $yaml = [
             GetValueCommand::class,
             LintCommand::class,
             UpdateKeyCommand::class,
             UnsetKeyCommand::class,
             UpdateValueCommand::class,
         ];
+
+        return array_merge(
+            $yaml,
+            PhpEvalCommand::class,
+            PhpScriptCommand::class,
+        );
     }
 
     public static function getClassesStandard(): array
     {
-        // @todo add more.
+        $core = [
+            BrowseCommand::class,
+            ImageDeriveCommand::class,
+            ImageFlushCommand::class,
+        ];
+
         $classes = array_merge(
+            $core,
             FindClasses::findClasses('Drush\\Commands\\cache'),
             FindClasses::findClasses('Drush\\Commands\\queue'),
             FindClasses::findClasses('Drush\\Commands\\role'),
