@@ -29,7 +29,7 @@ Drupal Compatibility
   </tr>
   <tr>
     <td> Drush 14 </td>
-    <td> 8.3+ </td>
+    <td> 8.4+ </td>
     <td> TBD </td>
     <td></td> <td></td> <td></td> <td></td> <td><b>✅11.3+</b></td><td><b>✅</b></td>
   </tr>
