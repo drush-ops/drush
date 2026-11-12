@@ -4,41 +4,45 @@ declare(strict_types=1);
 
 namespace Drush\Doctor;
 
-use Composer\Autoload\ClassLoader;
-use Drush\Runtime\RelativeNamespaceDiscovery;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Finder\Finder;
 
 /**
- * Discovers command classes.
- *
- * The provider runs inside Drupal's container rather than Drush's, so it
- * cannot have the Composer ClassLoader injected. The loader is therefore
- * resolved from ClassLoader::getRegisteredLoaders() when one is not supplied.
+ * Discovers command classes in Drush's own source tree.
  */
 class FindClasses
 {
+    private const string ROOT_NAMESPACE = 'Drush\\';
+
     /**
-     * Finds instantiable #[AsCommand] classes in a namespace below `Drush\`.
+     * Finds instantiable #[AsCommand] classes in a Drush namespace.
      *
-     * @param string $relativeNamespace
-     *   A namespace relative to the `Drush\` PSR-4 root, e.g. `Commands\user`.
-     * @param ClassLoader|null $classLoader
-     *   The loader to search, or null to resolve the registered one.
+     * The namespace is mapped onto Drush's src/ directory, so only Drush's own
+     * files are searched, never other packages sharing the namespace.
+     *
+     * @param string $namespace
+     *   A fully-qualified namespace below `Drush\`, e.g. `Drush\Commands\user`.
      *
      * @return string[]
      *   The discovered class names, sorted.
      */
-    public static function findClasses(string $relativeNamespace, ?ClassLoader $classLoader = null): array
+    public static function findClasses(string $namespace): array
     {
-        $classLoader ??= self::classLoader();
-        if (!$classLoader instanceof ClassLoader) {
+        $namespace = trim($namespace, '\\') . '\\';
+        if (!str_starts_with($namespace, self::ROOT_NAMESPACE)) {
+            throw new \InvalidArgumentException("Namespace must be below " . self::ROOT_NAMESPACE . ", got $namespace");
+        }
+
+        $relativePath = str_replace('\\', '/', substr($namespace, strlen(self::ROOT_NAMESPACE)));
+        $directory = dirname(__DIR__) . '/' . $relativePath;
+        if (!is_dir($directory)) {
             return [];
         }
 
-        $discovered = new RelativeNamespaceDiscovery($classLoader)
-            ->setRelativeNamespace($relativeNamespace)
-            ->setSearchPattern('*Command.php')
-            ->getClasses();
+        $discovered = [];
+        foreach (Finder::create()->files()->name('*Command.php')->in($directory) as $file) {
+            $discovered[] = $namespace . str_replace(['/', '.php'], ['\\', ''], $file->getRelativePathname());
+        }
 
         $classes = array_values(array_filter($discovered, self::isCommand(...)));
         sort($classes);
@@ -59,19 +63,5 @@ class FindClasses
 
         return !$reflection->isAbstract()
             && $reflection->getAttributes(AsCommand::class) !== [];
-    }
-
-    /**
-     * The registered Composer loader that provides the `Drush\` namespace.
-     */
-    protected static function classLoader(): ?ClassLoader
-    {
-        foreach (ClassLoader::getRegisteredLoaders() as $loader) {
-            if (isset($loader->getPrefixesPsr4()['Drush\\'])) {
-                return $loader;
-            }
-        }
-
-        return null;
     }
 }

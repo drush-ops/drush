@@ -57,11 +57,11 @@ class DoctorServiceProvider implements ServiceProviderInterface
     {
         // @todo add more.
         $classes = array_merge(
-            FindClasses::findClasses('Commands\\cache'),
-            FindClasses::findClasses('Commands\\queue'),
-            FindClasses::findClasses('Commands\\role'),
-            FindClasses::findClasses('Commands\\state'),
-            FindClasses::findClasses('Commands\\user'),
+            FindClasses::findClasses('Drush\\Commands\\cache'),
+            FindClasses::findClasses('Drush\\Commands\\queue'),
+            FindClasses::findClasses('Drush\\Commands\\role'),
+            FindClasses::findClasses('Drush\\Commands\\state'),
+            FindClasses::findClasses('Drush\\Commands\\user'),
         );
 
         $skip = [
