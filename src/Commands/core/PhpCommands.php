@@ -17,7 +17,7 @@ final class PhpCommands extends DrushCommands implements StdinAwareInterface
     use StdinAwareTrait;
 
     #[Deprecated(reason: 'Use PhpScriptCommand::NAME')]
-    const string SCRIPT = 'php:script';
+    const string SCRIPT = PhpScriptCommand::NAME;
     #[Deprecated(reason: 'Use PhpEvalCommand::NAME')]
-    const string EVAL = 'php:eval';
+    const string EVAL = PhpEvalCommand::NAME;
 }

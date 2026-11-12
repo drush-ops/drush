@@ -4,132 +4,144 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\OutputFormatters\FormatterManager;
+use Drupal\Component\Serialization\Yaml;
 use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Command\HelpLinks;
 use Drush\Commands\AutowireTrait;
+use Drush\Commands\OutputFormat;
 use Drush\Config\DrushConfig;
-use Drush\Formatters\FormatterTrait;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
+/**
+ * Runs a PHP script and prints what it returns.
+ *
+ * The Bootstrap attribute is the one Drush-specific piece left: it keeps
+ * Drush's command discovery from bootstrapping Drupal before the command
+ * runs, so the command also works outside a Drupal site. Under Drush the
+ * command then bootstraps as far as it can itself. Elsewhere (dr, a kernel
+ * test) there is no BootstrapManager and Drupal is already available.
+ *
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Run php a script after a full Drupal bootstrap.',
+    description: 'Run a php script after a full Drupal bootstrap.',
     aliases: ['scr', 'php-script'],
+    usages: [
+        'php:script example --script-path=/path/to/scripts:/another/path',
+        'php:script -',
+        'php:script foo -- apple --cider',
+    ],
+    help: <<<'HELP'
+        A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full Drush command instead, since that's more self-documenting. Drush provides commandline options to the script via a variable called $extra.
+
+        See https://www.drush.org/latest/examples/helloworld.script for an example script.
+        HELP,
 )]
-#[CLI\HelpLinks(links: [HelpLinks::Script])]
 #[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-#[CLI\Formatter(defaultFormatter: 'var_dump')]
-final class PhpScriptCommand extends Command
+final class PhpScriptCommand
 {
     use AutowireTrait;
-    use FormatterTrait;
 
     public const string NAME = 'php:script';
 
     public function __construct(
-        protected readonly BootstrapManager $bootstrapManager,
-        protected readonly DrushConfig $drushConfig,
-        protected FormatterManager $formatterManager,
-        protected readonly LoggerInterface $logger,
+        protected ?BootstrapManager $bootstrapManager = null,
+        protected ?DrushConfig $drushConfig = null,
     ) {
-        parent::__construct();
     }
 
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('Script name and arguments. First argument is script name, remaining are passed to the script.')]
+        array $extra = [],
+        #[Option('Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).', name: 'script-path')]
+        ?string $scriptPath = null,
+        #[Option('An alternative output format such as json or yaml. By default the returned value prints via var_export().')]
+        ?OutputFormat $format = null,
+    ): int {
+        $this->bootstrapManager?->bootstrapMax(DrupalBootLevels::FULL);
 
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('extra', InputArgument::IS_ARRAY, 'Script name and arguments. First argument is script name, remaining are passed to the script.')
-            ->addOption('script-path', null, InputOption::VALUE_REQUIRED, 'Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).')
-            ->addOption('format', null, InputOption::VALUE_REQUIRED, 'Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml', 'var_export')
-            ->addUsage('php:script example --script-path=/path/to/scripts:/another/path')
-            ->addUsage('php:script -')
-            ->addUsage('php:script foo -- apple --cider')
-            ->setHelp('A useful alternative to eval command when your php is lengthy or you can\'t be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full Drush command instead, since that\'s more self-documenting. Drush provides commandline options to the script via a variable called $extra.');
-    }
-
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input, $output);
-        $this->writeFormattedOutput($input, $output, $data);
-        return is_int($data) ? $data : self::SUCCESS;
-    }
-
-    public function doExecute(InputInterface $input, OutputInterface $output)
-    {
-        $this->bootstrapManager->bootstrapMax(DrupalBootLevels::FULL);
-
-        $found = false;
-        $all = [];
-        $extra = $input->getArgument('extra');
         $script = array_shift($extra);
 
-        if ($script == '-') {
+        if ($script === '-') {
             // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
-            // If testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
-            return stream_get_contents($inputStream);
-        } elseif ($script && file_exists($script)) {
+            // Under CommandTester::setInputs() the stream holds the test input.
+            $stream = $input instanceof StreamableInputInterface ? $input->getStream() : null;
+            $output->write(stream_get_contents($stream ?? STDIN), false, OutputInterface::OUTPUT_RAW);
+            return Command::SUCCESS;
+        }
+
+        if ($script !== null && file_exists($script)) {
             $found = $script;
         } else {
-            // Array of paths to search for scripts
-            $searchpath['cwd'] = $this->drushConfig->cwd();
-
-            // Additional script paths, specified by 'script-path' option
-            if ($script_path = $input->getOption('script-path')) {
-                foreach (explode(PATH_SEPARATOR, $script_path) as $path) {
-                    $searchpath[] = $path;
-                }
+            $searchPath = [$this->drushConfig?->cwd() ?? getcwd()];
+            if ($scriptPath !== null && $scriptPath !== '') {
+                array_push($searchPath, ...explode(PATH_SEPARATOR, $scriptPath));
             }
-            $this->logger->notice('Searching for scripts in {paths}', ['paths' => implode(',', $searchpath)]);
 
-            if (empty($script)) {
-                $all = [];
-                // List all available scripts.
+            if ($script === null || $script === '') {
+                // List the available scripts.
                 $files = Finder::create()
                     ->files()
                     ->name('*.php')
                     ->depth(0)
-                    ->in($searchpath);
+                    ->in(array_filter($searchPath, 'is_dir'));
+                $all = [];
                 foreach ($files as $file) {
                     $all[] = $file->getRelativePathname();
                 }
-                return implode("\n", $all);
-            } else {
-                // Execute the specified script.
-                foreach ($searchpath as $path) {
-                    $script_filename = $path . '/' . $script;
-                    if (file_exists($script_filename . '.php')) {
-                        $script_filename .= '.php';
-                    }
-                    if (file_exists($script_filename)) {
-                        $found = $script_filename;
-                        break;
-                    }
-                    $all[] = $script_filename;
+                if ($all !== []) {
+                    $output->writeln(implode("\n", $all), OutputInterface::OUTPUT_RAW);
                 }
-                if (!$found) {
-                    throw new \Exception(sprintf('Unable to find any of the following: %s', implode(', ', $all)));
+                return Command::SUCCESS;
+            }
+
+            $found = null;
+            $tried = [];
+            foreach ($searchPath as $path) {
+                $candidate = $path . '/' . $script;
+                if (file_exists($candidate . '.php')) {
+                    $candidate .= '.php';
                 }
+                if (file_exists($candidate)) {
+                    $found = $candidate;
+                    break;
+                }
+                $tried[] = $candidate;
+            }
+            if ($found === null) {
+                throw new \InvalidArgumentException(sprintf('Unable to find any of the following: %s', implode(', ', $tried)));
             }
         }
 
-        $return = include($found);
-        // 1 just means success so don't return it.
+        $return = include $found;
+        // include() returns 1 for a script without a return statement.
         // http://us3.php.net/manual/en/function.include.php#example-120
-        if ($return !== 1) {
-            return $return;
+        if ($return === 1) {
+            $return = null;
         }
+
+        $result = match ($format) {
+            OutputFormat::Json => json_encode($return, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
+            OutputFormat::Yaml => Yaml::encode($return),
+            default => $return === null ? '' : var_export($return, true),
+        };
+        // Yaml::encode() ends with a newline of its own; writeln adds one.
+        $result = rtrim($result, "\n");
+        if ($result !== '') {
+            $output->writeln($result, OutputInterface::OUTPUT_RAW);
+        }
+
+        return is_int($return) ? $return : Command::SUCCESS;
     }
 }
