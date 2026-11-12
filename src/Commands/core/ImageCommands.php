@@ -10,7 +10,7 @@ use JetBrains\PhpStorm\Deprecated;
 final class ImageCommands extends DrushCommands
 {
     #[Deprecated(replacement: 'ImageDeriveCommand::NAME')]
-    const string DERIVE = 'image:derive';
+    const string DERIVE = ImageDeriveCommand::NAME;
     #[Deprecated(replacement: 'ImageFlushCommand::NAME')]
     const string FLUSH = ImageFlushCommand::NAME;
 }
