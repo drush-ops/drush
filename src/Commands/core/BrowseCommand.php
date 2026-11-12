@@ -4,70 +4,49 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Consolidation\SiteAlias\SiteAliasManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
-use Drush\Attributes as CLI;
-use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;
-use Drush\Drush;
-use Drush\Exec\ExecTrait;
-use Drush\SiteAlias\ProcessManager;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: self::NAME,
-    description: 'Display a link to a given path or open link in a browser',
+    description: 'Display a link to a given path',
+    usages: [
+        'browse node/1',
+    ],
 )]
-#[CLI\HandleRemoteCommands]
-#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-final class BrowseCommand extends Command
+final class BrowseCommand
 {
     use AutowireTrait;
-    use ExecTrait;
+    use StringTranslationTrait;
 
-    const string NAME = 'browse';
+    public const string NAME = 'browse';
 
-    public function __construct(
-        private readonly SiteAliasManagerInterface $siteAliasManager,
-        private readonly ProcessManager $processManager,
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addArgument(name: 'path', mode: InputOption::VALUE_REQUIRED, description: 'Path to open. If omitted, the site front page will be opened.')
-            ->addOption(name: 'browser', mode: InputOption::VALUE_NEGATABLE, description: 'Open the URL in the default browser.')
-            ->addOption(name: 'redirect-port', mode: InputOption::VALUE_REQUIRED, description: 'The port that the web server is redirected to (e.g. when running within a Vagrant environment).')
-            ->addUsage(usage: 'browse node/1')
-            ->addUsage(usage: '@example.prod browse');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $aliasRecord = $this->siteAliasManager->getSelf();
-        // Redispatch if called against a remote-host so a browser is started on
-        // the *local* machine.
-        if ($this->processManager->hasTransport($aliasRecord)) {
-            $process = $this->processManager->drush($aliasRecord, self::NAME, [$input->getArgument('path')], Drush::redispatchOptions());
-            $process->mustRun();
-            $link = $process->getOutput();
-        } else {
-            if (!Drush::bootstrapManager()->doBootstrap(DrupalBootLevels::FULL)) {
-                // Fail gracefully if unable to bootstrap Drupal. drush_bootstrap() has
-                // already logged an error.
-                return self::FAILURE;
-            }
-            $link = Url::fromUserInput('/' . $input->getArgument('path'), ['absolute' => true])->toString();
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('Path to link to. If omitted, the site front page is used.')]
+        string $path = '',
+    ): int {
+        // Url::fromUserInput() is core's helper for user-supplied paths: it
+        // resolves routed paths and falls back to an unrouted URL for the rest,
+        // which the path.validator service alone would reject.
+        // One leading slash is tolerated. Two would name a host, which core
+        // silently drops, so reject that outright.
+        $path = str_starts_with($path, '/') ? substr($path, 1) : $path;
+        if (str_starts_with($path, '/')) {
+            throw new \InvalidArgumentException((string) $this->t('@path is not a valid site path: it must not start with //.', ['@path' => '/' . $path]));
         }
-
-        $this->startBrowser($link, 0, $input->getOption('redirect-port'), (bool) $input->getOption('browser'));
+        try {
+            $link = Url::fromUserInput('/' . $path, ['absolute' => true])->toString();
+        } catch (\InvalidArgumentException $e) {
+            throw new \InvalidArgumentException((string) $this->t('@path is not a valid site path: @reason', ['@path' => $path, '@reason' => $e->getMessage()]), 0, $e);
+        }
         $output->writeln($link);
-        return self::SUCCESS;
+
+        return Command::SUCCESS;
     }
 }
