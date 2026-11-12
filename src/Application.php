@@ -351,6 +351,8 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
      */
     public function addCommand(callable|Command $command): ?Command
     {
+        // Always true on Console 7.4+, which is what phpstan analyses against.
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
         if (method_exists(SymfonyApplication::class, 'addCommand')) {
             return parent::addCommand($command);
         }
