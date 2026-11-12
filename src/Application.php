@@ -346,6 +346,20 @@ class Application extends SymfonyApplication implements LoggerAwareInterface, Co
     }
 
     /**
+     * Robo 5.2+ calls addCommand(), which Symfony Console added in 7.4.
+     * Fall back to add() so Drush still runs on Console 6.4 (Drupal 10).
+     */
+    public function addCommand(callable|Command $command): ?Command
+    {
+        // Always true on Console 7.4+, which is what phpstan analyses against.
+        // @phpstan-ignore-next-line function.alreadyNarrowedType
+        if (method_exists(SymfonyApplication::class, 'addCommand')) {
+            return parent::addCommand($command);
+        }
+        return $this->add($command);
+    }
+
+    /**
      * Renders a caught Throwable. Omits the command docs at end.
      */
     public function renderThrowable(\Throwable $e, OutputInterface $output): void
