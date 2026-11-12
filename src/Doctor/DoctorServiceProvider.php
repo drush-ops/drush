@@ -95,10 +95,20 @@ class DoctorServiceProvider implements ServiceProviderInterface
             $entity,
             FindClasses::findClasses('Drush\\Commands\\cache'),
             FindClasses::findClasses('Drush\\Commands\\queue'),
-            FindClasses::findClasses('Drush\\Commands\\role'),
             FindClasses::findClasses('Drush\\Commands\\state'),
-            FindClasses::findClasses('Drush\\Commands\\user'),
         );
+
+        // The user module cannot be uninstalled, but it is missing from the
+        // container while site:install is still running and in kernel tests
+        // that enable only system. Without this guard those containers fail
+        // to compile, because the role commands autowire user services.
+        if (isset($modules['user'])) {
+            $classes = array_merge(
+                $classes,
+                FindClasses::findClasses('Drush\\Commands\\role'),
+                FindClasses::findClasses('Drush\\Commands\\user'),
+            );
+        }
 
         // These commands need a module that is not always installed.
         if (isset($modules['dblog'])) {
