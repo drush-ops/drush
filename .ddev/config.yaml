@@ -27,3 +27,6 @@ web_environment:
   - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
   - EDITOR=nano
   - DRUSH_ALLOW_XDEBUG=1
+  # For `dr`. Assumes you install with `composer sut:si`
+  - DRUPAL_URI=https://dev
+  - DRUPAL_DEV_SITE_PATH=sites/dev

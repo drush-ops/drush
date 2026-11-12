@@ -81,6 +81,7 @@
     }
   },
   "autoload-dev": {
+    "files": ["src/Doctor/autoload_file.php"],
     "psr-4": {
       "Unish\\": "tests/unish",
       "Custom\\Library\\": "tests/fixtures/lib"
