@@ -4,16 +4,26 @@ namespace Drush\Doctor;
 
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
+use Drush\Commands\cache\CacheRebuildCommand;
 use Drush\Commands\cache\CacheTagsCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\state\StateGetCommand;
-use Drush\Commands\user\UserInformationCommand;
+use Drush\Commands\user\UserLoginCommand;
+use Grasmash\YamlCli\Command\GetValueCommand;
+use Grasmash\YamlCli\Command\LintCommand;
+use Grasmash\YamlCli\Command\UnsetKeyCommand;
+use Grasmash\YamlCli\Command\UpdateKeyCommand;
+use Grasmash\YamlCli\Command\UpdateValueCommand;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Definition;
 
 class DoctorServiceProvider implements ServiceProviderInterface
 {
     public function register(ContainerBuilder $container): void
     {
+        //
+        $container->addAliases([LoggerInterface::class => 'logger.channel.default']);
+
         // Add Drush commands Drupal's container so that dr loads them.
         $modules = $container->getParameter('container.modules');
         $classes = self::getClassesEarly();
@@ -35,16 +45,30 @@ class DoctorServiceProvider implements ServiceProviderInterface
     public static function getClassesEarly(): array
     {
         return [
-            // @todo add more.
-            StateGetCommand::class,
+            GetValueCommand::class,
+            LintCommand::class,
+            UpdateKeyCommand::class,
+            UnsetKeyCommand::class,
+            UpdateValueCommand::class,
         ];
     }
 
     public static function getClassesStandard(): array
     {
-        return [
-            // @todo add more.
-            UserInformationCommand::class,
+        // @todo add more.
+        $classes = array_merge(
+            FindClasses::findClasses('Commands\\cache'),
+            FindClasses::findClasses('Commands\\queue'),
+            FindClasses::findClasses('Commands\\role'),
+            FindClasses::findClasses('Commands\\state'),
+            FindClasses::findClasses('Commands\\user'),
+        );
+
+        $skip = [
+            CacheRebuildCommand::class,
+            UserLoginCommand::class,
         ];
+
+        return array_diff($classes, $skip);
     }
 }

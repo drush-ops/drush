@@ -73,7 +73,6 @@ class UserInformationCommand
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected DateFormatterInterface $dateFormatter,
-        #[Autowire(service: 'logger.channel.default')]
         protected LoggerInterface $logger,
     ) {
     }
