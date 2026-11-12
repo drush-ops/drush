@@ -74,8 +74,6 @@ class DoctorServiceProvider implements ServiceProviderInterface
     {
         $core = [
             BrowseCommand::class,
-            ImageDeriveCommand::class,
-            ImageFlushCommand::class,
             RouteCommand::class,
         ];
 
@@ -97,6 +95,10 @@ class DoctorServiceProvider implements ServiceProviderInterface
         // These commands need a module that is not always installed.
         if (isset($modules['dblog'])) {
             $classes = array_merge($classes, FindClasses::findClasses('Drush\\Commands\\watchdog'));
+        }
+        if (isset($modules['image'])) {
+            $classes[] = ImageDeriveCommand::class;
+            $classes[] = ImageFlushCommand::class;
         }
         if (isset($modules['workspaces'])) {
             $classes[] = WorkspacePublishCommand::class;
