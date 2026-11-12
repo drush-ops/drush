@@ -14,6 +14,10 @@ use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\PhpEvalCommand;
 use Drush\Commands\core\PhpScriptCommand;
+use Drush\Commands\core\RouteCommand;
+use Drush\Commands\core\WorkspacePublishCommand;
+use Drush\Commands\entity\EntityDeleteCommand;
+use Drush\Commands\entity\EntitySaveCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\user\UserLoginCommand;
 use Grasmash\YamlCli\Command\GetValueCommand;
@@ -51,22 +55,14 @@ class DoctorServiceProvider implements ServiceProviderInterface
 
     public static function getClassesEarly(): array
     {
-        $yaml = [
-            GetValueCommand::class,
-            LintCommand::class,
-            UpdateKeyCommand::class,
-            UnsetKeyCommand::class,
-            UpdateValueCommand::class,
-        ];
-
         $core = [
             PhpEvalCommand::class,
             PhpScriptCommand::class,
         ];
 
         return array_merge(
-            $yaml,
             $core,
+            [],
         );
     }
 
@@ -76,15 +72,24 @@ class DoctorServiceProvider implements ServiceProviderInterface
             BrowseCommand::class,
             ImageDeriveCommand::class,
             ImageFlushCommand::class,
+            RouteCommand::class,
+            WorkspacePublishCommand::class,
+        ];
+
+        $entity = [
+            EntitySaveCommand::class,
+            EntityDeleteCommand::class,
         ];
 
         $classes = array_merge(
             $core,
+            $entity,
             FindClasses::findClasses('Drush\\Commands\\cache'),
             FindClasses::findClasses('Drush\\Commands\\queue'),
             FindClasses::findClasses('Drush\\Commands\\role'),
             FindClasses::findClasses('Drush\\Commands\\state'),
             FindClasses::findClasses('Drush\\Commands\\user'),
+            FindClasses::findClasses('Drush\\Commands\\watchdog'),
         );
 
         $skip = [
