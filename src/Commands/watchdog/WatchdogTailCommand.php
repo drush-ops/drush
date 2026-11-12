@@ -51,8 +51,8 @@ final class WatchdogTailCommand
         ?string $severityMin = null,
         #[Option('Restrict to messages of a given type.', suggestedValues: [self::class, 'suggestTypes'])]
         ?string $type = null,
-        #[Option('Return extended information about each message.')]
-        bool $extended = false,
+        #[Option('Show the whole message instead of truncating it.')]
+        bool $full = false,
     ): int {
         $this->requireDblog();
 
@@ -81,7 +81,7 @@ final class WatchdogTailCommand
                 if ($result->wid > $last_seen_wid) {
                     $last_seen_wid = (int) $result->wid;
                 }
-                $row = $this->formatResult($result, $extended);
+                $row = $this->formatResult($result, $full);
                 $output->writeln("{$row['wid']}\t{$row['date']}\t{$row['type']}\t{$row['severity']}\t{$row['message']}");
             }
             sleep(2);
