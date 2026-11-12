@@ -471,7 +471,8 @@ class ServiceManager
             foreach ($attributes as $attribute) {
                 $attributeInstance = $attribute->newInstance();
                 $method = $attributeInstance->method ?? '__invoke';
-                $priority = $attributeInstance->priority;
+                // Symfony 8.2 made the attribute priority nullable.
+                $priority = (int) $attributeInstance->priority;
                 $reflectionMethod = $reflectionObject->getMethod($method);
                 $reflectionParameters = $reflectionMethod->getParameters();
                 $paramType = $reflectionParameters[0]->getType();
