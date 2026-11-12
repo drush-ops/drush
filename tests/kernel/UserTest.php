@@ -207,7 +207,7 @@ class UserTest extends KernelTestBase
     {
         $uid = (int) $this->createExampleUser()->id();
 
-        $tester = new CommandTester(new UserCancelCommand($this->entityTypeManager, $this->logger));
+        $tester = new CommandTester(new UserCancelCommand($this->entityTypeManager, $this->logger, $this->container->get('request_stack')));
         $tester->setInputs(['yes']);
         $this->assertSame(Command::SUCCESS, $tester->execute(['names' => self::NAME, '--delete-content' => true], ['interactive' => true]));
         $display = $tester->getDisplay();
@@ -217,7 +217,7 @@ class UserTest extends KernelTestBase
 
         // Declining leaves the account alone.
         $this->createExampleUser();
-        $tester = new CommandTester(new UserCancelCommand($this->entityTypeManager, $this->logger));
+        $tester = new CommandTester(new UserCancelCommand($this->entityTypeManager, $this->logger, $this->container->get('request_stack')));
         $tester->setInputs(['no']);
         $this->assertSame(Command::SUCCESS, $tester->execute(['names' => self::NAME, '--delete-content' => true], ['interactive' => true]));
         $this->assertInstanceOf(UserInterface::class, $this->loadExampleUser());
@@ -228,7 +228,7 @@ class UserTest extends KernelTestBase
         $commands = [
             [new UserBlockCommand($this->entityTypeManager, $this->logger), ['names' => 'nobody']],
             [new UserUnblockCommand($this->entityTypeManager, $this->logger), ['--uid' => '99']],
-            [new UserCancelCommand($this->entityTypeManager, $this->logger), ['--mail' => 'nobody@example.com']],
+            [new UserCancelCommand($this->entityTypeManager, $this->logger, $this->container->get('request_stack')), ['--mail' => 'nobody@example.com']],
             [new UserInformationCommand($this->entityTypeManager, $this->dateFormatter, $this->logger), []],
         ];
         foreach ($commands as [$command, $input]) {

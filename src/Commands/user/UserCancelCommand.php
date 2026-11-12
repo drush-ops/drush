@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Routing\RouteObjectInterface;
 use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -14,6 +15,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Route;
 
 /**
  * @internal
@@ -38,6 +41,7 @@ class UserCancelCommand
     public function __construct(
         protected EntityTypeManagerInterface $entityTypeManager,
         protected LoggerInterface $logger,
+        protected RequestStack $requestStack,
     ) {
     }
 
@@ -71,9 +75,24 @@ class UserCancelCommand
             user_cancel([], (int) $account->id(), $method);
             $batch = &batch_get();
             $batch['progressive'] = false;
+            $this->ensureRoute();
             batch_process();
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * batch_process() builds a URL from the current route, and the request
+     * that dr creates has none, so give it the same placeholder route that
+     * KernelTestBase uses.
+     */
+    protected function ensureRoute(): void
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if ($request && !$request->attributes->has(RouteObjectInterface::ROUTE_OBJECT)) {
+            $request->attributes->set(RouteObjectInterface::ROUTE_OBJECT, new Route('<none>'));
+            $request->attributes->set(RouteObjectInterface::ROUTE_NAME, '<none>');
+        }
     }
 }
