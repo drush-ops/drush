@@ -134,6 +134,37 @@ class UpdatedbTest extends KernelTestBase
         $this->assertFalse((bool) $this->container->get('state')->get('system.maintenance_mode'));
     }
 
+    public function testFailedBatchedUpdate(): void
+    {
+        require_once __DIR__ . '/resources/updatedb_failing_batched.php';
+
+        $tester = $this->updatedb();
+        $display = $tester->getDisplay();
+        $this->assertSame(Command::FAILURE, $tester->getStatusCode(), $display);
+        // The message of the pass that succeeded is not repeated on failure.
+        $this->assertSame(1, substr_count($display, 'Fixture pass 1 message'), $display);
+        $this->assertStringContainsString('Fixture failure on pass 2', $display);
+        $this->assertStringContainsString('Update failed: drush_empty_module_update_8002', $display);
+        // A skipped update is not announced as started.
+        $this->assertStringContainsString('Skipped drush_empty_module_update_8003', $display);
+        $this->assertStringNotContainsString('Update started: drush_empty_module_update_8003', $display);
+        $this->assertSame(8001, $this->hookRegistry()->getInstalledVersion('drush_empty_module'));
+    }
+
+    public function testUpdateThrowingError(): void
+    {
+        require_once __DIR__ . '/resources/updatedb_error.php';
+
+        $tester = $this->updatedb();
+        $display = $tester->getDisplay();
+        $this->assertSame(Command::FAILURE, $tester->getStatusCode(), $display);
+        $this->assertStringContainsString('Fixture error in drush_empty_module_update_8002', $display);
+        $this->assertStringContainsString('Update failed: drush_empty_module_update_8002', $display);
+        $this->assertStringNotContainsString('Skipped drush_empty_module_update_8002', $display);
+        $this->assertStringContainsString('Update aborted by: drush_empty_module_update_8002', $display);
+        $this->assertSame(8001, $this->hookRegistry()->getInstalledVersion('drush_empty_module'));
+    }
+
     public function testDeclined(): void
     {
         $tester = $this->updatedb(['no']);

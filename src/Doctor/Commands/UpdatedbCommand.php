@@ -200,7 +200,10 @@ final class UpdatedbCommand
     public function updateOperation(string $module, int $number, array $dependencyMap, OutputInterface $output, array &$context): void
     {
         $function = $module . '_update_' . $number;
-        $this->logStart($function, $context);
+        // doOne() returns early for an update that depends on an aborted one.
+        if (!array_intersect($context['results']['#abort'] ?? [], [...$dependencyMap, $function])) {
+            $this->logStart($function, $context);
+        }
         $container = $this->container();
         try {
             $container->get(DatabaseUpdate::class)->doOne($module, $number, $dependencyMap, $context);
@@ -295,6 +298,17 @@ final class UpdatedbCommand
     {
         $logger = $this->updateLogger($this->container());
         $args = ['@function' => $function];
+        // Checked before the result, which is also absent when the first pass
+        // threw an error.
+        if (in_array($function, $context['results']['#abort'] ?? [], true)) {
+            // A failed pass returns no message; any stored one is left over
+            // from an earlier pass and was already logged.
+            if (!in_array($function, $this->aborted, true)) {
+                $this->aborted[] = $function;
+                $logger->error('Update failed: @function', $args);
+            }
+            return;
+        }
         if ($result === null) {
             $logger->warning('Skipped @function: depends on an aborted update', $args);
             return;
@@ -302,12 +316,7 @@ final class UpdatedbCommand
         if (!empty($result['results']['query'])) {
             $logger->notice('@message', ['@message' => $this->plainText($result['results']['query'])]);
         }
-        if (in_array($function, $context['results']['#abort'] ?? [], true)) {
-            if (!in_array($function, $this->aborted, true)) {
-                $this->aborted[] = $function;
-                $logger->error('Update failed: @function', $args);
-            }
-        } elseif ($context['finished'] >= 1) {
+        if ($context['finished'] >= 1) {
             $logger->notice('Update completed: @function', $args);
         }
     }
