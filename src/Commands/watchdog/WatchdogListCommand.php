@@ -76,8 +76,8 @@ final class WatchdogListCommand
         ?string $severityMin = null,
         #[Option('Restrict to messages of a given type.', suggestedValues: [self::class, 'suggestTypes'])]
         ?string $type = null,
-        #[Option('Return extended information about each message.')]
-        bool $extended = false,
+        #[Option('Show the whole message instead of truncating it.')]
+        bool $full = false,
         #[Option('A comma delimited list of fields to show. Use * for all. Defaults to wid,date,type,severity,message for the table and to all fields for json and yaml.')]
         ?string $fields = null,
         #[Option('An alternative output format such as json or yaml. Defaults to table.')]
@@ -85,7 +85,7 @@ final class WatchdogListCommand
     ): int {
         $this->requireDblog();
 
-        $records = $this->fetchRecords($this->where($type, $severity, $substring, 'AND', $severityMin), $count, $extended);
+        $records = $this->fetchRecords($this->where($type, $severity, $substring, 'AND', $severityMin), $count, $full);
         if ($records === []) {
             (new SymfonyStyle($input, $output))->getErrorStyle()->note((string) $this->t('No log messages available.'));
             if ($format === null) {

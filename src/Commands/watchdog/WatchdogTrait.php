@@ -160,7 +160,7 @@ trait WatchdogTrait
      * @param array{where: string, args: array} $where
      *   As returned by where().
      */
-    protected function fetchRecords(array $where, int $count, bool $extended): array
+    protected function fetchRecords(array $where, int $count, bool $full): array
     {
         $query = $this->connection->select('watchdog', 'w')
             ->range(0, $count)
@@ -171,7 +171,7 @@ trait WatchdogTrait
         }
         $records = [];
         foreach ($query->execute() as $result) {
-            $record = $this->formatResult($result, $extended);
+            $record = $this->formatResult($result, $full);
             $records[$record['wid']] = $record;
         }
         return $records;
@@ -199,13 +199,13 @@ trait WatchdogTrait
      *
      * @param $result
      *   A database result object.
-     * @param $extended
-     *   Return extended message details.
+     * @param $full
+     *   Keep the whole message instead of truncating it.
      *
      * @return array
      *   The record with some attributes themed.
      */
-    protected function formatResult(\stdClass $result, bool $extended = false): array
+    protected function formatResult(\stdClass $result, bool $full = false): array
     {
         // Database drivers differ on whether integer columns come back as ints.
         $result->wid = (int) $result->wid;
@@ -234,20 +234,18 @@ trait WatchdogTrait
             $result->message = strtr($result->message, $variables);
         }
         unset($result->variables);
-        $message_length = 188;
-
-        // Print all the data available
-        if ($extended) {
-            // Possible empty values.
-            if (empty($result->link)) {
-                unset($result->link);
-            }
-            if (empty($result->referer)) {
-                unset($result->referer);
-            }
-            $message_length = PHP_INT_MAX;
+        $result->message = strip_tags(Html::decodeEntities($result->message));
+        if (!$full) {
+            $result->message = Unicode::truncate($result->message, 188);
         }
-        $result->message = Unicode::truncate(strip_tags(Html::decodeEntities($result->message)), $message_length);
+
+        // Possible empty values.
+        if (empty($result->link)) {
+            unset($result->link);
+        }
+        if (empty($result->referer)) {
+            unset($result->referer);
+        }
 
         return (array) $result;
     }

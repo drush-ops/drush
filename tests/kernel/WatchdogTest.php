@@ -108,13 +108,13 @@ class WatchdogTest extends KernelTestBase
         $this->show(['--type' => 'nope']);
     }
 
-    public function testShowExtended(): void
+    public function testShowFull(): void
     {
         $message = str_repeat('*', 300);
         $this->logger->notice($message);
-        // The table truncates long messages unless --extended is given.
+        // The table truncates long messages unless --full is given.
         $this->assertLessThan(300, substr_count($this->show()->getDisplay(), '*'));
-        $this->assertGreaterThanOrEqual(300, substr_count($this->show(['--extended' => true])->getDisplay(), '*'));
+        $this->assertGreaterThanOrEqual(300, substr_count($this->show(['--full' => true])->getDisplay(), '*'));
     }
 
     public function testShowJson(): void
