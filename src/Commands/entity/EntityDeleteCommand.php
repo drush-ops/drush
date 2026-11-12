@@ -80,7 +80,9 @@ final class EntityDeleteCommand
 
         if (empty($limit) && empty($ids)) {
             $question = $this->formatPlural(count($result), 'You are about to delete 1 entity. Do you wish to continue?', 'You are about to delete @count entities. Do you wish to continue?');
-            if (!$io->confirm((string) $question, false)) {
+            // Drush's --yes makes the input non-interactive, so the default
+            // answer is what -y produces.
+            if (!$io->confirm((string) $question)) {
                 throw new UserAbortException();
             }
         }

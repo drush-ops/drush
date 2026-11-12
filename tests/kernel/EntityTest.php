@@ -105,12 +105,17 @@ class EntityTest extends KernelTestBase
     public function testDeleteUsersKeepsAdmin(): void
     {
         $storage = $this->entityTypeManager->getStorage('user');
+        // Explicit uids: the sequence behind an auto-assigned uid differs per
+        // database once uid 0 has been inserted by hand.
         $storage->create(['uid' => 0, 'name' => '', 'status' => 0])->save();
-        $storage->create(['name' => 'admin', 'status' => 1])->save();
-        $storage->create(['name' => 'bob', 'status' => 1])->save();
+        $storage->create(['uid' => 1, 'name' => 'admin', 'status' => 1])->save();
+        $storage->create(['uid' => 2, 'name' => 'bob', 'status' => 1])->save();
+        $storage->create(['uid' => 3, 'name' => 'carol', 'status' => 1])->save();
         $tester = $this->delete(['entity-type' => 'user'], ['yes']);
-        $this->assertStringContainsString('Deleted user entity Ids: 2', $tester->getDisplay());
-        $this->assertSame([0, 1], array_map('intval', array_keys($storage->loadMultiple())));
+        $this->assertStringContainsString('Deleted user entity Ids: 2, 3', $tester->getDisplay());
+        $remaining = array_map('intval', array_keys($storage->loadMultiple()));
+        sort($remaining);
+        $this->assertSame([0, 1], $remaining);
     }
 
     public function testDeleteUnknownEntityType(): void

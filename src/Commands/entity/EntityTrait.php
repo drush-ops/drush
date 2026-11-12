@@ -43,12 +43,13 @@ trait EntityTrait
     protected function getQuery(string $entityType, ?string $ids, ?string $bundle, ?string $exclude, ?int $limit): QueryInterface
     {
         $definition = $this->entityTypeManager->getDefinition($entityType);
-        $query = $this->entityTypeManager->getStorage($entityType)->getQuery()->accessCheck(false);
+        $idKey = $definition->getKey('id');
+        $query = $this->entityTypeManager->getStorage($entityType)->getQuery()->accessCheck(false)->sort($idKey);
         if ($ids = StringUtils::csvToArray((string) $ids)) {
-            $query->condition($definition->getKey('id'), $ids, 'IN');
+            $query->condition($idKey, $ids, 'IN');
         } else {
             if ($exclude = StringUtils::csvToArray((string) $exclude)) {
-                $query->condition($definition->getKey('id'), $exclude, 'NOT IN');
+                $query->condition($idKey, $exclude, 'NOT IN');
             }
             if ($bundle) {
                 $query->condition($definition->getKey('bundle'), $bundle);
