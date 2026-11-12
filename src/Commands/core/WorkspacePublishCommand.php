@@ -5,74 +5,87 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\workspaces\WorkspaceInterface;
 use Drupal\workspaces\WorkspaceOperationFactory;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
-use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Completion\CompletionInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
-    description: 'Publish a workspace.'
+    description: 'Publish a workspace.',
+    usages: [
+        'workspace:publish stage',
+    ],
 )]
-#[CLI\ValidateModulesEnabled(modules: ['workspaces'])]
-#[CLI\Version(version: '13.7')]
-final class WorkspacePublishCommand extends Command
+final class WorkspacePublishCommand
 {
     use AutowireTrait;
+    use StringTranslationTrait;
 
-    const string NAME = 'workspace:publish';
-
-    protected ?WorkspaceOperationFactory $workspacesOperationFactory = null;
+    public const string NAME = 'workspace:publish';
 
     /**
-     * Constructs a WorkspacesCommands object.
+     * The operation factory is null when the workspaces module is not
+     * installed; AutowireTrait::create() falls back to the default when the
+     * container has no such service.
      */
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
-        protected readonly ContainerInterface $container,
+        private readonly ModuleHandlerInterface $moduleHandler,
+        #[Autowire(service: 'workspaces.operation_factory')]
+        private readonly ?WorkspaceOperationFactory $operationFactory = null,
     ) {
-        parent::__construct();
+    }
 
-        if ($container->has('workspaces.operation_factory')) {
-            $this->workspacesOperationFactory = $container->get('workspaces.operation_factory');
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The workspace to publish.', suggestedValues: [self::class, 'suggestWorkspaceIds'])]
+        string $id,
+    ): int {
+        if (!$this->moduleHandler->moduleExists('workspaces') || $this->operationFactory === null) {
+            throw new \InvalidArgumentException((string) $this->t('The workspaces module is not installed.'));
         }
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('id', InputArgument::REQUIRED, 'The workspace to publish.')
-            ->addUsage('workspace:publish stage');
-    }
-
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-        $id = $input->getArgument('id');
-        /** @var \Drupal\workspaces\Entity\Workspace $workspace */
         $workspace = $this->entityTypeManager->getStorage('workspace')->load($id);
-        if (!$workspace) {
-            throw new \Exception(sprintf('Workspace %s not found.', $id));
+        if (!$workspace instanceof WorkspaceInterface) {
+            throw new \InvalidArgumentException((string) $this->t('Workspace @id not found.', ['@id' => $id]));
         }
 
-        $workspace_publisher = $this->workspacesOperationFactory->getPublisher($workspace);
-
-        // Does this workspace have any content to publish?
-        $diff = $workspace_publisher->getDifferringRevisionIdsOnSource();
-        if (empty($diff)) {
-            $io->success(sprintf('There are no changes that can be published from %s to %s', $workspace->label(), $workspace_publisher->getTargetLabel()));
-            return self::SUCCESS;
+        $io = new SymfonyStyle($input, $output);
+        $publisher = $this->operationFactory->getPublisher($workspace);
+        if (empty($publisher->getDifferringRevisionIdsOnSource())) {
+            $io->success((string) $this->t('There are no changes that can be published from @source to @target.', [
+                '@source' => $workspace->label(),
+                '@target' => $publisher->getTargetLabel(),
+            ]));
+            return Command::SUCCESS;
         }
 
         $workspace->publish();
-        $io->success(sprintf('Workspace %s published.', $workspace->label()));
-        return self::SUCCESS;
+        $io->success((string) $this->t('Workspace @label published.', ['@label' => $workspace->label()]));
+        return Command::SUCCESS;
+    }
+
+    /**
+     * Shell completion for the workspace id argument.
+     */
+    public function suggestWorkspaceIds(CompletionInput $input): array
+    {
+        if (!$this->moduleHandler->moduleExists('workspaces')) {
+            return [];
+        }
+        return array_keys($this->entityTypeManager->getStorage('workspace')->loadMultiple());
     }
 }
