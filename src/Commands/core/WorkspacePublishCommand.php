@@ -40,6 +40,10 @@ final class WorkspacePublishCommand
      * The operation factory is null when the workspaces module is not
      * installed; AutowireTrait::create() falls back to the default when the
      * container has no such service.
+     *
+     * @todo Make the factory required and drop the moduleExists() checks once
+     *   the `drush` entrypoint is retired. DoctorServiceProvider only registers
+     *   this command with `dr` when workspaces is installed.
      */
     public function __construct(
         private readonly EntityTypeManagerInterface $entityTypeManager,
