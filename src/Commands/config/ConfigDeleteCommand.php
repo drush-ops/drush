@@ -9,12 +9,8 @@ use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Attribute\Interact;
+use Symfony\Component\Console\Attribute\Ask;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @internal
@@ -40,20 +36,8 @@ final class ConfigDeleteCommand
     ) {
     }
 
-    /**
-     * Prompts for the config name when it was not given.
-     */
-    #[Interact]
-    public function askForName(InputInterface $input, OutputInterface $output): void
-    {
-        if (empty($input->getArgument('config_name'))) {
-            $question = new Question((string) $this->t('Choose a configuration'));
-            $question->setAutocompleterValues($this->configFactory->listAll());
-            $input->setArgument('config_name', (new SymfonyStyle($input, $output))->askQuestion($question));
-        }
-    }
-
     public function __invoke(
+        #[Ask('Choose a configuration')]
         #[Argument('The config object name(s). Delimit multiple with commas.', name: 'config_name', suggestedValues: [self::class, 'suggestConfigNames'])]
         string $configName,
         #[Argument('A config key to clear. May not be used with multiple config names.')]
