@@ -32,6 +32,7 @@ use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
 use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
 use Drush\Doctor\Commands\deploy\DeployMarkCompleteCommand;
+use Drush\Doctor\Commands\sql\SqlConnectCommand;
 use Drush\Doctor\Commands\updatedb\UpdatedbCommand;
 use Drush\Doctor\Commands\updatedb\UpdatedbStatusCommand;
 use Grasmash\YamlCli\Command\GetValueCommand;
@@ -84,9 +85,14 @@ class DoctorServiceProvider implements ServiceProviderInterface
             PhpScriptCommand::class,
         ];
 
+        // Needs only the connection info from settings.php.
+        $sql = [
+            SqlConnectCommand::class,
+        ];
+
         return array_merge(
             $core,
-            [],
+            $sql,
         );
     }
 
