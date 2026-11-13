@@ -4,79 +4,86 @@ declare(strict_types=1);
 
 namespace Drush\Commands\config;
 
-use Consolidation\OutputFormatters\FormatterManager;
-use Consolidation\OutputFormatters\StructuredData\UnstructuredListData;
+use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Formatters\FormatterTrait;
-use Drush\Style\DrushStyle;
+use Drush\Commands\OutputFormat;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Interact;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Display a config value, or a whole configuration object.',
-    aliases: ['cget','config-get']
+    aliases: ['cget', 'config-get'],
+    usages: [
+        'config:get system.site page.front',
+        'config:get system.site',
+        'config:get system.site --format=json',
+    ],
 )]
-#[CLI\Formatter(returnType: UnstructuredListData::class, defaultFormatter: 'yaml')]
-#[CLI\ValidateConfigName()]
-final class ConfigGetCommand extends Command
+final class ConfigGetCommand
 {
     use AutowireTrait;
     use ConfigNameTrait;
-    use FormatterTrait;
 
     public const string NAME = 'config:get';
 
     public function __construct(
         protected ConfigFactoryInterface $configFactory,
-        protected FormatterManager $formatterManager,
     ) {
-        parent::__construct();
-    }
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('config_name', InputArgument::REQUIRED, 'The config object name, for example <info>system.site</info>.')
-            ->addArgument('key', InputArgument::OPTIONAL, 'The config key, for example <info>page.front</info>. Optional')
-            ->addOption('source', null, InputOption::VALUE_REQUIRED, 'The config storage source to read.', 'active')
-            ->addOption('include-overridden', null, InputOption::VALUE_NEGATABLE, 'Apply module and settings.php overrides to values')
-            ->addUsage('config:get system.site page.front')
-            ->addUsage('config:get system.site');
     }
 
-    protected function interact(InputInterface $input, OutputInterface $output): void
+    /**
+     * Prompts for the config name when it was not given.
+     */
+    #[Interact]
+    public function askForName(InputInterface $input, OutputInterface $output): void
     {
-        if ($input->hasArgument('config_name') && empty($input->getArgument('config_name'))) {
-            $io = new DrushStyle($input, $output);
-            // Classes using this trait must have a $configFactory property.
-            $config_names = $this->configFactory->listAll();
-            $choice = $io->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
-            $input->setArgument('config_name', $choice);
+        if (empty($input->getArgument('config_name'))) {
+            $question = new Question((string) $this->t('Choose a configuration'));
+            $question->setAutocompleterValues($this->configFactory->listAll());
+            $input->setArgument('config_name', (new SymfonyStyle($input, $output))->askQuestion($question));
         }
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $data = $this->doExecute($input);
-        $this->writeFormattedOutput($input, $output, $data);
-        return self::SUCCESS;
-    }
-
-    protected function doExecute($input): string|array
-    {
-        $config_name = $input->getArgument('config_name');
-        // $this->validateConfigName($config_name);
-        $key = $input->getArgument('key');
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('The config object name, for example <info>system.site</info>.', name: 'config_name', suggestedValues: [self::class, 'suggestConfigNames'])]
+        string $configName,
+        #[Argument('The config key, for example <info>page.front</info>. Optional.')]
+        ?string $key = null,
+        #[Option('The config storage source to read.')]
+        string $source = 'active',
+        #[Option('Apply module and settings.php overrides to values.')]
+        ?bool $includeOverridden = null,
+        #[Option('An alternative output format such as json. Defaults to yaml.')]
+        ?OutputFormat $format = null,
+    ): int {
+        $this->requireConfig($configName);
 
         // Displaying overrides only applies to active storage.
-        $config = $input->getOption('include-overridden') ? $this->configFactory->get($config_name) : $this->configFactory->getEditable($config_name);
-        $value = $config->get($key);
-        return $key ? ["$config_name:$key" => $value] : $value;
+        $config = $includeOverridden ? $this->configFactory->get($configName) : $this->configFactory->getEditable($configName);
+        $value = $config->get($key ?? '');
+        // A single value stays keyed by its origin, as it always was.
+        $data = $key ? ["$configName:$key" => $value] : $value;
+
+        $result = match ($format) {
+            OutputFormat::Json => json_encode($data, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
+            default => Yaml::encode($data),
+        };
+        // Yaml::encode() ends with a newline of its own; writeln adds one.
+        $output->writeln(rtrim($result, "\n"), OutputInterface::OUTPUT_RAW);
+
+        return Command::SUCCESS;
     }
 }

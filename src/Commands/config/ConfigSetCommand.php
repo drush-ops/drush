@@ -5,108 +5,119 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\StorageCacheInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Parser;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Save a config value directly. Does not perform a config import.',
-    aliases: ['cset', 'config-set']
+    aliases: ['cset', 'config-set'],
+    usages: [
+        'config:set system.site name MySite',
+        'config:set user.role.anonymous permissions \'[]\'',
+        'config:set system.site name \'NULL\'',
+        'config:set system.performance css.preprocess false',
+        "config:set --input-format=yaml system.site page {403: '403', front: home}",
+        'config:set --input-format=yaml user.role.authenticated permissions [foo,bar]',
+        'config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}"',
+        'cat tmp.yml | drush config:set --input-format=yaml user.mail ? -',
+    ],
 )]
-final class ConfigSetCommand extends Command
+final class ConfigSetCommand
 {
     use AutowireTrait;
     use ConfigNameTrait;
 
     public const string NAME = 'config:set';
 
+    /**
+     * Accepted values of --input-format.
+     */
+    public const array INPUT_FORMATS = ['string', 'yaml'];
+
     public function __construct(
-        protected readonly ConfigFactoryInterface $configFactory,
-        protected readonly StorageCacheInterface $configStorage,
+        protected ConfigFactoryInterface $configFactory,
     ) {
-        parent::__construct();
-    }
-    protected function configure(): void
-    {
-        $this
-            ->addArgument('config_name', InputArgument::REQUIRED, 'The config object name, for example <info>system.site</info>.')
-            ->addArgument('key', InputArgument::REQUIRED, 'The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')
-            ->addArgument('value', InputArgument::REQUIRED, 'The value to assign to the config key. The words <info>true</info>, <info>false</info> and <info>null</info> are saved as those typed values, not as strings. Use <info>-</info> to read from Stdin.')
-            ->addOption('input-format', null, InputOption::VALUE_REQUIRED, 'Format to parse the object. Recognized values: <info>string</info>, <info>yaml</info>. Since JSON is a subset of YAML, $value may be in JSON format.', 'string')
-            // @todo Move the old descriptions of these Usages into setHelp().
-            ->addUsage('config:set system.site name MySite')
-            ->addUsage('config:set user.role.anonymous permissions \'[]\'')
-            ->addUsage('config:set system.site name \'NULL\'')
-            ->addUsage('config:set system.performance css.preprocess false')
-            ->addUsage("config:set --input-format=yaml system.site page {403: '403', front: home}")
-            ->addUsage('config:set --input-format=yaml user.role.authenticated permissions [foo,bar]')
-            ->addUsage('config:set --input-format=yaml user.role.authenticated ? "{label: \'Auth user\', weight: 5}')
-            ->addUsage('cat tmp.yml | drush config:set --input-format=yaml user.mail ? -');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $io = new DrushStyle($input, $output);
-
-        $data = $input->getArgument('value');
-
-        // Special flag indicating that the value has been passed via STDIN.
-        if ($data === '-') {
-            // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
-            // If testing this will get input added by `CommandTester::setInputs` method.
-            $inputStream = ($input instanceof StreamableInputInterface) ? $input->getStream() : STDIN;
-            $data = stream_get_contents($inputStream);
+    public function __invoke(
+        InputInterface $input,
+        OutputInterface $output,
+        #[Argument('The config object name, for example <info>system.site</info>.', name: 'config_name', suggestedValues: [self::class, 'suggestConfigNames'])]
+        string $configName,
+        #[Argument('The config key, for example <info>page.front</info>. Use <info>?</info> if you are updating multiple top-level keys.')]
+        string $key,
+        #[Argument('The value to assign to the config key. The words <info>true</info>, <info>false</info> and <info>null</info> are saved as those typed values, not as strings. Use <info>-</info> to read from stdin.')]
+        string $value,
+        #[Option('Format to parse the value: <info>string</info> or <info>yaml</info>. Since JSON is a subset of YAML, the value may be in JSON format.', suggestedValues: self::INPUT_FORMATS)]
+        string $inputFormat = 'string',
+    ): int {
+        if (!in_array($inputFormat, self::INPUT_FORMATS, true)) {
+            throw new \InvalidArgumentException((string) $this->t('Unknown input format: @format. Allowed values: @allowed', [
+                '@format' => $inputFormat,
+                '@allowed' => implode(', ', self::INPUT_FORMATS),
+            ]));
         }
 
-        if ($input->getOption('input-format') === 'yaml') {
-            $parser = new Parser();
-            $data = $parser->parse($data);
+        // Special flag indicating that the value has been passed via stdin.
+        if ($value === '-') {
+            // See https://github.com/symfony/symfony/issues/37835#issuecomment-674386588.
+            // Under CommandTester this reads what setInputs() provided.
+            $stream = $input instanceof StreamableInputInterface ? $input->getStream() : null;
+            $value = stream_get_contents($stream ?? STDIN);
+        }
+
+        if ($inputFormat === 'yaml') {
+            $data = Yaml::parse($value);
         } else {
             // Turn the words null, true and false, and the empty array, into
             // their typed values. Otherwise "false" would be saved as a
             // non-empty string, which the config schema casts to TRUE.
-            $data = match (strtolower($data)) {
+            $data = match (strtolower($value)) {
                 'null' => null,
                 'true' => true,
                 'false' => false,
                 '[]' => [],
-                default => $data,
+                default => $value,
             };
         }
 
-        $config_name = $input->getArgument('config_name');
-        $config = $this->configFactory->getEditable($config_name);
-        // Check to see if config key already exists.
-        $key = $input->getArgument('key');
-        $new_key = $config->get($key) === null;
+        $io = new SymfonyStyle($input, $output);
+        $config = $this->configFactory->getEditable($configName);
 
-        if ($key == '?' && !empty($data) && $io->confirm(sprintf('Do you want to update or set multiple keys on %s config.', $config_name))) {
-            foreach ($data as $data_key => $val) {
-                $config->set($data_key, $val);
+        if ($key === '?') {
+            if (!is_array($data) || $data === []) {
+                throw new \InvalidArgumentException((string) $this->t('The ? key needs a mapping of top-level keys to values.'));
             }
-            $config->save();
-        } else {
-            $confirmed = false;
-            if ($config->isNew() && $io->confirm(sprintf('%s config does not exist. Do you want to create a new config object?', $config_name))) {
-                $confirmed = true;
-            } elseif ($new_key && $io->confirm(sprintf('%s key does not exist in %s config. Do you want to create a new config key?', $key, $config_name))) {
-                $confirmed = true;
-            } elseif ($io->confirm(sprintf('Do you want to update %s key in %s config?', $key, $config_name))) {
-                $confirmed = true;
+            if ($io->confirm((string) $this->t('Do you want to update or set multiple keys on @name config.', ['@name' => $configName]))) {
+                foreach ($data as $data_key => $val) {
+                    $config->set((string) $data_key, $val);
+                }
+                $config->save();
             }
-            if ($confirmed) {
-                $config->set($key, $data)->save();
-            }
+            return Command::SUCCESS;
         }
-        return self::SUCCESS;
+
+        $question = match (true) {
+            $config->isNew() => $this->t('@name config does not exist. Do you want to create a new config object?', ['@name' => $configName]),
+            $config->get($key) === null => $this->t('@key key does not exist in @name config. Do you want to create a new config key?', ['@key' => $key, '@name' => $configName]),
+            default => $this->t('Do you want to update @key key in @name config?', ['@key' => $key, '@name' => $configName]),
+        };
+        if ($io->confirm((string) $question)) {
+            $config->set($key, $data)->save();
+        }
+
+        return Command::SUCCESS;
     }
 }
