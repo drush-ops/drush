@@ -2,6 +2,8 @@
 
 namespace Drush\Doctor;
 
+use Drupal\Core\Config\Command\ConfigImportCommand as CoreConfigImportCommand;
+use Drupal\Core\Config\ConfigImporterFactory;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
 use Drupal\Core\Image\Image;
@@ -21,6 +23,7 @@ use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\entity\EntitySaveCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\user\UserLoginCommand;
+use Drush\Doctor\Commands\config\ConfigImportCommand;
 use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
 use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
@@ -48,6 +51,10 @@ class DoctorServiceProvider implements ServiceProviderInterface
         if (isset($modules['system'])) {
             // Drupal is installed, so add classes that require it.
             $classes = array_merge($classes, self::getClassesStandard($modules));
+            // Core has its own config:import after 12.1.
+            if (!class_exists(CoreConfigImportCommand::class) && $container->hasDefinition(ConfigImporterFactory::class)) {
+                $classes[] = ConfigImportCommand::class;
+            }
             // The dr-only updatedb commands need core's DatabaseUpdate (11.5+).
             if ($container->hasDefinition(DatabaseUpdate::class)) {
                 $classes[] = UpdatedbCommand::class;

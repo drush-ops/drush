@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Config\ConfigImporterFactory;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drush\Doctor\Commands\config\ConfigImportCommand;
 use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
 use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
@@ -26,6 +28,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[CoversClass(ConfigImportCommand::class)]
 #[CoversClass(DeployCommand::class)]
 #[CoversClass(DeployHookCommand::class)]
 #[CoversClass(DeployHookStatusCommand::class)]
@@ -108,7 +111,8 @@ class DeployTest extends KernelTestBase
     }
 
     /**
-     * updatedb and cache:warm are stand-ins that record their call.
+     * updatedb and cache:warm are stand-ins that record their call;
+     * config:import is Drush's copy of core's command.
      */
     public function testDeploy(): void
     {
@@ -121,7 +125,7 @@ class DeployTest extends KernelTestBase
         $tester = $this->runCommand($application->find(DeployCommand::NAME));
         $display = $tester->getDisplay();
         $this->assertSame(['updatedb', 'cache:warm'], $calls);
-        $this->assertStringContainsString('update system.site', $display);
+        $this->assertMatchesRegularExpression('/system\.site\s+Update/', $display);
         $this->assertSame('Imported', $this->config('system.site')->get('slogan'));
         $this->assertSame([], $this->pending());
         // Deploy hooks run after the config import and the cache rebuild.
@@ -158,7 +162,7 @@ class DeployTest extends KernelTestBase
 
         $tester = $this->runCommand($application->find(DeployCommand::NAME), expected: Command::FAILURE);
         $this->assertSame(['updatedb'], $calls);
-        $this->assertStringContainsString('config import failed. Deployment stopped.', $tester->getDisplay());
+        $this->assertStringContainsString('config:import failed. Deployment stopped.', $tester->getDisplay());
         $this->assertCount(3, $this->pending());
     }
 
@@ -169,12 +173,13 @@ class DeployTest extends KernelTestBase
         $application->addCommand(new DeployHookCommand($this->kernel()));
 
         $tester = $this->runCommand($application->find(DeployCommand::NAME), expected: Command::FAILURE);
-        $this->assertMatchesRegularExpression('/not available: updatedb,\s+cache:warm/', $tester->getDisplay());
+        $this->assertMatchesRegularExpression('/not available: updatedb,\s+config:import,\s+cache:warm/', $tester->getDisplay());
         $this->assertCount(3, $this->pending());
     }
 
     /**
-     * An application holding deploy, deploy:hook and stand-ins for the rest.
+     * An application holding deploy, deploy:hook, config:import and stand-ins
+     * for the rest.
      *
      * @param string[] $calls
      *   Receives the names of the stand-ins as they run.
@@ -186,6 +191,12 @@ class DeployTest extends KernelTestBase
         $application = new Application();
         $application->addCommand(new DeployCommand($this->kernel()));
         $application->addCommand(new DeployHookCommand($this->kernel()));
+        $application->addCommand(new ConfigImportCommand(
+            $this->container->get('config.storage'),
+            $this->container->get('config.storage.sync'),
+            $this->container->get('config.import_transformer'),
+            $this->container->get(ConfigImporterFactory::class),
+        ));
         foreach (['updatedb', 'cache:warm'] as $name) {
             $application->addCommand((new Command($name))->setCode(function () use (&$calls, $name, $exitCodes): int {
                 $calls[] = $name;
