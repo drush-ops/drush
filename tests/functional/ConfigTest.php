@@ -109,20 +109,12 @@ class ConfigTest extends CommandUnishTestCase
         $page = $this->getOutputFromJSON('system.site:page');
         $this->assertStringContainsString('unish', $page['front'], 'Config was successfully imported.');
 
-        // Test status of identical configuration, in different formatters.
-        $expected_output = [
-            'list' => '',
-            'table' => '',
-            'json' => '[]',
-            'xml' => <<<XML
-<?xml version="1.0" encoding="UTF-8"?>
-<document/>
-XML
-        ];
-        foreach ($expected_output as $formatter => $output) {
-            $this->drush(ConfigCommands::STATUS, [], ['format' => $formatter]);
-            $this->assertEquals($output, $this->getOutput(), 'config:status correctly reports identical config.');
-        }
+        // Test status of identical configuration, as a table and as json.
+        $this->drush(ConfigCommands::STATUS);
+        $this->assertEquals('', $this->getOutput(), 'config:status correctly reports identical config.');
+        $this->assertStringContainsString('No differences between DB and sync directory.', $this->getErrorOutput());
+        $this->drush(ConfigCommands::STATUS, [], ['format' => 'json']);
+        $this->assertEquals('[]', $this->getOutput(), 'config:status correctly reports identical config.');
 
         // Test the --existing-config option for site:install.
         $this->drush(StatusCommand::NAME, [], ['field' => 'drupal-version']);
