@@ -4,14 +4,7 @@ declare(strict_types=1);
 
 namespace Drush\Doctor\Commands;
 
-use Drupal\Core\Command\DrupalConsoleLogger;
-use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Logger\ConsoleLogger;
-use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -19,7 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 trait UpdatedbTrait
 {
-    use StringTranslationTrait;
+    use ConsoleTrait;
 
     /**
      * Loads the update API and the .install files of installed modules.
@@ -91,17 +84,12 @@ trait UpdatedbTrait
 
     protected function renderTable(array $rows): string
     {
-        $buffer = new BufferedOutput();
-        (new Table($buffer))
-            ->setHeaders([
-                (string) $this->t('Extension'),
-                (string) $this->t('Update ID'),
-                (string) $this->t('Type'),
-                (string) $this->t('Description'),
-            ])
-            ->setRows($rows)
-            ->render();
-        return $buffer->fetch();
+        return $this->table([
+            (string) $this->t('Extension'),
+            (string) $this->t('Update ID'),
+            (string) $this->t('Type'),
+            (string) $this->t('Description'),
+        ], $rows);
     }
 
     /**
@@ -110,33 +98,5 @@ trait UpdatedbTrait
     protected function updateLogger(ContainerInterface $container): LoggerInterface
     {
         return $container->get('logger.factory')->get('update');
-    }
-
-    /**
-     * Sends Drupal log messages to the console.
-     *
-     * dr does this once per command through ConsoleSubscriber, but a container
-     * rebuild replaces logger.console with an instance that has no console
-     * logger attached, so it is done again after every rebuild. It also lets
-     * kernel tests see the log output.
-     */
-    protected function attachConsoleLogger(ContainerInterface $container, OutputInterface $output): void
-    {
-        if (!$container->has('logger.console')) {
-            return;
-        }
-        $errorOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
-        $container->get('logger.console')->setLogger(new ConsoleLogger($errorOutput, DrupalConsoleLogger::verbosityLevelMap()));
-    }
-
-    /**
-     * Renders markup, a render array or a string as plain console text.
-     */
-    protected function plainText(mixed $value, ?ContainerInterface $container = null): string
-    {
-        if (is_array($value)) {
-            $value = $container?->get('renderer')->renderInIsolation($value) ?? '';
-        }
-        return trim(html_entity_decode(strip_tags((string) $value), ENT_QUOTES | ENT_HTML5));
     }
 }

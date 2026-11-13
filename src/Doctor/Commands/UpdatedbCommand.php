@@ -7,7 +7,6 @@ namespace Drush\Doctor\Commands;
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Extension\Requirement\RequirementSeverity;
-use Drupal\Core\Routing\RouteObjectInterface;
 use Drupal\Core\Update\DatabaseUpdate;
 use Drupal\Core\Update\UpdateServiceProvider;
 use Psr\Log\LoggerInterface;
@@ -18,7 +17,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Routing\Route;
 
 /**
  * Runs under dr only. Drush keeps its own updatedb.
@@ -190,7 +188,7 @@ final class UpdatedbCommand
         batch_set($builder->toArray());
         $batch = &batch_get();
         $batch['progressive'] = false;
-        $this->ensureRoute();
+        $this->ensureRoute($this->container());
         batch_process();
     }
 
@@ -318,19 +316,6 @@ final class UpdatedbCommand
         }
         if ($context['finished'] >= 1) {
             $logger->notice('Update completed: @function', $args);
-        }
-    }
-
-    /**
-     * batch_process() builds a URL from the current route; dr's request has
-     * none, so give it the placeholder route kernel tests use.
-     */
-    protected function ensureRoute(): void
-    {
-        $request = $this->container()->get('request_stack')->getCurrentRequest();
-        if ($request && !$request->attributes->has(RouteObjectInterface::ROUTE_OBJECT)) {
-            $request->attributes->set(RouteObjectInterface::ROUTE_OBJECT, new Route('<none>'));
-            $request->attributes->set(RouteObjectInterface::ROUTE_NAME, '<none>');
         }
     }
 

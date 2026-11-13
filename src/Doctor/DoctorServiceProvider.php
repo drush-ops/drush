@@ -21,6 +21,10 @@ use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\entity\EntitySaveCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\user\UserLoginCommand;
+use Drush\Doctor\Commands\deploy\DeployCommand;
+use Drush\Doctor\Commands\deploy\DeployHookCommand;
+use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
+use Drush\Doctor\Commands\deploy\DeployMarkCompleteCommand;
 use Drush\Doctor\Commands\UpdatedbCommand;
 use Drush\Doctor\Commands\UpdatedbStatusCommand;
 use Grasmash\YamlCli\Command\GetValueCommand;
@@ -48,6 +52,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
             if ($container->hasDefinition(DatabaseUpdate::class)) {
                 $classes[] = UpdatedbCommand::class;
                 $classes[] = UpdatedbStatusCommand::class;
+                $classes[] = DeployCommand::class;
             }
         }
 
@@ -90,9 +95,16 @@ class DoctorServiceProvider implements ServiceProviderInterface
             EntityDeleteCommand::class,
         ];
 
+        $deploy = [
+            DeployHookCommand::class,
+            DeployHookStatusCommand::class,
+            DeployMarkCompleteCommand::class,
+        ];
+
         $classes = array_merge(
             $core,
             $entity,
+            $deploy,
             FindClasses::findClasses('Drush\\Commands\\cache'),
             FindClasses::findClasses('Drush\\Commands\\queue'),
             FindClasses::findClasses('Drush\\Commands\\state'),
