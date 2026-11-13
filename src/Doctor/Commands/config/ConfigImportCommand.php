@@ -18,9 +18,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 /**
- * A copy of core's \Drupal\Core\Config\Command\ConfigImportCommand and its
- * ConfigCommandTrait (core commit 5ac1f0d7b5), registered with dr only on
- * core versions that do not have that command. Remove it once they all do.
+ * A copy of core's \Drupal\Core\Config\Command\ConfigImportCommand (core
+ * commit 5ac1f0d7b5), registered with dr only on core versions that do not
+ * have that command. Remove it once they all do.
  *
  * @internal
  */
@@ -32,6 +32,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 final class ConfigImportCommand
 {
     use StringTranslationTrait;
+    use ConfigCommandTrait;
 
     public const string NAME = 'config:import';
 
@@ -94,41 +95,5 @@ final class ConfigImportCommand
         }
 
         return Command::FAILURE;
-    }
-
-    protected function renderTable(StorageComparer $comparer, SymfonyStyle $io): void
-    {
-        $translations = [
-            'delete' => (string) $this->t('Delete'),
-            'update' => (string) $this->t('Update'),
-            'create' => (string) $this->t('Create'),
-            'rename' => (string) $this->t('Rename'),
-        ];
-        $styles = [
-            'delete' => 'fg=white;bg=red',
-            'update' => 'fg=black;bg=yellow',
-            'create' => 'fg=white;bg=green',
-            'rename' => 'fg=black;bg=cyan',
-        ];
-        $header = [
-            (string) $this->t('Collection'),
-            (string) $this->t('Config'),
-            (string) $this->t('Operation'),
-        ];
-
-        $rows = [];
-        foreach ($comparer->getAllCollectionNames() as $collection) {
-            foreach ($comparer->getChangelist(null, $collection) as $op => $names) {
-                foreach ($names as $name) {
-                    $rows[] = [
-                        $collection,
-                        $op !== 'rename' ? $name : str_replace('::', ' -> ', $name),
-                        \sprintf('<%s>%s</>', $styles[$op], $translations[$op]),
-                    ];
-                }
-            }
-        }
-
-        $io->table($header, $rows);
     }
 }

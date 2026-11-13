@@ -2,8 +2,10 @@
 
 namespace Drush\Doctor;
 
+use Drupal\Core\Config\Command\ConfigExportCommand as CoreConfigExportCommand;
 use Drupal\Core\Config\Command\ConfigImportCommand as CoreConfigImportCommand;
 use Drupal\Core\Config\ConfigImporterFactory;
+use Drupal\Core\Config\SyncFactory;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
 use Drupal\Core\Image\Image;
@@ -27,6 +29,7 @@ use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\entity\EntitySaveCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\user\UserLoginCommand;
+use Drush\Doctor\Commands\config\ConfigExportCommand;
 use Drush\Doctor\Commands\config\ConfigImportCommand;
 use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
@@ -56,7 +59,12 @@ class DoctorServiceProvider implements ServiceProviderInterface
         if (isset($modules['system'])) {
             // Drupal is installed, so add classes that require it.
             $classes = array_merge($classes, self::getClassesStandard($modules));
-            // Core has its own config:import after 12.1.
+            // Core has its own config:export from 12.1. The copy needs the
+            // SyncFactory service.
+            if (!class_exists(CoreConfigExportCommand::class) && $container->hasDefinition(SyncFactory::class)) {
+                $classes[] = ConfigExportCommand::class;
+            }
+            // Core has its own config:import from 12.1.
             if (!class_exists(CoreConfigImportCommand::class) && $container->hasDefinition(ConfigImporterFactory::class)) {
                 $classes[] = ConfigImportCommand::class;
             }
