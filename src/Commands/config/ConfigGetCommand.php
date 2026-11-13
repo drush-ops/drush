@@ -10,10 +10,13 @@ use Drush\Commands\AutowireTrait;
 use Drush\Commands\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Attribute\Ask;
+use Symfony\Component\Console\Attribute\Interact;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @internal
@@ -40,9 +43,24 @@ final class ConfigGetCommand
     ) {
     }
 
+    /**
+     * Prompts for the config name when it was not given.
+     *
+     * Not #[Ask] on the argument: that attribute cannot offer the config
+     * names for autocompletion.
+     */
+    #[Interact]
+    public function askForName(InputInterface $input, OutputInterface $output): void
+    {
+        if (empty($input->getArgument('config_name'))) {
+            $question = new Question((string) $this->t('Choose a configuration'));
+            $question->setAutocompleterValues($this->configFactory->listAll());
+            $input->setArgument('config_name', (new SymfonyStyle($input, $output))->askQuestion($question));
+        }
+    }
+
     public function __invoke(
         OutputInterface $output,
-        #[Ask('Choose a configuration')]
         #[Argument('The config object name, for example <info>system.site</info>.', name: 'config_name', suggestedValues: [self::class, 'suggestConfigNames'])]
         string $configName,
         #[Argument('The config key, for example <info>page.front</info>. Optional.')]
