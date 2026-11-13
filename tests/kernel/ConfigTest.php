@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\ConfigTestTrait;
+use Drush\Commands\config\ConfigDeleteCommand;
 use Drush\Commands\config\ConfigGetCommand;
 use Drush\Commands\config\ConfigSetCommand;
 use Drush\Commands\config\ConfigStatusCommand;
@@ -17,11 +18,12 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
- * Tests config:get, config:set and config:status: each command is built from
+ * Tests config:get, config:set, config:delete and config:status: each command is built from
  * container services and driven with a CommandTester.
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[CoversClass(ConfigDeleteCommand::class)]
 #[CoversClass(ConfigGetCommand::class)]
 #[CoversClass(ConfigSetCommand::class)]
 #[CoversClass(ConfigStatusCommand::class)]
@@ -195,6 +197,49 @@ class ConfigTest extends KernelTestBase
         $tester->execute(['config_name' => 'system.site', 'key' => 'name', 'value' => 'x', '--input-format' => 'xml']);
     }
 
+    public function testDelete(): void
+    {
+        // A single key.
+        $this->configDelete(['config_name' => 'system.site', 'key' => 'page.front']);
+        $this->assertNull($this->config('system.site')->get('page.front'));
+        $this->assertSame('', $this->config('system.site')->get('page.403'), 'Other keys are left alone.');
+
+        // Whole objects, comma delimited.
+        $this->configDelete(['config_name' => 'system.site, system.date']);
+        $this->assertTrue($this->config('system.site')->isNew());
+        $this->assertTrue($this->config('system.date')->isNew());
+        $this->assertFalse($this->config('system.performance')->isNew());
+    }
+
+    public function testDeleteUnknownName(): void
+    {
+        $tester = new CommandTester(new ConfigDeleteCommand($this->configFactory));
+        try {
+            $tester->execute(['config_name' => 'system.performance,no.such.config']);
+            $this->fail('Expected an exception.');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertSame('Config no.such.config does not exist', $e->getMessage());
+        }
+        // Nothing is deleted when one of the names is unknown.
+        $this->assertFalse($this->config('system.performance')->isNew());
+    }
+
+    public function testDeleteUnknownKey(): void
+    {
+        $tester = new CommandTester(new ConfigDeleteCommand($this->configFactory));
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Configuration key no.such.key not found.');
+        $tester->execute(['config_name' => 'system.site', 'key' => 'no.such.key']);
+    }
+
+    public function testDeleteKeyWithMultipleNames(): void
+    {
+        $tester = new CommandTester(new ConfigDeleteCommand($this->configFactory));
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('A key may not be used with multiple config names.');
+        $tester->execute(['config_name' => 'system.site,system.date', 'key' => 'langcode']);
+    }
+
     public function testStatus(): void
     {
         $active = $this->container->get('config.storage');
@@ -270,6 +315,13 @@ class ConfigTest extends KernelTestBase
     {
         $tester = new CommandTester(new ConfigSetCommand($this->configFactory));
         $this->assertSame(Command::SUCCESS, $tester->execute($input, ['interactive' => false]));
+        return $tester;
+    }
+
+    protected function configDelete(array $input): CommandTester
+    {
+        $tester = new CommandTester(new ConfigDeleteCommand($this->configFactory));
+        $this->assertSame(Command::SUCCESS, $tester->execute($input));
         return $tester;
     }
 

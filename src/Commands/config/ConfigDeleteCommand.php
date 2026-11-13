@@ -5,90 +5,82 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drush\Attributes as CLI;
 use Drush\Commands\AutowireTrait;
-use Drush\Style\DrushStyle;
 use Drush\Utils\StringUtils;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Interact;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Completion\CompletionInput;
-use Symfony\Component\Console\Completion\CompletionSuggestions;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * @internal
+ */
 #[AsCommand(
     name: self::NAME,
     description: 'Delete a configuration key, or a whole object(s).',
     aliases: ['cdel', 'config-delete'],
+    usages: [
+        'config:delete system.site,system.rss',
+        'config:delete system.site page.front',
+    ],
 )]
-#[CLI\ValidateConfigName()]
-final class ConfigDeleteCommand extends Command
+final class ConfigDeleteCommand
 {
     use AutowireTrait;
+    use ConfigNameTrait;
 
     public const string NAME = 'config:delete';
 
     public function __construct(
-        protected readonly ConfigFactoryInterface $configFactory,
+        protected ConfigFactoryInterface $configFactory,
     ) {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    /**
+     * Prompts for the config name when it was not given.
+     */
+    #[Interact]
+    public function askForName(InputInterface $input, OutputInterface $output): void
     {
-        $this
-            ->addArgument('config_name', InputArgument::REQUIRED, 'The config object name(s). Delimit multiple with commas.')
-            ->addArgument('key', InputArgument::OPTIONAL, 'A config key to clear, May not be used with multiple config names.')
-            ->addUsage('config:delete system.site,system.rss')
-            ->addUsage("config:delete system.site page.front");
-    }
-
-    protected function interact(InputInterface $input, OutputInterface $output): void
-    {
-        if ($input->hasArgument('config_name') && empty($input->getArgument('config_name'))) {
-            $io = new DrushStyle($input, $output);
-            // Classes using this trait must have a $configFactory property.
-            $config_names = $this->configFactory->listAll();
-            $choice = $io->suggest('Choose a configuration', array_combine($config_names, $config_names), scroll: 200, required: true);
-            $input->setArgument('config_name', $choice);
+        if (empty($input->getArgument('config_name'))) {
+            $question = new Question((string) $this->t('Choose a configuration'));
+            $question->setAutocompleterValues($this->configFactory->listAll());
+            $input->setArgument('config_name', (new SymfonyStyle($input, $output))->askQuestion($question));
         }
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $config_name = $input->getArgument('config_name');
-        $key = $input->getArgument('key');
+    public function __invoke(
+        #[Argument('The config object name(s). Delimit multiple with commas.', name: 'config_name', suggestedValues: [self::class, 'suggestConfigNames'])]
+        string $configName,
+        #[Argument('A config key to clear. May not be used with multiple config names.')]
+        ?string $key = null,
+    ): int {
+        $names = StringUtils::csvToArray($configName);
+        // Check every name before deleting anything.
+        foreach ($names as $name) {
+            $this->requireConfig($name);
+        }
 
         if ($key) {
-            $config = $this->configFactory->getEditable($config_name);
+            if (count($names) > 1) {
+                throw new \InvalidArgumentException((string) $this->t('A key may not be used with multiple config names.'));
+            }
+            $config = $this->configFactory->getEditable($names[0]);
             if ($config->get($key) === null) {
-                $output->writeln(sprintf('<error>Configuration key %s not found.</error>', $key));
-                return Command::FAILURE;
+                throw new \InvalidArgumentException((string) $this->t('Configuration key @key not found.', ['@key' => $key]));
             }
             $config->clear($key)->save();
-        } else {
-            $names = StringUtils::csvToArray($config_name);
-            foreach ($names as $name) {
-                // Validate that config exists before attempting to delete
-                $config = $this->configFactory->get($name);
-                if ($config->isNew()) {
-                    $output->writeln(sprintf('<error>Config %s does not exist</error>', $name));
-                    return Command::FAILURE;
-                }
+            return Command::SUCCESS;
+        }
 
-                $editable_config = $this->configFactory->getEditable($name);
-                $editable_config->delete();
-            }
+        foreach ($names as $name) {
+            $this->configFactory->getEditable($name)->delete();
         }
 
         return Command::SUCCESS;
-    }
-
-    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
-    {
-        if ($input->mustSuggestArgumentValuesFor('config_name')) {
-            $suggestions->suggestValues($this->configFactory->listAll());
-        }
     }
 }
