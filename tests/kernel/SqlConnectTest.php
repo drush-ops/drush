@@ -17,8 +17,8 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Tests the dr-only sql:connect command.
  *
- * The kernel suite runs on sqlite; the other drivers are covered through
- * --db-url, which needs no server.
+ * The default connection is whatever the suite runs on; specific drivers are
+ * covered through --db-url, which needs no server.
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
@@ -27,9 +27,13 @@ class SqlConnectTest extends KernelTestBase
 {
     public function testDefaultConnection(): void
     {
-        $path = Database::getConnectionInfo()['default']['database'];
-        $this->assertSame("sqlite3 $path\n", $this->connect()->getDisplay());
-        $this->assertSame("sqlite3 $path -bail\n", $this->connect(['--extra' => '-bail'])->getDisplay());
+        $info = Database::getConnectionInfo()['default'];
+        $display = $this->connect()->getDisplay();
+        $this->assertStringContainsString($info['database'], $display);
+        $this->assertSame(rtrim($display) . " -bail\n", $this->connect(['--extra' => '-bail'])->getDisplay());
+        if ($info['driver'] === 'sqlite') {
+            $this->assertSame("sqlite3 {$info['database']}\n", $display);
+        }
     }
 
     public function testMysqlUrl(): void
@@ -42,7 +46,7 @@ class SqlConnectTest extends KernelTestBase
     {
         $info = Database::getConnectionInfo()['default'];
         $json = json_decode($this->connect(['--format' => 'json'])->getDisplay(), true, flags: JSON_THROW_ON_ERROR);
-        $this->assertSame('sqlite', $json['driver']);
+        $this->assertSame($info['driver'], $json['driver']);
         $this->assertSame($info['database'], $json['database']);
 
         $yaml = Yaml::decode($this->connect(['--format' => 'yaml', '--db-url' => 'mysql://u:p@h:3307/db'])->getDisplay());
