@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Drush\Doctor\Commands;
+namespace Drush\Doctor\Commands\updatedb;
 
+use Drush\Doctor\Commands\ConsoleTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 

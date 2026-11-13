@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Doctor\Commands;
+namespace Drush\Doctor\Commands\updatedb;
 
 use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\DrupalKernelInterface;

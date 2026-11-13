@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Drush\Doctor\Commands;
+namespace Drush\Doctor\Commands\updatedb;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\DrupalKernelInterface;
