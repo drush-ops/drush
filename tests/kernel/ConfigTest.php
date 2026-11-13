@@ -33,15 +33,13 @@ class ConfigTest extends KernelTestBase
 
     protected static $modules = ['system'];
 
-    /**
-     * The tests write keys and objects that have no schema, as config:set allows.
-     */
-    protected $strictConfigSchema = false;
-
     protected ConfigFactoryInterface $configFactory;
 
     protected function setUp(): void
     {
+        // The tests write keys and objects that have no schema, as config:set
+        // allows. Set here, not redeclared: core 11.x types the property.
+        $this->strictConfigSchema = false;
         parent::setUp();
         $this->installConfig(['system']);
         $this->configFactory = $this->container->get('config.factory');
