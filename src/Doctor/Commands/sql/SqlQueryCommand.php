@@ -15,10 +15,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Runs under dr only. Drush keeps its own sql:query.
  *
- * An inline query runs through core's Connection, so {table} braces are
- * prefixed and no client binary is needed. A --file runs through the
- * client, since Drupal's drivers execute one statement at a time and a
- * dump holds many.
+ * The query runs through core's Connection, so {table} braces are prefixed
+ * and no client binary is needed. To run a file of SQL, feed it to the
+ * client: $(dr sql:connect) < file.sql.
  *
  * @internal
  */
@@ -28,11 +27,10 @@ use Symfony\Component\Console\Output\OutputInterface;
     usages: [
         'sql:query "SELECT * FROM {users} WHERE uid = 1"',
         'sql:query "SELECT uid, name FROM {users}" --format=json',
-        'sql:query --file=example.sql',
         '$(dr sql:connect) < example.sql',
         'dr php:eval --format=json "return \\Drupal::service(\'database\')->query(\'SELECT * FROM users LIMIT 5\')->fetchAll()"',
     ],
-    help: 'Table names in {braces} are prefixed with the connection\'s prefix. Rows print tab-separated without a header, as the database clients do in silent mode; --format=json or yaml prints them as records.',
+    help: 'Table names in {braces} are prefixed with the connection\'s prefix. Rows print tab-separated without a header, as the database clients do in silent mode; --format=json or yaml prints them as records. The query is one statement; to run a file of SQL, use $(dr sql:connect) < example.sql.',
 )]
 final class SqlQueryCommand
 {
@@ -42,17 +40,11 @@ final class SqlQueryCommand
 
     public function __invoke(
         OutputInterface $output,
-        #[Argument('An SQL query. Ignored if --file is provided.')]
-        ?string $query = null,
-        #[Option('Path to a file containing the SQL to be run. Gzip files are accepted.')]
-        ?string $file = null,
-        #[Option('Delete the --file after running it.', name: 'file-delete')]
-        bool $fileDelete = false,
+        #[Argument('An SQL statement.')]
+        string $query,
         #[Option('Save the result to a file instead of printing it.', name: 'result-file')]
         ?string $resultFile = null,
-        #[Option('Add custom options to the connect string when running a --file (e.g. --extra=--skip-column-names).')]
-        ?string $extra = null,
-        #[Option('Print the rows of an inline query as json or yaml.')]
+        #[Option('Print the rows as json or yaml.')]
         ?OutputFormat $format = null,
         #[Option('The DB connection key if using multiple connections in settings.php.')]
         string $database = 'default',
@@ -61,11 +53,8 @@ final class SqlQueryCommand
         #[Option('A database URL such as mysql://root:pass@localhost:3306/dbname, used instead of the site\'s settings.', name: 'db-url')]
         ?string $dbUrl = null,
     ): int {
-        if ($file !== null && $file !== '') {
-            return $this->runFile($file, $fileDelete, $resultFile, $extra, $this->connectionInfo($database, $target, $dbUrl), $output);
-        }
-        if ($query === null || trim($query) === '') {
-            throw new \InvalidArgumentException('Pass a query, or --file.');
+        if (trim($query) === '') {
+            throw new \InvalidArgumentException('The query is empty.');
         }
 
         $connection = $this->connection($database, $target, $dbUrl);
@@ -80,35 +69,6 @@ final class SqlQueryCommand
             file_put_contents($resultFile, $result === '' ? '' : $result . "\n");
         } elseif ($result !== '') {
             $output->writeln($result, OutputInterface::OUTPUT_RAW);
-        }
-        return Command::SUCCESS;
-    }
-
-    /**
-     * Feeds a file of SQL to the client, as `client < file` does.
-     */
-    protected function runFile(string $file, bool $delete, ?string $resultFile, ?string $extra, array $info, OutputInterface $output): int
-    {
-        if (!is_file($file)) {
-            throw new \InvalidArgumentException("The file $file does not exist.");
-        }
-        $client = $this->client($info);
-        $this->requireProgram($client->program());
-
-        $command = $client->connectString($extra);
-        $command = str_ends_with($file, '.gz')
-            ? 'gzip -dc ' . escapeshellarg($file) . ' | ' . $command
-            : $command . ' < ' . escapeshellarg($file);
-        if ($resultFile !== null && $resultFile !== '') {
-            $command .= ' > ' . escapeshellarg($resultFile);
-        }
-
-        $process = $this->runShell($command, $client->environment(), $output);
-        if (!$process->isSuccessful()) {
-            throw new \RuntimeException('Query failed: ' . trim($process->getErrorOutput()));
-        }
-        if ($delete) {
-            unlink($file);
         }
         return Command::SUCCESS;
     }

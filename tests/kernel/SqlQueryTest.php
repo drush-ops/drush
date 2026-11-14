@@ -7,13 +7,11 @@ namespace Unish;
 use Drupal\Core\Database\Database;
 use Drupal\KernelTests\KernelTestBase;
 use Drush\Doctor\Commands\sql\SqlQueryCommand;
-use Drush\Doctor\Sql\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Process\ExecutableFinder;
 
 /**
  * Tests the dr-only sql:query command on whatever driver the kernel suite
@@ -59,51 +57,11 @@ class SqlQueryTest extends KernelTestBase
         $this->assertSame("a\nb\n", file_get_contents($file));
     }
 
-    public function testFile(): void
-    {
-        $connection = $this->container->get('database');
-        $client = Client::fromInfo($connection->getConnectionOptions());
-        if ((new ExecutableFinder())->find($client->program()) === null) {
-            $this->markTestSkipped($client->program() . ' is not installed.');
-        }
-        // A raw SQL file cannot address a prefixed table (on sqlite the prefix
-        // is an attached file the client does not know), so this works on an
-        // unprefixed table, as a real site has, cleaned up afterwards.
-        $table = 'drush_sqltest_file';
-        $dir = sys_get_temp_dir() . '/' . uniqid('drush-sql-query-');
-        mkdir($dir);
-        file_put_contents("$dir/one.sql", "CREATE TABLE $table (id INT NOT NULL, name VARCHAR(32) NOT NULL);\nINSERT INTO $table (id, name) VALUES (3, 'c');\n");
-        file_put_contents("$dir/two.sql.gz", gzencode("INSERT INTO $table (id, name) VALUES (4, 'd');\n"));
-        try {
-            $this->query(['--file' => "$dir/one.sql"]);
-            $this->query(['--file' => "$dir/two.sql.gz", '--file-delete' => true]);
-            $this->assertFileExists("$dir/one.sql");
-            $this->assertFileDoesNotExist("$dir/two.sql.gz");
-            $this->assertSame(['c', 'd'], $connection->query("SELECT name FROM $table ORDER BY name")->fetchCol());
-
-            // The client's own output can be captured.
-            file_put_contents("$dir/select.sql", "SELECT name FROM $table WHERE id = 3;\n");
-            $this->query(['--file' => "$dir/select.sql", '--result-file' => "$dir/out.txt"]);
-            $this->assertStringContainsString('c', file_get_contents("$dir/out.txt"));
-        } finally {
-            $connection->query("DROP TABLE IF EXISTS $table");
-            array_map(unlink(...), glob("$dir/*") ?: []);
-            rmdir($dir);
-        }
-    }
-
-    public function testMissingFile(): void
+    public function testEmptyQuery(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('does not exist');
-        $this->query(['--file' => '/nonexistent/file.sql']);
-    }
-
-    public function testNoQuery(): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Pass a query, or --file.');
-        $this->query([]);
+        $this->expectExceptionMessage('The query is empty.');
+        $this->query(['query' => '  ']);
     }
 
     public function testBadQuery(): void
