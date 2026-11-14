@@ -4,18 +4,33 @@ declare(strict_types=1);
 
 namespace Drush\Doctor\Commands\sql;
 
+use Drupal\Core\Database\Connection;
 use Drupal\Core\Database\Database;
+use Drush\Doctor\Commands\ConsoleTrait;
+use Drush\Doctor\Sql\Client;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 /**
  * Shared by the sql commands that run under dr.
  *
  * Everything here comes from core's Database registry: the connection info
  * that settings.php declares, or one parsed from --db-url. Nothing is read
- * from Drush configuration.
+ * from Drush configuration. The client binaries are described by
+ * Drush\Doctor\Sql\Client and its drivers; tables are listed and dropped
+ * through core's Schema API.
  */
 trait SqlTrait
 {
+    use ConsoleTrait;
+
+    /**
+     * The connection key a --db-url is registered under.
+     */
+    private const string URL_KEY = 'drush_db_url';
+
     /**
      * The connection info the command works with.
      *
@@ -46,140 +61,88 @@ trait SqlTrait
     }
 
     /**
-     * The command-line client for the connection's driver.
-     *
-     * Core's driver is 'mysql' for MariaDB too. The MariaDB client is used
-     * only when no mysql client is installed, since either speaks to both
-     * servers.
+     * Core's connection for the same selection, for the SQL the commands run
+     * themselves. A --db-url connection is registered under its own key.
      */
-    protected function clientProgram(array $info): string
+    protected function connection(string $database, string $target, ?string $dbUrl): Connection
     {
-        return match ($info['driver'] ?? '') {
-            'mysql' => $this->mysqlProgram(),
-            'pgsql' => 'psql',
-            'sqlite' => 'sqlite3',
-            default => throw new \InvalidArgumentException(sprintf('No database client is known for the %s driver.', $info['driver'] ?? '')),
-        };
+        if ($dbUrl !== null && $dbUrl !== '') {
+            if (!Database::getConnectionInfo(self::URL_KEY)) {
+                Database::addConnectionInfo(self::URL_KEY, 'default', $this->connectionInfo($database, $target, $dbUrl));
+            }
+            return Database::getConnection('default', self::URL_KEY);
+        }
+        // Validates the key and target before core does, for a clearer message.
+        $this->connectionInfo($database, $target, null);
+        return Database::getConnection($target, $database);
+    }
+
+    protected function client(array $info): Client
+    {
+        return Client::fromInfo($info);
+    }
+
+    /**
+     * Throws when the client (or dump) binary is not installed.
+     */
+    protected function requireProgram(string $program): void
+    {
+        if ((new ExecutableFinder())->find($program) === null) {
+            throw new \RuntimeException(sprintf("The shell command '%s' is required but cannot be found. Please install it and retry.", $program));
+        }
+    }
+
+    /**
+     * The connection's tables, without the prefix, as core's Schema API names
+     * them. With a prefix only that site's tables are listed, which is also
+     * what a dump or drop should touch.
+     *
+     * @return string[]
+     */
+    protected function listTables(Connection $connection): array
+    {
+        $tables = array_values($connection->schema()->findTables('%'));
+        if (!$tables && $connection->driver() === 'sqlite' && $connection->getPrefix() === '') {
+            // Core's sqlite findTables() only looks at the databases attached
+            // for prefixes, so an unprefixed site, the usual case, lists
+            // nothing. Read the main database directly. See
+            // https://www.drupal.org/project/drupal/issues/2949229.
+            $tables = $connection->query("SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")->fetchCol();
+        }
+        sort($tables);
+        return $tables;
+    }
+
+    /**
+     * Runs a shell command line, streaming its output, and returns the exit
+     * code. At -v the command line is shown on the error output.
+     *
+     * @param array<string, string> $env
+     */
+    protected function runShell(string $command, array $env, OutputInterface $output, ?callable $stdout = null): Process
+    {
+        $errorOutput = $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output;
+        if ($output->isVerbose()) {
+            $errorOutput->writeln('<comment>' . $command . '</comment>');
+        }
+        $process = Process::fromShellCommandline($command, null, $env, null, null);
+        $process->run(function (string $type, string $buffer) use ($output, $errorOutput, $stdout): void {
+            if ($type === Process::ERR) {
+                $errorOutput->write($buffer);
+            } elseif ($stdout !== null) {
+                $stdout($buffer);
+            } else {
+                $output->write($buffer, false, OutputInterface::OUTPUT_RAW);
+            }
+        });
+        return $process;
     }
 
     /**
      * A shell command line that opens the client on the connection.
-     *
-     * @param string|null $extra
-     *   Appended verbatim, for client options such as --skip-column-names.
      */
     protected function connectString(array $info, ?string $extra = null): string
     {
-        $program = $this->clientProgram($info);
-        $parts = match ($info['driver']) {
-            'mysql' => [$program, $this->mysqlArguments($info)],
-            'pgsql' => [$program, '-q', 'ON_ERROR_STOP=1', $this->pgsqlArguments($info)],
-            'sqlite' => [$program, $this->shellArg($info['database'])],
-            // clientProgram() has already rejected any other driver.
-            default => throw new \LogicException('Unreachable'),
-        };
-        if ($extra !== null && $extra !== '') {
-            $parts[] = $extra;
-        }
-        return implode(' ', $parts);
-    }
-
-    protected function mysqlProgram(): string
-    {
-        $finder = new ExecutableFinder();
-        if ($finder->find('mysql') === null && $finder->find('mariadb') !== null) {
-            return 'mariadb';
-        }
-        return 'mysql';
-    }
-
-    protected function mysqlArguments(array $info): string
-    {
-        $parameters = [];
-        if (isset($info['username'])) {
-            $parameters['user'] = $info['username'];
-        }
-        // An empty password is a password; only an absent one is left out.
-        if (isset($info['password'])) {
-            $parameters['password'] = $info['password'];
-        }
-        // Connect to a built-in database when the site's does not exist yet,
-        // which is what sql:create needs.
-        $parameters['database'] = empty($info['database']) ? 'information_schema' : $info['database'];
-        if (!empty($info['unix_socket'])) {
-            $parameters['socket'] = $info['unix_socket'];
-        } elseif (isset($info['host'])) {
-            // An empty host is valid alongside a socket, so isset, not empty.
-            $parameters['host'] = $info['host'];
-        }
-        if (!empty($info['port'])) {
-            $parameters['port'] = $info['port'];
-        }
-        if (!empty($info['pdo']['unix_socket'])) {
-            $parameters['socket'] = $info['pdo']['unix_socket'];
-        }
-
-        // Core's mysql driver reads SSL settings from the pdo key of the
-        // connection info, keyed by the PDO attribute constants.
-        $ssl = [
-            'ssl-ca' => \Pdo\Mysql::ATTR_SSL_CA,
-            'ssl-capath' => \Pdo\Mysql::ATTR_SSL_CAPATH,
-            'ssl-cert' => \Pdo\Mysql::ATTR_SSL_CERT,
-            'ssl-cipher' => \Pdo\Mysql::ATTR_SSL_CIPHER,
-            'ssl-key' => \Pdo\Mysql::ATTR_SSL_KEY,
-        ];
-        foreach ($ssl as $option => $attribute) {
-            if (!empty($info['pdo'][$attribute])) {
-                $parameters[$option] = $info['pdo'][$attribute];
-            }
-        }
-        // Not declared on PHP builds without the mysqlnd SSL attribute.
-        if (defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')) {
-            $attribute = constant('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT');
-            if (isset($info['pdo'][$attribute])) {
-                $parameters['ssl-verify-server-cert'] = $info['pdo'][$attribute] ? '1' : '0';
-            }
-        }
-
-        return $this->toOptions($parameters);
-    }
-
-    /**
-     * psql takes no password on the command line; it reads PGPASSFILE or
-     * ~/.pgpass instead. Host and port default as core's pgsql driver does.
-     */
-    protected function pgsqlArguments(array $info): string
-    {
-        $parameters = [
-            'dbname' => empty($info['database']) ? 'template1' : $info['database'],
-            'host' => empty($info['host']) ? 'localhost' : $info['host'],
-            'port' => empty($info['port']) ? '5432' : $info['port'],
-        ];
-        if (isset($info['username'])) {
-            $parameters['username'] = $info['username'];
-        }
-        return $this->toOptions($parameters);
-    }
-
-    /**
-     * @param array<string, string|int> $parameters
-     */
-    protected function toOptions(array $parameters): string
-    {
-        $options = [];
-        foreach ($parameters as $name => $value) {
-            $options[] = "--$name=" . $this->shellArg((string) $value);
-        }
-        return implode(' ', $options);
-    }
-
-    /**
-     * Quotes a value for the shell only when it needs it, so that the usual
-     * `$(dr sql:connect)` keeps working without eval. Same rule as Drush's
-     * own sql:connect.
-     */
-    protected function shellArg(string $value): string
-    {
-        return preg_match('|^[a-zA-Z0-9@=.:/_-]*$|', $value) ? $value : escapeshellarg($value);
+        return $this->client($info)->connectString($extra);
     }
 }
