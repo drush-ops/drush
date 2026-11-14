@@ -31,7 +31,7 @@
     }
   },
   "require": {
-    "php": ">=8.3",
+    "php": ">=8.4",
     "ext-dom": "*",
     "composer-runtime-api": "^2.2",
     "chi-teck/drupal-code-generator": "^3.6 || ^4@dev",
@@ -81,6 +81,7 @@
     }
   },
   "autoload-dev": {
+    "files": ["src/Doctor/autoload_file.php"],
     "psr-4": {
       "Unish\\": "tests/unish",
       "Custom\\Library\\": "tests/fixtures/lib"
@@ -104,7 +105,7 @@
     "sort-packages": true,
     "process-timeout": 9600,
     "platform": {
-      "php": "8.3"
+      "php": "8.4"
     }
   },
   "scripts": {

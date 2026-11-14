@@ -20,6 +20,10 @@ trait ImageTrait
 
     /**
      * Throws when the image module, which provides image styles, is not installed.
+     *
+     * @todo Remove this and its callers once the `drush` entrypoint is retired.
+     *   DoctorServiceProvider only registers the image commands with `dr`
+     *   when image is installed.
      */
     protected function requireImageModule(): void
     {

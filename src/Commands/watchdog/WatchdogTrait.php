@@ -58,6 +58,10 @@ trait WatchdogTrait
 
     /**
      * Throws when the dblog module, which owns the watchdog table, is not installed.
+     *
+     * @todo Remove this and its callers once the `drush` entrypoint is retired.
+     *   DoctorServiceProvider only registers the watchdog commands with `dr`
+     *   when dblog is installed.
      */
     protected function requireDblog(): void
     {
