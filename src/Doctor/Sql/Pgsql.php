@@ -51,16 +51,6 @@ class Pgsql extends Client
         return $parameters;
     }
 
-    public function listTablesSql(): string
-    {
-        return "SELECT tablename FROM pg_tables WHERE schemaname = current_schema() ORDER BY tablename";
-    }
-
-    public function dropTablesSql(array $tables): array
-    {
-        return $tables ? ['DROP TABLE ' . implode(', ', array_map(fn (string $t) => "\"$t\"", $tables)) . ' CASCADE'] : [];
-    }
-
     public function dumpCommand(TableSelection $tables, DumpOptions $options): string
     {
         $extra = ' ' . $this->toOptions($this->parameters());

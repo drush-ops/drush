@@ -9,9 +9,9 @@ namespace Drush\Doctor\Sql;
  * that run under dr.
  *
  * Built from core's connection info (settings.php or a --db-url) and nothing
- * else: no Drush configuration, no temp files, no process manager. The SQL
- * parts (listing and dropping tables) run through core's Connection; only
- * dumps, file imports and the interactive cli need the client binary.
+ * else: no Drush configuration, no temp files, no process manager. Listing
+ * and dropping tables go through core's Schema API; only dumps, file imports
+ * and the interactive cli need the client binary.
  */
 abstract class Client
 {
@@ -28,7 +28,7 @@ abstract class Client
      * @param array<string, mixed> $info
      *   Core connection info.
      */
-    public static function fromInfo(array $info): static
+    public static function fromInfo(array $info): self
     {
         $class = match ($info['driver'] ?? '') {
             'mysql' => Mysql::class,
@@ -80,21 +80,6 @@ abstract class Client
     {
         return [];
     }
-
-    /**
-     * SQL listing the tables of the database, one column.
-     */
-    abstract public function listTablesSql(): string;
-
-    /**
-     * SQL statements dropping the given tables.
-     *
-     * @param string[] $tables
-     *   Table names, already escaped.
-     *
-     * @return string[]
-     */
-    abstract public function dropTablesSql(array $tables): array;
 
     /**
      * A shell command line that dumps the database to stdout.

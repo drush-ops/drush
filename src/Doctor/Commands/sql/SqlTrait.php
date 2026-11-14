@@ -19,7 +19,8 @@ use Symfony\Component\Process\Process;
  * Everything here comes from core's Database registry: the connection info
  * that settings.php declares, or one parsed from --db-url. Nothing is read
  * from Drush configuration. The client binaries are described by
- * Drush\Doctor\Sql\Client and its drivers.
+ * Drush\Doctor\Sql\Client and its drivers; tables are listed and dropped
+ * through core's Schema API.
  */
 trait SqlTrait
 {
@@ -92,13 +93,15 @@ trait SqlTrait
     }
 
     /**
-     * The tables in the connection's database, as the server names them.
+     * The connection's tables, without the prefix, as core's Schema API names
+     * them. With a prefix only that site's tables are listed, which is also
+     * what a dump or drop should touch.
      *
      * @return string[]
      */
-    protected function listTables(Connection $connection, Client $client): array
+    protected function listTables(Connection $connection): array
     {
-        $tables = $connection->query($client->listTablesSql())->fetchCol();
+        $tables = array_values($connection->schema()->findTables('%'));
         sort($tables);
         return $tables;
     }

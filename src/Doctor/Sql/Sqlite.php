@@ -25,17 +25,6 @@ class Sqlite extends Client
         return self::shellArg($this->database());
     }
 
-    public function listTablesSql(): string
-    {
-        return "SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name";
-    }
-
-    public function dropTablesSql(array $tables): array
-    {
-        // SQLite drops one table per statement.
-        return array_map(fn (string $t) => "DROP TABLE \"$t\"", $tables);
-    }
-
     public function dumpCommand(TableSelection $tables, DumpOptions $options): string
     {
         // Dumping a sqlite database is usually unnecessary, since the file can

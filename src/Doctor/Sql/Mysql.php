@@ -102,16 +102,6 @@ class Mysql extends Client
         return $parameters;
     }
 
-    public function listTablesSql(): string
-    {
-        return 'SHOW TABLES';
-    }
-
-    public function dropTablesSql(array $tables): array
-    {
-        return $tables ? ['DROP TABLE ' . implode(', ', array_map(fn (string $t) => "`$t`", $tables))] : [];
-    }
-
     public function dumpCommand(TableSelection $tables, DumpOptions $options): string
     {
         // mysqldump wants the database name as an argument, not --database=.
