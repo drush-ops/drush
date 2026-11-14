@@ -105,7 +105,8 @@ trait SqlTrait
         if (!$tables && $connection->driver() === 'sqlite' && $connection->getPrefix() === '') {
             // Core's sqlite findTables() only looks at the databases attached
             // for prefixes, so an unprefixed site, the usual case, lists
-            // nothing. Read the main database directly.
+            // nothing. Read the main database directly. See
+            // https://www.drupal.org/project/drupal/issues/2949229.
             $tables = $connection->query("SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")->fetchCol();
         }
         sort($tables);
