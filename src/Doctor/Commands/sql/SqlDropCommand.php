@@ -23,6 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(
     name: self::NAME,
     description: 'Drop all tables in a given database.',
+    aliases: ['sql-drop'],
     usages: [
         'sql:drop',
         'sql:drop --no-interaction --database=migrate',

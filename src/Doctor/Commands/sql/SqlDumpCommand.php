@@ -28,6 +28,7 @@ use Symfony\Component\Process\ExecutableFinder;
 #[AsCommand(
     name: self::NAME,
     description: 'Export the Drupal DB as SQL using mysqldump or equivalent.',
+    aliases: ['sql-dump'],
     usages: [
         'sql:dump --result-file=../18.sql',
         'sql:dump --result-file=$HOME/drush-backups/$(date -I).sql --gzip',

@@ -22,6 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
     name: self::NAME,
     description: 'Print a string for connecting to the database.',
+    aliases: ['sql-connect'],
     usages: [
         '$(dr sql:connect) < example.sql',
         'eval (dr sql:connect) < example.sql',

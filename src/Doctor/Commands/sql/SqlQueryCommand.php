@@ -25,6 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[AsCommand(
     name: self::NAME,
     description: 'Execute a query against a database.',
+    aliases: ['sqlq', 'sql-query'],
     usages: [
         'sql:query "SELECT * FROM {users} WHERE uid = 1"',
         'sql:query "SELECT uid, name FROM {users}" --format=json',

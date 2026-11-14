@@ -19,6 +19,7 @@ use Symfony\Component\Process\Process;
 #[AsCommand(
     name: self::NAME,
     description: 'Open a SQL command-line interface using Drupal\'s credentials.',
+    aliases: ['sqlc', 'sql-cli'],
     usages: [
         'sql:cli',
         'sql:cli --extra=-A',
