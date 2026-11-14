@@ -102,6 +102,12 @@ trait SqlTrait
     protected function listTables(Connection $connection): array
     {
         $tables = array_values($connection->schema()->findTables('%'));
+        if (!$tables && $connection->driver() === 'sqlite' && $connection->getPrefix() === '') {
+            // Core's sqlite findTables() only looks at the databases attached
+            // for prefixes, so an unprefixed site, the usual case, lists
+            // nothing. Read the main database directly.
+            $tables = $connection->query("SELECT name FROM main.sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'")->fetchCol();
+        }
         sort($tables);
         return $tables;
     }
