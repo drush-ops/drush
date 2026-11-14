@@ -30,12 +30,12 @@ use Symfony\Component\Process\ExecutableFinder;
     description: 'Export the Drupal DB as SQL using mysqldump or equivalent.',
     usages: [
         'sql:dump --result-file=../18.sql',
-        'sql:dump --result-file=auto --gzip',
+        'sql:dump --result-file=$HOME/drush-backups/$(date -I).sql --gzip',
         'sql:dump --skip-tables-list=cache*,sessions,watchdog',
-        'sql:dump --structure-tables-list=cache*,sessions --result-file=auto --format=json',
+        'sql:dump --structure-tables-list=cache*,sessions --result-file=../18.sql --format=json',
         'sql:dump --extra-dump=--no-data',
     ],
-    help: 'Without --result-file the dump is written to standard output. With it, the path of the file is printed, as plain text or with --format as json or yaml, so that a caller can find the dump.',
+    help: 'Without --result-file the dump is written to standard output. With it, the path of the file is printed, as plain text or with --format as json or yaml, so that a caller can find the dump. There is no automatic file naming; let the shell build a dated path, as in the examples.',
 )]
 final class SqlDumpCommand
 {
@@ -46,7 +46,7 @@ final class SqlDumpCommand
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
-        #[Option('Save to a file. The file should be relative to Drupal root. If --result-file is provided with the value \'auto\', a date-based filename will be created under ~/drush-backups.', name: 'result-file')]
+        #[Option('Save to a file instead of writing the dump to standard output. A relative path is relative to the Drupal root.', name: 'result-file')]
         ?string $resultFile = null,
         #[Option('Omit DROP TABLE statements. Used by Postgres only, when importing into a freshly created database.', name: 'create-db')]
         bool $createDb = false,
@@ -88,7 +88,7 @@ final class SqlDumpCommand
         $options = new DumpOptions(dataOnly: $dataOnly, orderedDump: $orderedDump, createDb: $createDb, extraDump: $extraDump);
 
         $command = $client->dumpCommand($tables, $options);
-        $file = $this->dumpFile($resultFile, $client->database());
+        $file = ($resultFile === null || $resultFile === '') ? null : $resultFile;
         if ($gzip) {
             $command .= ' | gzip -f';
             if ($file !== null) {
@@ -118,40 +118,5 @@ final class SqlDumpCommand
             $output->writeln($result, OutputInterface::OUTPUT_RAW);
         }
         return Command::SUCCESS;
-    }
-
-    /**
-     * The path to write the dump to, or null for standard output.
-     *
-     * 'auto' picks a dated file under ~/drush-backups/<database>/, or the
-     * system temp dir when the home directory is not writable. @DATABASE and
-     * @DATE in a given path are replaced.
-     */
-    protected function dumpFile(?string $resultFile, string $database): ?string
-    {
-        if ($resultFile === null || $resultFile === '') {
-            return null;
-        }
-        // basename() because a sqlite database is a path.
-        $database = basename($database);
-        if ($resultFile === 'auto') {
-            $resultFile = $this->backupDirectory($database) . '/@DATABASE_@DATE.sql';
-        }
-        return str_replace(['@DATABASE', '@DATE'], [$database, gmdate('Ymd_His')], $resultFile);
-    }
-
-    protected function backupDirectory(string $database): string
-    {
-        $home = getenv('HOME') ?: '';
-        $candidates = [
-            $home !== '' ? "$home/drush-backups/$database" : null,
-            sys_get_temp_dir() . "/drush-backups/$database",
-        ];
-        foreach (array_filter($candidates) as $dir) {
-            if (is_dir($dir) ? is_writable($dir) : @mkdir($dir, 0700, true)) {
-                return $dir;
-            }
-        }
-        throw new \RuntimeException('No writable backup directory found; pass --result-file with a path.');
     }
 }

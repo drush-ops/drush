@@ -97,19 +97,6 @@ class SqlDumpTest extends KernelTestBase
         $this->assertStringNotContainsString('Database dump saved', $tester->getErrorOutput());
     }
 
-    public function testAuto(): void
-    {
-        $this->requireDumpProgram();
-        putenv('HOME=' . $this->dir);
-        $path = trim($this->dump(['--result-file' => 'auto'])->getDisplay());
-        $database = basename($this->connection->getConnectionOptions()['database']);
-        $this->assertMatchesRegularExpression('#^' . preg_quote("$this->dir/drush-backups/$database/{$database}_", '#') . '\d{8}_\d{6}\.sql$#', $path);
-        $this->assertFileExists($path);
-        unlink($path);
-        rmdir(dirname($path));
-        rmdir(dirname($path, 2));
-    }
-
     public function testTableSelection(): void
     {
         $this->requireDumpProgram();
