@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Drush\Doctor\Commands\sql;
 
 use Drupal\Component\Serialization\Yaml;
+use Drupal\Core\Database\Statement\FetchAs;
 use Drush\Commands\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -58,7 +59,7 @@ final class SqlQueryCommand
         }
 
         $connection = $this->connection($database, $target, $dbUrl);
-        $rows = $connection->query($query)->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $connection->query($query)->fetchAll(FetchAs::Associative);
         $result = match ($format) {
             OutputFormat::Json => json_encode($rows, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR),
             OutputFormat::Yaml => rtrim(Yaml::encode($rows), "\n"),
