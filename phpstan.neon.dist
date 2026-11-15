@@ -11,12 +11,7 @@ parameters:
         - Drupal\Core\Extension\Extension
         - Drupal\views\ViewExecutable
     excludePaths:
-        # Unclear why the phpstan-drupal rule is not working for this command
-        - src/Commands/core/LanguageAddCommand.php
-        # Deliberately calls optional external code.
-        - src/Psysh/Caster.php
-        # Remove once we only support Drupal 11.2
-        # - src/Commands/core/cache/CacheWarmCommand.php
+        - src/Attributes
 rules:
     # https://github.com/mglaman/phpstan-drupal/issues/741#issuecomment-2379202809
     - mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes

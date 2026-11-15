@@ -179,11 +179,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
             $classes[] = WorkspacePublishCommand::class;
         }
 
-        $skip = [
-            CacheRebuildCommand::class,
-            UserLoginCommand::class,
-        ];
-
+        $skip = [];
         return array_diff($classes, $skip);
     }
 }

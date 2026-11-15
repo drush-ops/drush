@@ -36,18 +36,9 @@
     "composer-runtime-api": "^2.2",
     "chi-teck/drupal-code-generator": "^3.6 || ^4@dev",
     "composer/semver": "^1.4 || ^3",
-    "consolidation/annotated-command": "^4.10.2",
-    "consolidation/config": "^3.1.1",
-    "consolidation/filter-via-dot-access-data": "^2.0.2",
-    "consolidation/log": "^3",
-    "consolidation/output-formatters": "^4.6.1",
-    "consolidation/site-alias": "^4.1.1",
-    "consolidation/site-process": "^5.4.2 || ^6.1",
     "dflydev/dot-access-data": "^3.0.2",
     "grasmash/yaml-cli": "4.x-dev",
     "guzzlehttp/guzzle": "^7.8.2 || ^8.0",
-    "laravel/prompts": "^0.3.5",
-    "league/container": "^4.2.5",
     "psy/psysh": "~0.12",
     "symfony/event-dispatcher": "^7 || ^8",
     "symfony/filesystem": "^7 || ^8",
@@ -59,7 +50,7 @@
     "behat/mink": "^1.11",
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
-    "drupal/core-recommended": "11.x-dev",
+    "drupal/core-recommended": "12.x-dev",
     "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^2",
@@ -71,9 +62,7 @@
   },
   "conflict": {
     "grasmash/expander": "<3.0.1",
-    "drupal/core": "< 11.3",
-    "drupal/migrate_run": "*",
-    "drupal/migrate_tools": "<= 5"
+    "drupal/core": "< 12.0"
   },
   "autoload": {
     "psr-4": {

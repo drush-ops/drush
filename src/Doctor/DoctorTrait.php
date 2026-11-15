@@ -17,20 +17,6 @@ use Symfony\Component\Process\Process;
  */
 trait DoctorTrait
 {
-    /**
-     * Returns the path to the dr binary, or throws when it is not installed.
-     *
-     * @param string $command
-     *   The name of the command delegating to dr, for the error message.
-     */
-    protected function doctorBinary(DrushConfig $config, string $command): string
-    {
-        $binary = $config->get('drush.vendor-dir') . '/bin/dr';
-        if (!is_file($binary)) {
-            throw new \RuntimeException(sprintf('%s was not found. %s runs dr %s, which requires Drupal core 11.4 or later.', $binary, $command, $command));
-        }
-        return $binary;
-    }
 
     /**
      * Runs dr with the given arguments, streaming its output, and returns its

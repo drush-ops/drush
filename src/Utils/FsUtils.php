@@ -16,67 +16,6 @@ final class FsUtils
     private static ?array $deletionList = null;
 
     /**
-     * Return path to the backup directory.
-     *
-     * @param string $subdir
-     *   The name of the desired subdirectory(s) under drush-backups.
-     *   Usually a database name.
-     * @throws \Exception
-     */
-    public static function getBackupDir(?string $subdir = null): string
-    {
-        $parent = self::getBackupDirParent();
-
-        // Try to use db name as subdir if none was provided.
-        if (empty($subdir)) {
-            if ($sql = SqlBase::create()) {
-                $db_spec = $sql->getDbSpec();
-                $subdir = $db_spec['database'];
-            }
-        }
-
-        // Add in the subdirectory if it was provided or inferred.
-        if (!empty($subdir)) {
-            $parent = Path::join($parent, $subdir);
-        }
-
-        // Save the date to be used in the backup directory's path name.
-        $date = gmdate('YmdHis', $_SERVER['REQUEST_TIME']);
-        return Path::join($parent, $date);
-    }
-
-    /**
-     * Get the base dir where our backup directories will be stored. Also stores CLI history file.
-     */
-    public static function getBackupDirParent()
-    {
-        // Try in order:
-        //  1. The user-specified backup directory from drush.yml config file
-        //  2. The 'drush-backups' directory in $HOME
-        //  3. The 'drush-backups' directory in tmp
-        $candidates = [
-            Drush::config()->get('drush.paths.backup-dir'),
-            Path::join(
-                Drush::config()->home(),
-                'drush-backups'
-            ),
-            Path::join(
-                Drush::config()->tmp(),
-                'drush-backups'
-            ),
-        ];
-
-        // Return the first usable candidate
-        foreach ($candidates as $dir) {
-            if (self::isUsableDirectory($dir)) {
-                return $dir;
-            }
-        }
-
-        throw new \Exception('No viable backup directory found.');
-    }
-
-    /**
      * Determine if the specified location is writable, or if a writable
      *   directory could be created at that path.
      *
@@ -105,26 +44,6 @@ final class FsUtils
         // Otherwise, this directory is usable (could be created) if its
         // parent directory is usable.
         return self::isUsableDirectory(dirname($dir));
-    }
-
-    /**
-     * Prepare a temporary directory that will be deleted on exit.
-     *
-     * @param string $subdir
-     *   A string naming the subdirectory of the backup directory.
-     * @return string
-     *   Path to the specified backup directory.
-     * @throws \Exception
-     */
-    public static function tmpDir($subdir = null): string
-    {
-        $parent = self::getBackupDirParent();
-        $fs = new Filesystem();
-        $dir = $fs->tempnam($parent, $subdir ?? 'drush');
-        unlink($dir);
-        $fs->mkdir($dir);
-        self::registerForDeletion($dir);
-        return $dir;
     }
 
     /**
@@ -160,23 +79,6 @@ final class FsUtils
               // No action taken if someone already deleted the directory
             }
         }
-    }
-
-    /**
-     * Prepare a backup directory.
-     *
-     * @param string $subdir
-     *   A string naming the subdirectory of the backup directory.
-     * @return string
-     *   Path to the specified backup directory.
-     * @throws \Exception
-     */
-    public static function prepareBackupDir(?string $subdir = null): string
-    {
-        $fs = new Filesystem();
-        $backup_dir = self::getBackupDir($subdir);
-        $fs->mkdir($backup_dir);
-        return $backup_dir;
     }
 
     /**
