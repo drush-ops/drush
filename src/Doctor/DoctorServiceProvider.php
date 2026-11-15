@@ -21,6 +21,7 @@ use Drush\Commands\core\ImageCommands;
 use Drush\Commands\core\ImageDeriveCommand;
 use Drush\Commands\core\ImageFlushCommand;
 use Drush\Commands\core\JsonapiGetCommand;
+use Drush\Commands\core\MkDocsCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\PhpEvalCommand;
 use Drush\Commands\core\PhpScriptCommand;
@@ -121,6 +122,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
     {
         $core = [
             BrowseCommand::class,
+            MkDocsCommand::class,
             RouteCommand::class,
         ];
 

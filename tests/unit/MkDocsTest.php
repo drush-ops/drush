@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Unish;
 
-use Drush\Command\HelpLinks;
 use Drush\Commands\core\MkDocsCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -19,32 +18,30 @@ class MkDocsTest extends TestCase
 {
     public function testCliTextToMarkdown(): void
     {
-        $this->assertSame('Run *drush status* now.', MkDocsCommand::cliTextToMarkdown('Run <info>drush status</info> now.'));
-
-        $link = sprintf('<href=%s/output-formats-filters>Output formats</>', HelpLinks::getDocsUrlBase());
-        $this->assertSame('See [Output formats](../output-formats-filters.md).', MkDocsCommand::cliTextToMarkdown("See $link."));
+        $this->assertSame('Run *dr status* now.', MkDocsCommand::cliTextToMarkdown('Run <info>dr status</info> now.'));
+        $this->assertSame('See [jq](https://jqlang.org/).', MkDocsCommand::cliTextToMarkdown('See <href=https://jqlang.org/>jq</>.'));
     }
 
-    public function testOptionToArray(): void
+    public function testFormatOption(): void
     {
         $option = new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'The output format.', 'json');
-        $this->assertSame([
-            'name' => '--format',
-            'accept_value' => true,
-            'is_value_required' => true,
-            'shortcut' => 'f',
-            'description' => 'The output format.',
-            'defaults' => ['json'],
-        ], MkDocsCommand::optionToArray($option));
+        $this->assertSame('-f, --format=FORMAT', MkDocsCommand::formatOptionKeys($option));
+        $this->assertSame('The output format. [default: <info>json</info>]', MkDocsCommand::formatOptionDescription($option));
+
+        $optional = new InputOption('editor', null, InputOption::VALUE_OPTIONAL, 'An editor.');
+        $this->assertSame('--editor[=EDITOR]', MkDocsCommand::formatOptionKeys($optional));
 
         $flag = new InputOption('all', null, InputOption::VALUE_NONE, 'Everything.');
-        $this->assertArrayNotHasKey('defaults', MkDocsCommand::optionToArray($flag));
+        $this->assertSame('--all', MkDocsCommand::formatOptionKeys($flag));
+        $this->assertSame('Everything.', MkDocsCommand::formatOptionDescription($flag));
     }
 
-    public function testArgToArray(): void
+    public function testFormatArgument(): void
     {
-        $argument = new InputArgument('names', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
-        $this->assertSame(['name' => 'names', 'is_array' => true, 'is_required' => true], MkDocsCommand::argToArray($argument));
+        $this->assertSame('name', MkDocsCommand::formatArgument(new InputArgument('name', InputArgument::REQUIRED)));
+        $this->assertSame('[name]', MkDocsCommand::formatArgument(new InputArgument('name', InputArgument::OPTIONAL)));
+        $this->assertSame('names (names)...', MkDocsCommand::formatArgument(new InputArgument('names', InputArgument::IS_ARRAY | InputArgument::REQUIRED)));
+        $this->assertSame('[names]...', MkDocsCommand::formatArgument(new InputArgument('names', InputArgument::IS_ARRAY)));
     }
 
     public function testGetFilename(): void
@@ -62,5 +59,26 @@ class MkDocsTest extends TestCase
             'commands/in.md' => 'commands/pm_install.md',
             'commands/pm_enable.md' => 'commands/pm_install.md',
         ], MkDocsCommand::getRedirectMap($command, 'commands'));
+    }
+
+    public function testCategorize(): void
+    {
+        $install = new Command('pm:install')->setAliases(['in']);
+        $list = new Command('pm:list');
+        $route = new Command('core:route');
+        $hidden = new Command('pm:secret')->setHidden(true);
+
+        $namespaced = MkDocsCommand::categorize([
+            'pm:list' => $list,
+            'pm:install' => $install,
+            'in' => $install,
+            'core:route' => $route,
+            'pm:secret' => $hidden,
+        ]);
+        // Aliases and hidden commands are dropped; a namespace with a single
+        // command moves to _global.
+        $this->assertSame(['_global', 'pm'], array_keys($namespaced));
+        $this->assertSame(['core:route'], array_keys($namespaced['_global']));
+        $this->assertSame(['pm:install', 'pm:list'], array_keys($namespaced['pm']));
     }
 }
