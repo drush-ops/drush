@@ -42,6 +42,9 @@ use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
 use Drush\Doctor\Commands\deploy\DeployMarkCompleteCommand;
 use Drush\Doctor\Commands\ex\ExtensionInstallCommand;
 use Drush\Doctor\Commands\ex\ExtensionUninstallCommand;
+use Drush\Doctor\Commands\maint\MaintDisableCommand;
+use Drush\Doctor\Commands\maint\MaintEnableCommand;
+use Drush\Doctor\Commands\maint\MaintStatusCommand;
 use Drush\Doctor\Commands\sql\SqlCliCommand;
 use Drush\Doctor\Commands\sql\SqlConnectCommand;
 use Drush\Doctor\Commands\sql\SqlDropCommand;
@@ -89,6 +92,13 @@ class DoctorServiceProvider implements ServiceProviderInterface
             // Core has its own ex:uninstall (alias pm:uninstall) from 12.1.
             if (!class_exists(CoreExtensionUninstallCommand::class)) {
                 $classes[] = ExtensionUninstallCommand::class;
+            }
+            // Core merge request 17320 adds the maint commands to the system
+            // module under the same class names. No core version has them yet.
+            foreach ([MaintDisableCommand::class, MaintEnableCommand::class, MaintStatusCommand::class] as $copy) {
+                if (!class_exists('Drupal\\system\\Command\\' . new \ReflectionClass($copy)->getShortName())) {
+                    $classes[] = $copy;
+                }
             }
             // The dr-only updatedb commands need core's DatabaseUpdate (11.5+).
             if ($container->hasDefinition(DatabaseUpdate::class)) {
