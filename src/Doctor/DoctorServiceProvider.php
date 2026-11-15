@@ -20,6 +20,7 @@ use Drush\Commands\core\BrowseCommand;
 use Drush\Commands\core\ImageCommands;
 use Drush\Commands\core\ImageDeriveCommand;
 use Drush\Commands\core\ImageFlushCommand;
+use Drush\Commands\core\JsonapiGetCommand;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\PhpEvalCommand;
 use Drush\Commands\core\PhpScriptCommand;
@@ -170,6 +171,9 @@ class DoctorServiceProvider implements ServiceProviderInterface
         if (isset($modules['image'])) {
             $classes[] = ImageDeriveCommand::class;
             $classes[] = ImageFlushCommand::class;
+        }
+        if (isset($modules['jsonapi'])) {
+            $classes[] = JsonapiGetCommand::class;
         }
         if (isset($modules['workspaces'])) {
             $classes[] = WorkspacePublishCommand::class;
