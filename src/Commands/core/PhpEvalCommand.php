@@ -37,17 +37,11 @@ use Symfony\Component\Console\Output\OutputInterface;
         'php:eval "node_access_rebuild();"',
     ],
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-final class PhpEvalCommand
+class PhpEvalCommand
 {
     use AutowireTrait;
 
     public const string NAME = 'php:eval';
-
-    public function __construct(
-        protected ?BootstrapManager $bootstrapManager = null,
-    ) {
-    }
 
     public function __invoke(
         OutputInterface $output,
@@ -56,7 +50,6 @@ final class PhpEvalCommand
         #[Option('An alternative output format such as json or yaml. By default the returned value prints via var_export().')]
         ?OutputFormat $format = null,
     ): int {
-        $this->bootstrapManager?->bootstrapMax(DrupalBootLevels::FULL);
 
         $value = eval($code . ';');
 

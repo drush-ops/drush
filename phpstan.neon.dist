@@ -12,6 +12,9 @@ parameters:
         - Drupal\views\ViewExecutable
     excludePaths:
         - src/Attributes
+        - src/Commands/core/DocsCommands.php
+        - src/Commands/core/MaintCommands.php
+        - src/Utils/FsUtils.php
 rules:
     # https://github.com/mglaman/phpstan-drupal/issues/741#issuecomment-2379202809
     - mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes
