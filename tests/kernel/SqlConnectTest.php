@@ -8,11 +8,14 @@ use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Database\Database;
 use Drupal\KernelTests\KernelTestBase;
 use Drush\Doctor\Commands\sql\SqlConnectCommand;
+use Drush\Doctor\Sql\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 /**
  * Tests the dr-only sql:connect command.
@@ -34,6 +37,29 @@ class SqlConnectTest extends KernelTestBase
         if ($info['driver'] === 'sqlite') {
             $this->assertSame("sqlite3 {$info['database']}\n", $display);
         }
+    }
+
+    /**
+     * The connect string reaches the database the suite runs on.
+     */
+    public function testConnectStringConnects(): void
+    {
+        $info = Database::getConnectionInfo()['default'];
+        $client = Client::fromInfo($info);
+        if ((new ExecutableFinder())->find($client->program()) === null) {
+            $this->markTestSkipped($client->program() . ' is not installed.');
+        }
+        $extra = match ($info['driver']) {
+            'mysql' => "-e 'SELECT 40 + 2'",
+            'pgsql' => "-c 'SELECT 40 + 2'",
+            'sqlite' => "'SELECT 40 + 2'",
+        };
+        $command = trim($this->connect(['--extra' => $extra])->getDisplay());
+        // The sqlite path is relative to the Drupal root.
+        $process = Process::fromShellCommandline($command, $this->root, $client->environment());
+        $process->run();
+        $this->assertSame(0, $process->getExitCode(), $process->getErrorOutput());
+        $this->assertStringContainsString('42', $process->getOutput());
     }
 
     public function testMysqlUrl(): void

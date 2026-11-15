@@ -146,6 +146,23 @@ class ExtensionInstallTest extends KernelTestBase
     }
 
     /**
+     * Tests that failing install requirements are reported and block the install.
+     */
+    public function testInstallRequirementsNotMet(): void
+    {
+        // Read by DrushEmptyModuleRequirements.
+        putenv('UNISH_FAIL_INSTALL_REQUIREMENTS=drush_empty_module');
+        $tester = $this->commandTester();
+        $code = $tester->execute(['extensions' => 'drush_empty_module']);
+        $display = $tester->getDisplay();
+
+        $this->assertEquals(Command::FAILURE, $code, $display);
+        $this->assertStringContainsString('Primary install requirements not met.', $display);
+        $this->assertStringContainsString('Secondary install requirements not met.', $display);
+        $this->assertFalse($this->moduleInstalled('drush_empty_module'));
+    }
+
+    /**
      * Tests installing a theme and its base theme dependency.
      */
     public function testThemeInstall(): void

@@ -12,7 +12,7 @@ Creating a new Drush command is easy. Follow the steps below.
 3. Drush will then report that it created a commandfile. Edit as needed.
 4. Use the classes for the core Drush commands at [/src/Commands](https://github.com/drush-ops/drush/tree/14.x/src/Commands) as inspiration and documentation.
 5. You may [inject dependencies](dependency-injection.md) into a command instance.
-6. Write PHPUnit tests based on [Drush Test Traits](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md#drush-test-traits).
+6. Write a kernel test that drives the command with Symfony's `CommandTester`. See [QueueTest](https://github.com/drush-ops/drush/blob/14.x/tests/kernel/QueueTest.php) for an example.
 
 ## Four ways to declare a command
 The following are supported ways to declare a command.

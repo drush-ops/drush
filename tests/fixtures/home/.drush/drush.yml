@@ -1,7 +1,0 @@
-test:
-  home: 'A user-specific setting'
-command:
-  test:
-    foo:
-      options:
-        bar: baz

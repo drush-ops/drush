@@ -50,7 +50,7 @@ executors:
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:8.0
         environment:
-          # The kernel suite runs before anything creates the Unish database.
+          # Nothing else creates the database the kernel suite uses.
           MYSQL_DATABASE: unish_dev
   mysql-highest:
     docker:
@@ -60,7 +60,7 @@ executors:
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:9.5
         environment:
-          # The kernel suite runs before anything creates the Unish database.
+          # Nothing else creates the database the kernel suite uses.
           MYSQL_DATABASE: unish_dev
   postgres-lowest:
     docker:
@@ -110,10 +110,11 @@ jobs:
     parameters:
       dbms:
         type: string
-      suite:
-        type: string
+      # lowest: Drupal 12.x with the lowest allowed dependencies.
+      # highest: Drupal main with the highest allowed dependencies.
       release:
-        type: string
+        type: enum
+        enum: [lowest, highest]
     <<: *defaults
     executor: << parameters.dbms >>-<< parameters.release >>
     steps:
@@ -124,19 +125,16 @@ jobs:
       - composer-auth
       - when:
           condition:
-            and:
-              - equal: [lowest, << parameters.release >>]
+            equal: [lowest, << parameters.release >>]
           steps:
             - run: composer -n update --prefer-lowest
-      - unless:
+      - when:
           condition:
-            and:
-              - equal: [lowest, << parameters.release >>]
+            equal: [highest, << parameters.release >>]
           steps:
             - run: .circleci/highest.sh
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n kernel -- --log-junit /tmp/results/kernel/junit.xml
-      - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
 
 workflows:
   drush:
@@ -148,19 +146,4 @@ workflows:
           matrix:
             parameters:
               dbms: [mysql, postgres, sqlite]
-              suite: [integration, functional]
               release: [lowest, highest]
-#            exclude:
-#              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
-#              - release: highest
-#                dbms: mysql
-#                suite: integration
-#              - release: highest
-#                dbms: mysql
-#                suite: functional
-#              - release: highest
-#                dbms: postgres
-#                suite: integration
-#              - release: highest
-#                dbms: postgres
-#                suite: functional

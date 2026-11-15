@@ -1,14 +1,14 @@
 # Drush agent guide
 
 Drush is a PHP command-line shell for Drupal. Commands live in `src/Commands/`, grouped by domain.
-Tests ("Unish") live in `tests/` and run against a Drupal site under `sut/` (the System Under Test).
+Tests live in `tests/`. Kernel tests run against the Drupal codebase under `sut/`.
 Contributor docs: `docs/contribute/CONTRIBUTING.md` and `docs/contribute/unish.md`.
 
 ## Setup
 - A configured DDEV project ships with the repo. Some useful commands: `ddev start`, `ddev exec`, `ddev composer`. When running a Drush commands, use `ddev drush`.
 - `composer install` installs Drush and Drupal core into `sut/`. Without it, `vendor/` and `sut/core` are absent and nothing runs.
-- `composer.lock` is gitignored on purpose (highest/lowest dependency testing). Do not commit one.
-- Functional and integration tests need a database. Set `UNISH_DB_URL` as an env var or in `tests/phpunit.xml` (a copy of `phpunit.xml.dist`). Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
+- `composer.lock` is gitignored on purpose (CI tests against several Drupal versions). Do not commit one.
+- Kernel tests need a database. Set `UNISH_DB_URL` as an env var. Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
 - DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` for you.
 
 ## Checks before pushing
@@ -21,8 +21,6 @@ composer lint            # php -l over src, includes, tests
 vendor/bin/phpstan       # level 4, CI fails on new errors
 composer unit            # fast, no database
 composer kernel          # Drupal KernelTestBase tests driving commands with CommandTester
-composer integration     # shared SUT, must not mutate its database
-composer functional      # execs ./drush per test, slow; filter with -- --filter testName
 ```
 
 `composer test` runs lint, all phpunit suites, and cs. `composer rector` applies the configured Rector sets; run it when touching many files.
@@ -40,9 +38,6 @@ composer functional      # execs ./drush per test, slow; filter with -- --filter
 
 - Unit: pure functions, no side effects, no Drupal.
 - Kernel: extend `Drupal\KernelTests\KernelTestBase`, build the command from `$this->container` services, drive it with `Symfony\Component\Console\Tester\CommandTester`, assert on `getDisplay()` and the exit code. Preferred for new command tests; `tests/kernel/QueueTest.php` is the model. Needs `UNISH_DB_URL` (or `SIMPLETEST_DB`).
-- Integration: extend `Unish\UnishIntegrationTestCase`; calls the Symfony application directly, Drupal bootstraps once at full level, so argument and option parsing cannot be tested here.
-- Functional: extend `Unish\CommandUnishTestCase`; runs the real `./drush` binary in a subprocess, may change SUT state. Mark network-dependent tests `#[Group('slow')]`.
-- `UNISH_DIRTY=1` keeps the SUT installed after a run for inspection: `./drush @sut.dev status`.
 
 ## Conventions
 

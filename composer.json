@@ -46,10 +46,11 @@
     "composer/installers": "^2",
     "cweagans/composer-patches": "~1.7.3",
     "drupal/core-recommended": "12.x-dev",
-    "drupal/semver_example": "2.3.0",
     "jetbrains/phpstorm-attributes": "^1.0",
     "mglaman/phpstan-drupal": "^2",
     "mikey179/vfsstream": "^1.6.11",
+    "phpspec/prophecy-phpunit": "^2.4",
+    "phpunit/phpunit": "^11.5 || ^12",
     "rector/rector": "^2",
     "squizlabs/php_codesniffer": "^3.7"
   },
@@ -64,8 +65,7 @@
   "autoload-dev": {
     "files": ["src/Doctor/autoload_file.php"],
     "psr-4": {
-      "Unish\\": "tests/unish",
-      "Custom\\Library\\": "tests/fixtures/lib"
+      "Unish\\": "tests/kernel"
     }
   },
   "config": {
@@ -107,9 +107,7 @@
     "sut:si": "./drush --uri=dev site:install ${INSTALL_PROFILE:-minimal} --sites-subdir=dev --db-url=${UNISH_DB_URL:-mysql://root:password@mariadb/unish_dev?module=mysql} -v",
     "phpunit": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --testdox --configuration tests",
     "unit": "composer phpunit -- --testsuite unit",
-    "integration": "composer phpunit -- --testsuite integration",
-    "kernel": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --testdox --configuration tests/phpunit.kernel.xml.dist",
-    "functional": "composer phpunit -- --testsuite functional"
+    "kernel": "php -d sendmail_path='true' vendor/bin/phpunit --colors=always --testdox --configuration tests/phpunit.kernel.xml.dist"
   },
   "extra": {
     "installer-paths": {

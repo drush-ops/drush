@@ -1,7 +1,0 @@
-name: Dependent 4
-type: module
-description: Dependent 4 module
-core_version_requirement: ^10.2 || ^11 || ^12
-package: Other
-dependencies:
-  - dependent2:dependent2

@@ -1,4 +1,4 @@
-# Drush uses highest/lowest testing so no use for a lock file.
+# Drush tests against several Drupal versions so no use for a lock file.
 composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
@@ -19,15 +19,11 @@ api
 .idea/
 .vscode/
 sut/*
-!sut/drush
-sut/drush/sites/*test.site.yml
 !sut/modules
 !sut/themes
 sut/modules/contrib
 /sandbox/
 .env
-# Test fixtures
-sut/drush/sites/synctest.site.yml
 /tests/.phpunit.result.cache
 
 # Code tools

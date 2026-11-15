@@ -54,6 +54,20 @@ class DeployTest extends KernelTestBase
         $this->assertSame(['a', 'batch', 'failing'], array_column($json, 'hook'));
     }
 
+    /**
+     * The hook of a module whose name contains _deploy is found and run.
+     */
+    public function testModuleNameContainingDeploy(): void
+    {
+        $this->disableModules(['woot']);
+        $this->enableModules(['woot_deploy']);
+
+        $display = $this->runCommand(new DeployHookCommand($this->kernel()))->getDisplay();
+        $this->assertStringContainsString('This is the update message from woot_deploy_deploy_function', $display);
+        $this->assertStringContainsString('Deploy hook completed: woot_deploy_deploy_function', $display);
+        $this->assertStringContainsString('No pending deploy hooks.', $this->runCommand(new DeployHookCommand($this->kernel()))->getDisplay());
+    }
+
     public function testMarkComplete(): void
     {
         $display = $this->runCommand(new DeployMarkCompleteCommand($this->kernel()))->getDisplay();

@@ -71,14 +71,9 @@ class PhpTest extends KernelTestBase
         $this->assertSame([], $result['extra']);
     }
 
-    public function testScriptPathAndExtra(): void
+    public function testScriptExtra(): void
     {
-        // Found through --script-path, without the .php suffix.
-        $tester = $this->script([
-            'extra' => ['unish_script', 'apple', '--cider'],
-            '--script-path' => '/no/such/dir' . PATH_SEPARATOR . __DIR__ . '/resources',
-            '--format' => 'json',
-        ]);
+        $tester = $this->script(['extra' => [__DIR__ . '/resources/unish_script.php', 'apple', '--cider'], '--format' => 'json']);
         $this->assertSame(['apple', '--cider'], json_decode($tester->getDisplay(), true)['extra']);
     }
 
@@ -91,26 +86,10 @@ class PhpTest extends KernelTestBase
         $this->assertSame('<?php print "from stdin";' . PHP_EOL, $tester->getDisplay());
     }
 
-    public function testScriptListing(): void
-    {
-        $tester = $this->script(['--script-path' => __DIR__ . '/resources']);
-        $listed = explode("\n", trim($tester->getDisplay()));
-        $this->assertContains('unish_script.php', $listed);
-        $this->assertContains('unish_exit.php', $listed);
-    }
-
-    public function testScriptMissing(): void
-    {
-        $tester = new CommandTester(new PhpScriptCommand());
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage(sprintf('Unable to find any of the following: %s/no_such_script, %s/resources/no_such_script', getcwd(), __DIR__));
-        $tester->execute(['extra' => ['no_such_script'], '--script-path' => __DIR__ . '/resources']);
-    }
-
     public function testScriptExitCode(): void
     {
         $tester = new CommandTester(new PhpScriptCommand());
-        $this->assertSame(3, $tester->execute(['extra' => ['unish_exit'], '--script-path' => __DIR__ . '/resources']));
+        $this->assertSame(3, $tester->execute(['extra' => [__DIR__ . '/resources/unish_exit.php']]));
         $this->assertSame("3\n", $tester->getDisplay());
     }
 

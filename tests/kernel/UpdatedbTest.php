@@ -111,6 +111,27 @@ class UpdatedbTest extends KernelTestBase
         $this->assertStringContainsString('No database updates required.', $this->runStatus()->getDisplay());
     }
 
+    /**
+     * A multi-pass update, then an update that installs a module. The post
+     * update and the cleanup that follow run on the rebuilt container.
+     */
+    public function testMultiPassAndModuleInstall(): void
+    {
+        require_once __DIR__ . '/resources/updatedb_post_update.php';
+        require_once __DIR__ . '/resources/updatedb_multipass.php';
+
+        $tester = $this->updatedb();
+        $display = $tester->getDisplay();
+        $this->assertSame(Command::SUCCESS, $tester->getStatusCode(), $display);
+        foreach (['Fixture pass 1 of 3', 'Fixture pass 2 of 3', 'Fixture pass 3 of 3', 'Update started: drush_empty_module_update_8002'] as $once) {
+            $this->assertSame(1, substr_count($display, $once), $display);
+        }
+        $this->assertStringContainsString('Fixture installed help', $display);
+        $this->assertStringContainsString('Update completed: drush_empty_module_post_update_fixture', $display);
+        $this->assertSame(8003, $this->hookRegistry()->getInstalledVersion('drush_empty_module'));
+        $this->assertTrue($this->container->get('module_handler')->moduleExists('help'));
+    }
+
     public function testFailedUpdate(): void
     {
         require_once __DIR__ . '/resources/updatedb_post_update.php';
