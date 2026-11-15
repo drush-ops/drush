@@ -7,7 +7,7 @@ namespace Drush\Commands\state;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\State\StateInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;

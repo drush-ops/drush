@@ -14,7 +14,7 @@ use Drupal\Core\Logger\RfcLogLevel;
 use Drupal\Core\Session\AnonymousUserSession;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\user\UserInterface;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Output\BufferedOutput;
