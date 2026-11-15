@@ -8,6 +8,9 @@ use Drupal\Core\Config\ConfigImporterFactory;
 use Drupal\Core\Config\SyncFactory;
 use Drupal\Core\DependencyInjection\ContainerBuilder;
 use Drupal\Core\DependencyInjection\ServiceProviderInterface;
+use Drupal\Core\Extension\Command\ExtensionInstallCommand as CoreExtensionInstallCommand;
+use Drupal\Core\Extension\Command\ExtensionUninstallCommand as CoreExtensionUninstallCommand;
+use Drupal\Core\Extension\ModuleInstallerInterface;
 use Drupal\Core\Image\Image;
 use Drupal\Core\Update\DatabaseUpdate;
 use Drush\Commands\cache\CacheRebuildCommand;
@@ -37,6 +40,8 @@ use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
 use Drush\Doctor\Commands\deploy\DeployHookStatusCommand;
 use Drush\Doctor\Commands\deploy\DeployMarkCompleteCommand;
+use Drush\Doctor\Commands\ex\ExtensionInstallCommand;
+use Drush\Doctor\Commands\ex\ExtensionUninstallCommand;
 use Drush\Doctor\Commands\sql\SqlCliCommand;
 use Drush\Doctor\Commands\sql\SqlConnectCommand;
 use Drush\Doctor\Commands\sql\SqlDropCommand;
@@ -73,6 +78,17 @@ class DoctorServiceProvider implements ServiceProviderInterface
             // Core has its own config:import from 12.1.
             if (!class_exists(CoreConfigImportCommand::class) && $container->hasDefinition(ConfigImporterFactory::class)) {
                 $classes[] = ConfigImportCommand::class;
+            }
+            // Core has its own ex:install (alias pm:install) from 11.5. It is
+            // discovered by a compiler pass that runs after this method, so
+            // look for the class, not for a definition. The copy needs
+            // getModulesToInstall().
+            if (!class_exists(CoreExtensionInstallCommand::class) && new \ReflectionClass(ModuleInstallerInterface::class)->hasMethod('getModulesToInstall')) {
+                $classes[] = ExtensionInstallCommand::class;
+            }
+            // Core has its own ex:uninstall (alias pm:uninstall) from 12.1.
+            if (!class_exists(CoreExtensionUninstallCommand::class)) {
+                $classes[] = ExtensionUninstallCommand::class;
             }
             // The dr-only updatedb commands need core's DatabaseUpdate (11.5+).
             if ($container->hasDefinition(DatabaseUpdate::class)) {
