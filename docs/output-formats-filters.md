@@ -7,22 +7,22 @@ Drush utilizes a powerful formatting and filtering system that provides the user
 * Output filters may be used to limit which data rows are printed based on logical expressions.
 
 ## Output Formats
-The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/version.md) may be printed in a human-readable form (the default), or as json:
+The `--format` option may be used to select the data format used to print the output of a command. Most commands that produce informative output about some object or system can transform their data into different formats. For example, the [version command](commands/version.md) may be printed in a human-readable table (the default), or in a json array:
 ```shell
 $ drush version
-Drush version : 14.0.0
+ Drush version : 10.3.1
 $ drush version --format=json
 {
-    "drush-version": "14.0.0"
+    "drush-version": "10.3.1"
 }
 ```
 The available output formats are shown in the `help` for each command:
 ```shell
 $ drush help version
-Show Drush version.
+Show drush version.
 
 Options:
- --format=FORMAT    An alternative output format such as json or yaml.
+ --format=<json>    Select output format. Available: json, string, var_export, yaml. Default is key-value.
 ```
 
 ## Output Fields
