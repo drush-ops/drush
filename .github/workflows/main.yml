@@ -71,9 +71,20 @@ jobs:
         run: |
           rm -rf gh-pages/latest/api
           composer api -- --only-version=${GITHUB_REF_NAME}
+      # GitHub Pages serves only the root 404.html, for a missing URL at any depth. Copy this
+      # version's 404 page there. Its absolute links point at /latest, which holds only redirect
+      # pages and no assets, so point them at this version's directory instead. The base needs a
+      # trailing slash or the search index resolves to /search/ instead of /<version>/search/.
+      - name: Root 404 page
+        if: github.ref_name == '15.x'
+        run: |
+          sed -E \
+            -e "s#\"base\": \"/latest\"#\"base\": \"/${GITHUB_REF_NAME}/\"#" \
+            -e "s#\"/latest([/\"])#\"/${GITHUB_REF_NAME}\\1#g" \
+            gh-pages/${GITHUB_REF_NAME}/404.html > gh-pages/404.html
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: "[CI] Add Doctum build"
+          commit_message: "[CI] Add Doctum build and root 404 page"
           repository: gh-pages
           commit_user_name: "Drush Documentation Bot"
           commit_user_email: "actions@github.com"
