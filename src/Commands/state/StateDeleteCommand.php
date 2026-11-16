@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\state;
 
 use Drupal\Core\State\StateInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +20,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class StateDeleteCommand
 {
-    use AutowireTrait;
     use StateTrait;
 
     public const string NAME = 'state:delete';

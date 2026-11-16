@@ -6,7 +6,6 @@ namespace Drush\Commands\cache;
 
 use Drupal\Core\Cache\Cache;
 use Drupal\Core\Cache\CacheFactoryInterface;
-use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -32,7 +31,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CacheSetCommand
 {
-    use AutowireTrait;
     use CacheTrait;
 
     public const string NAME = 'cache:set';

@@ -6,7 +6,6 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +30,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class ImageFlushCommand
 {
-    use AutowireTrait;
     use ImageTrait;
 
     public const string NAME = 'image:flush';

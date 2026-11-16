@@ -27,7 +27,7 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 
 ## Writing commands
 
-- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they validate input inside `__invoke()`, and render output themselves (`--format` via `Drupal\Core\Command\OutputFormat`).
+- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, constructor injection, and `#[Argument]`/`#[Option]` on `__invoke()`. Register the class in `src/Doctor/DoctorServiceProvider.php`, which adds it to Drupal's container with autowiring. The commands in `src/Commands/queue/` are the model: they validate input inside `__invoke()`, and render output themselves (`--format` via `Drupal\Core\Command\OutputFormat`).
 - User-facing strings go through Drupal's `StringTranslationTrait`, as core's console commands do: `(string) $this->t('Deleted @name.', ['@name' => $name])`, and `formatPlural()` for counts. Attribute descriptions stay plain strings because attributes need constant expressions.
 - Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
@@ -40,6 +40,6 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 ## Conventions
 
 - Public API and configuration are stable across a major. Keep changes backward compatible; deprecate before removing.
-- Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` and `docs/generators/` are generated (`composer mk:docs`), not hand-edited.
+- Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` is generated (`composer mk:docs`), not hand-edited.
 - Release branches are `14.x`, `13.x`, etc. PRs target `14.x` upstream at drush-ops/drush.
 - Comments explain the non-obvious. PSR-12 formatting, `declare(strict_types=1)` in every file.

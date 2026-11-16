@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Drupal\Component\Serialization\Yaml;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drupal\Core\Command\OutputFormat;
 use Drush\Config\DrushConfig;
 use Symfony\Component\Console\Attribute\Argument;
@@ -41,8 +40,6 @@ use Symfony\Component\Finder\Finder;
 )]
 final class PhpScriptCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'php:script';
 
     public function __invoke(

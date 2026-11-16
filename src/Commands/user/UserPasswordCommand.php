@@ -6,7 +6,6 @@ namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -25,7 +24,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class UserPasswordCommand
 {
-    use AutowireTrait;
     use StringTranslationTrait;
 
     public const string NAME = 'user:password';

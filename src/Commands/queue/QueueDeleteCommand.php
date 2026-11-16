@@ -6,7 +6,6 @@ namespace Drush\Commands\queue;
 
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +23,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class QueueDeleteCommand
 {
-    use AutowireTrait;
     use QueueTrait;
 
     const string NAME = 'queue:delete';

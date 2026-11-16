@@ -9,7 +9,6 @@ use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Entity\EntityStorageException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -37,7 +36,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class EntityDeleteCommand
 {
-    use AutowireTrait;
     use EntityTrait;
 
     public const string NAME = 'entity:delete';

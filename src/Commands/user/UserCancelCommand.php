@@ -6,7 +6,6 @@ namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteObjectInterface;
-use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -33,7 +32,6 @@ use Symfony\Component\Routing\Route;
 )]
 class UserCancelCommand
 {
-    use AutowireTrait;
     use UserTrait;
 
     public const string NAME = 'user:cancel';

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -36,7 +35,6 @@ use Symfony\Component\Yaml\Yaml;
 )]
 final class ConfigSetCommand
 {
-    use AutowireTrait;
     use ConfigNameTrait;
 
     public const string NAME = 'config:set';

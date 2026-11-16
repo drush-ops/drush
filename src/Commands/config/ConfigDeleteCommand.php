@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\config;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -30,7 +29,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class ConfigDeleteCommand
 {
-    use AutowireTrait;
     use ConfigNameTrait;
 
     public const string NAME = 'config:delete';

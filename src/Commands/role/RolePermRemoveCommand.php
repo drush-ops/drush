@@ -6,7 +6,6 @@ namespace Drush\Commands\role;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\user\PermissionHandlerInterface;
-use Drush\Commands\AutowireTrait;
 use Drush\Utils\StringUtils;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,7 +25,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RolePermRemoveCommand
 {
-    use AutowireTrait;
     use RoleTrait;
 
     const string NAME = 'role:perm:remove';

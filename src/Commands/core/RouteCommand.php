@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Routing\RouteProviderInterface;
 use Drupal\Core\Url;
-use Drush\Commands\AutowireTrait;
 use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -30,8 +29,6 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 )]
 final class RouteCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'core:route';
 
     public function __construct(

@@ -7,7 +7,6 @@ namespace Drush\Commands\core;
 use Drupal\Component\Serialization\Yaml;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
 use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -38,8 +37,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class PhpEvalCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'php:eval';
 
     public function __invoke(

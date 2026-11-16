@@ -6,7 +6,6 @@ namespace Drush\Commands\state;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\State\StateInterface;
-use Drush\Commands\AutowireTrait;
 use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -25,8 +24,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class StateGetCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'state:get';
 
     public function __construct(

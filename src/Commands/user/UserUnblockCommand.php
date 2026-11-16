@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Commands\AutowireTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -26,7 +25,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class UserUnblockCommand
 {
-    use AutowireTrait;
     use UserTrait;
 
     public const string NAME = 'user:unblock';
