@@ -1,20 +1,9 @@
 type: php
 docroot: sut
 php_version: "8.5"
-webserver_type: nginx-fpm
 router_http_port: "87"
 router_https_port: "444"
-xdebug_enabled: false
-additional_hostnames: []
-additional_fqdns: []
-nfs_mount_enabled: false
-mutagen_enabled: false
-use_dns_when_possible: true
-composer_version: ""
 disable_settings_management: true
-webimage_extra_packages:
-  - bash-completion
-  - xdg-utils
 # https://ddev.readthedocs.io/en/latest/users/extend/database-types/
 # When switching DBs, use ddev delete --omit-snapshot
 #database:
@@ -24,9 +13,8 @@ web_environment:
   - UNISH_DB_URL=mysql://root:root@db/unish_dev?module=mysql
 #  - "UNISH_DB_URL=sqlite://:memory:?module=sqlite"
 #  - UNISH_DB_URL=pgsql://db:db@db:5432?module=pgsql
-  - DRUSH_OPTIONS_URI=$DDEV_PRIMARY_URL
   - EDITOR=nano
-  - DRUSH_ALLOW_XDEBUG=1
-  # For `dr`. `composer sut:si` installs the site into DRUPAL_DEV_SITE_PATH.
-  - DRUPAL_URI=https://dev
+  # For `dr`. `composer sut:si` installs the site into DRUPAL_DEV_SITE_PATH,
+  # and sut/sites/sites.php serves it at the DDEV URL.
+  - DRUPAL_URI=$DDEV_PRIMARY_URL
   - DRUPAL_DEV_SITE_PATH=sites/dev
