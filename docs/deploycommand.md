@@ -15,14 +15,6 @@ dr cache:warm
 
 The steps run in one process, non-interactively, with their default options. If a step fails, the deployment stops.
 
-```mermaid
-flowchart LR
-    U["updatedb<br/>hook_update_N()<br/>hook_post_update_NAME()"] --> C[config:import]
-    C --> R[cache:rebuild]
-    R --> D["deploy:hook<br/>hook_deploy_NAME()"]
-    D --> W[cache:warm]
-```
-
 ## Authoring update functions
 Below are the 3 types of update functions run by this command, in order. Choose the most appropriate for your
 need. **Exercise caution when implementing `HOOK_update_N()`** — the full API isn't available to you, see [the

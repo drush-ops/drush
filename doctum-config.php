@@ -16,7 +16,7 @@ $iterator = Finder::create()
     ->in($dir);
 
 return new Doctum($iterator, [
-    'title' => 'Drush API 14',
+    'title' => 'Drush API 15',
     'build_dir' => __DIR__ . '/gh-pages/api',
     'cache_dir' => __DIR__ . '/.doctum-cache/%version%',
     'remote_repository' => new GitHubRemoteRepository('drush-ops/drush', dirname($dir)),
