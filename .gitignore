@@ -3,8 +3,6 @@ composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
 vendor
-box.phar
-drush.phar
 #The mkdocs output directory and generated file.
 site
 gh-pages

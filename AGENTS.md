@@ -1,6 +1,6 @@
 # Drush agent guide
 
-Drush is a PHP command-line shell for Drupal. Commands live in `src/Commands/`, grouped by domain.
+Drush is a PHP command-line shell for Drupal. Commands live in `src/Commands/` and `src/Doctor/Commands/`, grouped by domain.
 Tests live in `tests/`. Kernel tests run against the Drupal codebase under `sut/`.
 Contributor docs: `docs/contribute/CONTRIBUTING.md` and `docs/contribute/unish.md`.
 
@@ -9,7 +9,7 @@ Contributor docs: `docs/contribute/CONTRIBUTING.md` and `docs/contribute/unish.m
 - `composer install` installs Drush and Drupal core into `sut/`. Without it, `vendor/` and `sut/core` are absent and nothing runs.
 - `composer.lock` is gitignored on purpose (CI tests against several Drupal versions). Do not commit one.
 - Kernel tests need a database. Set `UNISH_DB_URL` as an env var. Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
-- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` for you.
+- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` and `DRUPAL_URL` for you.
 
 ## Checks before pushing
 
@@ -29,7 +29,7 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 
 - New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, constructor injection, and `#[Argument]`/`#[Option]` on `__invoke()`. Register the class in `src/Doctor/DoctorServiceProvider.php`, which adds it to Drupal's container with autowiring. The commands in `src/Commands/queue/` are the model: they validate input inside `__invoke()`, and render output themselves (`--format` via `Drupal\Core\Command\OutputFormat`).
 - User-facing strings go through Drupal's `StringTranslationTrait`, as core's console commands do: `(string) $this->t('Deleted @name.', ['@name' => $name])`, and `formatPlural()` for counts. Attribute descriptions stay plain strings because attributes need constant expressions.
-- Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
+- Class names must end in `Command.php`.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
 
 ## Tests
@@ -41,5 +41,5 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 
 - Public API and configuration are stable across a major. Keep changes backward compatible; deprecate before removing.
 - Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` is generated (`composer mk:docs`), not hand-edited.
-- Release branches are `14.x`, `13.x`, etc. PRs target `14.x` upstream at drush-ops/drush.
+- Release branches are `15.x`, `13.x`, etc. PRs target `15.x` upstream at drush-ops/drush.
 - Comments explain the non-obvious. PSR-12 formatting, `declare(strict_types=1)` in every file.
