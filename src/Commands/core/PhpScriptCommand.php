@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Component\Serialization\Yaml;
-use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Drush\Config\DrushConfig;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -22,12 +20,6 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * Runs a PHP script and prints what it returns.
- *
- * The Bootstrap attribute is the one Drush-specific piece left: it keeps
- * Drush's command discovery from bootstrapping Drupal before the command
- * runs, so the command also works outside a Drupal site. Under Drush the
- * command then bootstraps as far as it can itself. Elsewhere (dr, a kernel
- * test) there is no BootstrapManager and Drupal is already available.
  *
  * @internal
  */
@@ -46,30 +38,18 @@ use Symfony\Component\Finder\Finder;
         See https://www.drush.org/latest/examples/helloworld.script for an example script.
         HELP,
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
 final class PhpScriptCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'php:script';
-
-    public function __construct(
-        protected ?BootstrapManager $bootstrapManager = null,
-        protected ?DrushConfig $drushConfig = null,
-    ) {
-    }
 
     public function __invoke(
         InputInterface $input,
         OutputInterface $output,
         #[Argument('Script name and arguments. First argument is script name, remaining are passed to the script.')]
         array $extra = [],
-        #[Option('Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).', name: 'script-path')]
-        ?string $scriptPath = null,
         #[Option('An alternative output format such as json or yaml. By default the returned value prints via var_export().')]
         ?OutputFormat $format = null,
     ): int {
-        $this->bootstrapManager?->bootstrapMax(DrupalBootLevels::FULL);
 
         $script = array_shift($extra);
 
@@ -81,50 +61,7 @@ final class PhpScriptCommand
             return Command::SUCCESS;
         }
 
-        if ($script !== null && file_exists($script)) {
-            $found = $script;
-        } else {
-            $searchPath = [$this->drushConfig?->cwd() ?? getcwd()];
-            if ($scriptPath !== null && $scriptPath !== '') {
-                array_push($searchPath, ...explode(PATH_SEPARATOR, $scriptPath));
-            }
-
-            if ($script === null || $script === '') {
-                // List the available scripts.
-                $files = Finder::create()
-                    ->files()
-                    ->name('*.php')
-                    ->depth(0)
-                    ->in(array_filter($searchPath, 'is_dir'));
-                $all = [];
-                foreach ($files as $file) {
-                    $all[] = $file->getRelativePathname();
-                }
-                if ($all !== []) {
-                    $output->writeln(implode("\n", $all), OutputInterface::OUTPUT_RAW);
-                }
-                return Command::SUCCESS;
-            }
-
-            $found = null;
-            $tried = [];
-            foreach ($searchPath as $path) {
-                $candidate = $path . '/' . $script;
-                if (file_exists($candidate . '.php')) {
-                    $candidate .= '.php';
-                }
-                if (file_exists($candidate)) {
-                    $found = $candidate;
-                    break;
-                }
-                $tried[] = $candidate;
-            }
-            if ($found === null) {
-                throw new \InvalidArgumentException(sprintf('Unable to find any of the following: %s', implode(', ', $tried)));
-            }
-        }
-
-        $return = include $found;
+        $return = include $script;
         // include() returns 1 for a script without a return statement.
         // http://us3.php.net/manual/en/function.include.php#example-120
         if ($return === 1) {

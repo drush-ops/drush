@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -12,12 +13,13 @@ use Drush\Commands\watchdog\WatchdogDeleteCommand;
 use Drush\Commands\watchdog\WatchdogListCommand;
 use Drush\Commands\watchdog\WatchdogShowCommand;
 use Drush\Commands\watchdog\WatchdogShowOneCommand;
-use Drush\Exceptions\UserAbortException;
+use Drush\Commands\watchdog\WatchdogTailCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -30,6 +32,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(WatchdogShowOneCommand::class)]
 #[CoversClass(WatchdogListCommand::class)]
 #[CoversClass(WatchdogDeleteCommand::class)]
+#[CoversClass(WatchdogTailCommand::class)]
 class WatchdogTest extends KernelTestBase
 {
     protected static $modules = ['system', 'user', 'dblog'];
@@ -173,6 +176,46 @@ class WatchdogTest extends KernelTestBase
         $this->assertStringContainsString("watchdog:show --id=$wid", $display);
     }
 
+    /**
+     * Each message is printed once, including those logged while tailing.
+     *
+     * watchdog:tail never returns, so the output logs two more messages as
+     * it sees the earlier ones and throws on the last to end the loop.
+     */
+    public function testTail(): void
+    {
+        $this->logger->notice('Tail one.');
+        $output = new class ($this->logger) extends BufferedOutput {
+            public function __construct(private readonly LoggerInterface $logger)
+            {
+                parent::__construct();
+            }
+
+            protected function doWrite(string $message, bool $newline): void
+            {
+                parent::doWrite($message, $newline);
+                match (true) {
+                    str_contains($message, 'Tail one.') => $this->logger->notice('Tail two.'),
+                    str_contains($message, 'Tail two.') => $this->logger->notice('Tail three.'),
+                    str_contains($message, 'Tail three.') => throw new \RuntimeException('Stop tailing.'),
+                    default => null,
+                };
+            }
+        };
+
+        $command = new WatchdogTailCommand($this->connection, $this->moduleHandler, $this->entityTypeManager);
+        try {
+            $command($output);
+            $this->fail('Expected the output to stop the loop.');
+        } catch (\RuntimeException $e) {
+            $this->assertSame('Stop tailing.', $e->getMessage());
+        }
+        $display = $output->fetch();
+        foreach (['Tail one.', 'Tail two.', 'Tail three.'] as $message) {
+            $this->assertSame(1, substr_count($display, $message), $display);
+        }
+    }
+
     public function testList(): void
     {
         $this->logMessages();
@@ -251,7 +294,7 @@ class WatchdogTest extends KernelTestBase
             $this->delete(['substring' => 'all'], ['no']);
             $this->fail('A declined confirmation did not abort the command.');
         } catch (UserAbortException $e) {
-            $this->assertSame('Cancelled.', $e->getMessage());
+            $this->assertSame('Operation cancelled by user.', $e->getMessage());
         }
         $this->assertSame(4, $this->countRecords());
 

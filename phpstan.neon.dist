@@ -1,8 +1,6 @@
 parameters:
     level: 4
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
-    bootstrapFiles:
-        - phpstan-bootstrap.php
     paths:
         - src
     treatPhpDocTypesAsCertain: false
@@ -10,13 +8,6 @@ parameters:
         # Useful until we have https://www.drupal.org/project/drupal/issues/2024043
         - Drupal\Core\Extension\Extension
         - Drupal\views\ViewExecutable
-    excludePaths:
-        # Unclear why the phpstan-drupal rule is not working for this command
-        - src/Commands/core/LanguageAddCommand.php
-        # Deliberately calls optional external code.
-        - src/Psysh/Caster.php
-        # Remove once we only support Drupal 11.2
-        # - src/Commands/core/cache/CacheWarmCommand.php
 rules:
     # https://github.com/mglaman/phpstan-drupal/issues/741#issuecomment-2379202809
     - mglaman\PHPStanDrupal\Rules\Drupal\LoadIncludes

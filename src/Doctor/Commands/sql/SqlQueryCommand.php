@@ -6,7 +6,7 @@ namespace Drush\Doctor\Commands\sql;
 
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Database\Statement\FetchAs;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;

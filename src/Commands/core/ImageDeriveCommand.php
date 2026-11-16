@@ -6,7 +6,6 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +26,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class ImageDeriveCommand
 {
-    use AutowireTrait;
     use ImageTrait;
 
     public const string NAME = 'image:derive';

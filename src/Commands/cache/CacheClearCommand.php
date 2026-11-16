@@ -13,7 +13,6 @@ use Drupal\Core\DrupalKernelInterface;
 use Drupal\Core\Plugin\CachedDiscoveryClearerInterface;
 use Drupal\Core\Routing\RouteBuilderInterface;
 use Drupal\Core\Theme\Registry;
-use Drush\Commands\AutowireTrait;
 use Drush\Event\CacheClearEvent;
 use Drush\Utils\StringUtils;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -42,7 +41,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 )]
 class CacheClearCommand
 {
-    use AutowireTrait;
     use CacheTrait;
 
     public const string NAME = 'cache:clear';

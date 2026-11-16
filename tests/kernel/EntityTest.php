@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\Component\Datetime\TimeInterface;
+use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\Entity\Node;
@@ -12,7 +13,6 @@ use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\entity\EntitySaveCommand;
-use Drush\Exceptions\UserAbortException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -74,7 +74,7 @@ class EntityTest extends KernelTestBase
             $this->delete(['entity-type' => 'node'], ['no']);
             $this->fail('A declined confirmation did not abort the command.');
         } catch (UserAbortException $e) {
-            $this->assertSame('Cancelled.', $e->getMessage());
+            $this->assertSame('Operation cancelled by user.', $e->getMessage());
         }
         $this->assertSame([1, 2], $this->nodeIds());
     }

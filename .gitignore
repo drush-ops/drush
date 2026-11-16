@@ -1,10 +1,8 @@
-# Drush uses highest/lowest testing so no use for a lock file.
+# Drush tests against several Drupal versions so no use for a lock file.
 composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
 vendor
-box.phar
-drush.phar
 #The mkdocs output directory and generated file.
 site
 gh-pages
@@ -19,15 +17,10 @@ api
 .idea/
 .vscode/
 sut/*
-!sut/drush
-sut/drush/sites/*test.site.yml
 !sut/modules
-!sut/themes
 sut/modules/contrib
 /sandbox/
 .env
-# Test fixtures
-sut/drush/sites/synctest.site.yml
 /tests/.phpunit.result.cache
 
 # Code tools

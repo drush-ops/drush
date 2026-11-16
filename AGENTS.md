@@ -1,15 +1,15 @@
 # Drush agent guide
 
-Drush is a PHP command-line shell for Drupal. Commands live in `src/Commands/`, grouped by domain.
-Tests ("Unish") live in `tests/` and run against a Drupal site under `sut/` (the System Under Test).
+Drush is a PHP command-line shell for Drupal. Commands live in `src/Commands/` and `src/Doctor/Commands/`, grouped by domain.
+Tests live in `tests/`. Kernel tests run against the Drupal codebase under `sut/`.
 Contributor docs: `docs/contribute/CONTRIBUTING.md` and `docs/contribute/unish.md`.
 
 ## Setup
-- A configured DDEV project ships with the repo. Some useful commands: `ddev start`, `ddev exec`, `ddev composer`. When running a Drush commands, use `ddev drush`.
+- A configured DDEV project ships with the repo. Some useful commands: `ddev start`, `ddev exec`, `ddev composer`. Drush's commands run through Drupal core's `dr`: `ddev exec dr`. `composer sut:si` installs a sqlite site to try them on.
 - `composer install` installs Drush and Drupal core into `sut/`. Without it, `vendor/` and `sut/core` are absent and nothing runs.
-- `composer.lock` is gitignored on purpose (highest/lowest dependency testing). Do not commit one.
-- Functional and integration tests need a database. Set `UNISH_DB_URL` as an env var or in `tests/phpunit.xml` (a copy of `phpunit.xml.dist`). Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
-- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` for you.
+- `composer.lock` is gitignored on purpose (CI tests against several Drupal versions). Do not commit one.
+- Kernel tests need a database. Set `UNISH_DB_URL` as an env var. Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
+- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` and `DRUPAL_URL` for you.
 
 ## Checks before pushing
 
@@ -17,36 +17,29 @@ Run each and report the result. Run via DDEV when desired:
 
 ```sh
 composer cs              # phpcs, PSR-12 (composer cbf auto-fixes)
-composer lint            # php -l over src, includes, tests
+composer lint            # php -l over src and tests
 vendor/bin/phpstan       # level 4, CI fails on new errors
 composer unit            # fast, no database
 composer kernel          # Drupal KernelTestBase tests driving commands with CommandTester
-composer integration     # shared SUT, must not mutate its database
-composer functional      # execs ./drush per test, slow; filter with -- --filter testName
 ```
 
 `composer test` runs lint, all phpunit suites, and cs. `composer rector` applies the configured Rector sets; run it when touching many files.
 
 ## Writing commands
 
-- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, `AutowireTrait` for injection, and `#[Argument]`/`#[Option]` on `__invoke()`. The commands in `src/Commands/queue/` are the model: they use nothing from `Drush\Attributes`, validate input inside `__invoke()`, and render output themselves (`--format` via `Drush\Commands\OutputFormat`). Older commands still extend `Command` and use Drush attributes; `docs/commands.md` documents those.
+- New commands are one class per command, an invokable `class FooCommand` marked `@internal` with `#[AsCommand]`, a `public const string NAME`, constructor injection, and `#[Argument]`/`#[Option]` on `__invoke()`. Register the class in `src/Doctor/DoctorServiceProvider.php`, which adds it to Drupal's container with autowiring. The commands in `src/Commands/queue/` are the model: they validate input inside `__invoke()`, and render output themselves (`--format` via `Drupal\Core\Command\OutputFormat`).
 - User-facing strings go through Drupal's `StringTranslationTrait`, as core's console commands do: `(string) $this->t('Deleted @name.', ['@name' => $name])`, and `formatPlural()` for counts. Attribute descriptions stay plain strings because attributes need constant expressions.
-- Class names must end in `Command.php`. Plural `*Commands.php` files are the older annotated-command style; extend them only when adding to an existing one.
+- Class names must end in `Command.php`.
 - Dependencies come through constructor promotion and autowiring, never `\Drupal::service()` in new code.
-- `includes/*.inc` is legacy procedural code, excluded from phpcs. Add nothing there.
-- `src-symfony-compatibility/` holds shims per Symfony major. Touch it only for Symfony version compatibility.
 
 ## Tests
 
 - Unit: pure functions, no side effects, no Drupal.
 - Kernel: extend `Drupal\KernelTests\KernelTestBase`, build the command from `$this->container` services, drive it with `Symfony\Component\Console\Tester\CommandTester`, assert on `getDisplay()` and the exit code. Preferred for new command tests; `tests/kernel/QueueTest.php` is the model. Needs `UNISH_DB_URL` (or `SIMPLETEST_DB`).
-- Integration: extend `Unish\UnishIntegrationTestCase`; calls the Symfony application directly, Drupal bootstraps once at full level, so argument and option parsing cannot be tested here.
-- Functional: extend `Unish\CommandUnishTestCase`; runs the real `./drush` binary in a subprocess, may change SUT state. Mark network-dependent tests `#[Group('slow')]`.
-- `UNISH_DIRTY=1` keeps the SUT installed after a run for inspection: `./drush @sut.dev status`.
 
 ## Conventions
 
 - Public API and configuration are stable across a major. Keep changes backward compatible; deprecate before removing.
-- Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` and `docs/generators/` are generated (`composer mk:docs`), not hand-edited.
-- Release branches are `14.x`, `13.x`, etc. PRs target `14.x` upstream at drush-ops/drush.
+- Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` is generated (`composer mk:docs`), not hand-edited.
+- Release branches are `15.x`, `13.x`, etc. PRs target `15.x` upstream at drush-ops/drush.
 - Comments explain the non-obvious. PSR-12 formatting, `declare(strict_types=1)` in every file.

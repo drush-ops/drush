@@ -9,13 +9,10 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\user\UserInterface;
-use Drush\Boot\BootstrapManager;
-use Drush\Config\DrushConfig;
 use Drush\Commands\user\UserBlockCommand;
 use Drush\Commands\user\UserCancelCommand;
 use Drush\Commands\user\UserCreateCommand;
 use Drush\Commands\user\UserInformationCommand;
-use Drush\Commands\user\UserLoginCommand;
 use Drush\Commands\user\UserPasswordCommand;
 use Drush\Commands\user\UserRoleAddCommand;
 use Drush\Commands\user\UserRoleRemoveCommand;
@@ -24,7 +21,6 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
 use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -38,7 +34,6 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(UserCancelCommand::class)]
 #[CoversClass(UserCreateCommand::class)]
 #[CoversClass(UserInformationCommand::class)]
-#[CoversClass(UserLoginCommand::class)]
 #[CoversClass(UserPasswordCommand::class)]
 #[CoversClass(UserRoleAddCommand::class)]
 #[CoversClass(UserRoleRemoveCommand::class)]
@@ -240,41 +235,6 @@ class UserTest extends KernelTestBase
                 $this->assertSame('Unable to find any matching user', $e->getMessage());
             }
         }
-    }
-
-    /**
-     * user:login forwards its input to dr. A stand-in dr script records what
-     * it received, so the test needs neither core's command nor a site.
-     */
-    public function testLogin(): void
-    {
-        // KernelTestBase's site directory is a vfs:// stream, which cannot
-        // hold an executable, so the stand-in lives in the real temp dir.
-        $vendorDir = sys_get_temp_dir() . '/' . uniqid('drush-user-test-');
-        mkdir("$vendorDir/bin", 0777, true);
-        $script = "#!/usr/bin/env php\n<?php\narray_shift(\$argv);\necho implode(' ', \$argv), \"\\n\";\nexit(3);\n";
-        file_put_contents("$vendorDir/bin/dr", $script);
-        chmod("$vendorDir/bin/dr", 0755);
-        $config = new DrushConfig();
-        $config->set('drush.vendor-dir', $vendorDir);
-        $command = new UserLoginCommand($config, new BootstrapManager(), new NullLogger());
-
-        $tester = new CommandTester($command);
-        $this->assertSame(3, $tester->execute(['path' => 'node/add', '--name' => self::NAME, '--uid' => '7']));
-        $this->assertSame("user:login node/add --name=example --uid=7\n", $tester->getDisplay());
-
-        // Options are only passed when given, and the path is optional.
-        $tester = new CommandTester($command);
-        $tester->execute(['--mail' => self::MAIL]);
-        $this->assertSame("user:login --mail=example@example.com\n", $tester->getDisplay());
-
-        // A missing dr is reported, with the core requirement.
-        unlink("$vendorDir/bin/dr");
-        rmdir("$vendorDir/bin");
-        rmdir($vendorDir);
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage("$vendorDir/bin/dr was not found. user:login runs dr user:login, which requires Drupal core 11.4 or later.");
-        (new CommandTester($command))->execute([]);
     }
 
     protected function createExampleUser(): UserInterface

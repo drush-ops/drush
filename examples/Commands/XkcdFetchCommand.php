@@ -1,55 +1,66 @@
 <?php
 
-namespace Drush\Commands;
+declare(strict_types=1);
 
-use Drush\Exec\ExecTrait;
+namespace Drupal\example\Command;
+
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use GuzzleHttp\ClientInterface;
+use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Run these commands using the --include option - e.g. `drush --include=/path/to/drush/examples xkcd`
+ * An example console command.
+ *
+ * Drupal discovers classes with #[AsCommand] in a module's src/Command
+ * directory and autowires their constructor arguments. To try this one, copy it
+ * to modules/example/src/Command/XkcdFetchCommand.php in a module named
+ * 'example', enable the module, then run `dr xkcd random`.
  */
-
 #[AsCommand(
-    name: 'xkcd:fetch',
-    description: 'Retrieve and display xkcd cartoons.',
+    name: self::NAME,
+    description: 'Display a link to an xkcd cartoon.',
     aliases: ['xkcd'],
+    usages: [
+        '123',
+        'random',
+    ],
 )]
-final class XkcdFetchCommand extends Command
+final class XkcdFetchCommand
 {
-    use ExecTrait;
+    use StringTranslationTrait;
 
-    protected function configure(): void
-    {
-        $this
-        ->addArgument('search', mode: InputArgument::REQUIRED, description: 'Argument to retrieve the cartoons matching an index number, keyword search or "random".')
-        ->addOption('image-viewer', null, InputOption::VALUE_REQUIRED, 'Command to use to view images (e.g. xv, firefox). Defaults to "display" (from ImageMagick).', 'open')
-        ->addUsage('drush xkcd sandwich')
-        ->addUsage('drush xkcd 123 --image-viewer=eog')
-        ->addUsage('drush xkcd random --image-viewer=firefox');
+    public const string NAME = 'xkcd:fetch';
+
+    public function __construct(
+        private readonly ClientInterface $httpClient,
+    ) {
     }
 
-    public function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $this->doFetch($input->getArgument('search'), $input->getOptions());
-        return self::SUCCESS;
+    public function __invoke(
+        OutputInterface $output,
+        #[Argument('A cartoon number, or "random". If omitted, the latest cartoon is used.')]
+        string $search = '',
+    ): int {
+        $url = match (true) {
+            $search === '' => 'https://xkcd.com',
+            ctype_digit($search) => 'https://xkcd.com/' . $search,
+            $search === 'random' => 'https://xkcd.com/' . random_int(1, $this->latestNumber()),
+            default => throw new \InvalidArgumentException((string) $this->t('@search is not a cartoon number or "random".', ['@search' => $search])),
+        };
+        $output->writeln($url);
+        return Command::SUCCESS;
     }
 
-    protected function doFetch($search, array $options): void
+    /**
+     * Returns the number of the most recent cartoon.
+     */
+    private function latestNumber(): int
     {
-        if (empty($search)) {
-            $this->startBrowser(uri: 'https://xkcd.com', browser: true);
-        } elseif (is_numeric($search)) {
-            $this->startBrowser(uri: 'https://xkcd.com/' . $search, browser: true);
-        } elseif ($search == 'random') {
-            $xkcd_response = @json_decode(file_get_contents('https://xkcd.com/info.0.json'));
-            if (!empty($xkcd_response->num)) {
-                $this->startBrowser(uri: 'https://xkcd.com/' . rand(1, $xkcd_response->num), browser: true);
-            }
-        }
+        $response = $this->httpClient->request('GET', 'https://xkcd.com/info.0.json');
+        $info = json_decode((string) $response->getBody(), true, flags: JSON_THROW_ON_ERROR);
+        return (int) $info['num'];
     }
 }

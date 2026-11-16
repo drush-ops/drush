@@ -7,8 +7,7 @@ namespace Drush\Commands\queue;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
@@ -27,7 +26,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class QueueListCommand
 {
-    use AutowireTrait;
     use QueueTrait;
 
     const string NAME = 'queue:list';

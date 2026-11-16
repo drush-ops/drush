@@ -1,12 +1,9 @@
 <?xml version="1.0"?>
 <!--
 
-      Copy and rename this file to phpunit.xml to customize.
-
-      The variables shown below must usually be defined in order to run the
-      functional tests. They may be set by customizing this file, or they may
-      be defined as environment variables. Alternately, you may run the
-      tests without defining these variables if you use the default values.
+      Configuration for the unit suite. The kernel suite uses
+      phpunit.kernel.xml.dist. Copy and rename this file to phpunit.xml to
+      customize.
 -->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd">
   <coverage/>
@@ -14,20 +11,8 @@
     <testsuite name="unit">
       <directory suffix="Test.php">unit</directory>
     </testsuite>
-    <testsuite name="integration">
-      <directory suffix="Test.php">integration</directory>
-    </testsuite>
-    <testsuite name="functional">
-      <directory>functional</directory>
-    </testsuite>
   </testsuites>
   <php>
-    <!-- These variables may alternatively be set as environment variables. -->
-    <!--Uncomment and edit one of the lines below depending on DB platform.-->
-    <!--DB User must have create/drop permissions-->
-    <!-- <var name="UNISH_DB_URL" value="mysql://root:@127.0.0.1"/> -->
-    <!-- <var name="UNISH_DB_URL" value="pgsql://postgres:@localhost"/>-->
-    <!-- <var name="UNISH_DB_URL" value="sqlite://none/of/this/matters"/> -->
     <env name="SYMFONY_DEPRECATIONS_HELPER" value="disabled=1"/>
     <includePath>.</includePath>
   </php>

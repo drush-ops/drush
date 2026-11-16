@@ -6,7 +6,6 @@ namespace Drush\Commands\core;
 
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -21,7 +20,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 final class BrowseCommand
 {
-    use AutowireTrait;
     use StringTranslationTrait;
 
     public const string NAME = 'browse';

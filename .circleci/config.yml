@@ -9,7 +9,7 @@ defaults: &defaults
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
-    WODBY_TAG: 8.4
+    WODBY_TAG: 8.5
     # These are not working. We disable the mode in .docker/zz-php.ini
     PHP_EXTENSIONS_DISABLE: xdebug
     PHP_XDEBUG_MODE: off
@@ -50,7 +50,7 @@ executors:
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:8.0
         environment:
-          # The kernel suite runs before anything creates the Unish database.
+          # Nothing else creates the database the kernel suite uses.
           MYSQL_DATABASE: unish_dev
   mysql-highest:
     docker:
@@ -60,14 +60,14 @@ executors:
           - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
       - image: cimg/mysql:9.5
         environment:
-          # The kernel suite runs before anything creates the Unish database.
+          # Nothing else creates the database the kernel suite uses.
           MYSQL_DATABASE: unish_dev
   postgres-lowest:
     docker:
       - image: wodby/php:$WODBY_TAG
         environment:
           - UNISH_DB_URL=pgsql://unish:unish@127.0.0.1/unish_dev?module=pgsql
-      - image: wodby/postgres:16
+      - image: wodby/postgres:18
         environment:
           POSTGRES_DB_EXTENSIONS: pg_trgm
           POSTGRES_PASSWORD: unish
@@ -93,14 +93,14 @@ jobs:
   code_style:
     <<: *defaults
     docker:
-      - image: wodby/php:8.4
+      - image: wodby/php:8.5
     steps:
       - checkout
       - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
       - composer-auth
       - run: composer -n validate --no-check-all
       - run: composer -n config platform.php --unset
-      - run: composer -n require --dev drupal/core-recommended:11.x-dev --no-update
+      - run: composer -n require --dev drupal/core-recommended:12.x-dev --no-update
       - run: composer -n -v install
       - run: mkdir -p /tmp/results
       - run: composer -n cs -- --report=junit --report-file=/tmp/results/junit.phpcs.xml
@@ -110,10 +110,11 @@ jobs:
     parameters:
       dbms:
         type: string
-      suite:
-        type: string
+      # lowest: Drupal 12.x with the lowest allowed dependencies.
+      # highest: Drupal main with the highest allowed dependencies.
       release:
-        type: string
+        type: enum
+        enum: [lowest, highest]
     <<: *defaults
     executor: << parameters.dbms >>-<< parameters.release >>
     steps:
@@ -124,36 +125,16 @@ jobs:
       - composer-auth
       - when:
           condition:
-            and:
-              - equal: [lowest, << parameters.release >>]
+            equal: [lowest, << parameters.release >>]
           steps:
             - run: composer -n update --prefer-lowest
-      - unless:
+      - when:
           condition:
-            and:
-              - equal: [lowest, << parameters.release >>]
+            equal: [highest, << parameters.release >>]
           steps:
             - run: .circleci/highest.sh
       - run: composer -n unit -- --log-junit /tmp/results/unit/junit.xml
       - run: composer -n kernel -- --log-junit /tmp/results/kernel/junit.xml
-      - run: composer -n << parameters.suite >> -- --log-junit /tmp/results/<< parameters.suite >>/junit.xml
-
-  # Drupal 9.2.8 for Security test coverage for drupal/core
-#  test_80_drupal92_security:
-#    <<: *defaults
-#    docker:
-#      - image: wodby/php:8.0
-#        environment:
-#          - MYSQL_HOST=127.0.0.1
-#          - UNISH_DB_URL=mysql://root:@127.0.0.1/unish_dev?module=mysql
-#      - image: cimg/mysql:5.7.38
-#    steps:
-#      - checkout
-#      - run: cp .docker/zz-php.ini /usr/local/etc/php/conf.d/
-#      - run: composer -n require --dev drupal/core-recommended:9.2.8 --no-update
-#      - run: php --version
-#      - run: composer -n update
-#      - run: composer -n phpunit -- --testsuite integration --filter=testInsecureDrupalPackage --stop-on-skipped
 
 workflows:
   drush:
@@ -165,19 +146,4 @@ workflows:
           matrix:
             parameters:
               dbms: [mysql, postgres, sqlite]
-              suite: [integration, functional]
               release: [lowest, highest]
-#            exclude:
-#              # Only run highest tests on sqlite. Excluding each suite is unfortunate but needed.
-#              - release: highest
-#                dbms: mysql
-#                suite: integration
-#              - release: highest
-#                dbms: mysql
-#                suite: functional
-#              - release: highest
-#                dbms: postgres
-#                suite: integration
-#              - release: highest
-#                dbms: postgres
-#                suite: functional

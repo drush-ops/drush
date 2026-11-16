@@ -1,2 +1,0 @@
-test:
-  variant: 'A variable that only exists in the variant drush.yml'

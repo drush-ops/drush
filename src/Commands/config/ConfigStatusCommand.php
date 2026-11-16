@@ -10,8 +10,7 @@ use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageComparer;
 use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
@@ -37,7 +36,6 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 )]
 final class ConfigStatusCommand
 {
-    use AutowireTrait;
     use StringTranslationTrait;
 
     public const string NAME = 'config:status';

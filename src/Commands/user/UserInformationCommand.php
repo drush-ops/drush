@@ -8,8 +8,7 @@ use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\user\UserInterface;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Drush\Utils\StringUtils;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -37,7 +36,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class UserInformationCommand
 {
-    use AutowireTrait;
     use UserTrait;
 
     public const string NAME = 'user:information';

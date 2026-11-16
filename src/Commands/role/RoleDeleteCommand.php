@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\role;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -24,7 +23,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class RoleDeleteCommand
 {
-    use AutowireTrait;
     use RoleTrait;
 
     const string NAME = 'role:delete';

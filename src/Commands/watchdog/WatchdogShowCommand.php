@@ -7,8 +7,7 @@ namespace Drush\Commands\watchdog;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -36,7 +35,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 final class WatchdogShowCommand
 {
-    use AutowireTrait;
     use WatchdogTrait;
 
     public const string NAME = 'watchdog:show';

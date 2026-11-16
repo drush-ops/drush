@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\user;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drush\Commands\AutowireTrait;
 use Drush\Commands\role\RoleTrait;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\Argument;
@@ -27,7 +26,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class UserRoleRemoveCommand
 {
-    use AutowireTrait;
     use RoleTrait;
     use UserTrait;
 

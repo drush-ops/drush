@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Drush\Doctor\Commands\sql;
 
 use Drupal\Component\Serialization\Yaml;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Drush\Doctor\Sql\DumpOptions;
 use Drush\Doctor\Sql\TableSelection;
 use Symfony\Component\Console\Attribute\AsCommand;

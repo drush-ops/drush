@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Component\Serialization\Yaml;
-use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
-use Drush\Commands\AutowireTrait;
-use Drush\Commands\OutputFormat;
+use Drupal\Core\Command\OutputFormat;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -37,17 +35,9 @@ use Symfony\Component\Console\Output\OutputInterface;
         'php:eval "node_access_rebuild();"',
     ],
 )]
-#[CLI\Bootstrap(level: DrupalBootLevels::NONE)]
-final class PhpEvalCommand
+class PhpEvalCommand
 {
-    use AutowireTrait;
-
     public const string NAME = 'php:eval';
-
-    public function __construct(
-        protected ?BootstrapManager $bootstrapManager = null,
-    ) {
-    }
 
     public function __invoke(
         OutputInterface $output,
@@ -56,7 +46,6 @@ final class PhpEvalCommand
         #[Option('An alternative output format such as json or yaml. By default the returned value prints via var_export().')]
         ?OutputFormat $format = null,
     ): int {
-        $this->bootstrapManager?->bootstrapMax(DrupalBootLevels::FULL);
 
         $value = eval($code . ';');
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
@@ -90,33 +89,25 @@ class WorkspaceTest extends KernelTestBase
         $this->publish('nope');
     }
 
-    public function testWorkspacesModuleMissing(): void
-    {
-        $moduleHandler = $this->createMock(ModuleHandlerInterface::class);
-        $moduleHandler->method('moduleExists')->willReturn(false);
-        $command = new WorkspacePublishCommand($this->entityTypeManager, $moduleHandler);
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('The workspaces module is not installed.');
-        (new CommandTester($command))->execute(['id' => 'stage']);
-    }
-
     public function testCompletion(): void
     {
-        $command = WorkspacePublishCommand::create($this->container);
-        $suggestions = $command->suggestWorkspaceIds(CompletionInput::fromTokens([], 0));
+        $suggestions = $this->command()->suggestWorkspaceIds(CompletionInput::fromTokens([], 0));
         $this->assertSame(['stage'], $suggestions);
     }
 
     protected function publish(string $id): CommandTester
     {
-        $command = new WorkspacePublishCommand(
-            $this->entityTypeManager,
-            $this->container->get('module_handler'),
-            $this->container->get('workspaces.operation_factory'),
-        );
-        $tester = new CommandTester($command);
+        $tester = new CommandTester($this->command());
         $tester->execute(['id' => $id]);
         return $tester;
+    }
+
+    protected function command(): WorkspacePublishCommand
+    {
+        return new WorkspacePublishCommand(
+            $this->entityTypeManager,
+            $this->container->get('workspaces.operation_factory'),
+        );
     }
 
     protected function loadNode(int|string $nid): NodeInterface

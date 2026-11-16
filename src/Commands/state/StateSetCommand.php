@@ -6,7 +6,6 @@ namespace Drush\Commands\state;
 
 use Drupal\Core\Render\Markup;
 use Drupal\Core\State\StateInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
@@ -33,7 +32,6 @@ use Symfony\Component\Yaml\Yaml;
 )]
 final class StateSetCommand
 {
-    use AutowireTrait;
     use StateTrait;
 
     public const string NAME = 'state:set';

@@ -1,8 +1,0 @@
-#
-# Drush configuration file used to configure the System Unter Test (sut)
-#
-# Docs at https://github.com/drush-ops/drush/blob/master/examples/example.drush.yml
-#
-drush:
-  commands:
-    '\Drush\Commands\drush_extensions\DrushExtensionsCommands': '${env.FIXTURES_DIR}/drush-extensions/DrushExtensionsCommands.php'

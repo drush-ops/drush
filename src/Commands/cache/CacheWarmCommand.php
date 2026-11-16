@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\cache;
 
 use Drupal\Core\PreWarm\CachePreWarmerInterface;
-use Drush\Commands\AutowireTrait;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +22,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CacheWarmCommand
 {
-    use AutowireTrait;
     use CacheTrait;
 
     public const string NAME = 'cache:warm';

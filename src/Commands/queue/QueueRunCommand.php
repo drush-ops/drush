@@ -11,7 +11,6 @@ use Drupal\Core\Queue\QueueGarbageCollectionInterface;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\Core\Queue\RequeueException;
 use Drupal\Core\Queue\SuspendQueueException;
-use Drush\Commands\AutowireTrait;
 use stdClass;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -31,7 +30,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class QueueRunCommand
 {
-    use AutowireTrait;
     use QueueTrait;
 
     const string NAME = 'queue:run';
