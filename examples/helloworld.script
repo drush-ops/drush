@@ -1,27 +1,25 @@
 <?php
 
 //
-// This example demonstrates how to write a Drush
-// script. These scripts are run with the php:script command. Use a double dash to
-// send additional arguments: drush php:script foo.php -- apple --cider
+// This example demonstrates how to write a script for the php:script command.
+// Pass additional arguments after a double dash:
+//   dr php:script helloworld.script -- apple --cider
+// The script sees the command's $output and those arguments in $extra.
 //
 
-use Drush\Drush;
-
 $output->writeln("Hello world!");
-$output->writeln("The extra options/arguments to this command were:");
+$output->writeln("The extra arguments to this command were:");
 $output->writeln(print_r($extra, true));
 
 //
-// We can check which site was bootstrapped via
-// the '@self' alias, which is defined only if
-// there is a bootstrapped site.
+// Scripts run after a full Drupal bootstrap, so Drupal's APIs are available.
 //
-$self = Drush::aliasManager()->getSelf();
-if (!$self->hasRoot()) {
-  $output->writeln('No bootstrapped site.');
-}
-else {
-  $output->writeln('The following site is bootstrapped:');
-  $output->writeln(print_r($self->legacyRecord(), true));
-}
+$output->writeln('The site name is ' . \Drupal::config('system.site')->get('name'));
+
+//
+// A returned value is printed. Use --format=json or --format=yaml to change how.
+//
+return [
+  'site path' => \Drupal::getContainer()->getParameter('site.path'),
+  'drupal version' => \Drupal::VERSION,
+];

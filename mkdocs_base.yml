@@ -23,7 +23,7 @@ theme:
 site_url: https://www.drush.org/latest/
 repo_url: https://github.com/drush-ops/drush
 #Overridden on many pages via edit_uri plugin. See front matter.
-edit_uri: blob/14.x/docs
+edit_uri: blob/15.x/docs
 extra_css:
   - css/extra.drush.css
 plugins:
@@ -36,11 +36,9 @@ plugins:
   - git-revision-date-localized:
       exclude:
         - commands/*
-        - generators/*
   - git-authors:
       exclude:
         - commands/*
-        - generators/*
 extra:
   version:
     provider: mike
@@ -84,31 +82,16 @@ nav:
     - Install: install.md
     - Usage: usage.md
     - Cron: cron.md
-    - Drush configuration: using-drush-configuration.md
     - Drupal configuration: config-exporting.md
     - Drupal dependencies: drupal-dependencies.md
-    - Site aliases: site-aliases.md
-    - Output Formats, Fields & Filters: output-formats-filters.md
-    - Migrate: migrate.md
-    - REPL (a custom shell for Drupal): repl.md
     - Deploy: deploycommand.md
   - Author:
     - Command Authoring: commands.md
-    - Hooks: hooks.md
     - Dependency injection: dependency-injection.md
-    - Input / Output: io.md
-    - Generator Authoring: generators.md
     - Listeners: listeners.md
-    - Bootstrap: bootstrap.md
-    - Site Alias Manager: site-alias-manager.md
   - Examples:
-      - drush.yml: examples/example.drush.yml.md
-      - site.yml: examples/example.site.yml.md
       - examples/helloworld.script.md
-      - examples/PolicyListener.php.md
-      - examples/SyncViaHttpListener.php.md
       - examples/XkcdFetchCommand.php.md
-      - prompt.sh: examples/example.prompt.sh.md
       - git-bisect.sh: examples/git-bisect.example.sh.md
   - Contribute:
       - Guidelines: contribute/CONTRIBUTING.md

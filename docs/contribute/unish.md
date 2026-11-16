@@ -1,4 +1,4 @@
-Drush's test suite (aka Unish) is based on [PHPUnit](http://www.phpunit.de). Tests run on every push. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
+Drush command typically extend the standard KernelTestBase. They instantiate a Symfony Console CommandTester object as is typical. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
 
 ## Usage
 1. `git clone https://github.com/drush-ops/drush.git`
