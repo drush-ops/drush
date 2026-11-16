@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 
-echo "Instead of calling `drush`, call `dr`" >&2
+echo 'Instead of calling drush, call dr' >&2
 exit 1
