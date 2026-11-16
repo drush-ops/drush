@@ -20,7 +20,8 @@ theme:
     - toc.integrate
     - content.action.edit
     - content.action.view
-site_url: https://www.drush.org/latest/
+# mike appends canonical_version (latest) to this.
+site_url: https://www.drush.org/
 repo_url: https://github.com/drush-ops/drush
 #Overridden on many pages via edit_uri plugin. See front matter.
 edit_uri: blob/13.x/docs
