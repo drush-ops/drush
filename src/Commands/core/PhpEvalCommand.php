@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Drush\Commands\core;
 
 use Drupal\Component\Serialization\Yaml;
-use Drush\Attributes as CLI;
 use Drush\Boot\BootstrapManager;
 use Drush\Boot\DrupalBootLevels;
 use Drush\Commands\AutowireTrait;

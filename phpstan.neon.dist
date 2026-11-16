@@ -9,8 +9,6 @@ parameters:
         - Drupal\Core\Extension\Extension
         - Drupal\views\ViewExecutable
     excludePaths:
-        - src/Attributes
-        - src/Commands/core/DocsCommands.php
         - src/Utils/FsUtils.php
 rules:
     # https://github.com/mglaman/phpstan-drupal/issues/741#issuecomment-2379202809

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
-use Drush\Attributes as CLI;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -205,7 +204,6 @@ description: {$command->getDescription()}
 
 EOT;
         $body .= "# {$command->getName()}\n\n";
-        $body .= self::version($command);
 
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
@@ -217,7 +215,7 @@ EOT;
     }
 
     /**
-     * The object that carries a command's attributes.
+     * The object whose class file defines the command.
      *
      * For an invokable command that is the invokable, not the Command that
      * wraps it.
@@ -226,12 +224,6 @@ EOT;
     {
         $code = $command->getCode();
         return is_object($code) && !$code instanceof \Closure ? $code : $command;
-    }
-
-    private static function version(Command $command): string
-    {
-        $attributes = new \ReflectionObject(self::handler($command))->getAttributes(CLI\Version::class);
-        return $attributes === [] ? '' : ":octicons-tag-24: {$attributes[0]->newInstance()->version}+\n\n";
     }
 
     private static function usages(Command $command): string
