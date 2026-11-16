@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>StateSetCommand</strong>        extends <abbr title="Symfony\Component\Console\Command\Command">Command</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/state/StateSetCommand.php">View source</a>)
+    <strong>StateSetCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/state/StateSetCommand.php">View source</a>)
 </p>
 
         
@@ -101,8 +101,13 @@
     <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
-                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+                    <a href="../../../Drush/Commands/state/StateTrait.html"><abbr title="Drush\Commands\state\StateTrait">StateTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Helpers shared by the state commands.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="Drupal\Core\StringTranslation\StringTranslationTrait">StringTranslationTrait</abbr>    </div>
+                <div class="col-md-6"></div>
             </div>
             </div>
     
@@ -116,6 +121,15 @@
                     <p></p>
                 </td>
             </tr>
+                    <tr>
+                <td>
+                                                                                                                        INPUT_FORMATS
+                                    </td>
+                <td class="last">
+                    <p><em><p>Accepted values of --input-format.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
             </table>
 
     
@@ -123,17 +137,6 @@
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        
-                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
-            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     
@@ -147,21 +150,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configure">configure</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_execute">execute</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $key, string $value, string $inputFormat = &#039;auto&#039;)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -184,52 +176,8 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_create">
-        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
-<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
-        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
-                <td>$container</td>
-                <td><p>The service container this instance should use.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/state/StateSetCommand.php#L29">at line 29</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/state/StateSetCommand.php#L44">at line 44</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\State\StateInterface">StateInterface</abbr> $state)
         </code>
@@ -263,44 +211,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_configure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/state/StateSetCommand.php#L35">at line 35</a></div>
-        <code>            protected        void
-    <strong>configure</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/state/StateSetCommand.php#L50">at line 50</a></div>
+                    <h3 id="method___invoke">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/state/StateSetCommand.php#L49">at line 49</a></div>
         <code>                    int
-    <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $key, string $value, string $inputFormat = &#039;auto&#039;)
         </code>
     </h3>
     <div class="details">    
@@ -326,6 +240,21 @@
                 <td>$output</td>
                 <td></td>
             </tr>
+                    <tr>
+                <td>string</td>
+                <td>$key</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$inputFormat</td>
+                <td></td>
+            </tr>
             </table>
 
             
@@ -347,7 +276,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_format">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/state/StateSetCommand.php#L85">at line 85</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/state/StateSetCommand.php#L99">at line 99</a></div>
         <code>        static            mixed
     <strong>format</strong>(mixed $value, string $format)
         </code>

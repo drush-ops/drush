@@ -85,17 +85,39 @@
     </div>
 
     
-    <p>final         class
-    <strong>CacheWarmCommand</strong>        extends <abbr title="Symfony\Component\Console\Command\Command">Command</abbr>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheWarmCommand.php">View source</a>)
+    <p>        class
+    <strong>CacheWarmCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheWarmCommand.php">View source</a>)
 </p>
 
         
         
     
-        
+                        <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
+    
 
             
+                <h2>Traits</h2>
+
         
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/cache/CacheTrait.html"><abbr title="Drush\Commands\cache\CacheTrait">CacheTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Helpers shared by the cache commands.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="Drupal\Core\StringTranslation\StringTranslationTrait">StringTranslationTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
             <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
                 <td>
@@ -126,32 +148,10 @@
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    void
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configure">configure</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_execute">execute</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -165,7 +165,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheWarmCommand.php#L26">at line 26</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheWarmCommand.php#L29">at line 29</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\PreWarm\CachePreWarmerInterface">CachePreWarmerInterface</abbr> $warmer)
         </code>
@@ -199,79 +199,10 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_configure">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheWarmCommand.php#L32">at line 32</a></div>
-        <code>            protected        void
-    <strong>configure</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_create">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheWarmCommand.php#L39">at line 39</a></div>
-        <code>        static            
-    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
-                <td>$container</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_execute">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheWarmCommand.php#L47">at line 47</a></div>
-        <code>            protected        int
-    <strong>execute</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <h3 id="method___invoke">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheWarmCommand.php#L34">at line 34</a></div>
+        <code>                    int
+    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
     </h3>
     <div class="details">    

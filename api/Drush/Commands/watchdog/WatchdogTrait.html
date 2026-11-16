@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>WatchdogTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php">View source</a>)
+    <strong>WatchdogTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php">View source</a>)
 </p>
 
         
@@ -94,8 +94,43 @@
     
         
 
+            <div class="description">
+            <p><p>Helpers shared by the watchdog commands.</p></p>            <p><p>Classes using this trait inject Connection as $this-&gt;connection and
+ModuleHandlerInterface as $this-&gt;moduleHandler. Those that format records
+also inject EntityTypeManagerInterface as $this-&gt;entityTypeManager.</p></p>        </div>
             
+                <h2>Traits</h2>
+
         
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="Drupal\Core\StringTranslation\StringTranslationTrait">StringTranslationTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        LABELS
+                                    </td>
+                <td class="last">
+                    <p><em><p>Human-readable labels of every field a formatted record may carry.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                                                                                        DEFAULT_FIELDS
+                                    </td>
+                <td class="last">
+                    <p><em><p>Fields the listing table shows unless --fields says otherwise.</p></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
     
             <h2>Properties</h2>
 
@@ -110,11 +145,20 @@
                 <td></td>
             </tr>
                     <tr>
-                <td class="type" id="property_logger">
-                                        protected                                        <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr>
+                <td class="type" id="property_moduleHandler">
+                                        protected                                        <abbr title="Drupal\Core\Extension\ModuleHandlerInterface">ModuleHandlerInterface</abbr>
                                                                                 
                                     </td>
-                <td>$logger</td>
+                <td>$moduleHandler</td>
+                <td class="last"></td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td class="type" id="property_entityTypeManager">
+                                        protected                                        <abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr>
+                                                                                
+                                    </td>
+                <td>$entityTypeManager</td>
                 <td class="last"></td>
                 <td></td>
             </tr>
@@ -126,32 +170,154 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_requireDblog">requireDblog</a>()
+        
+                                            <p><p>Throws when the dblog module, which owns the watchdog table, is not installed.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_where">where</a>(string|null $type = null, mixed $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
+                    <a href="#method_where">where</a>(string|null $type = null, int|string|null $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
         
                                             <p><p>Build a WHERE snippet based on given parameters.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    <a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a>
+                    int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_formatResult">formatResult</a>(<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $result, bool $extended = false)
+                    <a href="#method_severityLevel">severityLevel</a>(int|string $severity)
+        
+                                            <p><p>Resolves a severity given as a number or a label to its RFC level.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_severityLabels">severityLabels</a>()
+        
+                                            <p><p>Severity labels keyed by RFC level.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_fetchRecords">fetchRecords</a>(array $where, int $count, bool $full)
+        
+                                            <p><p>Fetches the most recent matching records, formatted and keyed by wid.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_loadRecord">loadRecord</a>(int $id)
+        
+                                            <p><p>Loads one record by id with all its details, or throws when it is missing.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_formatResult">formatResult</a>(<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $result, bool $full = false)
         
                                             <p><p>Format a watchdog database row.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;array
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_selectFields">selectFields</a>(string|null $fields, array $default)
+        
+                                            <p><p>Resolves a --fields value against LABELS; '*' selects every field.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderRecords">renderRecords</a>(array $records, string|null $fields, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
+        
+                                            <p><p>Renders records keyed by wid as a table, or as json/yaml.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderRecord">renderRecord</a>(array $record, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
+        
+                                            <p><p>Renders one record as a two-column label/value table, or as json/yaml.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_encode">encode</a>(array $data, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr> $format)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_renderTable">renderTable</a>(array $headers, array $rows)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
                 </div>
                 <div class="col-md-8">
                     <a href="#method_messageTypes">messageTypes</a>()
         
-                                            <p><p>Helper function to obtain the message types based on drupal version.</p></p>                </div>
+                                            <p><p>The distinct message types currently in the log.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_suggestTypes">suggestTypes</a>()
+        
+                                            <p><p>Shell completion for --type.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_suggestSeverities">suggestSeverities</a>()
+        
+                                            <p><p>Shell completion for --severity and --severity-min.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -161,10 +327,10 @@
 
             <div id="method-details">
                     <div class="method-item">
-                    <h3 id="method_where">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L37">at line 37</a></div>
-        <code>            protected        array
-    <strong>where</strong>(string|null $type = null, mixed $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
+                    <h3 id="method_requireDblog">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L66">at line 66</a></div>
+        <code>            protected        void
+    <strong>requireDblog</strong>()
         </code>
     </h3>
     <div class="details">    
@@ -173,7 +339,49 @@
             
 
         <div class="method-description">
-                            <p><p>Build a WHERE snippet based on given parameters.</p></p>                <p><p>Example: ('where' =&gt; string, 'args' =&gt; [])</p></p>        
+                            <p><p>Throws when the dblog module, which owns the watchdog table, is not installed.</p></p>                        
+                    <p>
+                        
+                                    <tr>
+                        <td>Remove</td>
+                        <td>this and its callers once the `drush` entrypoint is retired.
+DoctorServiceProvider only registers the watchdog commands with `dr`
+when dblog is installed.</td>
+                        </tr>
+                            </p>
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_where">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L89">at line 89</a></div>
+        <code>            protected        array
+    <strong>where</strong>(string|null $type = null, int|string|null $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Build a WHERE snippet based on given parameters.</p></p>                        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -182,17 +390,17 @@
                     <tr>
                 <td>string|null</td>
                 <td>$type</td>
-                <td><p>String. Valid watchdog type.</p></td>
+                <td><p>A valid watchdog type.</p></td>
             </tr>
                     <tr>
-                <td>mixed</td>
+                <td>int|string|null</td>
                 <td>$severity</td>
-                <td><p>Int or String for a valid watchdog severity message.</p></td>
+                <td><p>Int or string for a valid watchdog severity level.</p></td>
             </tr>
                     <tr>
                 <td>string|null</td>
                 <td>$filter</td>
-                <td><p>String. Value to filter watchdog messages by.</p></td>
+                <td><p>Value to filter watchdog messages by.</p></td>
             </tr>
                     <tr>
                 <td>string</td>
@@ -202,7 +410,179 @@
                     <tr>
                 <td>int|string|null</td>
                 <td>$severity_min</td>
-                <td><p>Int or String for the minimum severity to return.</p></td>
+                <td><p>Int or string for the minimum severity to return.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_severityLevel">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L132">at line 132</a></div>
+        <code>            protected        int
+    <strong>severityLevel</strong>(int|string $severity)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Resolves a severity given as a number or a label to its RFC level.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int|string</td>
+                <td>$severity</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_severityLabels">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L156">at line 156</a></div>
+        <code>            protected        array
+    <strong>severityLabels</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Severity labels keyed by RFC level.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_fetchRecords">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L167">at line 167</a></div>
+        <code>            protected        array
+    <strong>fetchRecords</strong>(array $where, int $count, bool $full)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Fetches the most recent matching records, formatted and keyed by wid.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$where</td>
+                <td><p>As returned by where().</p></td>
+            </tr>
+                    <tr>
+                <td>int</td>
+                <td>$count</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>bool</td>
+                <td>$full</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_loadRecord">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L187">at line 187</a></div>
+        <code>            protected        array
+    <strong>loadRecord</strong>(int $id)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Loads one record by id with all its details, or throws when it is missing.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>int</td>
+                <td>$id</td>
+                <td></td>
             </tr>
             </table>
 
@@ -225,9 +605,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_formatResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L100">at line 100</a></div>
-        <code>            protected        <a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a>
-    <strong>formatResult</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $result, bool $extended = false)
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L212">at line 212</a></div>
+        <code>            protected        array
+    <strong>formatResult</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $result, bool $full = false)
         </code>
     </h3>
     <div class="details">    
@@ -249,8 +629,8 @@
             </tr>
                     <tr>
                 <td>bool</td>
-                <td>$extended</td>
-                <td><p>Return extended message details.</p></td>
+                <td>$full</td>
+                <td><p>Keep the whole message instead of truncating it.</p></td>
             </tr>
             </table>
 
@@ -259,8 +639,256 @@
 
                     <table class="table table-condensed">
         <tr>
-            <td><a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a></td>
-            <td><p>The result object with some attributes themed.</p></td>
+            <td>array</td>
+            <td><p>The record with some attributes themed.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_selectFields">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L262">at line 262</a></div>
+        <code>            protected        array
+    <strong>selectFields</strong>(string|null $fields, array $default)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Resolves a --fields value against LABELS; '*' selects every field.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string|null</td>
+                <td>$fields</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$default</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderRecords">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L283">at line 283</a></div>
+        <code>            protected        string
+    <strong>renderRecords</strong>(array $records, string|null $fields, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Renders records keyed by wid as a table, or as json/yaml.</p></p>                <p><p>The table shows DEFAULT_FIELDS and json/yaml the whole record, unless
+$fields narrows both.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$records</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$fields</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
+                <td>$format</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderRecord">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L305">at line 305</a></div>
+        <code>            protected        string
+    <strong>renderRecord</strong>(array $record, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Renders one record as a two-column label/value table, or as json/yaml.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$record</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
+                <td>$format</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_encode">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L317">at line 317</a></div>
+        <code>            protected        string
+    <strong>encode</strong>(array $data, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr> $format)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$data</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr></td>
+                <td>$format</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_renderTable">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L325">at line 325</a></div>
+        <code>            protected        string
+    <strong>renderTable</strong>(array $headers, array $rows)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$headers</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$rows</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
         </tr>
     </table>
 
@@ -273,8 +901,8 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_messageTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L150">at line 150</a></div>
-        <code>        static            array
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L337">at line 337</a></div>
+        <code>            protected        array
     <strong>messageTypes</strong>()
         </code>
     </h3>
@@ -284,7 +912,7 @@
             
 
         <div class="method-description">
-                            <p><p>Helper function to obtain the message types based on drupal version.</p></p>                        
+                            <p><p>The distinct message types currently in the log.</p></p>                        
         </div>
         <div class="tags">
             
@@ -293,7 +921,73 @@
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td><p>Array of watchdog message types.</p></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_suggestTypes">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L345">at line 345</a></div>
+        <code>                    array
+    <strong>suggestTypes</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Shell completion for --type.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_suggestSeverities">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L353">at line 353</a></div>
+        <code>                    array
+    <strong>suggestSeverities</strong>()
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Shell completion for --severity and --severity-min.</p></p>                        
+        </div>
+        <div class="tags">
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
         </tr>
     </table>
 

@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>UserTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserTrait.php">View source</a>)
+    <strong>UserTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserTrait.php">View source</a>)
 </p>
 
         
@@ -94,29 +94,21 @@
     
         
 
+            <div class="description">
+            <p><p>Helpers shared by the user commands.</p></p>            <p><p>Classes using this trait inject EntityTypeManagerInterface as
+$this-&gt;entityTypeManager and LoggerInterface as $this-&gt;logger.</p></p>        </div>
             
-        
-            <h2>Constants</h2>    <table class="table table-condensed">
-                    <tr>
-                <td>
-                                                                                                                        INF_LABELS
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                                                                                        INF_DEFAULT_FIELDS
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-            </table>
+                <h2>Traits</h2>
 
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="Drupal\Core\StringTranslation\StringTranslationTrait">StringTranslationTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
     
     
             <h2>Methods</h2>
@@ -127,20 +119,10 @@
                     array
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_getAccounts">getAccounts</a>(string $names = &#039;&#039;, array $options = [])
+                    <a href="#method_getAccounts">getAccounts</a>(string $names, string|null $uid = null, string|null $mail = null)
         
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_infoArray">infoArray</a>($account)
-        
-                                            <p><p>A flatter and simpler array presentation of a Drupal $user object.</p></p>                </div>
+                                            <p><p>Loads the accounts selected by a names argument and the --uid and
+--mail options, each a comma delimited list.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
             </div>
@@ -151,9 +133,9 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_getAccounts">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserTrait.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserTrait.php#L31">at line 31</a></div>
         <code>            protected        array
-    <strong>getAccounts</strong>(string $names = &#039;&#039;, array $options = [])
+    <strong>getAccounts</strong>(string $names, string|null $uid = null, string|null $mail = null)
         </code>
     </h3>
     <div class="details">    
@@ -162,8 +144,9 @@
             
 
         <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
+                            <p><p>Loads the accounts selected by a names argument and the --uid and
+--mail options, each a comma delimited list.</p></p>                <p><p>Logs a warning for every value that matches no account and throws when
+none of them did.</p></p>        
         </div>
         <div class="tags">
                             <h4>Parameters</h4>
@@ -175,51 +158,13 @@
                 <td></td>
             </tr>
                     <tr>
-                <td>array</td>
-                <td>$options</td>
+                <td>string|null</td>
+                <td>$uid</td>
                 <td></td>
             </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_infoArray">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserTrait.php#L77">at line 77</a></div>
-        <code>                    array
-    <strong>infoArray</strong>($account)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>A flatter and simpler array presentation of a Drupal $user object.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$account</td>
+                <td>string|null</td>
+                <td>$mail</td>
                 <td></td>
             </tr>
             </table>
@@ -230,7 +175,7 @@
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
+            <td><p>The accounts, keyed by uid.</p></td>
         </tr>
     </table>
 

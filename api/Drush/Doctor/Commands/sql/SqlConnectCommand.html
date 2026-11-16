@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="robots" content="index, follow, all" />
+    <title>Drush\Doctor\Commands\sql\SqlConnectCommand | Drush API 14</title>
+
+            <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/bootstrap-theme.min.css">
+        <link rel="stylesheet" type="text/css" href="../../../../css/doctum.css">
+        <link rel="stylesheet" type="text/css" href="../../../../fonts/doctum-font.css">
+        <script src="../../../../js/jquery-3.5.1.slim.min.js"></script>
+        <script async defer src="../../../../doctum.js"></script>
+        <script async defer src="../../../../js/bootstrap.min.js"></script>
+        <script async defer src="../../../../js/autocomplete.min.js"></script>
+        <meta name="MobileOptimized" content="width">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+
+    </head>
+
+    <body id="class" data-name="class:Drush_Doctor_Commands_sql_SqlConnectCommand" data-root-path="../../../../" data-search-index-url="../../../../doctum-search.json">
+            <div id="content">
+        <div id="left-column">
+                <div id="control-panel">
+                <div class="search-bar hidden" id="search-progress-bar-container">
+            <div class="progress">
+                <div class="progress-bar" role="progressbar" id="search-progress-bar"
+                    aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+            </div>
+        </div>
+        <form id="search-form" action="../../../../search.html">
+            <span class="icon icon-search"></span>
+            <input name="search"
+                   id="doctum-search-auto-complete"
+                   class="typeahead form-control"
+                   type="search"
+                   placeholder="Search"
+                   spellcheck="false"
+                   autocorrect="off"
+                   autocomplete="off"
+                   autocapitalize="off">
+            <div class="auto-complete-results" id="auto-complete-results"></div>
+        </form>
+    </div>
+
+                <div id="api-tree"></div>
+
+        </div>
+        <div id="right-column">
+                <nav id="site-nav" class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-elements">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="../../../../index.html">Drush API 14</a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-elements">
+                <ul class="nav navbar-nav">
+                    <li><a href="../../../../classes.html">Classes</a></li>
+                    <li><a href="../../../../namespaces.html">Namespaces</a></li>
+                    <li><a href="../../../../interfaces.html">Interfaces</a></li>
+                    <li><a href="../../../../traits.html">Traits</a></li>
+                    <li><a href="../../../../doc-index.html">Index</a></li>
+                    <li><a href="../../../../search.html">Search</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+                        <div class="namespace-breadcrumbs">
+            <ol class="breadcrumb">
+                <li><span class="label label-default">class</span></li>
+                        <li><a href="../../../../Drush.html">Drush</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Doctor.html">Doctor</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Doctor/Commands.html">Commands</a></li><li class="backslash">\</li><li><a href="../../../../Drush/Doctor/Commands/sql.html">sql</a></li><li class="backslash">\</li><li>SqlConnectCommand</li>
+            </ol>
+        </div>
+                <div id="page-content">
+    <div class="page-header">
+        <h1>SqlConnectCommand    
+            </h1>
+    </div>
+
+    
+    <p>final         class
+    <strong>SqlConnectCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlConnectCommand.php">View source</a>)
+</p>
+
+        
+        
+    
+                        <table>
+            <tr>
+                <td><span class="label label-warning">internal</span></td>
+                <td>&nbsp; </td>
+            </tr>
+        </table>
+                &nbsp;
+    
+
+            <div class="description">
+            <p><p>Runs under dr only. Drush keeps its own sql:connect.</p></p>            <p><p>The command reads nothing but core's Database registry, so it needs no
+services and works as soon as settings.php declares a connection.</p></p>        </div>
+            
+                <h2>Traits</h2>
+
+        
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html"><abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Shared by the sql commands that run under dr.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html"><abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Console helpers shared by the commands that run under dr only.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <abbr title="Drupal\Core\StringTranslation\StringTranslationTrait">StringTranslationTrait</abbr>    </div>
+                <div class="col-md-6"></div>
+            </div>
+            </div>
+    
+            <h2>Constants</h2>    <table class="table table-condensed">
+                    <tr>
+                <td>
+                                                                                                                        NAME
+                                    </td>
+                <td class="last">
+                    <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+            </table>
+
+    
+    
+            <h2>Methods</h2>
+
+            <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_attachConsoleLogger">attachConsoleLogger</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        
+                                            <p><p>Sends Drupal log messages to the console.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_attachConsoleLogger">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_ensureRoute">ensureRoute</a>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>batch_process() builds a URL from the current route; dr's request has
+none, so give it the placeholder route kernel tests use.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_ensureRoute">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_table">table</a>(array $headers, array $rows)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_table">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_plainText">plainText</a>(mixed $value, <abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
+        
+                                            <p><p>Renders markup, a render array or a string as plain console text.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_plainText">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_connectionInfo">connectionInfo</a>(string $database, string $target, string|null $dbUrl)
+        
+                                            <p><p>The connection info the command works with.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connectionInfo">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Drupal\Core\Database\Connection">Connection</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_connection">connection</a>(string $database, string $target, string|null $dbUrl)
+        
+                                            <p><p>Core's connection for the same selection, for the SQL the commands run
+themselves. A --db-url connection is registered under its own key.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connection">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <a href="../../../../Drush/Doctor/Sql/Client.html"><abbr title="Drush\Doctor\Sql\Client">Client</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_client">client</a>(array $info)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_client">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    void
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_requireProgram">requireProgram</a>(string $program)
+        
+                                            <p><p>Throws when the client (or dump) binary is not installed.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_requireProgram">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_listTables">listTables</a>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $connection)
+        
+                                            <p><p>The connection's tables, without the prefix, as core's Schema API names
+them. With a prefix only that site's tables are listed, which is also
+what a dump or drop should touch.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_listTables">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    <abbr title="Symfony\Component\Process\Process">Process</abbr>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_runShell">runShell</a>(string $command, array $env, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, callable|null $stdout = null)
+        
+                                            <p><p>Runs a shell command line, streaming its output, and returns the exit
+code. At -v the command line is shown on the error output.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_runShell">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    string
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_connectString">connectString</a>(array $info, string|null $extra = null)
+        
+                                            <p><p>A shell command line that opens the client on the connection.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connectString">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string|null $extra = null, string $database = &#039;default&#039;, string $target = &#039;default&#039;, string|null $dbUrl = null, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+            </div>
+
+
+        <h2>Details</h2>
+
+            <div id="method-details">
+                    <div class="method-item">
+                    <h3 id="method_attachConsoleLogger">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_attachConsoleLogger">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/ConsoleTrait.php#L33">at line 33</a></div>
+        <code>            protected        void
+    <strong>attachConsoleLogger</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Sends Drupal log messages to the console.</p></p>                <p><p>dr does this once per command through ConsoleSubscriber, but a container
+rebuild replaces logger.console with an instance that has no console
+logger attached, so it is done again after every rebuild. It also lets
+kernel tests see the log output.</p></p>        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_ensureRoute">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_ensureRoute">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/ConsoleTrait.php#L46">at line 46</a></div>
+        <code>            protected        void
+    <strong>ensureRoute</strong>(<abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>batch_process() builds a URL from the current route; dr's request has
+none, so give it the placeholder route kernel tests use.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_table">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_table">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/ConsoleTrait.php#L59">at line 59</a></div>
+        <code>            protected        string
+    <strong>table</strong>(array $headers, array $rows)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$headers</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$rows</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_plainText">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/ConsoleTrait.html#method_plainText">
+<abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/ConsoleTrait.php#L69">at line 69</a></div>
+        <code>            protected        string
+    <strong>plainText</strong>(mixed $value, <abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null $container = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Renders markup, a render array or a string as plain console text.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>mixed</td>
+                <td>$value</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\DependencyInjection\ContainerInterface">ContainerInterface</abbr>|null</td>
+                <td>$container</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_connectionInfo">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connectionInfo">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L48">at line 48</a></div>
+        <code>            protected        array
+    <strong>connectionInfo</strong>(string $database, string $target, string|null $dbUrl)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>The connection info the command works with.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$database</td>
+                <td><p>The connection key in settings.php, usually 'default'.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$target</td>
+                <td><p>The target within that connection, usually 'default'.</p></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$dbUrl</td>
+                <td><p>A database URL that replaces the site's settings when given.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td><p>Core connection info: driver, database, username, password, host,
+port, prefix, pdo and so on, as the driver needs them.</p></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_connection">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connection">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L67">at line 67</a></div>
+        <code>            protected        <abbr title="Drupal\Core\Database\Connection">Connection</abbr>
+    <strong>connection</strong>(string $database, string $target, string|null $dbUrl)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Core's connection for the same selection, for the SQL the commands run
+themselves. A --db-url connection is registered under its own key.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$database</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$target</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$dbUrl</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Drupal\Core\Database\Connection">Connection</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_client">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_client">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L80">at line 80</a></div>
+        <code>            protected        <a href="../../../../Drush/Doctor/Sql/Client.html"><abbr title="Drush\Doctor\Sql\Client">Client</abbr></a>
+    <strong>client</strong>(array $info)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$info</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../../Drush/Doctor/Sql/Client.html"><abbr title="Drush\Doctor\Sql\Client">Client</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_requireProgram">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_requireProgram">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L88">at line 88</a></div>
+        <code>            protected        void
+    <strong>requireProgram</strong>(string $program)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Throws when the client (or dump) binary is not installed.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$program</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>void</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_listTables">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_listTables">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L102">at line 102</a></div>
+        <code>            protected        array
+    <strong>listTables</strong>(<abbr title="Drupal\Core\Database\Connection">Connection</abbr> $connection)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>The connection's tables, without the prefix, as core's Schema API names
+them. With a prefix only that site's tables are listed, which is also
+what a dump or drop should touch.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Drupal\Core\Database\Connection">Connection</abbr></td>
+                <td>$connection</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_runShell">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_runShell">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L122">at line 122</a></div>
+        <code>            protected        <abbr title="Symfony\Component\Process\Process">Process</abbr>
+    <strong>runShell</strong>(string $command, array $env, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, callable|null $stdout = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Runs a shell command line, streaming its output, and returns the exit
+code. At -v the command line is shown on the error output.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$command</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>array</td>
+                <td>$env</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>callable|null</td>
+                <td>$stdout</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><abbr title="Symfony\Component\Process\Process">Process</abbr></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_connectString">
+        <div class="location">in <a href="../../../../Drush/Doctor/Commands/sql/SqlTrait.html#method_connectString">
+<abbr title="Drush\Doctor\Commands\sql\SqlTrait">SqlTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlTrait.php#L144">at line 144</a></div>
+        <code>            protected        string
+    <strong>connectString</strong>(array $info, string|null $extra = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>A shell command line that opens the client on the connection.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>array</td>
+                <td>$info</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$extra</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___invoke">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Doctor/Commands/sql/SqlConnectCommand.php#L43">at line 43</a></div>
+        <code>                    int
+    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string|null $extra = null, string $database = &#039;default&#039;, string $target = &#039;default&#039;, string|null $dbUrl = null, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
+                <td>$output</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$extra</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$database</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$target</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td>string|null</td>
+                <td>$dbUrl</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
+                <td>$format</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>int</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+            </div>
+
+    
+</div><div id="footer">
+        Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
+    </div>
+    </body>
+
+</html>
