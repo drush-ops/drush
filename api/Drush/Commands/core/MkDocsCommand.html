@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\MkDocsCommand | Drush API 14</title>
+    <title>Drush\Commands\core\MkDocsCommand | Drush API 15</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 15</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -120,6 +120,16 @@
                                     </td>
                 <td class="last">
                     <p><em></em></p>
+                    <p></p>
+                </td>
+            </tr>
+                    <tr>
+                <td>
+                                                            private
+                                                                                BRANCH
+                                    </td>
+                <td class="last">
+                    <p><em><p>The Drush branch that edit links point to. Update it for each major.</p></em></p>
                     <p></p>
                 </td>
             </tr>
@@ -211,6 +221,16 @@
                                             <p><p>Group visible commands by namespace, sorted.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;string|null
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_editUrl">editUrl</a>(string $file, string $root, string $core_dir, string $core_version, string $symfony_version)
+        
+                                            <p><p>The URL for editing the file that defines a command, if known.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
             </div>
 
 
@@ -219,7 +239,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L30">at line 30</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L37">at line 37</a></div>
         <code>                    int
     <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -268,7 +288,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_cliTextToMarkdown">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L82">at line 82</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L89">at line 89</a></div>
         <code>        static            string
     <strong>cliTextToMarkdown</strong>(string $text)
         </code>
@@ -311,7 +331,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_formatArgument">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L91">at line 91</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L98">at line 98</a></div>
         <code>        static            string
     <strong>formatArgument</strong>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $argument)
         </code>
@@ -354,7 +374,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_formatOptionKeys">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L105">at line 105</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L112">at line 112</a></div>
         <code>        static            string
     <strong>formatOptionKeys</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
         </code>
@@ -397,7 +417,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_formatOptionDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L121">at line 121</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L128">at line 128</a></div>
         <code>        static            string
     <strong>formatOptionDescription</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
         </code>
@@ -440,7 +460,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getFilename">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L137">at line 137</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L144">at line 144</a></div>
         <code>        static            string
     <strong>getFilename</strong>(string $name)
         </code>
@@ -483,7 +503,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getRedirectMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L147">at line 147</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L154">at line 154</a></div>
         <code>        static            array
     <strong>getRedirectMap</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command, string $destination)
         </code>
@@ -531,7 +551,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_categorize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L168">at line 168</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L175">at line 175</a></div>
         <code>        static            array
     <strong>categorize</strong>(array $all)
         </code>
@@ -561,6 +581,69 @@
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_editUrl">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L249">at line 249</a></div>
+        <code>        static            string|null
+    <strong>editUrl</strong>(string $file, string $root, string $core_dir, string $core_version, string $symfony_version)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>The URL for editing the file that defines a command, if known.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td>string</td>
+                <td>$file</td>
+                <td><p>The absolute path of the file.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$root</td>
+                <td><p>Drush's root directory.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$core_dir</td>
+                <td><p>Drupal's core directory.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$core_version</td>
+                <td><p>Drupal core's version, such as 11.2.5 or 12.0-dev.</p></td>
+            </tr>
+                    <tr>
+                <td>string</td>
+                <td>$symfony_version</td>
+                <td><p>The installed symfony/console version, such as v8.0.1 or 8.1.x-dev.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>string|null</td>
             <td></td>
         </tr>
     </table>
