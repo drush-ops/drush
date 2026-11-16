@@ -9,7 +9,7 @@ Contributor docs: `docs/contribute/CONTRIBUTING.md` and `docs/contribute/unish.m
 - `composer install` installs Drush and Drupal core into `sut/`. Without it, `vendor/` and `sut/core` are absent and nothing runs.
 - `composer.lock` is gitignored on purpose (CI tests against several Drupal versions). Do not commit one.
 - Kernel tests need a database. Set `UNISH_DB_URL` as an env var. Sqlite works locally: `sqlite://localhost/:memory:?module=sqlite`.
-- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` and `DRUPAL_URL` for you.
+- DDEV is the supported container setup (`ddev start`, then prefix commands with `ddev exec`). It sets `UNISH_DB_URL` and `DRUPAL_URI` for you.
 
 ## Checks before pushing
 

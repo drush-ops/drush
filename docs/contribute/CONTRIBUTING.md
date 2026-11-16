@@ -2,9 +2,9 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 
 ## Git and Pull requests
 * Contributions are submitted, reviewed, and accepted using GitHub pull requests.
-* The latest changes are in the `14.x` branch. PR's should initially target this branch.
-* See the test-specific [README.md](https://github.com/drush-ops/drush/blob/14.x/docs/contribute/unish.md) for instructions on running the test suite. Test before you push. Optionally run tests in the provided Docker containers.
-* We maintain branches named 14.x, 13.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
+* The latest changes are in the `15.x` branch. PR's should initially target this branch.
+* See the test-specific [README.md](https://github.com/drush-ops/drush/blob/15.x/docs/contribute/unish.md) for instructions on running the test suite. Test before you push. Optionally run tests in the provided Docker containers.
+* We maintain branches named 15.x, 13.x, etc. These are release branches. From these branches, we make new tags for patch and minor versions.
 
 ## Development Environment
 * You may choose to use the [DDEV](https://ddev.readthedocs.io/) for a [standardized development environment](/.ddev/config.yaml).
@@ -17,5 +17,5 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 * Run `composer cs` to check the project for coding style issues and run `composer cbf` to fix them automatically where possible. These scripts use [`PHP_CodeSniffer`](https://github.com/PHPCSStandards/PHP_CodeSniffer) in background.
 
 ## Documentation
-* The docs are on our [web site](https://www.drush.org). You may also read these from within Drush, with the `drush topic` command.
-* Documentation should be kept up-to-date. This means, whenever you add a new API method, add a new hook or change the database model, pack the relevant changes to the docs in the same pull request.
+* The docs are on our [web site](https://www.drush.org).
+* Documentation should be kept up-to-date. This means, when you add or change a command, option, or event, update the docs in the same pull request.

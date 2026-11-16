@@ -39,6 +39,10 @@ plugins:
   - git-authors:
       exclude:
         - commands/*
+  # mk:docs adds the command alias redirects to this map.
+  - redirects:
+      redirect_maps:
+        listeners.md: subscribers.md
 extra:
   version:
     provider: mike
@@ -70,7 +74,11 @@ markdown_extensions:
           options:
             startinline: true
   - pymdownx.inlinehilite: { }
-  - pymdownx.superfences: { }
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: '!!python/name:pymdownx.superfences.fence_code_format'
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
@@ -81,14 +89,13 @@ nav:
   - Use:
     - Install: install.md
     - Usage: usage.md
-    - Cron: cron.md
     - Drupal configuration: config-exporting.md
     - Drupal dependencies: drupal-dependencies.md
     - Deploy: deploycommand.md
   - Author:
     - Command Authoring: commands.md
     - Dependency injection: dependency-injection.md
-    - Listeners: listeners.md
+    - Event subscribers: subscribers.md
   - Examples:
       - examples/helloworld.script.md
       - examples/XkcdFetchCommand.php.md

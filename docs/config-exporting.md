@@ -1,12 +1,11 @@
 # Exporting and Importing Configuration
 
-Drush provides commands to [export](commands/config_export.md), [pull](commands/config_pull.md), and [import](commands/config_import.md) Drupal configuration files.
+Use [config:export](commands/config_export.md) and [config:import](commands/config_import.md) to move configuration between the database and files. Drupal core ships both commands from 12.1; on earlier versions Drush provides them.
 
 ## Simple - value changes
 
-It is not necessary to alter configuration values to 
-make simple value changes to configuration variables, as this may be
-done by the [configuration override system](https://www.drupal.org/node/1928898).
+Per-environment value changes do not require exporting and importing
+configuration. Use Drupal's [configuration override system](https://www.drupal.org/node/1928898) instead.
 
 The configuration override system allows you to change configuration
 values for a given instance of a site (e.g. the development server) by

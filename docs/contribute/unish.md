@@ -1,4 +1,4 @@
-Drush command typically extend the standard KernelTestBase. They instantiate a Symfony Console CommandTester object as is typical. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
+Drush's command tests extend Drupal core's `KernelTestBase`. They instantiate a Symfony Console CommandTester object as is typical. See [CircleCi](https://circleci.com/gh/drush-ops/drush).
 
 ## Usage
 1. `git clone https://github.com/drush-ops/drush.git`
@@ -22,5 +22,5 @@ Drush's own tests may be run within provided Docker containers via [DDEV](https:
 - XML results: `composer kernel -- --log-junit results.xml`
 
 ## About the Test Suites
-- **Unit tests** operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up. They are configured in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/14.x/tests/phpunit.xml.dist).
-- **Kernel tests** extend Drupal core's `KernelTestBase` and drive a command directly with Symfony's `CommandTester`, the way Drupal core tests its own console commands. They run from [tests/phpunit.kernel.xml.dist](https://github.com/drush-ops/drush/blob/14.x/tests/phpunit.kernel.xml.dist), whose bootstrap chains core's test bootstrap and derives `SIMPLETEST_DB` from `UNISH_DB_URL`. Each test gets a fresh, minimal Drupal with only the modules it lists. [QueueTest](https://github.com/drush-ops/drush/blob/14.x/tests/kernel/QueueTest.php) is a good model, both for Drush's own commands and for commands that ship in your module.
+- **Unit tests** operate on functions that take values and return results without creating side effects. No database connection is required to run these tests, and no Drupal site is set up. They are configured in [tests/phpunit.xml.dist](https://github.com/drush-ops/drush/blob/15.x/tests/phpunit.xml.dist).
+- **Kernel tests** extend Drupal core's `KernelTestBase` and drive a command directly with Symfony's `CommandTester`, the way Drupal core tests its own console commands. They run from [tests/phpunit.kernel.xml.dist](https://github.com/drush-ops/drush/blob/15.x/tests/phpunit.kernel.xml.dist), whose bootstrap chains core's test bootstrap and derives `SIMPLETEST_DB` from `UNISH_DB_URL`. Each test gets a fresh, minimal Drupal with only the modules it lists. [QueueTest](https://github.com/drush-ops/drush/blob/15.x/tests/kernel/QueueTest.php) is a good model, both for Drush's own commands and for commands that ship in your module.

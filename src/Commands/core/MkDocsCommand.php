@@ -331,11 +331,20 @@ EOT;
         $base = Yaml::parseFile(Path::join($root, 'mkdocs_base.yml'));
         $base['nav'][] = ['Commands' => $nav];
         $base['nav'][] = ['API' => '/api'];
+        // Keep the page redirects from mkdocs_base.yml; mkdocs allows one redirects plugin.
+        foreach ($base['plugins'] as $i => $plugin) {
+            if (is_array($plugin) && isset($plugin['redirects'])) {
+                $redirects = array_merge($plugin['redirects']['redirect_maps'] ?? [], $redirects);
+                unset($base['plugins'][$i]);
+            }
+        }
+        $base['plugins'] = array_values($base['plugins']);
         $base['plugins'][]['redirects']['redirect_maps'] = $redirects;
         $yaml = Yaml::dump($base, PHP_INT_MAX, 2);
 
         // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
         $yaml = str_replace("'!!python/name:material.extensions.emoji.twemoji'", '!!python/name:material.extensions.emoji.twemoji', $yaml);
-        return str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml);
+        $yaml = str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml);
+        return str_replace("'!!python/name:pymdownx.superfences.fence_code_format'", '!!python/name:pymdownx.superfences.fence_code_format', $yaml);
     }
 }

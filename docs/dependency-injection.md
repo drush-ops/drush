@@ -15,6 +15,6 @@ public function __construct(
 
 - A type hint works when the container has a service or alias with that name. Core defines aliases for most of its interfaces, such as `EntityTypeManagerInterface`, `ConfigFactoryInterface` and `GuzzleHttp\ClientInterface`.
 - When a type has no alias, or several services share it, name the service with Symfony's `#[Autowire(service: '...')]` attribute (`Symfony\Component\DependencyInjection\Attribute\Autowire`), as above.
-- For a service from a module that may not be installed, make the parameter nullable with a `null` default. It receives `null` when the service is missing. [EntitySaveCommand](https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntitySaveCommand.php) does this for content_moderation.
+- For a service from a module that may not be installed, make the parameter nullable with a `null` default. It receives `null` when the service is missing. [EntitySaveCommand](https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntitySaveCommand.php) does this for content_moderation.
 
 Don't call `\Drupal::service()` in a command. Injected services can be replaced in a test: build the command with `new` and pass what the test needs. See [Testing](commands.md#testing).

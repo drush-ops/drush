@@ -6,11 +6,21 @@ deployment script updates the codebase for the target site and then this command
 performs the following:
 
 ```shell
-drush updatedb
-drush config:import
-drush cache:rebuild
-drush deploy:hook
-drush cache:warm (Drupal 11.2+)
+dr updatedb
+dr config:import
+dr cache:rebuild
+dr deploy:hook
+dr cache:warm
+```
+
+The steps run in one process, non-interactively, with their default options. If a step fails, the deployment stops.
+
+```mermaid
+flowchart LR
+    U["updatedb<br/>hook_update_N()<br/>hook_post_update_NAME()"] --> C[config:import]
+    C --> R[cache:rebuild]
+    R --> D["deploy:hook<br/>hook_deploy_NAME()"]
+    D --> W[cache:warm]
 ```
 
 ## Authoring update functions
@@ -23,11 +33,10 @@ documentation][HOOK_update_N()] for more details.
 | --- | --- | --- |
 | [HOOK_update_N()] | Drupal | Low level changes. |
 | [HOOK_post_update_NAME()](https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_post_update_NAME) | Drupal | Runs *before* config is imported. |
-| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/tree/HEAD/drush.api.php) | Drush | Runs *after* config is imported. | 
+| [HOOK_deploy_NAME()](https://github.com/drush-ops/drush/blob/15.x/drush.api.php) | Drush | Runs *after* config is imported. | 
 
-## Configuration
+## Customizing
 
-If you need to customize this command, you should use Drush configuration for the 
-subcommands listed above (e.g. [updatedb](commands/updatedb.md), [config:import](commands/config_import.md), etc.).
+`deploy` takes no options for its steps. If you need different options, run the steps yourself in your deployment script, in the order above.
 
 [HOOK_update_N()]: https://api.drupal.org/api/drupal/core!lib!Drupal!Core!Extension!module.api.php/function/hook_update_N
