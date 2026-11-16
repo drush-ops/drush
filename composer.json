@@ -113,8 +113,6 @@
     "installer-paths": {
       "sut/core": ["type:drupal-core"],
       "sut/libraries/{$name}": ["type:drupal-library"],
-      "sut/modules/unish/{$name}": ["drupal/devel"],
-      "sut/themes/unish/{$name}": ["drupal/empty_theme"],
       "sut/modules/contrib/{$name}": ["type:drupal-module"],
       "sut/profiles/contrib/{$name}": ["type:drupal-profile"],
       "sut/themes/contrib/{$name}": ["type:drupal-theme"],

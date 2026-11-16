@@ -20,7 +20,6 @@ api
 .vscode/
 sut/*
 !sut/modules
-!sut/themes
 sut/modules/contrib
 /sandbox/
 .env

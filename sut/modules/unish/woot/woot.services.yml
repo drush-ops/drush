@@ -1,5 +1,0 @@
-services:
-  config.config_subscriber:
-    class: Drupal\woot\EventSubscriber\ConfigSubscriber
-    tags:
-      - { name: event_subscriber }
