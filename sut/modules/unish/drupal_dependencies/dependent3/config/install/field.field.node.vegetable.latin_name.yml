@@ -1,0 +1,15 @@
+dependencies:
+  config:
+    - field.storage.node.latin_name
+    - node.type.vegetable
+id: node.vegetable.latin_name
+field_name: latin_name
+entity_type: node
+bundle: vegetable
+label: Latin name
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

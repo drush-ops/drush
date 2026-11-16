@@ -1,0 +1,46 @@
+dependencies:
+  config:
+    - field.field.node.vegetable.latin_name
+    - field.field.node.vegetable.vegetable_type
+    - node.type.vegetable
+  module:
+    - taxonomy
+id: node.vegetable.default
+targetEntityType: node
+bundle: vegetable
+mode: default
+content:
+  title:
+    type: string_textfield
+    weight: -5
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  latin_name:
+    type: string_textfield
+    weight: 0
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  vegetable_type:
+    type: options_select
+    weight: 5
+    region: content
+    settings: { }
+    third_party_settings: { }
+  created:
+    type: datetime_timestamp
+    weight: 10
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+hidden:
+  promote: true
+  status: true
+  sticky: true
+  uid: true
+

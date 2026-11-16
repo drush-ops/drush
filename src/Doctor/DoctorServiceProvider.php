@@ -29,6 +29,8 @@ use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\PhpEvalCommand;
 use Drush\Commands\core\PhpScriptCommand;
 use Drush\Commands\core\RouteCommand;
+use Drush\Commands\core\WhyConfigCommand;
+use Drush\Commands\core\WhyModuleCommand;
 use Drush\Commands\core\WorkspacePublishCommand;
 use Drush\Commands\entity\EntityDeleteCommand;
 use Drush\Commands\entity\EntitySaveCommand;
@@ -150,6 +152,8 @@ class DoctorServiceProvider implements ServiceProviderInterface
             BrowseCommand::class,
             MkDocsCommand::class,
             RouteCommand::class,
+            WhyConfigCommand::class,
+            WhyModuleCommand::class,
         ];
 
         $config = [

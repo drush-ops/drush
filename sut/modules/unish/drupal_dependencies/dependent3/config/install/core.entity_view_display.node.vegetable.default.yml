@@ -1,0 +1,31 @@
+dependencies:
+  config:
+    - field.field.node.vegetable.latin_name
+    - field.field.node.vegetable.vegetable_type
+    - node.type.vegetable
+  module:
+    - text
+    - user
+id: node.vegetable.default
+targetEntityType: node
+bundle: vegetable
+mode: default
+content:
+  latin_name:
+    type: string
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    weight: 8
+    region: content
+  vegetable_type:
+    type: entity_reference_label
+    label: above
+    settings:
+      link: true
+    third_party_settings: {  }
+    weight: -1
+    region: content
+hidden:
+  links: true
