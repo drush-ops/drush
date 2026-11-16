@@ -35,21 +35,18 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.4
+          php-version: 8.5
           extensions: dom, curl, gd, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite
           coverage: none
           tools: composer:v2
       - name: Install Composer dependencies
         run: |
           composer -n config platform.php --unset
-          composer -n require --dev drupal/core-recommended:11.x-dev --no-update
           composer -n install --prefer-dist
       - name: Install Drupal
         run: composer sut:si
-        env:
-          UNISH_DB_URL: sqlite://sites/default/files/.ht.sqlite
-      - name: Drush status
-        run: ./drush --uri=dev st
+      - name: Drupal status
+        run: vendor/bin/dr system:status
       - name: Drush mk:docs
         run: composer mk:docs
       - name: Mike alias
