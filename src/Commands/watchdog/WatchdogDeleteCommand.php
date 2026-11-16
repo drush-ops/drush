@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Drush\Commands\watchdog;
 
+use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drush\Commands\AutowireTrait;
-use Drush\Exceptions\UserAbortException;
 use Symfony\Component\Console\Attribute\Argument;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;

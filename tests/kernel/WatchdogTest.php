@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -13,7 +14,6 @@ use Drush\Commands\watchdog\WatchdogListCommand;
 use Drush\Commands\watchdog\WatchdogShowCommand;
 use Drush\Commands\watchdog\WatchdogShowOneCommand;
 use Drush\Commands\watchdog\WatchdogTailCommand;
-use Drush\Exceptions\UserAbortException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
@@ -294,7 +294,7 @@ class WatchdogTest extends KernelTestBase
             $this->delete(['substring' => 'all'], ['no']);
             $this->fail('A declined confirmation did not abort the command.');
         } catch (UserAbortException $e) {
-            $this->assertSame('Cancelled.', $e->getMessage());
+            $this->assertSame('Operation cancelled by user.', $e->getMessage());
         }
         $this->assertSame(4, $this->countRecords());
 
