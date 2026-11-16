@@ -18,7 +18,7 @@
         <link rel="prev" href="../install/">
       
       
-        <link rel="next" href="../cron/">
+        <link rel="next" href="../config-exporting/">
       
       
       <link rel="icon" href="../img/favicon.ico">
@@ -102,6 +102,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#where-commands-come-from" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -493,6 +498,17 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Usage
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -503,27 +519,32 @@
 
       </a>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cron/" class="md-nav__link">
         
-  
-  <span class="md-ellipsis">
-    Cron
-  </span>
-  
 
-      </a>
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#where-commands-come-from" class="md-nav__link">
+    <span class="md-ellipsis">
+      Where commands come from
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -686,11 +707,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../listeners/" class="md-nav__link">
+      <a href="../subscribers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Listeners
+    Event subscribers
   </span>
   
 
@@ -3409,9 +3430,21 @@
 <p>Use the <a href="../commands/help/">help command</a> to get a list of available options and commands:</p>
 <div class="highlight"><pre><span></span><code>$ dr help pm:list
 </code></pre></div>
-<p>Drush needs to be told the domain of your site in order for commands to generate correct links (e.g. user:login). You may set a DRUPAL_URL environment variable, or use the --url option.</p>
+<p>Drush needs to be told the domain of your site in order for commands to generate correct links (e.g. user:login). You may set a <code>DRUPAL_URI</code> environment variable, or use the <code>--url</code> option.</p>
 <div class="highlight"><pre><span></span><code>$ dr --url=http://example.com user:login
 </code></pre></div>
+<h2 id="where-commands-come-from">Where commands come from<a class="headerlink" href="#where-commands-come-from" title="Permanent link">&para;</a></h2>
+<p><code>dr</code> belongs to Drupal core. Drush and your modules add commands to it.</p>
+<pre class="mermaid"><code>flowchart LR
+    dr["vendor/bin/dr"] --&gt; core["Drupal core&lt;br/&gt;cache:rebuild, user:login, system:cron, ..."]
+    dr --&gt; drush["Drush&lt;br/&gt;updatedb, deploy, sql:*, config:get, ..."]
+    dr --&gt; mods["Your modules&lt;br/&gt;src/Command/*Command.php"]</code></pre>
+<p>Run <code>dr list</code> to see what is available on your site. The list depends on the site's state:</p>
+<ul>
+<li>Before Drupal is installed, Drush adds only commands that need no installed site, such as <a href="../commands/sql_cli/">sql:cli</a> and <a href="../commands/php_eval/">php:eval</a>.</li>
+<li>Some Drush commands appear only when their module is installed: <code>watchdog:*</code> (dblog), <code>image:*</code> (image), <code>jn:get</code> (jsonapi), <code>workspace:publish</code> (workspaces).</li>
+<li>When Drupal core ships a command, Drush steps aside and core's version runs. This applies to <code>config:export</code>, <code>config:import</code>, <code>ex:install</code> and <code>ex:uninstall</code> on newer core versions.</li>
+</ul>
 
 
 
@@ -3432,7 +3465,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 02:31:55 UTC">November 16, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 13:54:26 UTC">November 16, 2026</span>
   </span>
 
     

@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://www.drush.org/latest/latest/config-exporting/">
       
       
-        <link rel="prev" href="../cron/">
+        <link rel="prev" href="../usage/">
       
       
         <link rel="next" href="../drupal-dependencies/">
@@ -509,27 +509,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../cron/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cron
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -741,11 +720,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../listeners/" class="md-nav__link">
+      <a href="../subscribers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Listeners
+    Event subscribers
   </span>
   
 
@@ -3457,11 +3436,10 @@
 
 
 <h1 id="exporting-and-importing-configuration">Exporting and Importing Configuration<a class="headerlink" href="#exporting-and-importing-configuration" title="Permanent link">&para;</a></h1>
-<p>Drush provides commands to <a href="../commands/config_export/">export</a>, <a href="commands/config_pull.md">pull</a>, and <a href="../commands/config_import/">import</a> Drupal configuration files.</p>
+<p>Use <a href="../commands/config_export/">config:export</a> and <a href="../commands/config_import/">config:import</a> to move configuration between the database and files. Drupal core ships both commands from 12.1; on earlier versions Drush provides them.</p>
 <h2 id="simple-value-changes">Simple - value changes<a class="headerlink" href="#simple-value-changes" title="Permanent link">&para;</a></h2>
-<p>It is not necessary to alter configuration values to 
-make simple value changes to configuration variables, as this may be
-done by the <a href="https://www.drupal.org/node/1928898">configuration override system</a>.</p>
+<p>Per-environment value changes do not require exporting and importing
+configuration. Use Drupal's <a href="https://www.drupal.org/node/1928898">configuration override system</a> instead.</p>
 <p>The configuration override system allows you to change configuration
 values for a given instance of a site (e.g. the development server) by
 setting configuration variables in the site's settings.php file.
@@ -3497,7 +3475,7 @@ work for some things, such as enabling and disabling modules.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="March 23, 2023 03:23:18 UTC">March 23, 2023</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 13:54:26 UTC">November 16, 2026</span>
   </span>
 
     
@@ -3513,7 +3491,6 @@ work for some things, such as enabling and disabling modules.</p>
     </span>
     <nav>
       
-        <a href="mailto:f.bircher@gmail.com">Fabian Bircher</a>, 
         <a href="mailto:greg.1.anderson@greenknowe.org">Greg Anderson</a>, 
         <a href="mailto:weitzman@tejasa.com">Moshe Weitzman</a>
     </nav>

@@ -13,10 +13,6 @@
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/cron/</loc>
-         <lastmod>2026-11-16</lastmod>
-    </url>
-    <url>
          <loc>https://www.drush.org/latest/latest/dependency-injection/</loc>
          <lastmod>2026-11-16</lastmod>
     </url>
@@ -33,7 +29,7 @@
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>
-         <loc>https://www.drush.org/latest/latest/listeners/</loc>
+         <loc>https://www.drush.org/latest/latest/subscribers/</loc>
          <lastmod>2026-11-16</lastmod>
     </url>
     <url>

@@ -507,27 +507,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../cron/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cron
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../config-exporting/" class="md-nav__link">
         
   
@@ -723,15 +702,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#output-formats" class="md-nav__link">
-    <span class="md-ellipsis">
-      Output formats
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#altering-other-commands" class="md-nav__link">
     <span class="md-ellipsis">
       Altering other commands
@@ -795,11 +765,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../listeners/" class="md-nav__link">
+      <a href="../subscribers/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Listeners
+    Event subscribers
   </span>
   
 
@@ -3518,7 +3488,12 @@
 <li>File: <code>modules/custom/example/src/Command/XkcdFetchCommand.php</code></li>
 <li>Namespace: <code>Drupal\example\Command</code></li>
 </ul>
-<p>Drupal finds every class in that directory that has an <code>#[AsCommand]</code> attribute, registers it as a service, and autowires its constructor. The module must be installed, and the container rebuilt (<code>dr cr</code>) after you add a command.</p>
+<p>Drupal finds every class in that directory that has an <code>#[AsCommand]</code> attribute, registers it as a service, and autowires its constructor. The module must be installed, and the container rebuilt (<code>dr cc container</code>) after you add a command.</p>
+<pre class="mermaid"><code>flowchart LR
+    A["src/Command/XkcdFetchCommand.php&lt;br/&gt;#[AsCommand]"] -- "dr cc container" --&gt; B["Service in Drupal's container&lt;br/&gt;constructor autowired"]
+    B --&gt; C["dr xkcd:fetch"]
+    C --&gt; D["#[Interact] method,&lt;br/&gt;if interactive"]
+    D --&gt; E["__invoke()"]</code></pre>
 <h2 id="writing-a-command">Writing a command<a class="headerlink" href="#writing-a-command" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="o">&lt;?</span><span class="nx">php</span>
 
@@ -3609,12 +3584,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="output-formats">Output formats<a class="headerlink" href="#output-formats" title="Permanent link">&para;</a></h2>
-<p>To offer machine-readable output, add a <code>?OutputFormat $format = null</code> option (<code>Drupal\Core\Command\OutputFormat</code>, with <code>json</code> and <code>yaml</code> cases) and render the default yourself, typically with Console's <code>Table</code>. <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/queue/QueueListCommand.php">QueueListCommand</a> shows the pattern. Write data with <code>OutputInterface::OUTPUT_RAW</code> so it is not mangled by formatting tags.</p>
 <h2 id="altering-other-commands">Altering other commands<a class="headerlink" href="#altering-other-commands" title="Permanent link">&para;</a></h2>
-<p>Listen to Console's events to act before or after another command runs. See <a href="../listeners/">Event Subscribers</a>.</p>
+<p>Listen to Console's events to act before or after another command runs. See <a href="../subscribers/">Event Subscribers</a>.</p>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
-<p>Write a kernel test that builds the command, drives it with Symfony's <code>CommandTester</code>, and asserts on <code>getDisplay()</code> and the exit code. See <a href="https://github.com/drush-ops/drush/blob/14.x/tests/kernel/QueueTest.php">QueueTest</a>.</p>
+<p>Write a kernel test that builds the command, drives it with Symfony's <code>CommandTester</code>, and asserts on <code>getDisplay()</code> and the exit code. See <a href="https://github.com/drush-ops/drush/blob/15.x/tests/kernel/QueueTest.php">QueueTest</a>.</p>
 <h2 id="upgrading-from-drush-13">Upgrading from Drush 13<a class="headerlink" href="#upgrading-from-drush-13" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3694,7 +3667,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 02:31:55 UTC">November 16, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 13:54:26 UTC">November 16, 2026</span>
   </span>
 
     
