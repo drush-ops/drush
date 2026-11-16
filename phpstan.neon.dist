@@ -1,8 +1,6 @@
 parameters:
     level: 4
     editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
-    bootstrapFiles:
-        - phpstan-bootstrap.php
     paths:
         - src
     treatPhpDocTypesAsCertain: false
