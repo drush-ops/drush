@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Drush\Commands\core;
 
+use Composer\InstalledVersions;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,6 +28,11 @@ final class MkDocsCommand
     public const string NAME = 'mk:docs';
 
     private const string DESTINATION = 'commands';
+
+    /**
+     * The Drush branch that edit links point to. Update it for each major.
+     */
+    private const string BRANCH = '15.x';
 
     public function __invoke(Application $application, OutputInterface $output): int
     {
@@ -193,10 +200,11 @@ final class MkDocsCommand
 
     private static function preamble(Command $command, string $root): string
     {
-        $path = Path::makeRelative((string) new \ReflectionObject(self::handler($command))->getFileName(), $root);
-        $body = <<<EOT
----
-edit_url: https://github.com/drush-ops/drush/blob/14.x/$path
+        $file = (string) new \ReflectionObject(self::handler($command))->getFileName();
+        $core_dir = dirname((string) new \ReflectionClass(\Drupal::class)->getFileName(), 2);
+        $symfony_version = InstalledVersions::getPrettyVersion('symfony/console') ?? '';
+        $edit_url = self::editUrl($file, $root, $core_dir, \Drupal::VERSION, $symfony_version);
+        $body = "---\n" . ($edit_url ? "edit_url: $edit_url\n" : '') . <<<EOT
 command: {$command->getName()}
 title: {$command->getName()}
 description: {$command->getDescription()}
@@ -204,6 +212,16 @@ description: {$command->getDescription()}
 
 EOT;
         $body .= "# {$command->getName()}\n\n";
+
+        if (!self::isDrushCommand($command)) {
+            $body .= <<<EOT
+!!! tip
+
+    This command is part of Drupal core, not Drush. Use the [Drupal issue queue](https://www.drupal.org/project/issues/drupal) for bug reports and feature requests.
+
+
+EOT;
+        }
 
         if ($command->getDescription()) {
             $body .= self::cliTextToMarkdown($command->getDescription()) . "\n\n";
@@ -215,15 +233,62 @@ EOT;
     }
 
     /**
+     * The URL for editing the file that defines a command, if known.
+     *
+     * @param string $file
+     *   The absolute path of the file.
+     * @param string $root
+     *   Drush's root directory.
+     * @param string $core_dir
+     *   Drupal's core directory.
+     * @param string $core_version
+     *   Drupal core's version, such as 11.2.5 or 12.0-dev.
+     * @param string $symfony_version
+     *   The installed symfony/console version, such as v8.0.1 or 8.1.x-dev.
+     */
+    public static function editUrl(string $file, string $root, string $core_dir, string $core_version, string $symfony_version): ?string
+    {
+        if (Path::isBasePath(Path::join($root, 'src'), $file)) {
+            return sprintf('https://github.com/drush-ops/drush/blob/%s/%s', self::BRANCH, Path::makeRelative($file, $root));
+        }
+        if (Path::isBasePath($core_dir, $file)) {
+            // A dev version is built from core's default branch; a release has a tag.
+            $ref = str_ends_with($core_version, '-dev') ? 'main' : $core_version;
+            return sprintf('https://git.drupalcode.org/project/drupal/-/blob/%s/core/%s', $ref, Path::makeRelative($file, $core_dir));
+        }
+        if (preg_match('#/vendor/symfony/console/(.+)$#', $file, $matches)) {
+            // A dev version such as 8.1.x-dev is built from the 8.1 branch.
+            $ref = preg_replace('/\.x-dev$/', '', $symfony_version);
+            return "https://github.com/symfony/console/blob/$ref/$matches[1]";
+        }
+        return null;
+    }
+
+    /**
      * The object whose class file defines the command.
      *
      * For an invokable command that is the invokable, not the Command that
-     * wraps it.
+     * wraps it. Commands from the container arrive as a LazyCommand, and
+     * AddConsoleCommandPass wraps an invokable in a Closure bound to it.
      */
     private static function handler(Command $command): object
     {
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
         $code = $command->getCode();
-        return is_object($code) && !$code instanceof \Closure ? $code : $command;
+        if ($code instanceof \Closure) {
+            $code = new \ReflectionFunction($code)->getClosureThis();
+        }
+        return is_object($code) ? $code : $command;
+    }
+
+    /**
+     * Whether Drush, rather than Drupal core, provides the command.
+     */
+    private static function isDrushCommand(Command $command): bool
+    {
+        return str_starts_with(self::handler($command)::class, 'Drush\\');
     }
 
     private static function usages(Command $command): string

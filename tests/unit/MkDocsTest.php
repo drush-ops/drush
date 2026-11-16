@@ -36,6 +36,29 @@ class MkDocsTest extends TestCase
         $this->assertSame('Everything.', MkDocsCommand::formatOptionDescription($flag));
     }
 
+    public function testEditUrl(): void
+    {
+        $root = '/app';
+        $core = '/app/sut/core';
+        $this->assertSame(
+            'https://github.com/drush-ops/drush/blob/15.x/src/Commands/queue/QueueRunCommand.php',
+            MkDocsCommand::editUrl("$root/src/Commands/queue/QueueRunCommand.php", $root, $core, '12.0-dev', 'v8.0.1')
+        );
+        $this->assertSame(
+            'https://git.drupalcode.org/project/drupal/-/blob/main/core/lib/Drupal/Core/Command/InstallCommand.php',
+            MkDocsCommand::editUrl("$core/lib/Drupal/Core/Command/InstallCommand.php", $root, $core, '12.0-dev', 'v8.0.1')
+        );
+        $this->assertSame(
+            'https://git.drupalcode.org/project/drupal/-/blob/11.2.5/core/lib/Drupal/Core/Command/InstallCommand.php',
+            MkDocsCommand::editUrl("$core/lib/Drupal/Core/Command/InstallCommand.php", $root, $core, '11.2.5', 'v8.0.1')
+        );
+        $this->assertSame(
+            'https://github.com/symfony/console/blob/8.1/Command/HelpCommand.php',
+            MkDocsCommand::editUrl("$root/vendor/symfony/console/Command/HelpCommand.php", $root, $core, '12.0-dev', '8.1.x-dev')
+        );
+        $this->assertNull(MkDocsCommand::editUrl("$root/vendor/acme/foo/FooCommand.php", $root, $core, '12.0-dev', 'v8.0.1'));
+    }
+
     public function testFormatArgument(): void
     {
         $this->assertSame('name', MkDocsCommand::formatArgument(new InputArgument('name', InputArgument::REQUIRED)));
