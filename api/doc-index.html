@@ -475,7 +475,7 @@ is searched for a drush.yml file.</p></dd><dt><a href="Drush/Config/ConfigLocato
 <abbr title="Drush\Config\Environment">Environment</abbr>::applyEnvironment</a>() &mdash; <em>Method in class <a href="Drush/Config/Environment.html"><abbr title="Drush\Config\Environment">Environment</abbr></a></em></dt>
                     <dd><p>Alter our default locations based on the value of environment variables.</p></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateExecutable.html#property_allSourceIdValues">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#allSourceIdValues</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
-                    <dd><p>List of all source IDs that are found in source during this migration.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html#method_accept">
+                    <dd><p>All source IDs found in source during this migration.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html#method_accept">
 <abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr>::accept</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a></em></dt>
                     <dd>{@inheritdoc}</dd><dt><a href="Drush/Drupal/Migrate/MigratePrepareRowModuleHandler.html#method_addModule">
 <abbr title="Drush\Drupal\Migrate\MigratePrepareRowModuleHandler">MigratePrepareRowModuleHandler</abbr>::addModule</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigratePrepareRowModuleHandler.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowModuleHandler">MigratePrepareRowModuleHandler</abbr></a></em></dt>
@@ -572,7 +572,11 @@ are not called at all if the optional references are not in the container.</p></
                     <dd><p>Checks that the output matches the expected output.</p></dd><dt><a href="Drush/TestTraits/CliTestTrait.html#method_assertErrorOutputEquals">
 <abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr>::assertErrorOutputEquals</a>() &mdash; <em>Method in class <a href="Drush/TestTraits/CliTestTrait.html"><abbr title="Drush\TestTraits\CliTestTrait">CliTestTrait</abbr></a></em></dt>
                     <dd><p>Checks that the error output matches the expected output.</p></dd><dt><a href="Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a> &mdash; <em>Class in namespace <a href="Robo.html">Robo</a></em></dt>
-                    <dd></dd><dt><a href="Robo/Application.html#method_addInitRoboFileCommand">
+                    <dd></dd><dt><a href="Robo/Application.html#method_add">
+<abbr title="Robo\Application">Application</abbr>::add</a>() &mdash; <em>Method in class <a href="Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></em></dt>
+                    <dd><p>Override add() method to redirect to addCommand() for Symfony 7.4+ compatibility.</p></dd><dt><a href="Robo/Application.html#method_addCommand">
+<abbr title="Robo\Application">Application</abbr>::addCommand</a>() &mdash; <em>Method in class <a href="Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></em></dt>
+                    <dd><p>Compatibility wrapper for add/addCommand methods.</p></dd><dt><a href="Robo/Application.html#method_addInitRoboFileCommand">
 <abbr title="Robo\Application">Application</abbr>::addInitRoboFileCommand</a>() &mdash; <em>Method in class <a href="Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></em></dt>
                     <dd></dd><dt><a href="Robo/Application.html#method_addSelfUpdateCommand">
 <abbr title="Robo\Application">Application</abbr>::addSelfUpdateCommand</a>() &mdash; <em>Method in class <a href="Robo/Application.html"><abbr title="Robo\Application">Application</abbr></a></em></dt>
@@ -668,7 +672,9 @@ as necessary.</p></dd><dt><a href="Robo/ResultData.html#method_alreadyPrinted">
 <abbr title="Robo\Robo">Robo</abbr>::addInflectors</a>() &mdash; <em>Method in class <a href="Robo/Robo.html"><abbr title="Robo\Robo">Robo</abbr></a></em></dt>
                     <dd><p>Add the Robo League\Container inflectors to the container</p></dd><dt><a href="Robo/Robo.html#method_application">
 <abbr title="Robo\Robo">Robo</abbr>::application</a>() &mdash; <em>Method in class <a href="Robo/Robo.html"><abbr title="Robo\Robo">Robo</abbr></a></em></dt>
-                    <dd></dd><dt><a href="Robo/Runner.html#method_arraySearchBeginsWith">
+                    <dd></dd><dt><a href="Robo/Robo.html#method_addCommandToApplication">
+<abbr title="Robo\Robo">Robo</abbr>::addCommandToApplication</a>() &mdash; <em>Method in class <a href="Robo/Robo.html"><abbr title="Robo\Robo">Robo</abbr></a></em></dt>
+                    <dd><p>Add a command to any Symfony Console application.</p></dd><dt><a href="Robo/Runner.html#method_arraySearchBeginsWith">
 <abbr title="Robo\Runner">Runner</abbr>::arraySearchBeginsWith</a>() &mdash; <em>Method in class <a href="Robo/Runner.html"><abbr title="Robo\Runner">Runner</abbr></a></em></dt>
                     <dd></dd><dt><a href="Robo/Runtime/Runner.html#method_arraySearchBeginsWith">
 <abbr title="Robo\Runtime\Runner">Runner</abbr>::arraySearchBeginsWith</a>() &mdash; <em>Method in class <a href="Robo/Runtime/Runner.html"><abbr title="Robo\Runtime\Runner">Runner</abbr></a></em></dt>
@@ -7452,7 +7458,9 @@ use as /user/share (e.g. during the functional tests).</p></dd><dt><a href="Drus
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#showTimestamp</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
                     <dd><p>Show timestamp in progress message.</p></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateExecutable.html#property_showTotal">
 <abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>#showTotal</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
-                    <dd><p>Show internal counter in progress message.</p></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html#property_sourceIdList">
+                    <dd><p>Show internal counter in progress message.</p></dd><dt><a href="Drush/Drupal/Migrate/MigrateExecutable.html#method_sourceIdKey">
+<abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr>::sourceIdKey</a>() &mdash; <em>Method in class <a href="Drush/Drupal/Migrate/MigrateExecutable.html"><abbr title="Drush\Drupal\Migrate\MigrateExecutable">MigrateExecutable</abbr></a></em></dt>
+                    <dd><p>Builds the lookup key of a source ID, for $allSourceIdValues.</p></dd><dt>$<a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html#property_sourceIdList">
 <abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr>#sourceIdList</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigrateIdMapFilter.html"><abbr title="Drush\Drupal\Migrate\MigrateIdMapFilter">MigrateIdMapFilter</abbr></a></em></dt>
                     <dd><p>List of specific source IDs to filter on.</p></dd><dt>$<a href="Drush/Drupal/Migrate/MigratePrepareRowEvent.html#property_source">
 <abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr>#source</a> &mdash; <em>Property in class <a href="Drush/Drupal/Migrate/MigratePrepareRowEvent.html"><abbr title="Drush\Drupal\Migrate\MigratePrepareRowEvent">MigratePrepareRowEvent</abbr></a></em></dt>
