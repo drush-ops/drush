@@ -245,6 +245,10 @@
          <lastmod>2026-11-17</lastmod>
     </url>
     <url>
+         <loc>https://www.drush.org/latest/commands/sql_sanitize/</loc>
+         <lastmod>2026-11-17</lastmod>
+    </url>
+    <url>
          <loc>https://www.drush.org/latest/commands/state_delete/</loc>
          <lastmod>2026-11-17</lastmod>
     </url>

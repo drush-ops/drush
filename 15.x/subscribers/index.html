@@ -725,6 +725,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#adding-options-to-a-command" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding options to a command
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -2610,6 +2619,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/sql_sanitize/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sql:sanitize
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -3478,6 +3508,26 @@
 </code></pre></div>
 <h2 id="events-dispatched-by-drush-commands">Events dispatched by Drush commands<a class="headerlink" href="#events-dispatched-by-drush-commands" title="Permanent link">&para;</a></h2>
 <p>Commands may dispatch their own events by injecting <code>Psr\EventDispatcher\EventDispatcherInterface</code>. For example, <a href="../commands/cache_clear/">cache:clear</a> dispatches <code>Drush\Event\CacheClearEvent</code>; call its <code>addType()</code> to offer another cache type.</p>
+<p><a href="../commands/sql_sanitize/">sql:sanitize</a> does all of its work in subscribers. It dispatches <code>Drush\Event\SanitizeConfirmsEvent</code> to collect a summary, asks for confirmation once, and exits. A sanitizer subscribes to:</p>
+<ul>
+<li><code>Drush\Event\SanitizeConfirmsEvent</code>: call <code>addMessage()</code> to describe what will be done.</li>
+<li><code>ConsoleEvents::TERMINATE</code>: do the work, when the command is <code>sql:sanitize</code> and <code>getExitCode()</code> is 0.</li>
+</ul>
+<p>The <a href="https://github.com/drush-ops/drush/tree/15.x/src/EventSubscriber/sanitize">subscribers that ship with Drush</a> are working examples. <code>SanitizeSessionsSubscriber</code> is the shortest.</p>
+<h2 id="adding-options-to-a-command">Adding options to a command<a class="headerlink" href="#adding-options-to-a-command" title="Permanent link">&para;</a></h2>
+<p>A <code>ConsoleEvents::COMMAND</code> subscriber may add options to a command's definition. Symfony binds and validates input after this event, so the new options are accepted on the command line. Add them whichever command is running, so that <code>help</code>, <code>list</code> and shell completion show them too. This is how <code>sql:sanitize</code> gets <code>--sanitize-email</code> and its other options; see <code>SanitizeUserTableSubscriber</code> and <code>SanitizeOptionsTrait</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span> <span class="k">function</span> <span class="nf">onCommand</span><span class="p">(</span><span class="nx">ConsoleCommandEvent</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$application</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">getCommand</span><span class="p">()</span><span class="o">?-&gt;</span><span class="na">getApplication</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$application</span><span class="o">?-&gt;</span><span class="na">has</span><span class="p">(</span><span class="s1">'sql:sanitize'</span><span class="p">))</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="nv">$command</span> <span class="o">=</span> <span class="nv">$application</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">'sql:sanitize'</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$command</span><span class="o">-&gt;</span><span class="na">getNativeDefinition</span><span class="p">()</span><span class="o">-&gt;</span><span class="na">hasOption</span><span class="p">(</span><span class="s1">'example'</span><span class="p">))</span> <span class="p">{</span>
+        <span class="nv">$command</span><span class="o">-&gt;</span><span class="na">addOption</span><span class="p">(</span><span class="s1">'example'</span><span class="p">,</span> <span class="k">null</span><span class="p">,</span> <span class="nx">InputOption</span><span class="o">::</span><span class="na">VALUE_REQUIRED</span><span class="p">,</span> <span class="s1">'An example option.'</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
@@ -3498,7 +3548,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 16, 2026 17:54:40 UTC">November 16, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 17, 2026 12:54:42 UTC">November 17, 2026</span>
   </span>
 
     
