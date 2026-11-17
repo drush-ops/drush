@@ -1,6 +1,6 @@
 # Creating Custom Commands
 
-Drush commands are plain [Symfony Console commands](https://symfony.com/doc/current/console.html), run by Drupal's `dr`. A module provides a command by adding a class; there is no Drush base class, and no Drush-specific registration.
+Drush commands are plain [Symfony Console commands](https://symfony.com/doc/current/console.html), run by Drupal's `dr`. A module provides a command by adding a class; there is no Drush base class, and no Drush-specific registration. See [Drush 15: The Doctor will see you now](https://weitzman.github.io/blog/drush-15)
 
 ## Where commands live
 
