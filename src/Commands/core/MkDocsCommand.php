@@ -200,8 +200,8 @@ final class MkDocsCommand
 
     private static function preamble(Command $command, string $root): string
     {
-        $file = (string) new \ReflectionObject(self::handler($command))->getFileName();
-        $core_dir = dirname((string) new \ReflectionClass(\Drupal::class)->getFileName(), 2);
+        $file = (string) (new \ReflectionObject(self::handler($command)))->getFileName();
+        $core_dir = dirname((string) (new \ReflectionClass(\Drupal::class))->getFileName(), 2);
         $symfony_version = InstalledVersions::getPrettyVersion('symfony/console') ?? '';
         $edit_url = self::editUrl($file, $root, $core_dir, \Drupal::VERSION, $symfony_version);
         $body = "---\n" . ($edit_url ? "edit_url: $edit_url\n" : '') . <<<EOT
@@ -278,7 +278,7 @@ EOT;
         }
         $code = $command->getCode();
         if ($code instanceof \Closure) {
-            $code = new \ReflectionFunction($code)->getClosureThis();
+            $code = (new \ReflectionFunction($code))->getClosureThis();
         }
         return is_object($code) ? $code : $command;
     }

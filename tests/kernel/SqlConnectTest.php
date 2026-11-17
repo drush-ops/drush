@@ -68,6 +68,19 @@ class SqlConnectTest extends KernelTestBase
         $this->assertMatchesRegularExpression("/^(mysql|mariadb) --user=u --password=p --database=db --host=h --port=3307\n$/", $display);
     }
 
+    /**
+     * SSL settings are keyed by PDO constants whose home depends on PHP.
+     */
+    public function testMysqlSsl(): void
+    {
+        if (!extension_loaded('pdo_mysql')) {
+            $this->markTestSkipped('pdo_mysql is not loaded.');
+        }
+        $ca = constant(defined('Pdo\Mysql::ATTR_SSL_CA') ? 'Pdo\Mysql::ATTR_SSL_CA' : 'PDO::MYSQL_ATTR_SSL_CA');
+        $client = Client::fromInfo(['driver' => 'mysql', 'database' => 'db', 'host' => 'h', 'pdo' => [$ca => '/certs/ca.pem']]);
+        $this->assertStringContainsString('--ssl-ca=/certs/ca.pem', $client->connectArguments());
+    }
+
     public function testFormat(): void
     {
         $info = Database::getConnectionInfo()['default'];

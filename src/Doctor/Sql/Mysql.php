@@ -80,26 +80,41 @@ class Mysql extends Client
         // Core's mysql driver reads SSL settings from the pdo key of the
         // connection info, keyed by the PDO attribute constants.
         $ssl = [
-            'ssl-ca' => \Pdo\Mysql::ATTR_SSL_CA,
-            'ssl-capath' => \Pdo\Mysql::ATTR_SSL_CAPATH,
-            'ssl-cert' => \Pdo\Mysql::ATTR_SSL_CERT,
-            'ssl-cipher' => \Pdo\Mysql::ATTR_SSL_CIPHER,
-            'ssl-key' => \Pdo\Mysql::ATTR_SSL_KEY,
+            'ssl-ca' => 'SSL_CA',
+            'ssl-capath' => 'SSL_CAPATH',
+            'ssl-cert' => 'SSL_CERT',
+            'ssl-cipher' => 'SSL_CIPHER',
+            'ssl-key' => 'SSL_KEY',
         ];
-        foreach ($ssl as $option => $attribute) {
-            if (!empty($info['pdo'][$attribute])) {
+        foreach ($ssl as $option => $name) {
+            $attribute = self::pdoAttribute($name);
+            if ($attribute !== null && !empty($info['pdo'][$attribute])) {
                 $parameters[$option] = $info['pdo'][$attribute];
             }
         }
         // Not declared on PHP builds without the mysqlnd SSL attribute.
-        if (defined('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT')) {
-            $attribute = constant('Pdo\Mysql::ATTR_SSL_VERIFY_SERVER_CERT');
-            if (isset($info['pdo'][$attribute])) {
-                $parameters['ssl-verify-server-cert'] = $info['pdo'][$attribute] ? '1' : '0';
-            }
+        $attribute = self::pdoAttribute('SSL_VERIFY_SERVER_CERT');
+        if ($attribute !== null && isset($info['pdo'][$attribute])) {
+            $parameters['ssl-verify-server-cert'] = $info['pdo'][$attribute] ? '1' : '0';
         }
 
         return $parameters;
+    }
+
+    /**
+     * Returns the value of a MySQL PDO attribute constant, if it is declared.
+     *
+     * The constants live on Pdo\Mysql from PHP 8.4. PDO::MYSQL_ATTR_* is the
+     * only spelling on 8.3 and is deprecated from 8.5.
+     */
+    private static function pdoAttribute(string $name): ?int
+    {
+        foreach (["Pdo\\Mysql::ATTR_$name", "PDO::MYSQL_ATTR_$name"] as $constant) {
+            if (defined($constant)) {
+                return constant($constant);
+            }
+        }
+        return null;
     }
 
     public function dumpCommand(TableSelection $tables, DumpOptions $options): string
