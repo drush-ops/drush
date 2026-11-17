@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\watchdog\WatchdogTrait | Drush API 14</title>
+    <title>Drush\Commands\watchdog\WatchdogTrait | Drush API 15</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 15</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        trait
-    <strong>WatchdogTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php">View source</a>)
+    <strong>WatchdogTrait</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php">View source</a>)
 </p>
 
         
@@ -253,7 +253,7 @@ also inject EntityTypeManagerInterface as $this-&gt;entityTypeManager.</p></p>  
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_renderRecords">renderRecords</a>(array $records, string|null $fields, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format)
+                    <a href="#method_renderRecords">renderRecords</a>(array $records, string|null $fields, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
         
                                             <p><p>Renders records keyed by wid as a table, or as json/yaml.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -263,7 +263,7 @@ also inject EntityTypeManagerInterface as $this-&gt;entityTypeManager.</p></p>  
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_renderRecord">renderRecord</a>(array $record, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format)
+                    <a href="#method_renderRecord">renderRecord</a>(array $record, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
         
                                             <p><p>Renders one record as a two-column label/value table, or as json/yaml.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -273,7 +273,7 @@ also inject EntityTypeManagerInterface as $this-&gt;entityTypeManager.</p></p>  
                     string
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_encode">encode</a>(array $data, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr> $format)
+                    <a href="#method_encode">encode</a>(array $data, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr> $format)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -328,7 +328,7 @@ also inject EntityTypeManagerInterface as $this-&gt;entityTypeManager.</p></p>  
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method_requireDblog">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L66">at line 66</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L66">at line 66</a></div>
         <code>            protected        void
     <strong>requireDblog</strong>()
         </code>
@@ -370,7 +370,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_where">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L89">at line 89</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L89">at line 89</a></div>
         <code>            protected        array
     <strong>where</strong>(string|null $type = null, int|string|null $severity = null, string|null $filter = null, string $criteria = &#039;AND&#039;, int|string|null $severity_min = null)
         </code>
@@ -433,7 +433,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_severityLevel">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L132">at line 132</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L132">at line 132</a></div>
         <code>            protected        int
     <strong>severityLevel</strong>(int|string $severity)
         </code>
@@ -476,7 +476,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_severityLabels">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L156">at line 156</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L156">at line 156</a></div>
         <code>            protected        array
     <strong>severityLabels</strong>()
         </code>
@@ -509,7 +509,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_fetchRecords">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L167">at line 167</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L167">at line 167</a></div>
         <code>            protected        array
     <strong>fetchRecords</strong>(array $where, int $count, bool $full)
         </code>
@@ -562,7 +562,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_loadRecord">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L187">at line 187</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L187">at line 187</a></div>
         <code>            protected        array
     <strong>loadRecord</strong>(int $id)
         </code>
@@ -605,7 +605,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_formatResult">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L212">at line 212</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L212">at line 212</a></div>
         <code>            protected        array
     <strong>formatResult</strong>(<a target="_blank" rel="noopener" href="https://www.php.net/stdClass">stdClass</a> $result, bool $full = false)
         </code>
@@ -653,7 +653,7 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_selectFields">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L262">at line 262</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L262">at line 262</a></div>
         <code>            protected        array
     <strong>selectFields</strong>(string|null $fields, array $default)
         </code>
@@ -701,9 +701,9 @@ when dblog is installed.</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderRecords">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L283">at line 283</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L283">at line 283</a></div>
         <code>            protected        string
-    <strong>renderRecords</strong>(array $records, string|null $fields, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format)
+    <strong>renderRecords</strong>(array $records, string|null $fields, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
         </code>
     </h3>
     <div class="details">    
@@ -730,7 +730,7 @@ $fields narrows both.</p></p>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null</td>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
                 <td>$format</td>
                 <td></td>
             </tr>
@@ -755,9 +755,9 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderRecord">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L305">at line 305</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L305">at line 305</a></div>
         <code>            protected        string
-    <strong>renderRecord</strong>(array $record, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format)
+    <strong>renderRecord</strong>(array $record, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format)
         </code>
     </h3>
     <div class="details">    
@@ -778,7 +778,7 @@ $fields narrows both.</p></p>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null</td>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
                 <td>$format</td>
                 <td></td>
             </tr>
@@ -803,9 +803,9 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_encode">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L317">at line 317</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L317">at line 317</a></div>
         <code>            protected        string
-    <strong>encode</strong>(array $data, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr> $format)
+    <strong>encode</strong>(array $data, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr> $format)
         </code>
     </h3>
     <div class="details">    
@@ -827,7 +827,7 @@ $fields narrows both.</p></p>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr></td>
+                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr></td>
                 <td>$format</td>
                 <td></td>
             </tr>
@@ -852,7 +852,7 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_renderTable">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L325">at line 325</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L325">at line 325</a></div>
         <code>            protected        string
     <strong>renderTable</strong>(array $headers, array $rows)
         </code>
@@ -901,7 +901,7 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_messageTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L337">at line 337</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L337">at line 337</a></div>
         <code>            protected        array
     <strong>messageTypes</strong>()
         </code>
@@ -934,7 +934,7 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L345">at line 345</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L345">at line 345</a></div>
         <code>                    array
     <strong>suggestTypes</strong>()
         </code>
@@ -967,7 +967,7 @@ $fields narrows both.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_suggestSeverities">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/watchdog/WatchdogTrait.php#L353">at line 353</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/watchdog/WatchdogTrait.php#L353">at line 353</a></div>
         <code>                    array
     <strong>suggestSeverities</strong>()
         </code>
