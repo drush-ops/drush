@@ -33,7 +33,11 @@ class SqlConnectTest extends CommandUnishTestCase
             $this->assertStringContainsString('sqlite3', $connectionString);
             $shell_options = '';
         } elseif ($db_driver == 'pgsql') {
-            $this->assertMatchesRegularExpression('/psql -q ON_ERROR_STOP=1  --dbname=[^\s]+ --host=[^\s]+ --port=[^\s]+ --username=[^\s]+/', $connectionString);
+            $this->assertMatchesRegularExpression(
+                '/psql -q --set=ON_ERROR_STOP=1  --dbname=[^\s]+ '
+                . '--host=[^\s]+ --port=[^\s]+ --username=[^\s]+/',
+                $connectionString,
+            );
         } else {
             $this->markTestSkipped('sql-connect test does not recognize database type in ' . self::getDbUrl());
         }
