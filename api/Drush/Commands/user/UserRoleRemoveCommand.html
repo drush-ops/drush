@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>UserRoleRemoveCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserRoleRemoveCommand.php">View source</a>)
+    <strong>UserRoleRemoveCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserRoleRemoveCommand.php">View source</a>)
 </p>
 
         
@@ -106,6 +106,11 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="../../../Drush/Commands/role/RoleTrait.html"><abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a>    </div>
@@ -145,6 +150,17 @@
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     <abbr title="Drupal\user\RoleInterface">RoleInterface</abbr>
@@ -219,9 +235,53 @@
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_loadRole">
         <div class="location">in <a href="../../../Drush/Commands/role/RoleTrait.html#method_loadRole">
-<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/role/RoleTrait.php#L28">at line 28</a></div>
+<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/role/RoleTrait.php#L28">at line 28</a></div>
         <code>            protected        <abbr title="Drupal\user\RoleInterface">RoleInterface</abbr>
     <strong>loadRole</strong>(string $machineName)
         </code>
@@ -266,7 +326,7 @@ attribute, so the command behaves the same under any console runner.</p></p>
                     <div class="method-item">
                     <h3 id="method_validatePermissions">
         <div class="location">in <a href="../../../Drush/Commands/role/RoleTrait.html#method_validatePermissions">
-<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/role/RoleTrait.php#L43">at line 43</a></div>
+<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/role/RoleTrait.php#L43">at line 43</a></div>
         <code>            protected        void
     <strong>validatePermissions</strong>(<abbr title="Drupal\user\PermissionHandlerInterface">PermissionHandlerInterface</abbr> $permissionHandler, array $permissions)
         </code>
@@ -316,7 +376,7 @@ which never validate permissions need not inject it.</p></p>
                     <div class="method-item">
                     <h3 id="method_suggestRoleNames">
         <div class="location">in <a href="../../../Drush/Commands/role/RoleTrait.html#method_suggestRoleNames">
-<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/role/RoleTrait.php#L56">at line 56</a></div>
+<abbr title="Drush\Commands\role\RoleTrait">RoleTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/role/RoleTrait.php#L56">at line 56</a></div>
         <code>                    array
     <strong>suggestRoleNames</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input)
         </code>
@@ -360,7 +420,7 @@ which never validate permissions need not inject it.</p></p>
                     <div class="method-item">
                     <h3 id="method_getAccounts">
         <div class="location">in <a href="../../../Drush/Commands/user/UserTrait.html#method_getAccounts">
-<abbr title="Drush\Commands\user\UserTrait">UserTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserTrait.php#L31">at line 31</a></div>
+<abbr title="Drush\Commands\user\UserTrait">UserTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserTrait.php#L31">at line 31</a></div>
         <code>            protected        array
     <strong>getAccounts</strong>(string $names, string|null $uid = null, string|null $mail = null)
         </code>
@@ -415,7 +475,7 @@ none of them did.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserRoleRemoveCommand.php#L34">at line 34</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserRoleRemoveCommand.php#L36">at line 36</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger)
         </code>
@@ -455,7 +515,7 @@ none of them did.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/user/UserRoleRemoveCommand.php#L40">at line 40</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/user/UserRoleRemoveCommand.php#L42">at line 42</a></div>
         <code>                    int
     <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $role, string $names = &#039;&#039;, string|null $uid = null, string|null $mail = null)
         </code>

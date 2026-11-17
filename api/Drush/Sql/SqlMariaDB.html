@@ -116,7 +116,7 @@
             </div>
                     <div class="row">
                 <div class="col-md-6">
-                    <a href="../../Robo/Common/ConfigAwareTrait.html"><abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a>    </div>
+                    <abbr title="Consolidation\Config\ConfigAwareTrait">ConfigAwareTrait</abbr>    </div>
                 <div class="col-md-6"></div>
             </div>
             </div>
@@ -125,16 +125,6 @@
             <h2>Properties</h2>
 
             <table class="table table-condensed">
-                    <tr>
-                <td class="type" id="property_config">
-                                        protected                                        <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
-                                                                                
-                                    </td>
-                <td>$config</td>
-                <td class="last"></td>
-                <td><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#property_config">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></td>
-            </tr>
                     <tr>
                 <td class="type" id="property_queryExtra">
                                                                                 string
@@ -264,87 +254,15 @@ for structure only, or have structure and data dumped.</p></p>                </
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
-                    $this
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_setConfig">setConfig</a>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
-        
-                                            <p><p>Set the config management object.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
                 </div>
                 <div class="col-md-8">
                     <a href="#method_getConfig">getConfig</a>()
         
-                                            <p><p>Get the config management object.</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configPrefix">configPrefix</a>()
-        
-                                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
-, and define a prefix for its configuration items. This is usually
-done in a base class. When used, this method should return a string
-that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configClassIdentifier">configClassIdentifier</a>($classname)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configPostfix">configPostfix</a>()
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_configure">configure</a>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_configure">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    mixed|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_getConfigValue">getConfigValue</a>(string $key, mixed|null $default = null)
-        
-                                            <p class="no-description">No description</p>
-                                    </div>
-                <div class="col-md-2"><small>from&nbsp;<a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
+                                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a></small></div>
             </div>
                     <div class="row">
                 <div class="col-md-2 type">
@@ -1135,54 +1053,10 @@ found, or an empty array if there were no matches.</p></td>
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_setConfig">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_setConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L22">at line 22</a></div>
-        <code>                    $this
-    <strong>setConfig</strong>(<abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr> $config)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Set the config management object.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
-                <td>$config</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>$this</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getConfig">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfig">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L34">at line 34</a></div>
-        <code>                    <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>
+        <div class="location">in <a href="../../Drush/Config/ConfigAwareTrait.html#method_getConfig">
+<abbr title="Drush\Config\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Config/ConfigAwareTrait.php#L19">at line 19</a></div>
+        <code>                    <a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a>
     <strong>getConfig</strong>()
         </code>
     </h3>
@@ -1192,7 +1066,8 @@ found, or an empty array if there were no matches.</p></td>
             
 
         <div class="method-description">
-                            <p><p>Get the config management object.</p></p>                        
+                            <p><p>Replaces same method in ConfigAwareTrait in order to provide a
+DrushConfig as return type. Helps with IDE completion.</p></p>                        
         </div>
         <div class="tags">
             
@@ -1200,208 +1075,24 @@ found, or an empty array if there were no matches.</p></td>
 
                     <table class="table table-condensed">
         <tr>
-            <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr></td>
+            <td><a href="../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
             <td></td>
         </tr>
     </table>
 
             
             
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configPrefix">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configPrefix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L47">at line 47</a></div>
-        <code>        static    protected        string
-    <strong>configPrefix</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Any class that uses ConfigAwareTrait SHOULD override this method
-, and define a prefix for its configuration items. This is usually
-done in a base class. When used, this method should return a string
-that ends with a &quot;.&quot;; see BaseTask::configPrefix().</p></p>                        
-        </div>
-        <div class="tags">
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configClassIdentifier">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configClassIdentifier">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L52">at line 52</a></div>
-        <code>        static    protected        
-    <strong>configClassIdentifier</strong>($classname)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
+                            <h4>See also</h4>
 
                     <table class="table table-condensed">
                     <tr>
-                <td></td>
-                <td>$classname</td>
+                <td>
+                                            <a href="https://stackoverflow.com/a/37687295.">https://stackoverflow.com/a/37687295.</a>
+                                    </td>
                 <td></td>
             </tr>
             </table>
 
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configPostfix">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configPostfix">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L60">at line 60</a></div>
-        <code>        static    protected        
-    <strong>configPostfix</strong>()
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_configure">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_configure">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L84">at line 84</a></div>
-        <code>        static            
-    <strong>configure</strong>(string $key, mixed $value, <abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null $config = null)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>mixed</td>
-                <td>$value</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Consolidation\Config\ConfigInterface">ConfigInterface</abbr>|null</td>
-                <td>$config</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_getConfigValue">
-        <div class="location">in <a href="../../Robo/Common/ConfigAwareTrait.html#method_getConfigValue">
-<abbr title="Robo\Common\ConfigAwareTrait">ConfigAwareTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/vendor/consolidation/robo/src/Common/ConfigAwareTrait.php#L98">at line 98</a></div>
-        <code>            protected        mixed|null
-    <strong>getConfigValue</strong>(string $key, mixed|null $default = null)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p class="no-description">No description</p>
-                    
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$key</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td>mixed|null</td>
-                <td>$default</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>mixed|null</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
             
                     </div>
     </div>
@@ -1907,7 +1598,7 @@ in 'bash -c', since pipefail is a bash feature.</p></td>
                     <div class="method-item">
                     <h3 id="method_dumpCmd">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_dumpCmd">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L209">at line 209</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L218">at line 218</a></div>
         <code>                    string
     <strong>dumpCmd</strong>($table_selection)
         </code>
@@ -2156,7 +1847,7 @@ provide a $result_file whose value can be drush_bit_bucket().</p></p>
                     <div class="method-item">
                     <h3 id="method_silent">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_silent">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L148">at line 148</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L157">at line 157</a></div>
         <code>                    string|null
     <strong>silent</strong>()
         </code>
@@ -2317,7 +2008,7 @@ True if successful, FALSE if failed.</p></td>
                     <div class="method-item">
                     <h3 id="method_createdbSql">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_createdbSql">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L153">at line 153</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L162">at line 162</a></div>
         <code>                    string
     <strong>createdbSql</strong>(string $dbname, bool $quoted = false)
         </code>
@@ -2448,7 +2139,7 @@ TRUE or FALSE depending on success.</p></p>
                     <div class="method-item">
                     <h3 id="method_dbExists">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_dbExists">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L184">at line 184</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L193">at line 193</a></div>
         <code>                    bool
     <strong>dbExists</strong>()
         </code>
@@ -2562,7 +2253,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_listTables">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_listTables">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L190">at line 190</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L199">at line 199</a></div>
         <code>                    array
     <strong>listTables</strong>()
         </code>
@@ -2596,7 +2287,7 @@ On mysql, that means using --defaults-file to supply the user+password.</p></td>
                     <div class="method-item">
                     <h3 id="method_listTablesQuoted">
         <div class="location">in <a href="../../Drush/Sql/SqlMysql.html#method_listTablesQuoted">
-<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L200">at line 200</a></div>
+<abbr title="Drush\Sql\SqlMysql">SqlMysql</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Sql/SqlMysql.php#L209">at line 209</a></div>
         <code>                    array
     <strong>listTablesQuoted</strong>()
         </code>

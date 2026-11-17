@@ -85,8 +85,8 @@
     </div>
 
     
-    <p>        class
-    <strong>PhpEvalCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/PhpEvalCommand.php">View source</a>)
+    <p>final         class
+    <strong>PhpEvalCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/PhpEvalCommand.php">View source</a>)
 </p>
 
         
@@ -108,7 +108,17 @@ runs, so the command also works outside a Drupal site. Under Drush the
 command then bootstraps as far as it can itself. Elsewhere (dr, a kernel
 test) there is no BootstrapManager and Drupal is already available.</p></p>        </div>
             
+                <h2>Traits</h2>
+
         
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
+            </div>
+    
             <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
                 <td>
@@ -128,10 +138,32 @@ test) there is no BootstrapManager and Drupal is already available.</p></p>     
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>|null $bootstrapManager = null)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $code, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format = null)
+                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $code, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format = null)
         
                                             <p class="no-description">No description</p>
                                     </div>
@@ -144,10 +176,89 @@ test) there is no BootstrapManager and Drupal is already available.</p></p>     
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/PhpEvalCommand.php#L47">at line 47</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>|null $bootstrapManager = null)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a>|null</td>
+                <td>$bootstrapManager</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/PhpEvalCommand.php#L42">at line 42</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/PhpEvalCommand.php#L52">at line 52</a></div>
         <code>                    int
-    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $code, <abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null $format = null)
+    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $code, <abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null $format = null)
         </code>
     </h3>
     <div class="details">    
@@ -174,7 +285,7 @@ test) there is no BootstrapManager and Drupal is already available.</p></p>     
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Drupal\Core\Command\OutputFormat">OutputFormat</abbr>|null</td>
+                <td><abbr title="Drush\Commands\OutputFormat">OutputFormat</abbr>|null</td>
                 <td>$format</td>
                 <td></td>
             </tr>

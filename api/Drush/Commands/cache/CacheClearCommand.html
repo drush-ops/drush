@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>CacheClearCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php">View source</a>)
+    <strong>CacheClearCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php">View source</a>)
 </p>
 
         
@@ -106,6 +106,11 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="../../../Drush/Commands/cache/CacheTrait.html"><abbr title="Drush\Commands\cache\CacheTrait">CacheTrait</abbr></a>    </div>
@@ -144,6 +149,17 @@
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     
@@ -279,8 +295,52 @@
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L49">at line 49</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L51">at line 51</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Cache\CacheFactoryInterface">CacheFactoryInterface</abbr> $cacheFactory, <abbr title="Drupal\Core\Cache\CacheTagsInvalidatorInterface">CacheTagsInvalidatorInterface</abbr> $invalidator, <abbr title="Drupal\Core\Theme\Registry">Registry</abbr> $themeRegistry, <abbr title="Drupal\Core\Routing\RouteBuilderInterface">RouteBuilderInterface</abbr> $routerBuilder, <abbr title="Drupal\Core\Asset\AssetCollectionOptimizerInterface">AssetCollectionOptimizerInterface</abbr> $jsOptimizer, <abbr title="Drupal\Core\Asset\AssetCollectionOptimizerInterface">AssetCollectionOptimizerInterface</abbr> $cssOptimizer, <abbr title="Drupal\Core\Plugin\CachedDiscoveryClearerInterface">CachedDiscoveryClearerInterface</abbr> $pluginCacheClearer, <abbr title="Drupal\Core\DrupalKernelInterface">DrupalKernelInterface</abbr> $kernel, <abbr title="Drupal\Core\Asset\AssetQueryStringInterface">AssetQueryStringInterface</abbr> $assetQueryString, <abbr title="Psr\EventDispatcher\EventDispatcherInterface">EventDispatcherInterface</abbr> $eventDispatcher)
         </code>
@@ -360,7 +420,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_askForType">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L68">at line 68</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L70">at line 70</a></div>
         <code>                    void
     <strong>askForType</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
         </code>
@@ -408,7 +468,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L84">at line 84</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L86">at line 86</a></div>
         <code>                    int
     <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string|null $type = null, array $args = [], bool $cacheClear = true)
         </code>
@@ -472,7 +532,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getTypes">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L127">at line 127</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L129">at line 129</a></div>
         <code>                    array
     <strong>getTypes</strong>()
         </code>
@@ -505,7 +565,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearBins">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L152">at line 152</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L154">at line 154</a></div>
         <code>                    void
     <strong>clearBins</strong>($args = [&#039;default&#039;])
         </code>
@@ -548,7 +608,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearThemeRegistry">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L160">at line 160</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L162">at line 162</a></div>
         <code>                    void
     <strong>clearThemeRegistry</strong>()
         </code>
@@ -582,7 +642,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRouter">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L165">at line 165</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L167">at line 167</a></div>
         <code>                    void
     <strong>clearRouter</strong>()
         </code>
@@ -616,7 +676,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearCssJs">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L170">at line 170</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L172">at line 172</a></div>
         <code>                    void
     <strong>clearCssJs</strong>()
         </code>
@@ -650,7 +710,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearContainer">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L177">at line 177</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L179">at line 179</a></div>
         <code>                    void
     <strong>clearContainer</strong>()
         </code>
@@ -684,7 +744,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearRender">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L185">at line 185</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L187">at line 187</a></div>
         <code>                    void
     <strong>clearRender</strong>()
         </code>
@@ -717,7 +777,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearPlugin">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L190">at line 190</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L192">at line 192</a></div>
         <code>                    void
     <strong>clearPlugin</strong>()
         </code>
@@ -751,7 +811,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_clearViews">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/cache/CacheClearCommand.php#L195">at line 195</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/cache/CacheClearCommand.php#L197">at line 197</a></div>
         <code>                    void
     <strong>clearViews</strong>()
         </code>

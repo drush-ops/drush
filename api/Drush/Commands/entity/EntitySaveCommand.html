@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>EntitySaveCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntitySaveCommand.php">View source</a>)
+    <strong>EntitySaveCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntitySaveCommand.php">View source</a>)
 </p>
 
         
@@ -106,6 +106,11 @@
 
         
     <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
                     <div class="row">
                 <div class="col-md-6">
                     <a href="../../../Drush/Commands/entity/EntityTrait.html"><abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a>    </div>
@@ -135,6 +140,17 @@
             <h2>Methods</h2>
 
             <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
                     <div class="row">
                 <div class="col-md-2 type">
                     void
@@ -207,9 +223,53 @@
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_validateEntityType">
         <div class="location">in <a href="../../../Drush/Commands/entity/EntityTrait.html#method_validateEntityType">
-<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntityTrait.php#L29">at line 29</a></div>
+<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntityTrait.php#L29">at line 29</a></div>
         <code>            protected        void
     <strong>validateEntityType</strong>(string $entityType)
         </code>
@@ -254,7 +314,7 @@ a plain argument error instead of a plugin exception.</p></p>
                     <div class="method-item">
                     <h3 id="method_getQuery">
         <div class="location">in <a href="../../../Drush/Commands/entity/EntityTrait.html#method_getQuery">
-<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntityTrait.php#L43">at line 43</a></div>
+<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntityTrait.php#L43">at line 43</a></div>
         <code>            protected        <abbr title="Drupal\Core\Entity\Query\QueryInterface">QueryInterface</abbr>
     <strong>getQuery</strong>(string $entityType, string|null $ids, string|null $bundle, string|null $exclude, int|null $limit)
         </code>
@@ -320,7 +380,7 @@ the type.</p></p>
                     <div class="method-item">
                     <h3 id="method_suggestEntityTypes">
         <div class="location">in <a href="../../../Drush/Commands/entity/EntityTrait.html#method_suggestEntityTypes">
-<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntityTrait.php#L69">at line 69</a></div>
+<abbr title="Drush\Commands\entity\EntityTrait">EntityTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntityTrait.php#L69">at line 69</a></div>
         <code>                    array
     <strong>suggestEntityTypes</strong>(<abbr title="Symfony\Component\Console\Completion\CompletionInput">CompletionInput</abbr> $input)
         </code>
@@ -363,7 +423,7 @@ the type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntitySaveCommand.php#L52">at line 52</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntitySaveCommand.php#L54">at line 54</a></div>
         <code>                    
     <strong>__construct</strong>(<abbr title="Drupal\Core\Entity\EntityTypeManagerInterface">EntityTypeManagerInterface</abbr> $entityTypeManager, <abbr title="Drupal\Component\Datetime\TimeInterface">TimeInterface</abbr> $time, <abbr title="Drupal\Core\Session\AccountInterface">AccountInterface</abbr> $currentUser, <abbr title="Drupal\content_moderation\ModerationInformationInterface">ModerationInformationInterface</abbr>|null $moderationInformation = null)
         </code>
@@ -413,7 +473,7 @@ the type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntitySaveCommand.php#L60">at line 60</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntitySaveCommand.php#L62">at line 62</a></div>
         <code>                    int
     <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Input\InputInterface">InputInterface</abbr> $input, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output, string $entityType, string|null $ids = null, string|null $bundle = null, string|null $exclude = null, int $chunks = 50, int|null $limit = null, bool $publish = false, bool $unpublish = false, string|null $state = null)
         </code>
@@ -507,7 +567,7 @@ the type.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doSave">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/entity/EntitySaveCommand.php#L147">at line 147</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/entity/EntitySaveCommand.php#L149">at line 149</a></div>
         <code>                    void
     <strong>doSave</strong>(string $entity_type, array $ids, string|null $action, string|null $state)
         </code>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Commands\core\MkDocsCommand | Drush API 15</title>
+    <title>Drush\Commands\core\MkDocsCommand | Drush API 14</title>
 
             <link rel="stylesheet" type="text/css" href="../../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../../index.html">Drush API 15</a>
+                <a class="navbar-brand" href="../../../index.html">Drush API 14</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>final         class
-    <strong>MkDocsCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php">View source</a>)
+    <strong>MkDocsCommand</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php">View source</a>)
 </p>
 
         
@@ -102,7 +102,17 @@
     
 
             
+                <h2>Traits</h2>
+
         
+    <div class="container-fluid underlined">
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>A copy of \Drupal\Core\DependencyInjection\AutowireTrait with first params' type hint changed.</p></div>
+            </div>
+            </div>
+    
             <h2>Constants</h2>    <table class="table table-condensed">
                     <tr>
                 <td>
@@ -110,26 +120,6 @@
                                     </td>
                 <td class="last">
                     <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                            private
-                                                                                DESTINATION
-                                    </td>
-                <td class="last">
-                    <p><em></em></p>
-                    <p></p>
-                </td>
-            </tr>
-                    <tr>
-                <td>
-                                                            private
-                                                                                BRANCH
-                                    </td>
-                <td class="last">
-                    <p><em><p>The Drush branch that edit links point to. Update it for each major.</p></em></p>
                     <p></p>
                 </td>
             </tr>
@@ -142,13 +132,55 @@
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    int
+                    static&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
                 </div>
                 <div class="col-md-8">
-                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+                    <a href="#method_create">create</a>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        
+                                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                </div>
+                <div class="col-md-2"><small>from&nbsp;<a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></small></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___construct">__construct</a>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
         
                                             <p class="no-description">No description</p>
                                     </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    int
+                </div>
+                <div class="col-md-8">
+                    <a href="#method___invoke">__invoke</a>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application)
+        
+                                            <p class="no-description">No description</p>
+                                    </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_argToArray">argToArray</a>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $arg)
+        
+                                            <p><p>Build an array since that's what HelpCLIFormatter expects.</p></p>                </div>
+                <div class="col-md-2"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-2 type">
+                    static&nbsp;array
+                </div>
+                <div class="col-md-8">
+                    <a href="#method_optionToArray">optionToArray</a>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $opt)
+        
+                                            <p><p>Build an array since that's what HelpCLIFormatter expects.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -159,36 +191,6 @@
                     <a href="#method_cliTextToMarkdown">cliTextToMarkdown</a>(string $text)
         
                                             <p><p>Convert text like <info>foo</info> to <em>foo</em>. Also convert to Markdown links.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_formatArgument">formatArgument</a>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $argument)
-        
-                                            <p><p>Format an argument name: [name] when optional, name... when an array.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_formatOptionKeys">formatOptionKeys</a>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
-        
-                                            <p><p>Format option keys, such as &quot;-f, --format=FORMAT&quot;.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_formatOptionDescription">formatOptionDescription</a>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
-        
-                                            <p><p>An option description, followed by its default value if it has one.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
                     <div class="row">
@@ -211,26 +213,6 @@
                                             <p><p>Map each alias page to the page of its command.</p></p>                </div>
                 <div class="col-md-2"></div>
             </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;array
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_categorize">categorize</a>(array $all)
-        
-                                            <p><p>Group visible commands by namespace, sorted.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
-                    <div class="row">
-                <div class="col-md-2 type">
-                    static&nbsp;string|null
-                </div>
-                <div class="col-md-8">
-                    <a href="#method_editUrl">editUrl</a>(string $file, string $root, string $core_dir, string $core_version, string $symfony_version)
-        
-                                            <p><p>The URL for editing the file that defines a command, if known.</p></p>                </div>
-                <div class="col-md-2"></div>
-            </div>
             </div>
 
 
@@ -238,10 +220,104 @@
 
             <div id="method-details">
                     <div class="method-item">
+                    <h3 id="method_create">
+        <div class="location">in <a href="../../../Drush/Commands/AutowireTrait.html#method_create">
+<abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/AutowireTrait.php#L25">at line 25</a></div>
+        <code>        static            <a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a>
+    <strong>create</strong>(<abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $container)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Instantiates a new instance of the implementing class using autowiring.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$container</td>
+                <td><p>The service container this instance should use.</p></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td><a href="../../../Drush/Commands/AutowireTrait.html"><abbr title="Drush\Commands\AutowireTrait">AutowireTrait</abbr></a></td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method___construct">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L43">at line 43</a></div>
+        <code>                    
+    <strong>__construct</strong>(<a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a> $bootstrapManager, <abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr> $logger, <abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr> $drushContainer, <a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a> $drushConfig)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p class="no-description">No description</p>
+                    
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><a href="../../../Drush/Boot/BootstrapManager.html"><abbr title="Drush\Boot\BootstrapManager">BootstrapManager</abbr></a></td>
+                <td>$bootstrapManager</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Psr\Log\LoggerInterface">LoggerInterface</abbr></td>
+                <td>$logger</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><abbr title="Psr\Container\ContainerInterface">ContainerInterface</abbr></td>
+                <td>$drushContainer</td>
+                <td></td>
+            </tr>
+                    <tr>
+                <td><a href="../../../Drush/Config/DrushConfig.html"><abbr title="Drush\Config\DrushConfig">DrushConfig</abbr></a></td>
+                <td>$drushConfig</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method___invoke">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L52">at line 52</a></div>
         <code>                    int
-    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr> $output)
+    <strong>__invoke</strong>(<abbr title="Symfony\Component\Console\Application">Application</abbr> $application)
         </code>
     </h3>
     <div class="details">    
@@ -260,11 +336,6 @@
                     <tr>
                 <td><abbr title="Symfony\Component\Console\Application">Application</abbr></td>
                 <td>$application</td>
-                <td></td>
-            </tr>
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr></td>
-                <td>$output</td>
                 <td></td>
             </tr>
             </table>
@@ -287,8 +358,94 @@
 
             </div>
                     <div class="method-item">
+                    <h3 id="method_argToArray">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L73">at line 73</a></div>
+        <code>        static            array
+    <strong>argToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $arg)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Build an array since that's what HelpCLIFormatter expects.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr></td>
+                <td>$arg</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
+                    <h3 id="method_optionToArray">
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L85">at line 85</a></div>
+        <code>        static            array
+    <strong>optionToArray</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $opt)
+        </code>
+    </h3>
+    <div class="details">    
+            
+    
+            
+
+        <div class="method-description">
+                            <p><p>Build an array since that's what HelpCLIFormatter expects.</p></p>                        
+        </div>
+        <div class="tags">
+                            <h4>Parameters</h4>
+
+                    <table class="table table-condensed">
+                    <tr>
+                <td><abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr></td>
+                <td>$opt</td>
+                <td></td>
+            </tr>
+            </table>
+
+            
+                            <h4>Return Value</h4>
+
+                    <table class="table table-condensed">
+        <tr>
+            <td>array</td>
+            <td></td>
+        </tr>
+    </table>
+
+            
+            
+            
+                    </div>
+    </div>
+
+            </div>
+                    <div class="method-item">
                     <h3 id="method_cliTextToMarkdown">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L89">at line 89</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L103">at line 103</a></div>
         <code>        static            string
     <strong>cliTextToMarkdown</strong>(string $text)
         </code>
@@ -330,137 +487,8 @@
 
             </div>
                     <div class="method-item">
-                    <h3 id="method_formatArgument">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L98">at line 98</a></div>
-        <code>        static            string
-    <strong>formatArgument</strong>(<abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr> $argument)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Format an argument name: [name] when optional, name... when an array.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputArgument">InputArgument</abbr></td>
-                <td>$argument</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_formatOptionKeys">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L112">at line 112</a></div>
-        <code>        static            string
-    <strong>formatOptionKeys</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Format option keys, such as &quot;-f, --format=FORMAT&quot;.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr></td>
-                <td>$option</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_formatOptionDescription">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L128">at line 128</a></div>
-        <code>        static            string
-    <strong>formatOptionDescription</strong>(<abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr> $option)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>An option description, followed by its default value if it has one.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td><abbr title="Symfony\Component\Console\Input\InputOption">InputOption</abbr></td>
-                <td>$option</td>
-                <td></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
                     <h3 id="method_getFilename">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L144">at line 144</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L114">at line 114</a></div>
         <code>        static            string
     <strong>getFilename</strong>(string $name)
         </code>
@@ -503,7 +531,7 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_getRedirectMap">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L154">at line 154</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Commands/core/MkDocsCommand.php#L124">at line 124</a></div>
         <code>        static            array
     <strong>getRedirectMap</strong>(<abbr title="Symfony\Component\Console\Command\Command">Command</abbr> $command, string $destination)
         </code>
@@ -538,112 +566,6 @@
                     <table class="table table-condensed">
         <tr>
             <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_categorize">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L175">at line 175</a></div>
-        <code>        static            array
-    <strong>categorize</strong>(array $all)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>Group visible commands by namespace, sorted.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>array</td>
-                <td>$all</td>
-                <td><p>Commands keyed by name and by alias.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>array</td>
-            <td></td>
-        </tr>
-    </table>
-
-            
-            
-            
-                    </div>
-    </div>
-
-            </div>
-                    <div class="method-item">
-                    <h3 id="method_editUrl">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/15.x/src/Commands/core/MkDocsCommand.php#L249">at line 249</a></div>
-        <code>        static            string|null
-    <strong>editUrl</strong>(string $file, string $root, string $core_dir, string $core_version, string $symfony_version)
-        </code>
-    </h3>
-    <div class="details">    
-            
-    
-            
-
-        <div class="method-description">
-                            <p><p>The URL for editing the file that defines a command, if known.</p></p>                        
-        </div>
-        <div class="tags">
-                            <h4>Parameters</h4>
-
-                    <table class="table table-condensed">
-                    <tr>
-                <td>string</td>
-                <td>$file</td>
-                <td><p>The absolute path of the file.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$root</td>
-                <td><p>Drush's root directory.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$core_dir</td>
-                <td><p>Drupal's core directory.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$core_version</td>
-                <td><p>Drupal core's version, such as 11.2.5 or 12.0-dev.</p></td>
-            </tr>
-                    <tr>
-                <td>string</td>
-                <td>$symfony_version</td>
-                <td><p>The installed symfony/console version, such as v8.0.1 or 8.1.x-dev.</p></td>
-            </tr>
-            </table>
-
-            
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>string|null</td>
             <td></td>
         </tr>
     </table>
