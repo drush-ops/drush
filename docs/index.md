@@ -1,4 +1,4 @@
-Drush is a command line shell and Unix scripting interface for Drupal. Drush adds [commands](commands/all.md) to Drupal core's `dr` command line tool: database updates, deployments, SQL queries, config, users, roles, queues, and more. Modules can add their own commands; see [Command Authoring](commands.md).
+Drush is a command line shell and Unix scripting interface for Drupal. Drush adds [commands](commands/all.md) to Drupal core's `dr` command line tool: database updates, deployments, SQL queries, config, users, roles, queues, and more.
 
 [![Latest Stable Version](https://poser.pugx.org/drush/drush/v/stable.png)](https://packagist.org/packages/drush/drush) [![Total Downloads](https://poser.pugx.org/drush/drush/downloads.png)](https://packagist.org/packages/drush/drush) [![License](https://poser.pugx.org/drush/drush/license.png)](https://packagist.org/packages/drush/drush) <a href="https://circleci.com/gh/drush-ops/drush"><img src="https://circleci.com/gh/drush-ops/drush.svg?style=shield"></a> [![Twitter](https://img.shields.io/badge/Twitter-%40DrushCli-blue.svg)](https://twitter.com/intent/user?screen_name=DrushCli)
 
