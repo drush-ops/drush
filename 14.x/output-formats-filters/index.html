@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/output-formats-filters/">
+        <link rel="canonical" href="https://www.drush.org/latest/output-formats-filters/">
       
       
         <link rel="prev" href="../site-aliases/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/output-formats-filters.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/output-formats-filters.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/output-formats-filters/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/output-formats-filters/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="A command line shell and Unix scripting interface for Drupal" >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/output-formats-filters.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/output-formats-filters.png" >
       
     
     
@@ -1442,27 +1442,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../commands/browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../commands/content_export/" class="md-nav__link">
         
   
@@ -1531,6 +1510,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7470,27 +7470,15 @@ glossary
 </code></pre></div></p>
 <h2 id="output-filters">Output Filters<a class="headerlink" href="#output-filters" title="Permanent link">&para;</a></h2>
 <p>A number of Drush commands that output tabular data support a <code>--filter</code> option that allows rows from the output to be selected with simple logic expressions.</p>
-<p>In its simplest form, the <code>--filter</code> option takes a string that indicates the value to filter by in the command's <em>default filter field</em>. For example, the <a href="../commands/role_list/">role:list command</a> specifies <code>perms</code> as its default filter; the output of the <code>role:list</code> command may be limited to only those roles that have a specified permission:
-<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>role:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">'post comments'</span>
-authenticated:
-<span class="w">  </span>label:<span class="w"> </span><span class="s1">'Authenticated user'</span>
-<span class="w">  </span>perms:
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'access comments'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'access content'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'access shortcuts'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'access site-wide contact form'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'access user contact forms'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'post comments'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'search content'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'skip comment approval'</span>
-<span class="w">    </span>-<span class="w"> </span><span class="s1">'use text format basic_html'</span>
+<p>In its simplest form, the <code>--filter</code> option takes a string that indicates the value to filter by in the command's <em>default filter field</em>. For example, the <a href="../commands/pm_list/">pm:list command</a> specifies <code>display_name</code> as its default filter; the output of the <code>pm:list</code> command may be limited to only those extensions whose display name matches:
+<div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>pm:list<span class="w"> </span>--filter<span class="o">=</span>Node
 </code></pre></div>
 Note that not all commands have a default filter field.</p>
 <p>Other fields in the output may be searched by using a simple expression in the <code>--filter</code> term. For example, to list only the enabled extensions with the <a href="../commands/pm_list/">pm:list</a> command, you could run:
 <div class="highlight"><pre><span></span><code>$<span class="w"> </span>drush<span class="w"> </span>pm:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">'status=enabled'</span>
 </code></pre></div></p>
 <p>Exclude rows via the negation operator <code>!</code>:</p>
-<div class="highlight"><pre><span></span><code>drush<span class="w"> </span>watchdog:show<span class="w"> </span>--filter<span class="o">=</span><span class="s2">"type!=locale"</span>
+<div class="highlight"><pre><span></span><code>drush<span class="w"> </span>views:list<span class="w"> </span>--filter<span class="o">=</span><span class="s2">"status!=enabled"</span>
 </code></pre></div>
 <p>To search for fields that contain a string using the operator <code>*=</code>, or match a regular expression with the <code>~=</code> operator. For example, to find all views whose machine name contains the word <em>content</em>:
 <div class="highlight"><pre><span></span><code>drush<span class="w"> </span>views:list<span class="w"> </span>--filter<span class="o">=</span><span class="s1">'machine-name*=content'</span>
@@ -7565,7 +7553,7 @@ Finally, filter expressions may also use logical-and (<code>&amp;&amp;</code>) o
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 21, 2026 13:43:02 UTC">January 21, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="November 12, 2026 17:50:39 UTC">November 12, 2026</span>
   </span>
 
     

@@ -12,17 +12,17 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/archive_dump/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/archive_dump/">
       
       
         <link rel="prev" href="../all/">
       
       
-        <link rel="next" href="../browse/">
+        <link rel="next" href="../content_export/">
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="Backup your code, files, and database into a single file." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/archive_dump.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/archive_dump.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/archive_dump/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/archive_dump/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="Backup your code, files, and database into a single file." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/archive_dump.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/archive_dump.png" >
       
     
     
@@ -1446,27 +1446,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1535,6 +1514,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7439,16 +7439,16 @@
 <li><strong>--tags=TAGS</strong>. Add tags to the archive manifest. Delimit several by commas.</li>
 <li><strong>--generator=GENERATOR</strong>. The generator name to store in the MANIFEST.yml file. The default is "Drush archive-dump".</li>
 <li><strong>--generatorversion=GENERATORVERSION</strong>. The generator version number to store in the MANIFEST file. The default is Drush version.</li>
+<li><strong>--database=DATABASE</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
+<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
+<li><strong>--target=TARGET</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
+<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 <li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
 <li><strong>--skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
 <li><strong>--structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
 <li><strong>--tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
-<li><strong>--database=DATABASE</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
-<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
-<li><strong>--target=TARGET</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
-<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

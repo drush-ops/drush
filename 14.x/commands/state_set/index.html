@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/state_set/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/state_set/">
       
       
         <link rel="prev" href="../state_get/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="Set a state value." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/state_set.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/state_set.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/state_set/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/state_set/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="Set a state value." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/state_set.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/state_set.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7411,9 +7411,9 @@
 <p>Set a state value.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
-<li><code>state:set sset system.maintenance_mode 1 --input-format=integer</code></li>
+<li><code>state:set system.maintenance_mode 1 --input-format=integer</code></li>
 <li><code>state:set system.cron_last 1406682882 --input-format=integer</code></li>
-<li><code>state:set php -r "print json_encode(array('drupal', 'simpletest'));"  | drush state-set --input-format=json foo.name -</code></li>
+<li><code>state:set php -r "print json_encode(array('drupal', 'simpletest'));"  | drush state:set --input-format=json foo.name -</code></li>
 <li><code>state:set twig_debug TRUE</code></li>
 <li><code>state:set twig_autoreload TRUE</code></li>
 <li><code>state:set twig_cache_disable TRUE</code></li>
@@ -7421,12 +7421,12 @@
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>key</strong>. The state key, for example: <em>system.cron_last</em>.</li>
-<li><strong>value</strong>. The value to assign to the state key. Use <em>-</em> to read from Stdin.</li>
+<li><strong>key</strong>. The state key, for example system.cron_last.</li>
+<li><strong>value</strong>. The value to assign to the state key. Use - to read from stdin.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--input-format=INPUT-FORMAT</strong>. Type for the value. Other recognized values: string, integer, float, boolean, json, yaml. [default: <em>auto</em>]</li>
+<li><strong>--input-format=INPUT-FORMAT</strong>. Type for the value: auto, string, integer, float, boolean, json or yaml. Auto detects numbers and TRUE/FALSE. [default: <em>auto</em>]</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

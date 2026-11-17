@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Cache an object expressed in JSON or var_export() format.">
+        <meta name="description" content="Cache an object expressed in JSON or string format.">
       
       
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/cache_set/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/cache_set/">
       
       
         <link rel="prev" href="../cache_rebuild/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -65,9 +65,9 @@
       
         <meta  property="og:title"  content="cache:set - Drush" >
       
-        <meta  property="og:description"  content="Cache an object expressed in JSON or var_export() format." >
+        <meta  property="og:description"  content="Cache an object expressed in JSON or string format." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/cache_set.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/cache_set.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/cache_set/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/cache_set/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
         <meta  name="twitter:title"  content="cache:set - Drush" >
       
-        <meta  name="twitter:description"  content="Cache an object expressed in JSON or var_export() format." >
+        <meta  name="twitter:description"  content="Cache an object expressed in JSON or string format." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/cache_set.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/cache_set.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7408,11 +7408,16 @@
 
 
 <h1 id="cacheset">cache:set<a class="headerlink" href="#cacheset" title="Permanent link">&para;</a></h1>
-<p>Cache an object expressed in JSON or var_export() format.</p>
+<p>Cache an object expressed in JSON or string format.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>cache:set my_cid "some value"</code></li>
+<li><code>cache:set my_cid '{"key": "value"}' default CACHE_PERMANENT node:1,user:2 --input-format=json</code></li>
+<li><code>cache:set my_cid - --input-format=json &lt; value.json</code></li>
+</ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>cid</strong>. id of the object to set.</li>
+<li><strong>cid</strong>. The id of the object to set.</li>
 <li><strong>data</strong>. The object to set in the cache. Use - to read the object from STDIN.</li>
 <li><strong>[bin]</strong>. The cache bin to store the object in.</li>
 <li><strong>[expire]</strong>. 'CACHE_PERMANENT', or a Unix timestamp.</li>
@@ -7420,8 +7425,7 @@
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--input-format=INPUT-FORMAT</strong>. The format of value. Use json for complex values. [default: <em>string</em>]</li>
-<li><strong>--cache-get</strong>. If the object is the result a previous fetch from the cache, only store the value in the 'data' property of the object in the cache.</li>
+<li><strong>--input-format=INPUT-FORMAT</strong>. The format of value: string or json. Use json for complex values. [default: <em>string</em>]</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

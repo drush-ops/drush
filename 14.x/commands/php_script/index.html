@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Run php a script after a full Drupal bootstrap.">
+        <meta name="description" content="Run a php script after a full Drupal bootstrap.">
       
       
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/php_script/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/php_script/">
       
       
         <link rel="prev" href="../php_eval/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -65,9 +65,9 @@
       
         <meta  property="og:title"  content="php:script - Drush" >
       
-        <meta  property="og:description"  content="Run php a script after a full Drupal bootstrap." >
+        <meta  property="og:description"  content="Run a php script after a full Drupal bootstrap." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/php_script.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/php_script.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/php_script/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/php_script/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
         <meta  name="twitter:title"  content="php:script - Drush" >
       
-        <meta  name="twitter:description"  content="Run php a script after a full Drupal bootstrap." >
+        <meta  name="twitter:description"  content="Run a php script after a full Drupal bootstrap." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/php_script.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/php_script.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7408,12 +7408,9 @@
 
 
 <h1 id="phpscript">php:script<a class="headerlink" href="#phpscript" title="Permanent link">&para;</a></h1>
-<p>Run php a script after a full Drupal bootstrap.</p>
+<p>Run a php script after a full Drupal bootstrap.</p>
 <p>A useful alternative to eval command when your php is lengthy or you can't be bothered to figure out bash quoting. If you plan to share a script with others, consider making a full Drush command instead, since that's more self-documenting. Drush provides commandline options to the script via a variable called $extra.</p>
-<p>Help topics:</p>
-<ul>
-<li><a href="../../examples/helloworld.script/">An example Drush script</a></li>
-</ul>
+<p>See <a href="https://www.drush.org/latest/examples/helloworld.script">https://www.drush.org/latest/examples/helloworld.script</a> for an example script.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>php:script example --script-path=/path/to/scripts:/another/path</code></li>
@@ -7427,7 +7424,7 @@
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong>--script-path=SCRIPT-PATH</strong>. Additional paths to search for scripts, separated by : (Unix-based systems) or ; (Windows).</li>
-<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>var_dump</em>]</li>
+<li><strong>--format=FORMAT</strong>. An alternative output format such as json or yaml. By default the returned value prints via var_export().</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

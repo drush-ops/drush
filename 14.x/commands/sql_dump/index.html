@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/sql_dump/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/sql_dump/">
       
       
         <link rel="prev" href="../sql_drop/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="Export the Drupal DB as SQL using mysqldump or equivalent." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/sql_dump.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/sql_dump.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/sql_dump/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/sql_dump/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="Export the Drupal DB as SQL using mysqldump or equivalent." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/sql_dump.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/sql_dump.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7421,19 +7421,19 @@
 <li><strong>--gzip</strong>. Compress the dump using the gzip program which must be in your <em>$PATH</em>.</li>
 <li><strong>--extra=EXTRA</strong>. Add custom arguments/options when connecting to database (used internally to list tables).</li>
 <li><strong>--extra-dump=EXTRA-DUMP</strong>. Add custom arguments/options to the dumping of the database (e.g. <em>mysqldump</em> command).</li>
+<li><strong>--database=DATABASE</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
+<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
+<li><strong>--target=TARGET</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
+<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
+<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
+<li><strong>--fields=FIELDS</strong>. Available fields: Path (path)</li>
+<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
 <li><strong>--skip-tables-key=SKIP-TABLES-KEY</strong>. A key in the $skip_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--structure-tables-key=STRUCTURE-TABLES-KEY</strong>. A key in the $structure_tables array. @see <a href="../../site-aliases/">Site aliases</a></li>
 <li><strong>--tables-key=TABLES-KEY</strong>. A key in the $tables array.</li>
 <li><strong>--skip-tables-list=SKIP-TABLES-LIST</strong>. A comma-separated list of tables to exclude completely.</li>
 <li><strong>--structure-tables-list=STRUCTURE-TABLES-LIST</strong>. A comma-separated list of tables to include for structure, but not data.</li>
 <li><strong>--tables-list=TABLES-LIST</strong>. A comma-separated list of tables to transfer.</li>
-<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>null</em>]</li>
-<li><strong>--fields=FIELDS</strong>. Available fields: Path (path)</li>
-<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
-<li><strong>--database=DATABASE</strong>. The DB connection key if using multiple connections in settings.php. [default: <em>default</em>]</li>
-<li><strong>--db-url=DB-URL</strong>. A Drupal 6 style database URL. For example <em>mysql://root:pass@localhost:port/dbname</em></li>
-<li><strong>--target=TARGET</strong>. The name of a target within the specified database connection. [default: <em>default</em>]</li>
-<li><strong>--show-passwords</strong>. Show password on the CLI. Useful for debugging.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

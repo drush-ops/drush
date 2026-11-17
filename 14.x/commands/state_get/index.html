@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/state_get/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/state_get/">
       
       
         <link rel="prev" href="../state_delete/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="Display a state value." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/state_get.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/state_get.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/state_get/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/state_get/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="Display a state value." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/state_get.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/state_get.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7416,13 +7416,11 @@
 </ul>
 <h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>key</strong>. The key name.</li>
+<li><strong>key</strong>. The state key, for example system.cron_last.</li>
 </ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>string</em>]</li>
-<li><strong>--fields=FIELDS</strong>. Limit output to only the listed elements. Name top-level elements by key, e.g. "--fields=name,date", or use dot notation to select a nested element, e.g. "--fields=a.b.c as example".</li>
-<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
+<li><strong>--format=FORMAT</strong>. An alternative output format such as json or yaml. By default scalars print as-is and anything else as yaml.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

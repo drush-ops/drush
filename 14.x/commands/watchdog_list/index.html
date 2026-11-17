@@ -12,7 +12,7 @@
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/watchdog_list/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/watchdog_list/">
       
       
         <link rel="prev" href="../watchdog_delete/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -67,7 +67,7 @@
       
         <meta  property="og:description"  content="Interactively filter the watchdog message listing." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/watchdog_list.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/watchdog_list.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,7 +75,7 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/watchdog_list/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/watchdog_list/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
@@ -83,7 +83,7 @@
       
         <meta  name="twitter:description"  content="Interactively filter the watchdog message listing." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/watchdog_list.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/watchdog_list.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -7421,12 +7421,11 @@
 <ul>
 <li><strong>--count=COUNT</strong>. The number of messages to show. [default: <em>10</em>]</li>
 <li><strong>--severity=SEVERITY</strong>. Restrict to messages of a given severity level (numeric or string).</li>
+<li><strong>--severity-min=SEVERITY-MIN</strong>. Restrict to messages of a given severity level and higher.</li>
 <li><strong>--type=TYPE</strong>. Restrict to messages of a given type.</li>
-<li><strong>--extended</strong>. Return extended information about each message.</li>
-<li><strong>--format=FORMAT</strong>. Format the result data. Available formats: csv,json,list,null,php,print-r,sections,string,table,tsv,var_dump,var_export,xml,yaml [default: <em>table</em>]</li>
-<li><strong>--filter=FILTER</strong>. Filter output based on provided expression. Default field: message</li>
-<li><strong>--fields=FIELDS</strong>. Available fields: ID (wid), Type (type), Message (message), Severity (severity), Location (location), Hostname (hostname), Date (date), Username (username)</li>
-<li><strong>--field=FIELD</strong>. Select just one field, and force format to <em>string</em>.</li>
+<li><strong>--full</strong>. Show the whole message instead of truncating it.</li>
+<li><strong>--fields=FIELDS</strong>. A comma delimited list of fields to show. Use * for all. Defaults to wid,date,type,severity,message for the table and to all fields for json and yaml.</li>
+<li><strong>--format=FORMAT</strong>. An alternative output format such as json or yaml. Defaults to table.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
 <ul>

@@ -6,13 +6,13 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Rebuild all caches">
+        <meta name="description" content="Rebuild all caches by running dr cache:rebuild. Requires Drupal core 11.4+.">
       
       
         <meta name="author" content="Moshe Weitzman">
       
       
-        <link rel="canonical" href="https://www.drush.org/latest/latest/commands/cache_rebuild/">
+        <link rel="canonical" href="https://www.drush.org/latest/commands/cache_rebuild/">
       
       
         <link rel="prev" href="../cache_get/">
@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../../img/favicon.ico">
-      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.18">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.5.18">
     
     
       
@@ -65,9 +65,9 @@
       
         <meta  property="og:title"  content="cache:rebuild - Drush" >
       
-        <meta  property="og:description"  content="Rebuild all caches" >
+        <meta  property="og:description"  content="Rebuild all caches by running dr cache:rebuild. Requires Drupal core 11.4+." >
       
-        <meta  property="og:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/cache_rebuild.png" >
+        <meta  property="og:image"  content="https://www.drush.org/latest/assets/images/social/commands/cache_rebuild.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -75,15 +75,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://www.drush.org/latest/latest/commands/cache_rebuild/" >
+        <meta  property="og:url"  content="https://www.drush.org/latest/commands/cache_rebuild/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
         <meta  name="twitter:title"  content="cache:rebuild - Drush" >
       
-        <meta  name="twitter:description"  content="Rebuild all caches" >
+        <meta  name="twitter:description"  content="Rebuild all caches by running dr cache:rebuild. Requires Drupal core 11.4+." >
       
-        <meta  name="twitter:image"  content="https://www.drush.org/latest/latest/assets/images/social/commands/cache_rebuild.png" >
+        <meta  name="twitter:image"  content="https://www.drush.org/latest/assets/images/social/commands/cache_rebuild.png" >
       
     
     
@@ -1368,27 +1368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../browse/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    browse
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../content_export/" class="md-nav__link">
         
   
@@ -1457,6 +1436,27 @@
   
   <span class="md-ellipsis">
     help
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../jn_get/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    jn:get
   </span>
   
 
@@ -1738,6 +1738,15 @@
   <a href="#examples" class="md-nav__link">
     <span class="md-ellipsis">
       Examples
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#arguments" class="md-nav__link">
+    <span class="md-ellipsis">
+      Arguments
     </span>
   </a>
   
@@ -7399,12 +7408,19 @@
 
 
 <h1 id="cacherebuild">cache:rebuild<a class="headerlink" href="#cacherebuild" title="Permanent link">&para;</a></h1>
-<p>Rebuild all caches</p>
-<p>This is a copy of core/rebuild.php</p>
+<p>Rebuild all caches by running dr cache:rebuild. Requires Drupal core 11.4+.</p>
 <h4 id="examples">Examples<a class="headerlink" href="#examples" title="Permanent link">&para;</a></h4>
+<ul>
+<li><code>cache:rebuild</code></li>
+<li><code>cache:rebuild --no-cache-clear</code></li>
+</ul>
+<h4 id="arguments">Arguments<a class="headerlink" href="#arguments" title="Permanent link">&para;</a></h4>
+<ul>
+<li><strong>[args]...</strong>. Extra arguments and options passed through to dr cache:rebuild. Put them after a -- separator.</li>
+</ul>
 <h4 id="options">Options<a class="headerlink" href="#options" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>--cache-clear</strong>. Use --no-cache-clear to suppress normal cache clearing</li>
+<li><strong>--cache-clear</strong>. Use --no-cache-clear to skip the rebuild; the caller should then rebuild if needed.</li>
 <li><strong>--no-cache-clear</strong>. Negate the --cache-clear option.</li>
 </ul>
 <h4 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h4>
