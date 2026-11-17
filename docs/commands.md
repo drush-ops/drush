@@ -11,14 +11,6 @@ Put each command in its own class under the module's `src/Command` directory:
 
 Drupal finds every class in that directory that has an `#[AsCommand]` attribute, registers it as a service, and autowires its constructor. The module must be installed, and the container rebuilt (`dr cc container`) after you add a command.
 
-```mermaid
-flowchart LR
-    A["src/Command/XkcdFetchCommand.php<br/>#[AsCommand]"] -- "dr cc container" --> B["Service in Drupal's container<br/>constructor autowired"]
-    B --> C["dr xkcd:fetch"]
-    C --> D["#[Interact] method,<br/>if interactive"]
-    D --> E["__invoke()"]
-```
-
 ## Writing a command
 
 ```php
@@ -62,6 +54,8 @@ Listen to Console's events to act before or after another command runs. See [Eve
 Write a kernel test that builds the command, drives it with Symfony's `CommandTester`, and asserts on `getDisplay()` and the exit code. See [QueueTest](https://github.com/drush-ops/drush/blob/15.x/tests/kernel/QueueTest.php).
 
 ## Upgrading from Drush 13
+
+In addition to the table below, see the [drupal.org docs](https://www.drupal.org/docs/develop/drupal-apis/command-line-interface-cli-api/drush-command-porting-guide-to-the-new-dr-drupal-core-cli).
 
 | Drush 13 | Now |
 |---|---|
