@@ -39,6 +39,7 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 
 ## Conventions
 
+- Drush supports Drupal 11.5+ and 12 on PHP 8.3+, so no PHP 8.4 syntax such as `new Foo()->bar()`. Guard core APIs that are newer than 11.5, as `DoctorServiceProvider` does. `src-drupal-compatibility/` holds copies of core classes that older cores lack.
 - Public API and configuration are stable across a major. Keep changes backward compatible; deprecate before removing.
 - Docs ship with the change. New commands, options, hooks, or attributes get their `docs/*.md` update in the same PR. `docs/commands/` is generated (`composer mk:docs`), not hand-edited.
 - Release branches are `15.x`, `13.x`, etc. PRs target `15.x` upstream at drush-ops/drush.

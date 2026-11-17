@@ -245,7 +245,7 @@ class WhyTest extends KernelTestBase
     private function assertInvalid(string $message, array $input): void
     {
         try {
-            new CommandTester($this->whyModuleCommand())->execute($input);
+            (new CommandTester($this->whyModuleCommand()))->execute($input);
             $this->fail("Expected: $message");
         } catch (\InvalidArgumentException $e) {
             $this->assertSame($message, $e->getMessage());

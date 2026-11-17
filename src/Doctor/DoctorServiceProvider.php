@@ -88,7 +88,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
             // discovered by a compiler pass that runs after this method, so
             // look for the class, not for a definition. The copy needs
             // getModulesToInstall().
-            if (!class_exists(CoreExtensionInstallCommand::class) && new \ReflectionClass(ModuleInstallerInterface::class)->hasMethod('getModulesToInstall')) {
+            if (!class_exists(CoreExtensionInstallCommand::class) && (new \ReflectionClass(ModuleInstallerInterface::class))->hasMethod('getModulesToInstall')) {
                 $classes[] = ExtensionInstallCommand::class;
             }
             // Core has its own ex:uninstall (alias pm:uninstall) from 12.1.
@@ -98,7 +98,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
             // Core merge request 17320 adds the maint commands to the system
             // module under the same class names. No core version has them yet.
             foreach ([MaintDisableCommand::class, MaintEnableCommand::class, MaintStatusCommand::class] as $copy) {
-                if (!class_exists('Drupal\\system\\Command\\' . new \ReflectionClass($copy)->getShortName())) {
+                if (!class_exists('Drupal\\system\\Command\\' . (new \ReflectionClass($copy))->getShortName())) {
                     $classes[] = $copy;
                 }
             }
@@ -112,7 +112,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
 
         // These definitions are further processed by AddConsoleCommandPass.
         foreach ($classes as $className) {
-            $definition = new Definition($className)
+            $definition = (new Definition($className))
                 ->setAutowired(true)
                 ->setPublic(true)
                 ->addTag('console.command');

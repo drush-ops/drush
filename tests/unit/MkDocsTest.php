@@ -86,10 +86,10 @@ class MkDocsTest extends TestCase
 
     public function testCategorize(): void
     {
-        $install = new Command('pm:install')->setAliases(['in']);
+        $install = (new Command('pm:install'))->setAliases(['in']);
         $list = new Command('pm:list');
         $route = new Command('core:route');
-        $hidden = new Command('pm:secret')->setHidden(true);
+        $hidden = (new Command('pm:secret'))->setHidden(true);
 
         $namespaced = MkDocsCommand::categorize([
             'pm:list' => $list,

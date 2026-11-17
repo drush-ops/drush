@@ -9,7 +9,8 @@ defaults: &defaults
     PHPUNIT_ARGS: ""
     PHP_SENDMAIL_PATH: /dev/null
     # https://drupal.slack.com/archives/CGKLP028K/p1702031434143329?thread_ts=1702024395.751479&cid=CGKLP028K
-    WODBY_TAG: 8.5
+    # The lowest PHP version that Drush supports. Used by the lowest executors.
+    WODBY_TAG: 8.3
     # These are not working. We disable the mode in .docker/zz-php.ini
     PHP_EXTENSIONS_DISABLE: xdebug
     PHP_XDEBUG_MODE: off
@@ -110,7 +111,8 @@ jobs:
     parameters:
       dbms:
         type: string
-      # lowest: Drupal 12.x with the lowest allowed dependencies.
+      # lowest: Drupal 11.5 on the lowest PHP, with the lowest allowed
+      #   dependencies. Core 11 needs PHPUnit 11.
       # highest: Drupal main with the highest allowed dependencies.
       release:
         type: enum
@@ -127,7 +129,7 @@ jobs:
           condition:
             equal: [lowest, << parameters.release >>]
           steps:
-            - run: composer -n update --prefer-lowest
+            - run: .circleci/lowest.sh
       - when:
           condition:
             equal: [highest, << parameters.release >>]
