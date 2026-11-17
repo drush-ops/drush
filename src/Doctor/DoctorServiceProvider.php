@@ -47,6 +47,7 @@ use Drush\Doctor\Commands\ex\ExtensionUninstallCommand;
 use Drush\Doctor\Commands\maint\MaintDisableCommand;
 use Drush\Doctor\Commands\maint\MaintEnableCommand;
 use Drush\Doctor\Commands\maint\MaintStatusCommand;
+use Drush\Doctor\Commands\sql\SanitizeCommand;
 use Drush\Doctor\Commands\sql\SqlCliCommand;
 use Drush\Doctor\Commands\sql\SqlConnectCommand;
 use Drush\Doctor\Commands\sql\SqlDropCommand;
@@ -54,6 +55,10 @@ use Drush\Doctor\Commands\sql\SqlDumpCommand;
 use Drush\Doctor\Commands\sql\SqlQueryCommand;
 use Drush\Doctor\Commands\updatedb\UpdatedbCommand;
 use Drush\Doctor\Commands\updatedb\UpdatedbStatusCommand;
+use Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber;
+use Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber;
+use Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber;
+use Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber;
 use Grasmash\YamlCli\Command\GetValueCommand;
 use Grasmash\YamlCli\Command\LintCommand;
 use Grasmash\YamlCli\Command\UnsetKeyCommand;
@@ -118,6 +123,33 @@ class DoctorServiceProvider implements ServiceProviderInterface
                 ->addTag('console.command');
             $container->setDefinition($className, $definition);
         }
+
+        // Event subscribers. The ones for sql:sanitize do its work.
+        foreach (isset($modules['system']) ? self::getSubscribers($modules) : [] as $className) {
+            $definition = (new Definition($className))
+                ->setAutowired(true)
+                ->setPublic(true)
+                ->addTag('event_subscriber');
+            $container->setDefinition($className, $definition);
+        }
+    }
+
+    /**
+     * @param array $modules
+     *   The container.modules parameter, keyed by module name.
+     */
+    public static function getSubscribers(array $modules): array
+    {
+        $classes = [SanitizeSessionsSubscriber::class];
+        // See the note about the user module in getClassesStandard().
+        if (isset($modules['user'])) {
+            $classes[] = SanitizeUserTableSubscriber::class;
+            $classes[] = SanitizeUserFieldsSubscriber::class;
+        }
+        if (isset($modules['comment'])) {
+            $classes[] = SanitizeCommentsSubscriber::class;
+        }
+        return $classes;
     }
 
     public static function getClassesEarly(): array
@@ -168,6 +200,10 @@ class DoctorServiceProvider implements ServiceProviderInterface
             EntityDeleteCommand::class,
         ];
 
+        $sql = [
+            SanitizeCommand::class,
+        ];
+
         $deploy = [
             DeployHookCommand::class,
             DeployHookStatusCommand::class,
@@ -178,6 +214,7 @@ class DoctorServiceProvider implements ServiceProviderInterface
             $core,
             $config,
             $entity,
+            $sql,
             $deploy,
             FindClasses::findClasses('Drush\\Commands\\cache'),
             FindClasses::findClasses('Drush\\Commands\\queue'),
