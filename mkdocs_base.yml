@@ -93,6 +93,7 @@ nav:
     - Drupal configuration: config-exporting.md
     - Drupal dependencies: drupal-dependencies.md
     - Deploy: deploycommand.md
+    - Remote environments: remote.md
   - Author:
     - Command Authoring: commands.md
     - Dependency injection: dependency-injection.md

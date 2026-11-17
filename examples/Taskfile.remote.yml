@@ -1,0 +1,42 @@
+# Run dr on remote environments over ssh, using Task (https://taskfile.dev).
+#
+# Include this file from your project's Taskfile.yml, which must define an
+# ENVIRONMENTS map. See https://www.drush.org/latest/remote/.
+#
+#   task drush:prod -- cache:rebuild
+#   task drush TARGET=prod -- cache:rebuild
+#   task site:alias
+
+version: '3'
+
+tasks:
+  drush:
+    desc: 'Run dr on an environment: task drush TARGET=dev -- cache:rebuild'
+    interactive: true
+    requires:
+      vars:
+        - name: TARGET
+          enum: {ref: keys .ENVIRONMENTS}
+    vars:
+      # Quote each argument for the remote shell.
+      ARGS: '{{range .CLI_ARGS_LIST}}{{. | q}} {{end}}'
+    cmds:
+      # "with" renders nothing for an unknown TARGET, so the enum check above reports it.
+      # Ask for a remote tty only when stdout is a terminal, so redirected output stays clean.
+      - >-
+        {{with index .ENVIRONMENTS .TARGET}}if [ -t 1 ]; then TTY=-t; fi;
+        ssh $TTY {{.user}}@{{.host}}
+        {{printf "cd %s && vendor/bin/dr --url=%s %s" (q .root) (q .url) $.ARGS | q}}{{end}}
+
+  drush:*:
+    desc: 'Shorthand: task drush:dev -- cache:rebuild'
+    cmds:
+      - task: drush
+        vars: {TARGET: '{{index .MATCH 0}}'}
+
+  site:alias:
+    desc: 'Print every environment and its connection details'
+    aliases: [sa]
+    silent: true
+    cmds:
+      - printf '%s' {{.ENVIRONMENTS | toYaml | q}}
