@@ -2,358 +2,358 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://www.drush.org/latest/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/config-exporting/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/dependency-injection/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/deploycommand/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/drupal-dependencies/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/install/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/subscribers/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/usage/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/all/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/browse/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_clear/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_get/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_rebuild/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_set/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_tags/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/cache_warm/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_export/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_get/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_import/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_set/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/config_status/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/content_export/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/core_route/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/deploy/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/deploy_hook-status/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/deploy_hook/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/deploy_mark-complete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/entity_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/entity_save/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/ex_install/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/ex_list/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/ex_uninstall/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/generate-theme/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/help/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/install/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/list/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/maint_disable/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/maint_enable/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/maint_status/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/mk_docs/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/php_eval/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/php_script/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/queue_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/queue_list/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/queue_run/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/quick-start/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/recipe_apply/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/recipe_info/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/role_create/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/role_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/role_list/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/role_perm_add/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/role_perm_remove/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/server/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/sql_cli/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/sql_connect/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/sql_drop/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/sql_dump/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/sql_query/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/state_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/state_get/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/state_set/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/system_cron/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/system_status/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/updatedb/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/updatedb_status/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_block/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_cancel/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_create/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_information/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_login/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_password/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_role_add/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_role_remove/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/user_unblock/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/watchdog_delete/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/watchdog_list/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/watchdog_show-one/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/watchdog_show/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/watchdog_tail/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/why_config/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/commands/why_module/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/contribute/CONTRIBUTING/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/contribute/unish/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/examples/XkcdFetchCommand.php/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/examples/git-bisect.example.sh/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
     <url>
          <loc>https://www.drush.org/latest/examples/helloworld.script/</loc>
-         <lastmod>2026-11-16</lastmod>
+         <lastmod>2026-11-17</lastmod>
     </url>
 </urlset>
