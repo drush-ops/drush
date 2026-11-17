@@ -49,3 +49,28 @@ final class ConsoleSubscriber implements EventSubscriberInterface
 ## Events dispatched by Drush commands
 
 Commands may dispatch their own events by injecting `Psr\EventDispatcher\EventDispatcherInterface`. For example, [cache:clear](commands/cache_clear.md) dispatches `Drush\Event\CacheClearEvent`; call its `addType()` to offer another cache type.
+
+[sql:sanitize](commands/sql_sanitize.md) does all of its work in subscribers. It dispatches `Drush\Event\SanitizeConfirmsEvent` to collect a summary, asks for confirmation once, and exits. A sanitizer subscribes to:
+
+- `Drush\Event\SanitizeConfirmsEvent`: call `addMessage()` to describe what will be done.
+- `ConsoleEvents::TERMINATE`: do the work, when the command is `sql:sanitize` and `getExitCode()` is 0.
+
+The [subscribers that ship with Drush](https://github.com/drush-ops/drush/tree/15.x/src/EventSubscriber/sanitize) are working examples. `SanitizeSessionsSubscriber` is the shortest.
+
+## Adding options to a command
+
+A `ConsoleEvents::COMMAND` subscriber may add options to a command's definition. Symfony binds and validates input after this event, so the new options are accepted on the command line. Add them whichever command is running, so that `help`, `list` and shell completion show them too. This is how `sql:sanitize` gets `--sanitize-email` and its other options; see `SanitizeUserTableSubscriber` and `SanitizeOptionsTrait`.
+
+```php
+public function onCommand(ConsoleCommandEvent $event): void
+{
+    $application = $event->getCommand()?->getApplication();
+    if (!$application?->has('sql:sanitize')) {
+        return;
+    }
+    $command = $application->get('sql:sanitize');
+    if (!$command->getNativeDefinition()->hasOption('example')) {
+        $command->addOption('example', null, InputOption::VALUE_REQUIRED, 'An example option.');
+    }
+}
+```
