@@ -442,6 +442,12 @@ registered with dr only on core versions that do not have that command.</p></div
             </div>
                     <div class="row">
                 <div class="col-md-6">
+                    <a href="Drush/Doctor/Commands/sql/SanitizeCommand.html"><abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr></a>    </div>
+                <div class="col-md-6"><p>Confirms only. The sanitizing is done by event subscribers, which also
+contribute this command's options.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                     <a href="Drush/Doctor/Commands/sql/SqlCliCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlCliCommand">SqlCliCommand</abbr></a>    </div>
                 <div class="col-md-6"><p>Runs under dr only. Drush keeps its own sql:cli.</p></div>
             </div>
@@ -534,8 +540,38 @@ is <code>.dump</code> of that file. Table selection does not apply to the dump.<
             </div>
                     <div class="row">
                 <div class="col-md-6">
+                    <a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a>    </div>
+                <div class="col-md-6"><p>Removes comment display names and emails.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr></a>    </div>
+                <div class="col-md-6"><p>Helpers for subscribers that extend sql:sanitize.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a>    </div>
+                <div class="col-md-6"><p>Truncates the sessions table. The smallest example of a sanitizer.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a>    </div>
+                <div class="col-md-6"><p>Sanitizes the text fields added to users.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a>    </div>
+                <div class="col-md-6"><p>Sanitizes user emails and passwords.</p></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
                     <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a>    </div>
                 <div class="col-md-6"></div>
+            </div>
+                    <div class="row">
+                <div class="col-md-6">
+                    <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a>    </div>
+                <div class="col-md-6"><p>Dispatched by sql:sanitize before it asks for confirmation.</p></div>
             </div>
                     <div class="row">
                 <div class="col-md-6">

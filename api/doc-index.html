@@ -92,7 +92,7 @@
                                                 <li><a href="#letterL">L</a></li>
                                                 <li><a href="#letterM">M</a></li>
                                                 <li class="disabled"><a href="#letterN">N</a></li>
-                                                <li class="disabled"><a href="#letterO">O</a></li>
+                                                <li><a href="#letterO">O</a></li>
                                                 <li><a href="#letterP">P</a></li>
                                                 <li><a href="#letterQ">Q</a></li>
                                                 <li><a href="#letterR">R</a></li>
@@ -123,8 +123,12 @@
 <abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr>::attachConsoleLogger</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/ConsoleTrait.html"><abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></em></dt>
                     <dd><p>Sends Drupal log messages to the console.</p></dd><dt><a href="Drush/Doctor/Commands/updatedb/UpdatedbCommand.html#method_afterOperation">
 <abbr title="Drush\Doctor\Commands\updatedb\UpdatedbCommand">UpdatedbCommand</abbr>::afterOperation</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/updatedb/UpdatedbCommand.html"><abbr title="Drush\Doctor\Commands\updatedb\UpdatedbCommand">UpdatedbCommand</abbr></a></em></dt>
-                    <dd><p>Keeps a rebuilt update container out of the site's container cache.</p></dd><dt><a href="Drush/Event/CacheClearEvent.html#method_addType">
+                    <dd><p>Keeps a rebuilt update container out of the site's container cache.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html#method_addSanitizeOptions">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr>::addSanitizeOptions</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr></a></em></dt>
+                    <dd><p>Adds options to sql:sanitize from a ConsoleEvents::COMMAND subscriber.</p></dd><dt><a href="Drush/Event/CacheClearEvent.html#method_addType">
 <abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::addType</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_addMessage">
+<abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::addMessage</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
                     <dd></dd>        </dl><h2 id="letterB">B</h2>
         <dl id="indexB"><dt><a href="Drush/Commands/core/BrowseCommand.html"><abbr title="Drush\Commands\core\BrowseCommand">BrowseCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd><dt><a href="Drush/Commands/core/DependencyTreeTrait.html#method_buildDependents">
@@ -310,12 +314,26 @@ match nothing.</p></dd>        </dl><h2 id="letterF">F</h2>
                     <dd></dd><dt><a href="Drush/Commands/user/UserTrait.html#method_getAccounts">
 <abbr title="Drush\Commands\user\UserTrait">UserTrait</abbr>::getAccounts</a>() &mdash; <em>Method in class <a href="Drush/Commands/user/UserTrait.html"><abbr title="Drush\Commands\user\UserTrait">UserTrait</abbr></a></em></dt>
                     <dd><p>Loads the accounts selected by a names argument and the --uid and
---mail options, each a comma delimited list.</p></dd><dt><a href="Drush/Doctor/DoctorServiceProvider.html#method_getClassesEarly">
+--mail options, each a comma delimited list.</p></dd><dt><a href="Drush/Doctor/DoctorServiceProvider.html#method_getSubscribers">
+<abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr>::getSubscribers</a>() &mdash; <em>Method in class <a href="Drush/Doctor/DoctorServiceProvider.html"><abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Doctor/DoctorServiceProvider.html#method_getClassesEarly">
 <abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr>::getClassesEarly</a>() &mdash; <em>Method in class <a href="Drush/Doctor/DoctorServiceProvider.html"><abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Doctor/DoctorServiceProvider.html#method_getClassesStandard">
 <abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr>::getClassesStandard</a>() &mdash; <em>Method in class <a href="Drush/Doctor/DoctorServiceProvider.html"><abbr title="Drush\Doctor\DoctorServiceProvider">DoctorServiceProvider</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html#method_getSubscribedEvents">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr>::getSubscribedEvents</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html#method_getSubscribedEvents">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr>::getSubscribedEvents</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html#method_getSubscribedEvents">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr>::getSubscribedEvents</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html#method_getSubscribedEvents">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr>::getSubscribedEvents</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Event/CacheClearEvent.html#method_getTypes">
 <abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::getTypes</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_getInput">
+<abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::getInput</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method_getMessages">
+<abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::getMessages</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
                     <dd></dd>        </dl><h2 id="letterH">H</h2>
         <dl id="indexH"><dt><a href="Drush/Commands/core/DependencyTreeTrait.html#method_hasDependents">
 <abbr title="Drush\Commands\core\DependencyTreeTrait">DependencyTreeTrait</abbr>::hasDependents</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/DependencyTreeTrait.html"><abbr title="Drush\Commands\core\DependencyTreeTrait">DependencyTreeTrait</abbr></a></em></dt>
@@ -333,7 +351,9 @@ match nothing.</p></dd>        </dl><h2 id="letterF">F</h2>
 <abbr title="Drush\Doctor\FindClasses">FindClasses</abbr>::isCommand</a>() &mdash; <em>Method in class <a href="Drush/Doctor/FindClasses.html"><abbr title="Drush\Doctor\FindClasses">FindClasses</abbr></a></em></dt>
                     <dd><p>Whether a discovered class is a command that can be instantiated.</p></dd><dt><a href="Drush/Doctor/Sql/Client.html#method_info">
 <abbr title="Drush\Doctor\Sql\Client">Client</abbr>::info</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Sql/Client.html"><abbr title="Drush\Doctor\Sql\Client">Client</abbr></a></em></dt>
-                    <dd></dd>        </dl><h2 id="letterJ">J</h2>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html#method_isSanitizing">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr>::isSanitizing</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr></a></em></dt>
+                    <dd><p>Whether sql:sanitize was confirmed and it is time to sanitize.</p></dd>        </dl><h2 id="letterJ">J</h2>
         <dl id="indexJ"><dt><a href="Drush/Commands/core/JsonapiGetCommand.html"><abbr title="Drush\Commands\core\JsonapiGetCommand">JsonapiGetCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd></dd>        </dl><h2 id="letterL">L</h2>
         <dl id="indexL"><dt><a href="Drush/Commands/core/ImageTrait.html#method_loadStyle">
@@ -376,7 +396,28 @@ speaks to both servers.</p></dd><dt><a href="Drush/Doctor/Sql/Mysql.html#method_
                     <dd></dd>        </dl><h2 id="letterN">N</h2>
         <dl id="indexN"><dt><a href="Drush/Commands/core/RouteCommand.html#method_normalize">
 <abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr>::normalize</a>() &mdash; <em>Method in class <a href="Drush/Commands/core/RouteCommand.html"><abbr title="Drush\Commands\core\RouteCommand">RouteCommand</abbr></a></em></dt>
-                    <dd><p>Replaces objects in route data with values yaml and json can encode.</p></dd>        </dl><h2 id="letterP">P</h2>
+                    <dd><p>Replaces objects in route data with values yaml and json can encode.</p></dd>        </dl><h2 id="letterO">O</h2>
+        <dl id="indexO"><dt><a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html#method_onSanitizeConfirm">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr>::onSanitizeConfirm</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html#method_onTerminate">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr>::onTerminate</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html#method_onSanitizeConfirm">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr>::onSanitizeConfirm</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html#method_onTerminate">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr>::onTerminate</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html#method_onCommand">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr>::onCommand</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html#method_onSanitizeConfirm">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr>::onSanitizeConfirm</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html#method_onTerminate">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr>::onTerminate</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html#method_onCommand">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr>::onCommand</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html#method_onSanitizeConfirm">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr>::onSanitizeConfirm</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html#method_onTerminate">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr>::onTerminate</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a></em></dt>
+                    <dd></dd>        </dl><h2 id="letterP">P</h2>
         <dl id="indexP"><dt><a href="Drush/Commands/core/PhpEvalCommand.html"><abbr title="Drush\Commands\core\PhpEvalCommand">PhpEvalCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd><p>Evaluates a snippet of PHP and prints what it returns.</p></dd><dt><a href="Drush/Commands/core/PhpScriptCommand.html"><abbr title="Drush\Commands\core\PhpScriptCommand">PhpScriptCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Commands/core.html">Drush\Commands\core</a></em></dt>
                     <dd><p>Runs a PHP script and prints what it returns.</p></dd><dt><a href="Drush/Doctor/Commands/ConsoleTrait.html#method_plainText">
@@ -496,7 +537,9 @@ code. At -v the command line is shown on the error output.</p></dd><dt><a href="
 <abbr title="Drush\Commands\watchdog\WatchdogTrait">WatchdogTrait</abbr>::suggestTypes</a>() &mdash; <em>Method in class <a href="Drush/Commands/watchdog/WatchdogTrait.html"><abbr title="Drush\Commands\watchdog\WatchdogTrait">WatchdogTrait</abbr></a></em></dt>
                     <dd><p>Shell completion for --type.</p></dd><dt><a href="Drush/Commands/watchdog/WatchdogTrait.html#method_suggestSeverities">
 <abbr title="Drush\Commands\watchdog\WatchdogTrait">WatchdogTrait</abbr>::suggestSeverities</a>() &mdash; <em>Method in class <a href="Drush/Commands/watchdog/WatchdogTrait.html"><abbr title="Drush\Commands\watchdog\WatchdogTrait">WatchdogTrait</abbr></a></em></dt>
-                    <dd><p>Shell completion for --severity and --severity-min.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SqlCliCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlCliCommand">SqlCliCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
+                    <dd><p>Shell completion for --severity and --severity-min.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SanitizeCommand.html"><abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
+                    <dd><p>Confirms only. The sanitizing is done by event subscribers, which also
+contribute this command's options.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SqlCliCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlCliCommand">SqlCliCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
                     <dd><p>Runs under dr only. Drush keeps its own sql:cli.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SqlConnectCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlConnectCommand">SqlConnectCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
                     <dd><p>Runs under dr only. Drush keeps its own sql:connect.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SqlDropCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlDropCommand">SqlDropCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
                     <dd><p>Runs under dr only. Drush keeps its own sql:drop.</p></dd><dt><a href="Drush/Doctor/Commands/sql/SqlDumpCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlDumpCommand">SqlDumpCommand</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Commands/sql.html">Drush\Doctor\Commands\sql</a></em></dt>
@@ -508,7 +551,13 @@ code. At -v the command line is shown on the error output.</p></dd><dt><a href="
 <code>$(dr sql:connect)</code> keeps working without eval. Same rule as Drush's
 own sql:connect.</p></dd><dt><a href="Drush/Doctor/Sql/Sqlite.html"><abbr title="Drush\Doctor\Sql\Sqlite">Sqlite</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Doctor/Sql.html">Drush\Doctor\Sql</a></em></dt>
                     <dd><p>SQLite. The database is a file, so there are no credentials, and a dump
-is <code>.dump</code> of that file. Table selection does not apply to the dump.</p></dd><dt><a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Utils.html">Drush\Utils</a></em></dt>
+is <code>.dump</code> of that file. Table selection does not apply to the dump.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a> &mdash; <em>Class in namespace <a href="Drush/EventSubscriber/sanitize.html">Drush\EventSubscriber\sanitize</a></em></dt>
+                    <dd><p>Removes comment display names and emails.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeOptionsTrait.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeOptionsTrait">SanitizeOptionsTrait</abbr></a> &mdash; <em>Class in namespace <a href="Drush/EventSubscriber/sanitize.html">Drush\EventSubscriber\sanitize</a></em></dt>
+                    <dd><p>Helpers for subscribers that extend sql:sanitize.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a> &mdash; <em>Class in namespace <a href="Drush/EventSubscriber/sanitize.html">Drush\EventSubscriber\sanitize</a></em></dt>
+                    <dd><p>Truncates the sessions table. The smallest example of a sanitizer.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a> &mdash; <em>Class in namespace <a href="Drush/EventSubscriber/sanitize.html">Drush\EventSubscriber\sanitize</a></em></dt>
+                    <dd><p>Sanitizes the text fields added to users.</p></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a> &mdash; <em>Class in namespace <a href="Drush/EventSubscriber/sanitize.html">Drush\EventSubscriber\sanitize</a></em></dt>
+                    <dd><p>Sanitizes user emails and passwords.</p></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Event.html">Drush\Event</a></em></dt>
+                    <dd><p>Dispatched by sql:sanitize before it asks for confirmation.</p></dd><dt><a href="Drush/Utils/StringUtils.html"><abbr title="Drush\Utils\StringUtils">StringUtils</abbr></a> &mdash; <em>Class in namespace <a href="Drush/Utils.html">Drush\Utils</a></em></dt>
                     <dd></dd>        </dl><h2 id="letterT">T</h2>
         <dl id="indexT"><dt><a href="Drush/Doctor/Commands/ConsoleTrait.html#method_table">
 <abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr>::table</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/ConsoleTrait.html"><abbr title="Drush\Doctor\Commands\ConsoleTrait">ConsoleTrait</abbr></a></em></dt>
@@ -775,6 +824,10 @@ module is installed, so its services are always available.</p></dd><dt><a href="
 <abbr title="Drush\Doctor\Commands\maint\MaintStatusCommand">MaintStatusCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/maint/MaintStatusCommand.html"><abbr title="Drush\Doctor\Commands\maint\MaintStatusCommand">MaintStatusCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Doctor/Commands/maint/MaintStatusCommand.html#method___invoke">
 <abbr title="Drush\Doctor\Commands\maint\MaintStatusCommand">MaintStatusCommand</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/maint/MaintStatusCommand.html"><abbr title="Drush\Doctor\Commands\maint\MaintStatusCommand">MaintStatusCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Doctor/Commands/sql/SanitizeCommand.html#method___construct">
+<abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/sql/SanitizeCommand.html"><abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Doctor/Commands/sql/SanitizeCommand.html#method___invoke">
+<abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/sql/SanitizeCommand.html"><abbr title="Drush\Doctor\Commands\sql\SanitizeCommand">SanitizeCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Doctor/Commands/sql/SqlCliCommand.html#method___invoke">
 <abbr title="Drush\Doctor\Commands\sql\SqlCliCommand">SqlCliCommand</abbr>::__invoke</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Commands/sql/SqlCliCommand.html"><abbr title="Drush\Doctor\Commands\sql\SqlCliCommand">SqlCliCommand</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Doctor/Commands/sql/SqlConnectCommand.html#method___invoke">
@@ -799,8 +852,18 @@ module is installed, so its services are always available.</p></dd><dt><a href="
 <abbr title="Drush\Doctor\Sql\DumpOptions">DumpOptions</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Sql/DumpOptions.html"><abbr title="Drush\Doctor\Sql\DumpOptions">DumpOptions</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Doctor/Sql/TableSelection.html#method___construct">
 <abbr title="Drush\Doctor\Sql\TableSelection">TableSelection</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Doctor/Sql/TableSelection.html"><abbr title="Drush\Doctor\Sql\TableSelection">TableSelection</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html#method___construct">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeCommentsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeCommentsSubscriber">SanitizeCommentsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html#method___construct">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeSessionsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeSessionsSubscriber">SanitizeSessionsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html#method___construct">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserFieldsSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserFieldsSubscriber">SanitizeUserFieldsSubscriber</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html#method___construct">
+<abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/EventSubscriber/sanitize/SanitizeUserTableSubscriber.html"><abbr title="Drush\EventSubscriber\sanitize\SanitizeUserTableSubscriber">SanitizeUserTableSubscriber</abbr></a></em></dt>
                     <dd></dd><dt><a href="Drush/Event/CacheClearEvent.html#method___construct">
 <abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Event/CacheClearEvent.html"><abbr title="Drush\Event\CacheClearEvent">CacheClearEvent</abbr></a></em></dt>
+                    <dd></dd><dt><a href="Drush/Event/SanitizeConfirmsEvent.html#method___construct">
+<abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr>::__construct</a>() &mdash; <em>Method in class <a href="Drush/Event/SanitizeConfirmsEvent.html"><abbr title="Drush\Event\SanitizeConfirmsEvent">SanitizeConfirmsEvent</abbr></a></em></dt>
                     <dd></dd>        </dl></div><div id="footer">
         Generated by <a href="https://github.com/code-lts/doctum">Doctum, a API Documentation generator and fork of Sami</a>.</div></div>
     </div>
