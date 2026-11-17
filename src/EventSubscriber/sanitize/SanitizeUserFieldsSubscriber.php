@@ -73,20 +73,13 @@ final class SanitizeUserFieldsSubscriber implements EventSubscriberInterface
                 continue;
             }
             $type = $definition->getType();
-            if ($type === 'telephone') {
-                $fields = [$name . '_value' => '15555555555'];
-            } elseif (in_array($type, self::TEXT_TYPES) || $type === 'text_with_summary') {
-                $sample = $this->fieldTypePluginManager->getPluginClass($type)::generateSampleValue($definition);
-                $fields = [$name . '_value' => $sample['value']];
-                if ($type === 'text_with_summary') {
-                    $fields[$name . '_summary'] = $sample['summary'];
-                }
-            } else {
+            if (!in_array($type, self::TEXT_TYPES)) {
                 continue;
             }
+            $sample = $this->fieldTypePluginManager->getPluginClass($type)::generateSampleValue($definition);
 
             $table = 'user__' . $name;
-            $this->database->update($table)->fields($fields)->execute();
+            $this->database->update($table)->fields([$name . '_value' => $sample['value']])->execute();
             $sanitized = true;
             $output->writeln((string) $this->t('@table table sanitized.', ['@table' => $table]));
         }
