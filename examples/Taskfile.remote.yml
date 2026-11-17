@@ -3,15 +3,15 @@
 # Include this file from your project's Taskfile.yml, which must define an
 # ENVIRONMENTS map. See https://www.drush.org/latest/remote/.
 #
-#   task drush:prod -- cache:rebuild
-#   task drush TARGET=prod -- cache:rebuild
+#   task dr:prod -- cache:rebuild
+#   task dr TARGET=prod -- cache:rebuild
 #   task site:alias
 
 version: '3'
 
 tasks:
-  drush:
-    desc: 'Run dr on an environment: task drush TARGET=dev -- cache:rebuild'
+  dr:
+    desc: 'Run dr on an environment: task dr TARGET=dev -- cache:rebuild'
     interactive: true
     requires:
       vars:
@@ -28,10 +28,10 @@ tasks:
         ssh $TTY {{.user}}@{{.host}}
         {{printf "cd %s && vendor/bin/dr --url=%s %s" (q .root) (q .url) $.ARGS | q}}{{end}}
 
-  drush:*:
-    desc: 'Shorthand: task drush:dev -- cache:rebuild'
+  dr:*:
+    desc: 'Shorthand: task dr:dev -- cache:rebuild'
     cmds:
-      - task: drush
+      - task: dr
         vars: {TARGET: '{{index .MATCH 0}}'}
 
   site:alias:

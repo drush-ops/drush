@@ -4,12 +4,12 @@
 Drush 15 has no site aliases and does not run commands on remote hosts. [Task](https://taskfile.dev) can fill that gap. A Taskfile holds the connection details for each environment and builds the `ssh` command for you:
 
 ```shell
-task drush:prod -- cache:rebuild
+task dr:prod -- cache:rebuild
 ```
 
 ## Setup
 
-1. [Install Task](https://taskfile.dev/docs/installation). This page was tested with Task 3.54.
+1. [Install Task](https://taskfile.dev/docs/installation).
 2. Add a `Taskfile.yml` to your project root. It lists your environments and includes the Taskfile that ships with Drush:
 
 ```yaml
@@ -48,24 +48,24 @@ Each environment needs all four keys:
 
 | Command | Result |
 | --- | --- |
-| `task drush:prod -- cache:rebuild` | Run `dr cache:rebuild` on prod. |
-| `task drush TARGET=prod -- cache:rebuild` | The same, naming the environment in a variable. |
+| `task dr:prod -- cache:rebuild` | Run `dr cache:rebuild` on prod. |
+| `task dr TARGET=prod -- cache:rebuild` | The same, naming the environment in a variable. |
 | `task site:alias` | Print every environment and its details. `task sa` is the short form. |
-| `task --dry drush:prod -- cache:rebuild` | Print the `ssh` command without running it. |
+| `task --dry dr:prod -- cache:rebuild` | Print the `ssh` command without running it. |
 
 Everything after `--` goes to `dr` on the remote host. Each argument is quoted for the remote shell, so this reaches `php:eval` as one argument:
 
 ```shell
-task drush:dev -- php:eval 'echo "a b";'
+task dr:dev -- php:eval 'echo "a b";'
 ```
 
 An unknown environment fails before anything runs, and the error lists the allowed names.
 
 A few Task behaviors to know about:
 
-- **Exit codes.** When the remote command fails, Task exits with its own code. Pass `-x` to get the remote command's exit code instead: `task -x drush:prod -- cache:rebuild`. Scripts and CI want this.
+- **Exit codes.** When the remote command fails, Task exits with its own code. Pass `-x` to get the remote command's exit code instead: `task -x dr:prod -- cache:rebuild`. Scripts and CI want this.
 - **Echo.** Task prints the `ssh` command to stderr before running it. Pass `-s` to hide it.
-- **Terminals.** A remote terminal is requested only when stdout is a terminal, so `task drush:prod -- sql:dump > dump.sql` writes a clean file.
+- **Terminals.** A remote terminal is requested only when stdout is a terminal, so `task dr:prod -- sql:dump > dump.sql` writes a clean file.
 
 ## The Taskfile
 
