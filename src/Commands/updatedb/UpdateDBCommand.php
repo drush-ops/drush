@@ -7,6 +7,7 @@ namespace Drush\Commands\updatedb;
 use Consolidation\AnnotatedCommand\AnnotationData;
 use Consolidation\SiteAlias\SiteAliasManagerInterface;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Update\Attribute\MarkFutureUpdateEquivalent;
 use Drupal\Core\Update\EquivalentUpdate;
 use Drupal\Core\Utility\Error;
 use Drush\Attributes as CLI;
@@ -286,6 +287,15 @@ final class UpdateDBCommand extends Command
 
                 if (empty($context['results'][$module][$number]['type'])) {
                     Drush::logger()->notice("Update started: $function");
+                }
+
+                // Register the future updates this one stands in for, as
+                // core's DatabaseUpdate::doOne() does from Drupal 11.5.
+                if (class_exists(MarkFutureUpdateEquivalent::class)) {
+                    foreach ((new \ReflectionFunction($function))->getAttributes(MarkFutureUpdateEquivalent::class) as $attribute) {
+                        $instance = $attribute->newInstance();
+                        \Drupal::service('update.update_hook_registry')->markFutureUpdateEquivalent($instance->futureUpdateNumber, $instance->futureVersionString, $module, $number);
+                    }
                 }
 
                 $ret['results']['query'] = $function($context['sandbox']);
