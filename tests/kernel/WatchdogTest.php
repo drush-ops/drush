@@ -9,6 +9,7 @@ use Drupal\Core\Database\Connection;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\watchdog\WatchdogDeleteCommand;
 use Drush\Commands\watchdog\WatchdogListCommand;
 use Drush\Commands\watchdog\WatchdogShowCommand;
@@ -28,6 +29,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(WatchdogShowCommand::class)]
 #[CoversClass(WatchdogShowOneCommand::class)]
 #[CoversClass(WatchdogListCommand::class)]
@@ -42,15 +44,26 @@ class WatchdogTest extends KernelTestBase
     protected EntityTypeManagerInterface $entityTypeManager;
     protected LoggerInterface $logger;
 
+    protected function setUpEnvironment(): void
+    {
+        $this->installEntitySchema('user');
+        $this->installSchema('dblog', ['watchdog']);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->installEntitySchema('user');
-        $this->installSchema('dblog', ['watchdog']);
         $this->connection = $this->container->get('database');
         $this->moduleHandler = $this->container->get('module_handler');
         $this->entityTypeManager = $this->container->get('entity_type.manager');
         $this->logger = $this->container->get('logger.factory')->get('drush');
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        // Every test method counts the messages it logged.
+        $this->connection->truncate('watchdog')->execute();
     }
 
     /**

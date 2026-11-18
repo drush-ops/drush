@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Core\Update\UpdateHookRegistry;
 use Drupal\Core\Update\UpdateRegistry;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\updatedb\UpdatedbCommand;
 use Drush\Doctor\Commands\updatedb\UpdatedbStatusCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,6 +26,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+// Updates install a module and record schema versions that outlive a test method.
+#[ShareEnvironment(false)]
 #[CoversClass(UpdatedbCommand::class)]
 #[CoversClass(UpdatedbStatusCommand::class)]
 class UpdatedbTest extends KernelTestBase

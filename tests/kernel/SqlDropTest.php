@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\sql\SqlDropCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+// sql:drop drops every table, those of a shared environment included.
+#[ShareEnvironment(false)]
 #[CoversClass(SqlDropCommand::class)]
 class SqlDropTest extends KernelTestBase
 {

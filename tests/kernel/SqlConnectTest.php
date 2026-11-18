@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Database\Database;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\sql\SqlConnectCommand;
 use Drush\Doctor\Sql\Client;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -25,6 +26,7 @@ use Symfony\Component\Process\Process;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(SqlConnectCommand::class)]
 class SqlConnectTest extends KernelTestBase
 {

@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Database\Connection;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\sql\SqlDumpCommand;
 use Drush\Doctor\Sql\Client;
 use Drush\Doctor\Sql\DumpOptions;
@@ -23,6 +24,7 @@ use Symfony\Component\Process\ExecutableFinder;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(SqlDumpCommand::class)]
 #[CoversClass(TableSelection::class)]
 class SqlDumpTest extends KernelTestBase
@@ -30,18 +32,22 @@ class SqlDumpTest extends KernelTestBase
     protected Connection $connection;
     protected string $dir;
 
+    protected function setUpEnvironment(): void
+    {
+        $connection = $this->container->get('database');
+        foreach (['sqltest_data', 'sqltest_structure', 'sqltest_skip'] as $table) {
+            $connection->schema()->createTable($table, [
+                'fields' => ['id' => ['type' => 'int', 'not null' => true], 'name' => ['type' => 'varchar', 'length' => 32, 'not null' => true]],
+                'primary key' => ['id'],
+            ]);
+            $connection->insert($table)->fields(['id' => 1, 'name' => "row_of_$table"])->execute();
+        }
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->connection = $this->container->get('database');
-        $schema = $this->connection->schema();
-        foreach (['sqltest_data', 'sqltest_structure', 'sqltest_skip'] as $table) {
-            $schema->createTable($table, [
-                'fields' => ['id' => ['type' => 'int', 'not null' => true], 'name' => ['type' => 'varchar', 'length' => 32, 'not null' => true]],
-                'primary key' => ['id'],
-            ]);
-            $this->connection->insert($table)->fields(['id' => 1, 'name' => "row_of_$table"])->execute();
-        }
         // The kernel's tables carry a prefix, which on sqlite means an attached
         // file that sqlite3 .dump does not see. A real site has unprefixed
         // tables, so one of those stands in for the content assertions.

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\RouteCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -18,14 +19,14 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(RouteCommand::class)]
 class RouteTest extends KernelTestBase
 {
     protected static $modules = ['system', 'user'];
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->container->get('router.builder')->rebuild();
     }
 

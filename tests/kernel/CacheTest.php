@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\cache\CacheClearCommand;
 use Drush\Commands\cache\CacheGetCommand;
 use Drush\Commands\cache\CacheSetCommand;
@@ -24,6 +25,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(CacheGetCommand::class)]
 #[CoversClass(CacheSetCommand::class)]
 #[CoversClass(CacheTagsCommand::class)]
@@ -34,6 +36,13 @@ class CacheTest extends KernelTestBase
     protected static $modules = ['system'];
 
     protected CacheBackendInterface $bin;
+
+    protected function setUpEnvironment(): void
+    {
+        // The first invalidation creates the cachetags table. Do that once, so
+        // that the table belongs to the shared environment.
+        $this->container->get('cache_tags.invalidator')->invalidateTags(['unish']);
+    }
 
     protected function setUp(): void
     {

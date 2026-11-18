@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\BrowseCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,10 +21,18 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(BrowseCommand::class)]
 class BrowseTest extends KernelTestBase
 {
     protected static $modules = ['system'];
+
+    protected function setUpEnvironment(): void
+    {
+        // Generating a URL builds the router on demand, which creates tables.
+        // Build it once, so that they belong to the shared environment.
+        $this->container->get('router.builder')->rebuild();
+    }
 
     public function testFrontPage(): void
     {

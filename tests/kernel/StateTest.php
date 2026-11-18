@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\State\StateInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\state\StateDeleteCommand;
 use Drush\Commands\state\StateGetCommand;
 use Drush\Commands\state\StateSetCommand;
@@ -21,6 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(StateGetCommand::class)]
 #[CoversClass(StateSetCommand::class)]
 #[CoversClass(StateDeleteCommand::class)]

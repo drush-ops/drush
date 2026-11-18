@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\maint\MaintDisableCommand;
 use Drush\Doctor\Commands\maint\MaintEnableCommand;
 use Drush\Doctor\Commands\maint\MaintStatusCommand;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(MaintEnableCommand::class)]
 #[CoversClass(MaintDisableCommand::class)]
 #[CoversClass(MaintStatusCommand::class)]

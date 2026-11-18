@@ -8,6 +8,7 @@ use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drupal\user\UserInterface;
 use Drush\Commands\user\UserBlockCommand;
 use Drush\Commands\user\UserCancelCommand;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(UserBlockCommand::class)]
 #[CoversClass(UserCancelCommand::class)]
 #[CoversClass(UserCreateCommand::class)]
@@ -50,26 +52,42 @@ class UserTest extends KernelTestBase
     protected DateFormatterInterface $dateFormatter;
     protected LoggerInterface $logger;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('user');
         $this->installSchema('user', ['users_data']);
         $this->installConfig(['system', 'user']);
+        // Routes are built on demand, which creates tables. Build them once, so
+        // that the tables belong to the shared environment.
+        $this->container->get('router.builder')->rebuild();
+        // Occupy uid 1 so the example account gets a regular uid, as it would
+        // on an installed site.
+        $this->container->get('entity_type.manager')->getStorage('user')->create(['name' => 'admin', 'status' => 1])->save();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
         $this->entityTypeManager = $this->container->get('entity_type.manager');
         $this->dateFormatter = $this->container->get('date.formatter');
         $this->logger = $this->container->get('logger.channel.default');
-        // Occupy uid 1 so the example account gets a regular uid, as it would
-        // on an installed site.
-        $this->entityTypeManager->getStorage('user')->create(['name' => 'admin', 'status' => 1])->save();
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        // Every test method creates the example account for itself.
+        $this->loadExampleUser()?->delete();
+        $this->entityTypeManager->getStorage('user_role')->load('test_role')?->delete();
     }
 
     public function testCreate(): void
     {
         $tester = new CommandTester(new UserCreateCommand($this->entityTypeManager, $this->logger));
         $this->assertSame(Command::SUCCESS, $tester->execute(['name' => self::NAME, '--mail' => self::MAIL, '--password' => self::PASSWORD]));
-        $this->assertStringContainsString('Created a new user with uid 2', $tester->getDisplay());
-        $info = $this->informationJson(['names' => self::NAME])[2];
+        $uid = (int) $this->loadExampleUser()->id();
+        $this->assertStringContainsString("Created a new user with uid $uid", $tester->getDisplay());
+        $info = $this->informationJson(['names' => self::NAME])[$uid];
         $this->assertSame(self::NAME, $info['name']);
         $this->assertSame(self::MAIL, $info['mail']);
         $this->assertEquals(1, $info['user_status']);

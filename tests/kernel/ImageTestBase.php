@@ -28,20 +28,25 @@ abstract class ImageTestBase extends KernelTestBase
     protected EntityTypeManagerInterface $entityTypeManager;
     protected ModuleHandlerInterface $moduleHandler;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('file');
         $this->installEntitySchema('user');
         $this->installConfig(['system', 'image']);
-        $this->entityTypeManager = $this->container->get('entity_type.manager');
-        $this->moduleHandler = $this->container->get('module_handler');
-
         foreach (['small' => 20, 'tiny' => 10] as $name => $size) {
             $style = ImageStyle::create(['name' => $name, 'label' => ucfirst($name)]);
             $style->addImageEffect(['id' => 'image_scale', 'data' => ['width' => $size, 'height' => $size, 'upscale' => false]]);
             $style->save();
         }
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->entityTypeManager = $this->container->get('entity_type.manager');
+        $this->moduleHandler = $this->container->get('module_handler');
+        // Files are not part of the shared environment: every test method has
+        // a site directory of its own.
         $dir = 'public://';
         $this->container->get('file_system')->prepareDirectory($dir, FileSystemInterface::CREATE_DIRECTORY);
         copy($this->root . '/core/misc/menu-expanded.png', self::SOURCE);

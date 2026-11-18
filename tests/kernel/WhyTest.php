@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\WhyConfigCommand;
 use Drush\Commands\core\WhyModuleCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+// Installing modules adds tables and configuration that outlive a test method.
+#[ShareEnvironment(false)]
 #[CoversClass(WhyModuleCommand::class)]
 #[CoversClass(WhyConfigCommand::class)]
 class WhyTest extends KernelTestBase

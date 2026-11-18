@@ -11,6 +11,7 @@ use Drupal\Core\Config\StorageInterface;
 use Drupal\Core\Config\SyncFactory;
 use Drupal\Core\Site\Settings;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\config\ConfigExportCommand;
 use Drush\Doctor\Commands\config\ConfigImportCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -26,16 +27,42 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(ConfigExportCommand::class)]
 class ConfigExportTest extends KernelTestBase
 {
+    use RestoresConfigTrait;
+
     protected static $modules = ['system', 'config_test'];
+
+    /**
+     * Tables that core creates as configuration is compared, exported or
+     * imported. Their content is rebuilt on every use.
+     */
+    protected const array INFRASTRUCTURE_TABLES = [
+        'cache_container',
+        'config_export',
+        'config_import',
+        'config_snapshot',
+        'semaphore',
+    ];
+
+    protected function setUpEnvironment(): void
+    {
+        $this->installConfig(['system', 'config_test']);
+        $this->config('system.site')->set('name', 'dr config')->save();
+        $this->saveInitialConfig();
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        $this->restoreInitialConfig();
+    }
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->installConfig(['system', 'config_test']);
-        $this->config('system.site')->set('name', 'dr config')->save();
         // Overrides are not exported.
         $GLOBALS['config']['system.maintenance']['message'] = 'Foo';
     }

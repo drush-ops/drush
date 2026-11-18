@@ -8,6 +8,7 @@ use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drupal\node\Entity\Node;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
@@ -25,6 +26,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(EntityDeleteCommand::class)]
 #[CoversClass(EntitySaveCommand::class)]
 class EntityTest extends KernelTestBase
@@ -34,9 +36,8 @@ class EntityTest extends KernelTestBase
     protected EntityTypeManagerInterface $entityTypeManager;
     protected TimeInterface $time;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('user');
         $this->installEntitySchema('node');
         $this->installSchema('node', ['node_access']);
@@ -44,56 +45,74 @@ class EntityTest extends KernelTestBase
         $this->installConfig(['node', 'filter']);
         NodeType::create(['type' => 'article', 'name' => 'Article'])->save();
         NodeType::create(['type' => 'page', 'name' => 'Page'])->save();
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
         $this->entityTypeManager = $this->container->get('entity_type.manager');
         $this->time = $this->container->get('datetime.time');
     }
 
+    /**
+     * Every test method starts without content. Ids keep counting up across
+     * test methods, so they are read from the entities.
+     */
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        foreach (['node', 'user'] as $entityTypeId) {
+            $storage = $this->entityTypeManager->getStorage($entityTypeId);
+            $storage->delete($storage->loadMultiple());
+        }
+    }
+
     public function testDeleteByIds(): void
     {
-        $this->createNodes(3);
+        [$a, $b, $c] = $this->createNodeIds(3);
         // No prompt is shown when ids are given, so a non-interactive run succeeds.
-        $tester = $this->delete(['entity-type' => 'node', 'ids' => '1,3'], [], false);
-        $this->assertStringContainsString('Deleted node entity Ids: 1, 3', $tester->getDisplay());
-        $this->assertSame([2], $this->nodeIds());
+        $tester = $this->delete(['entity-type' => 'node', 'ids' => "$a,$c"], [], false);
+        $this->assertStringContainsString("Deleted node entity Ids: $a, $c", $tester->getDisplay());
+        $this->assertSame([$b], $this->nodeIds());
     }
 
     public function testDeleteByBundle(): void
     {
-        $this->createNodes(2, 'article');
-        $this->createNodes(2, 'page');
+        $articles = $this->createNodeIds(2, 'article');
+        $pages = $this->createNodeIds(2, 'page');
         $tester = $this->delete(['entity-type' => 'node', '--bundle' => 'article'], ['yes']);
         $this->assertStringContainsString('You are about to delete 2 entities. Do you wish to continue?', $tester->getDisplay());
-        $this->assertStringContainsString('Deleted node entity Ids: 1, 2', $tester->getDisplay());
-        $this->assertSame([3, 4], $this->nodeIds());
+        $this->assertStringContainsString('Deleted node entity Ids: ' . implode(', ', $articles), $tester->getDisplay());
+        $this->assertSame($pages, $this->nodeIds());
     }
 
     public function testDeleteDeclined(): void
     {
-        $this->createNodes(2);
+        $ids = $this->createNodeIds(2);
         try {
             $this->delete(['entity-type' => 'node'], ['no']);
             $this->fail('A declined confirmation did not abort the command.');
         } catch (UserAbortException $e) {
             $this->assertSame('Operation cancelled by user.', $e->getMessage());
         }
-        $this->assertSame([1, 2], $this->nodeIds());
+        $this->assertSame($ids, $this->nodeIds());
     }
 
     public function testDeleteExclude(): void
     {
-        $this->createNodes(4);
-        $tester = $this->delete(['entity-type' => 'node', '--exclude' => '2,3'], ['yes']);
-        $this->assertStringContainsString('Deleted node entity Ids: 1, 4', $tester->getDisplay());
-        $this->assertSame([2, 3], $this->nodeIds());
+        [$a, $b, $c, $d] = $this->createNodeIds(4);
+        $tester = $this->delete(['entity-type' => 'node', '--exclude' => "$b,$c"], ['yes']);
+        $this->assertStringContainsString("Deleted node entity Ids: $a, $d", $tester->getDisplay());
+        $this->assertSame([$b, $c], $this->nodeIds());
     }
 
     public function testDeleteLimitSkipsConfirm(): void
     {
-        $this->createNodes(3);
+        [$a, $b, $c] = $this->createNodeIds(3);
         $tester = $this->delete(['entity-type' => 'node', '--limit' => '2'], [], false);
         $this->assertStringNotContainsString('Do you wish to continue?', $tester->getDisplay());
-        $this->assertStringContainsString('Deleted node entity Ids: 1, 2', $tester->getDisplay());
-        $this->assertSame([3], $this->nodeIds());
+        $this->assertStringContainsString("Deleted node entity Ids: $a, $b", $tester->getDisplay());
+        $this->assertSame([$c], $this->nodeIds());
     }
 
     public function testDeleteNoMatches(): void
@@ -130,35 +149,37 @@ class EntityTest extends KernelTestBase
 
     public function testSaveByIds(): void
     {
-        [$node] = $this->createNodes(2);
+        [$node, $other] = $this->createNodes(2);
         $node->setChangedTime(1000)->save();
+        $nid = (int) $node->id();
         $revisionId = (int) $node->getRevisionId();
+        $otherRevisionId = (int) $other->getRevisionId();
 
-        $tester = $this->save(['entity-type' => 'node', 'ids' => '1']);
-        $this->assertStringContainsString('Saved node entity ids: 1', $tester->getDisplay());
+        $tester = $this->save(['entity-type' => 'node', 'ids' => (string) $nid]);
+        $this->assertStringContainsString("Saved node entity ids: $nid", $tester->getDisplay());
         $this->assertStringNotContainsString('Entities have been', $tester->getDisplay());
 
-        $node = $this->loadNode(1);
+        $node = $this->loadNode($nid);
         $this->assertSame($this->time->getRequestTime(), $node->getChangedTime());
         $this->assertGreaterThan($revisionId, (int) $node->getRevisionId());
         $this->assertSame('Re-saved by Drush entity:save. ', $node->getRevisionLogMessage());
         // The other node is left alone.
-        $this->assertSame(2, (int) $this->loadNode(2)->getRevisionId());
+        $this->assertSame($otherRevisionId, (int) $this->loadNode((int) $other->id())->getRevisionId());
     }
 
     public function testSavePublishUnpublish(): void
     {
-        $this->createNodes(2);
+        [$a, $b] = $this->createNodeIds(2);
         $tester = $this->save(['entity-type' => 'node', '--unpublish' => true]);
-        $this->assertStringContainsString('Saved node entity ids: 1, 2', $tester->getDisplay());
+        $this->assertStringContainsString("Saved node entity ids: $a, $b", $tester->getDisplay());
         $this->assertStringContainsString('Entities have been unpublished.', $tester->getDisplay());
-        $this->assertFalse($this->loadNode(1)->isPublished());
-        $this->assertFalse($this->loadNode(2)->isPublished());
+        $this->assertFalse($this->loadNode($a)->isPublished());
+        $this->assertFalse($this->loadNode($b)->isPublished());
 
-        $tester = $this->save(['entity-type' => 'node', 'ids' => '2', '--publish' => true]);
+        $tester = $this->save(['entity-type' => 'node', 'ids' => (string) $b, '--publish' => true]);
         $this->assertStringContainsString('Entities have been published.', $tester->getDisplay());
-        $this->assertFalse($this->loadNode(1)->isPublished());
-        $this->assertTrue($this->loadNode(2)->isPublished());
+        $this->assertFalse($this->loadNode($a)->isPublished());
+        $this->assertTrue($this->loadNode($b)->isPublished());
     }
 
     public function testSaveConflictingOptions(): void
@@ -181,23 +202,24 @@ class EntityTest extends KernelTestBase
 
     public function testSaveStateWithoutModeration(): void
     {
-        $this->createNodes(1);
+        [$nid] = $this->createNodeIds(1);
         try {
             $this->save(['entity-type' => 'node', '--state' => 'draft']);
             $this->fail('A moderation state was accepted without content moderation.');
         } catch (\InvalidArgumentException $e) {
-            $this->assertSame('article 1 does not support content moderation.', $e->getMessage());
+            $this->assertSame("article $nid does not support content moderation.", $e->getMessage());
         }
     }
 
     public function testSaveIdsFromStdin(): void
     {
-        $this->createNodes(3);
-        $tester = $this->save(['entity-type' => 'node', 'ids' => '-'], ["1,\n3,\n"]);
-        $this->assertStringContainsString('Saved node entity ids: 1, 3', $tester->getDisplay());
-        $this->assertGreaterThan(1, (int) $this->loadNode(1)->getRevisionId());
-        $this->assertSame(2, (int) $this->loadNode(2)->getRevisionId());
-        $this->assertGreaterThan(3, (int) $this->loadNode(3)->getRevisionId());
+        [$a, $b, $c] = $nodes = $this->createNodes(3);
+        $tester = $this->save(['entity-type' => 'node', 'ids' => '-'], ["{$a->id()},\n{$c->id()},\n"]);
+        $this->assertStringContainsString("Saved node entity ids: {$a->id()}, {$c->id()}", $tester->getDisplay());
+        $revisionIds = array_map(fn(NodeInterface $node): int => (int) $this->loadNode((int) $node->id())->getRevisionId(), $nodes);
+        $this->assertGreaterThan((int) $a->getRevisionId(), $revisionIds[0]);
+        $this->assertSame((int) $b->getRevisionId(), $revisionIds[1]);
+        $this->assertGreaterThan((int) $c->getRevisionId(), $revisionIds[2]);
     }
 
     public function testSaveUnknownEntityType(): void
@@ -249,6 +271,14 @@ class EntityTest extends KernelTestBase
             $nodes[] = $node;
         }
         return $nodes;
+    }
+
+    /**
+     * @return int[]
+     */
+    protected function createNodeIds(int $count, string $type = 'article'): array
+    {
+        return array_map(fn(NodeInterface $node): int => (int) $node->id(), $this->createNodes($count, $type));
     }
 
     protected function loadNode(int $nid): NodeInterface

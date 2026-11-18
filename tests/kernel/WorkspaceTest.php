@@ -10,6 +10,8 @@ use Drupal\node\NodeInterface;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use Drupal\Tests\node\Traits\NodeCreationTrait;
 use Drupal\Tests\user\Traits\UserCreationTrait;
+use Drupal\TestTools\Attribute\ShareEnvironment;
+use Drupal\user\Entity\User;
 use Drupal\workspaces\Entity\Workspace;
 use Drupal\workspaces\WorkspaceManagerInterface;
 use Drush\Commands\core\WorkspacePublishCommand;
@@ -26,6 +28,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(WorkspacePublishCommand::class)]
 class WorkspaceTest extends KernelTestBase
 {
@@ -38,9 +41,8 @@ class WorkspaceTest extends KernelTestBase
     protected EntityTypeManagerInterface $entityTypeManager;
     protected WorkspaceManagerInterface $workspaceManager;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('user');
         $this->installEntitySchema('node');
         $this->installEntitySchema('workspace');
@@ -49,11 +51,18 @@ class WorkspaceTest extends KernelTestBase
         $this->installConfig(['filter', 'node', 'system']);
         $this->createContentType(['type' => 'page']);
         // The first user is uid 1 and may view and publish any workspace.
-        $this->setUpCurrentUser();
+        User::create(['name' => 'admin', 'status' => 1])->save();
+        // The workspace is owned by the current user.
+        $this->setCurrentUser(User::load(1));
+        Workspace::create(['id' => 'stage', 'label' => 'Stage'])->save();
+    }
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->setCurrentUser(User::load(1));
         $this->entityTypeManager = $this->container->get('entity_type.manager');
         $this->workspaceManager = $this->container->get('workspaces.manager');
-        Workspace::create(['id' => 'stage', 'label' => 'Stage'])->save();
     }
 
     public function testNothingToPublish(): void
