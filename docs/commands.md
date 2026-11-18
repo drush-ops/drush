@@ -265,7 +265,7 @@ With this configuration in place, global commands may be placed as described in 
        1. The prefix `Example` can be whatever string you want.
        1. The file must end in `Commands.php`
         1. The directory above `Commands` must be one of:
-            1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-drush-commands) or via CLI.
+            1.  A Folder listed in the 'include' option. Include may be provided via [config](#global-commands-discovered-by-configuration) or via CLI.
             1.  ../drush, /drush or /sites/all/drush. These paths are relative to Drupal root.
 
 Xdebug
