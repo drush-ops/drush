@@ -2,7 +2,7 @@ name: Build docs site
 
 on:
   push:
-    # 0.x is used to build and preview mkdocs changes.
+    # 0.x is used to build and preview docs site changes.
     branches: [ 11.x, 12.x, 13.x, 14.x, 15.x, 0.x ]
     tags: ["11.*", "12.*", "13.*", "14.*", "15.*"]
 
@@ -28,10 +28,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          # Later versions of mkdocs giving build error related to a missing import for 'templates'.
-          pip install mkdocs==1.5.3 mkdocs-material mike mkdocs-git-authors-plugin mkdocs-redirects mkdocs-git-revision-date-localized-plugin pymdown-extensions git+https://gitlab.com/blacs30/mkdocs-edit-url.git
-          # https://squidfunk.github.io/mkdocs-material/plugins/requirements/image-processing/#dependencies
-          pip install "mkdocs-material[imaging]"
+          # Zensical has no versioning of its own yet. Its maintainers keep a fork of mike that
+          # builds with Zensical. https://zensical.org/docs/compatibility/mkdocs/mike/
+          pip install zensical git+https://github.com/squidfunk/mike.git
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -79,7 +78,7 @@ jobs:
         if: github.ref_name == '15.x'
         run: |
           sed -E \
-            -e "s#\"base\": \"/latest\"#\"base\": \"/${GITHUB_REF_NAME}/\"#" \
+            -e "s#\"base\": ?\"/latest\"#\"base\":\"/${GITHUB_REF_NAME}/\"#" \
             -e "s#\"/latest([/\"])#\"/${GITHUB_REF_NAME}\\1#g" \
             gh-pages/${GITHUB_REF_NAME}/404.html > gh-pages/404.html
       - uses: stefanzweifel/git-auto-commit-action@v4

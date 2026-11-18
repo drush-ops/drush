@@ -73,7 +73,8 @@ final class MkDocsCommand
                 $redirects = array_merge($redirects, self::getRedirectMap($command, self::DESTINATION));
             }
             $output->writeln(sprintf('Found %d pages in %s', count($pages), $category), OutputInterface::VERBOSITY_VERBOSE);
-            $nav[] = [$category => $pages];
+            // Zensical needs a list of single-entry maps, not one map of pages.
+            $nav[] = [$category => array_map(static fn(string $name, string $page): array => [$name => $page], array_keys($pages), $pages)];
             $pages_all = array_merge($pages_all, $pages);
             $pages = [];
         }
@@ -204,13 +205,13 @@ final class MkDocsCommand
         $core_dir = dirname((string) new \ReflectionClass(\Drupal::class)->getFileName(), 2);
         $symfony_version = InstalledVersions::getPrettyVersion('symfony/console') ?? '';
         $edit_url = self::editUrl($file, $root, $core_dir, \Drupal::VERSION, $symfony_version);
-        $body = "---\n" . ($edit_url ? "edit_url: $edit_url\n" : '') . <<<EOT
-command: {$command->getName()}
-title: {$command->getName()}
-description: {$command->getDescription()}
----
-
-EOT;
+        // Dump as YAML so that a colon in a description stays valid front matter.
+        $front_matter = array_filter(['edit_url' => $edit_url]) + [
+            'command' => $command->getName(),
+            'title' => $command->getName(),
+            'description' => $command->getDescription(),
+        ];
+        $body = "---\n" . Yaml::dump($front_matter) . "---\n\n";
         $body .= "# {$command->getName()}\n\n";
 
         if (!self::isDrushCommand($command)) {
@@ -408,8 +409,8 @@ EOT;
         $yaml = Yaml::dump($base, PHP_INT_MAX, 2);
 
         // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
-        $yaml = str_replace("'!!python/name:material.extensions.emoji.twemoji'", '!!python/name:material.extensions.emoji.twemoji', $yaml);
-        $yaml = str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml);
+        $yaml = str_replace("'!!python/name:zensical.extensions.emoji.twemoji'", '!!python/name:zensical.extensions.emoji.twemoji', $yaml);
+        $yaml = str_replace("'!!python/name:zensical.extensions.emoji.to_svg'", '!!python/name:zensical.extensions.emoji.to_svg', $yaml);
         return str_replace("'!!python/name:pymdownx.superfences.fence_code_format'", '!!python/name:pymdownx.superfences.fence_code_format', $yaml);
     }
 }

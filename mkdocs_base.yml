@@ -10,7 +10,20 @@ theme:
     repo: fontawesome/brands/github
   custom_dir: docs/overrides
   palette:
-    scheme: preference
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: lucide/sun-moon
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: lucide/sun
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: lucide/moon
+        name: Switch to system preference
   features:
     - navigation.tabs
     - navigation.tabs.sticky
@@ -23,23 +36,16 @@ theme:
 # mike appends canonical_version (latest) to this.
 site_url: https://www.drush.org/
 repo_url: https://github.com/drush-ops/drush
-#Overridden on many pages via edit_uri plugin. See front matter.
+# Overridden on many pages by edit_url in front matter. See docs/overrides/partials/actions.html.
 edit_uri: blob/15.x/docs
 extra_css:
   - css/extra.drush.css
 plugins:
-  - edit_url
   - search
   - social
   - mike:
       canonical_version: latest
       alias_type: redirect
-  - git-revision-date-localized:
-      exclude:
-        - commands/*
-  - git-authors:
-      exclude:
-        - commands/*
   # mk:docs adds the command alias redirects to this map.
   - redirects:
       redirect_maps:
@@ -83,8 +89,8 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
-      emoji_index: '!!python/name:material.extensions.emoji.twemoji'
-      emoji_generator: '!!python/name:material.extensions.emoji.to_svg'
+      emoji_index: '!!python/name:zensical.extensions.emoji.twemoji'
+      emoji_generator: '!!python/name:zensical.extensions.emoji.to_svg'
 nav:
   - Home: index.md
   - Use:

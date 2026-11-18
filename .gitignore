@@ -3,8 +3,9 @@ composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
 vendor
-#The mkdocs output directory and generated file.
+#The docs site output directory, generated config, and local Python environment.
 site
+.venv
 gh-pages
 mkdocs.yml
 #The Commands site output directory.
@@ -26,5 +27,5 @@ sut/modules/contrib
 # Code tools
 .claude
 
-# mkdocs
+# Zensical build cache
 .cache
