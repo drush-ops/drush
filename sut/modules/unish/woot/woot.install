@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Drupal\Core\Update\Attribute\MarkFutureUpdateEquivalent;
+
 /**
  * Good update.
  */
@@ -59,6 +61,14 @@ function woot_update_8106()
 {
     \Drupal::service('module_installer')->install(['taxonomy']);
     return \Drupal::entityTypeManager()->getDefinition('taxonomy_term')->id();
+}
+
+/**
+ * Update that stands in for a future update.
+ */
+#[MarkFutureUpdateEquivalent(8201, '2.0.0')]
+function woot_update_8107() {
+  return t('This is the update message from woot_update_8107');
 }
 
 /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Unish;
 
+use Drupal\Core\Update\Attribute\MarkFutureUpdateEquivalent;
 use Drush\Commands\core\PhpCommands;
 use Drush\Commands\core\UpdateDBCommands;
 use Drush\Commands\pm\PmCommands;
@@ -261,6 +262,34 @@ YAML_FRAGMENT;
         $this->assertStringContainsString('Update started: woot_update_8104', $this->getErrorOutput());
         $this->assertStringContainsString('Finished performing updates.', $this->getErrorOutput());
         $this->assertStringNotContainsString('Failed', $this->getErrorOutput());
+    }
+
+    /**
+     * Tests that an update marked with MarkFutureUpdateEquivalent registers
+     * the future update it stands in for.
+     */
+    public function testMarkFutureUpdateEquivalent(): void
+    {
+        if (!class_exists(MarkFutureUpdateEquivalent::class)) {
+            $this->markTestSkipped('MarkFutureUpdateEquivalent is available since Drupal 11.5.0.');
+        }
+        $this->setUpDrupal(1, true);
+        $options = [
+            'yes' => null,
+        ];
+        $this->drush(PmCommands::INSTALL, ['woot'], $options);
+
+        // Installing woot already registers the mark, so remove it and force
+        // a re-run of woot_update_8107().
+        $this->drush(PhpCommands::EVAL, ['Drupal::keyValue("core.equivalent_updates")->delete("woot"); Drupal::service("update.update_hook_registry")->setInstalledVersion("woot", 8106)'], $options);
+        $this->drush(PhpCommands::EVAL, ['echo json_encode(Drupal::keyValue("core.equivalent_updates")->get("woot"));']);
+        $this->assertSame('null', $this->getOutput());
+
+        $this->drush(UpdateDBCommands::UPDATEDB, [], $options);
+        $this->assertStringContainsString('Update started: woot_update_8107', $this->getErrorOutput());
+
+        $this->drush(PhpCommands::EVAL, ['echo json_encode(Drupal::keyValue("core.equivalent_updates")->get("woot"));']);
+        $this->assertSame('{"8201":{"ran_update":8107,"future_version_string":"2.0.0"}}', $this->getOutput());
     }
 
     /**
