@@ -1,0 +1,90 @@
+# The navigation lives in docs/.nav.yml. The mk:docs command generates the command and generator
+# pages, their navigation (.nav.yml in each directory), and the alias redirects in the inherited file.
+INHERIT: mkdocs_redirects.yml
+site_name: Drush
+site_author: 'Moshe Weitzman'
+site_description: A command line shell and Unix scripting interface for Drupal
+theme:
+  name: material
+  logo: drush_logo-black.png
+  favicon: img/favicon.ico
+  icon:
+    repo: fontawesome/brands/github
+  custom_dir: docs/overrides
+  palette:
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: lucide/sun-moon
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: lucide/sun
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: lucide/moon
+        name: Switch to system preference
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.tracking
+    - navigation.path
+    - navigation.top
+    - toc.integrate
+    - content.action.edit
+    - content.action.view
+# mike appends canonical_version (latest) to this.
+site_url: https://www.drush.org/
+repo_url: https://github.com/drush-ops/drush
+# Overridden on many pages by edit_url in front matter. See docs/overrides/partials/actions.html.
+edit_uri: blob/13.x/docs
+extra_css:
+  - css/extra.drush.css
+# A mapping, not a list, so that it merges with the inherited redirect_maps.
+plugins:
+  search: {}
+  social: {}
+  awesome-nav: {}
+  mike:
+    canonical_version: latest
+    alias_type: redirect
+extra:
+  version:
+    provider: mike
+    alias: true
+  social:
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/drushcli
+    - icon: fontawesome/brands/github
+      link: https://github.com/drush-ops/drush
+    - icon: fontawesome/brands/slack
+      link: https://drupal.slack.com/archives/C62H9CWQM
+# Concerned about surveillance and spam so not enabling disqus for now.
+#  disqus: drush
+markdown_extensions:
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+  - admonition: {  }
+  - meta: { }
+  - pymdownx.magiclink: {  }
+  - pymdownx.keys: { }
+  - pymdownx.snippets: { }
+  - pymdownx.highlight:
+      use_pygments: true
+      # https://github.com/squidfunk/mkdocs-material/issues/506#issuecomment-338007823
+      extend_pygments_lang:
+        - name: php
+          lang: php
+          options:
+            startinline: true
+  - pymdownx.inlinehilite: { }
+  - pymdownx.superfences: { }
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg
