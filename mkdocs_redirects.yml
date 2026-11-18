@@ -1,0 +1,5 @@
+# mkdocs.yml inherits this file. The mk:docs command fills in the alias redirects.
+# Do not commit the result; keep the map empty in Git.
+plugins:
+  redirects:
+    redirect_maps: {  }

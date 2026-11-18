@@ -36,7 +36,7 @@ final class MkDocsCommand
 
     public function __invoke(Application $application, OutputInterface $output): int
     {
-        // Drush's own directory, which holds docs/ and mkdocs_base.yml.
+        // Drush's own directory, which holds docs/ and mkdocs.yml.
         $root = dirname(__DIR__, 3);
         $destination_path = Path::join($root, 'docs', self::DESTINATION);
         $output->writeln("Writing to $destination_path", OutputInterface::VERBOSITY_VERBOSE);
@@ -51,14 +51,12 @@ final class MkDocsCommand
         }
 
         $global_options = self::globalOptions($application);
-        $pages = $pages_all = $nav = $redirects = [];
-        foreach (self::categorize($application->all()) as $category => $commands) {
+        $nav = $redirects = [];
+        $categories = self::categorize($application->all());
+        foreach ($categories as $category => $commands) {
+            // The first category also links to the page that lists everything.
+            $pages = $nav === [] ? [['all' => 'all.md']] : [];
             foreach ($commands as $command) {
-                // The first category also links to the page that lists everything.
-                if ($pages_all === []) {
-                    $pages['all'] = self::DESTINATION . '/all.md';
-                }
-
                 $body = self::preamble($command, $root)
                     . self::usages($command)
                     . self::arguments($command)
@@ -67,19 +65,23 @@ final class MkDocsCommand
                     . self::aliases($command)
                     . self::legend();
                 $filename = self::getFilename($command->getName());
-                $pages[$command->getName()] = self::DESTINATION . "/$filename";
+                // A single-entry map, with the page relative to this directory.
+                $pages[] = [$command->getName() => $filename];
                 $filesystem->dumpFile(Path::join($destination_path, $filename), $body);
 
                 $redirects = array_merge($redirects, self::getRedirectMap($command, self::DESTINATION));
             }
             $output->writeln(sprintf('Found %d pages in %s', count($pages), $category), OutputInterface::VERBOSITY_VERBOSE);
-            $nav[] = [$category => $pages];
-            $pages_all = array_merge($pages_all, $pages);
-            $pages = [];
+            $nav[] = [self::categoryLabel($category) => $pages];
         }
 
-        $filesystem->dumpFile(Path::join($destination_path, 'all.md'), self::allMd($pages_all));
-        $filesystem->dumpFile(Path::join($root, 'mkdocs.yml'), self::yml($nav, $redirects, $root));
+        $filesystem->dumpFile(Path::join($destination_path, 'all.md'), self::allMd($categories));
+        // The navigation of this directory, which docs/.nav.yml includes.
+        $filesystem->dumpFile(Path::join($destination_path, '.nav.yml'), Yaml::dump(['title' => 'Commands', 'nav' => $nav], PHP_INT_MAX, 2));
+        // mkdocs.yml inherits this file, which adds the alias redirects to its own.
+        // It is committed with an empty map so that the site builds before this runs.
+        $comment = "# mkdocs.yml inherits this file. The mk:docs command fills in the alias redirects.\n# Do not commit the result; keep the map empty in Git.\n";
+        $filesystem->dumpFile(Path::join($root, 'mkdocs_redirects.yml'), $comment . Yaml::dump(['plugins' => ['redirects' => ['redirect_maps' => $redirects]]], PHP_INT_MAX, 2));
         return Command::SUCCESS;
     }
 
@@ -204,13 +206,13 @@ final class MkDocsCommand
         $core_dir = dirname((string) (new \ReflectionClass(\Drupal::class))->getFileName(), 2);
         $symfony_version = InstalledVersions::getPrettyVersion('symfony/console') ?? '';
         $edit_url = self::editUrl($file, $root, $core_dir, \Drupal::VERSION, $symfony_version);
-        $body = "---\n" . ($edit_url ? "edit_url: $edit_url\n" : '') . <<<EOT
-command: {$command->getName()}
-title: {$command->getName()}
-description: {$command->getDescription()}
----
-
-EOT;
+        // Dump as YAML so that a colon in a description stays valid front matter.
+        $front_matter = array_filter(['edit_url' => $edit_url]) + [
+            'command' => $command->getName(),
+            'title' => $command->getName(),
+            'description' => $command->getDescription(),
+        ];
+        $body = "---\n" . Yaml::dump($front_matter) . "---\n\n";
         $body .= "# {$command->getName()}\n\n";
 
         if (!self::isDrushCommand($command)) {
@@ -363,53 +365,44 @@ EOT;
     }
 
     /**
-     * The page that lists every command.
-     *
-     * @param array<string, string> $pages
-     *   Page paths keyed by command name.
+     * The heading for a category. _global only exists to sort first.
      */
-    private static function allMd(array $pages): string
+    public static function categoryLabel(string $category): string
     {
-        unset($pages['all']);
-        $items = [];
-        foreach ($pages as $name => $page) {
-            $items[] = "* [$name](" . basename($page) . ')';
-        }
-        $preamble = <<<EOT
+        return $category === '_global' ? 'General' : $category;
+    }
+
+    /**
+     * The page that lists every command: one table per category.
+     *
+     * @param array<string, array<string, Command>> $categories
+     *   Commands keyed by category, as returned by categorize().
+     */
+    public static function allMd(array $categories): string
+    {
+        $body = <<<EOT
 # All commands
 
 !!! tip
 
     Press the ++slash++ key to Search for a command. Or use your browser's *Find in Page* feature.
 
+
 EOT;
-        return $preamble . implode("\n", $items);
-    }
-
-    /**
-     * mkdocs.yml: mkdocs_base.yml plus the generated nav and redirects.
-     *
-     * @param array<string, string> $redirects
-     */
-    private static function yml(array $nav, array $redirects, string $root): string
-    {
-        $base = Yaml::parseFile(Path::join($root, 'mkdocs_base.yml'));
-        $base['nav'][] = ['Commands' => $nav];
-        $base['nav'][] = ['API' => '/api'];
-        // Keep the page redirects from mkdocs_base.yml; mkdocs allows one redirects plugin.
-        foreach ($base['plugins'] as $i => $plugin) {
-            if (is_array($plugin) && isset($plugin['redirects'])) {
-                $redirects = array_merge($plugin['redirects']['redirect_maps'] ?? [], $redirects);
-                unset($base['plugins'][$i]);
+        // A category title is a paragraph styled as a heading, with an id to link to. A real
+        // heading would nest every category under this page in the sidebar.
+        foreach ($categories as $category => $commands) {
+            $label = self::categoryLabel($category);
+            $body .= sprintf("%s\n{: #%s .command-group }\n\n", $label, strtolower($label));
+            $body .= "| Command | Description | Aliases |\n| --- | --- | --- |\n";
+            foreach ($commands as $command) {
+                $aliases = implode(', ', array_map(static fn(string $alias): string => "`$alias`", $command->getAliases()));
+                // A pipe would end the table cell.
+                $description = str_replace('|', '\|', self::cliTextToMarkdown($command->getDescription()));
+                $body .= sprintf("| [`%s`](%s) | %s | %s |\n", $command->getName(), self::getFilename($command->getName()), $description, $aliases);
             }
+            $body .= "\n";
         }
-        $base['plugins'] = array_values($base['plugins']);
-        $base['plugins'][]['redirects']['redirect_maps'] = $redirects;
-        $yaml = Yaml::dump($base, PHP_INT_MAX, 2);
-
-        // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
-        $yaml = str_replace("'!!python/name:material.extensions.emoji.twemoji'", '!!python/name:material.extensions.emoji.twemoji', $yaml);
-        $yaml = str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml);
-        return str_replace("'!!python/name:pymdownx.superfences.fence_code_format'", '!!python/name:pymdownx.superfences.fence_code_format', $yaml);
+        return $body;
     }
 }
