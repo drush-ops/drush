@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drupal\user\PermissionHandlerInterface;
 use Drush\Commands\role\RoleCreateCommand;
 use Drush\Commands\role\RoleDeleteCommand;
@@ -26,6 +27,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(RoleCreateCommand::class)]
 #[CoversClass(RoleDeleteCommand::class)]
 #[CoversClass(RoleListCommand::class)]
@@ -40,12 +42,16 @@ class RoleTest extends KernelTestBase
     protected EntityTypeManagerInterface $entityTypeManager;
     protected PermissionHandlerInterface $permissionHandler;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('user');
         // Provides the anonymous and authenticated roles.
         $this->installConfig(['user']);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
         $this->entityTypeManager = $this->container->get('entity_type.manager');
         $this->permissionHandler = $this->container->get('user.permissions');
     }

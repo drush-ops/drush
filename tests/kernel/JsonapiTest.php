@@ -8,6 +8,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\entity_test\Entity\EntityTest;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\Tests\user\Traits\UserCreationTrait;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\JsonapiGetCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -21,6 +22,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(JsonapiGetCommand::class)]
 class JsonapiTest extends KernelTestBase
 {
@@ -28,14 +30,21 @@ class JsonapiTest extends KernelTestBase
 
     protected static $modules = ['system', 'user', 'field', 'file', 'text', 'serialization', 'jsonapi', 'entity_test'];
 
+    protected function setUpEnvironment(): void
+    {
+        $this->installEntitySchema('user');
+        $this->installEntitySchema('entity_test');
+        EntityTest::create(['name' => 'Llama'])->save();
+        // Routes are built on demand, which creates tables. Build them once, so
+        // that the tables belong to the shared environment.
+        $this->container->get('router.builder')->rebuild();
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
-        $this->installEntitySchema('user');
-        $this->installEntitySchema('entity_test');
         // The sub-request runs as the current user.
         $this->setUpCurrentUser([], ['view test entity']);
-        EntityTest::create(['name' => 'Llama'])->save();
     }
 
     public function testCollection(): void

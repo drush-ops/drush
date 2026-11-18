@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\Core\Config\ConfigImporterFactory;
 use Drupal\Core\DrupalKernelInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\config\ConfigImportCommand;
 use Drush\Doctor\Commands\deploy\DeployCommand;
 use Drush\Doctor\Commands\deploy\DeployHookCommand;
@@ -28,6 +29,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(ConfigImportCommand::class)]
 #[CoversClass(DeployCommand::class)]
 #[CoversClass(DeployHookCommand::class)]
@@ -35,12 +37,37 @@ use Symfony\Component\Console\Tester\CommandTester;
 #[CoversClass(DeployMarkCompleteCommand::class)]
 class DeployTest extends KernelTestBase
 {
+    use RestoresConfigTrait;
+
     protected static $modules = ['system', 'user', 'woot'];
 
-    protected function setUp(): void
+    /**
+     * Tables that core creates as configuration is compared, exported or
+     * imported. Their content is rebuilt on every use.
+     */
+    protected const array INFRASTRUCTURE_TABLES = [
+        'cache_container',
+        'config_import',
+        'config_snapshot',
+        'semaphore',
+    ];
+
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installConfig(['system']);
+        // Deploy rebuilds the router, which creates tables. Build it once, so
+        // that the tables belong to the shared environment.
+        $this->container->get('router.builder')->rebuild();
+        $this->saveInitialConfig();
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        $this->restoreInitialConfig();
+        // Every test method starts with all deploy hooks pending.
+        $this->container->get('keyvalue')->get('deploy_hook')->deleteAll();
+        $this->container->get('state')->delete('woot_deploy_pass');
     }
 
     public function testStatus(): void

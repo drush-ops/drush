@@ -36,6 +36,7 @@ composer kernel          # Drupal KernelTestBase tests driving commands with Com
 
 - Unit: pure functions, no side effects, no Drupal.
 - Kernel: extend `Drupal\KernelTests\KernelTestBase`, build the command from `$this->container` services, drive it with `Symfony\Component\Console\Tester\CommandTester`, assert on `getDisplay()` and the exit code. Preferred for new command tests; `tests/kernel/QueueTest.php` is the model. Needs `UNISH_DB_URL` (or `SIMPLETEST_DB`).
+- Kernel test classes declare `#[ShareEnvironment]` (core's `Drupal\TestTools\Attribute\ShareEnvironment`): schema, config and fixtures go in `setUpEnvironment()`, which runs once per class, and `resetEnvironment()` undoes what a test method changed. Test methods read ids from the entities they create and must pass alone and in any order. A class that cannot share, such as one that installs modules, declares `#[ShareEnvironment(false)]` with the reason.
 
 ## Conventions
 

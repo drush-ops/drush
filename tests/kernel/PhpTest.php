@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\PhpEvalCommand;
 use Drush\Commands\core\PhpScriptCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,6 +20,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(PhpEvalCommand::class)]
 #[CoversClass(PhpScriptCommand::class)]
 class PhpTest extends KernelTestBase

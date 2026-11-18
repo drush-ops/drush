@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Unish;
 
 use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\core\ImageFlushCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -18,6 +19,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(ImageFlushCommand::class)]
 class ImageFlushTest extends ImageTestBase
 {

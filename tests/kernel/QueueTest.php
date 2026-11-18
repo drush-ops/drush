@@ -8,6 +8,7 @@ use Drupal\Component\Serialization\Yaml;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\Queue\QueueWorkerManagerInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Commands\queue\QueueDeleteCommand;
 use Drush\Commands\queue\QueueListCommand;
 use Drush\Commands\queue\QueueRunCommand;
@@ -24,6 +25,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(QueueListCommand::class)]
 #[CoversClass(QueueRunCommand::class)]
 #[CoversClass(QueueDeleteCommand::class)]
@@ -34,11 +36,30 @@ class QueueTest extends KernelTestBase
     protected QueueWorkerManagerInterface $workerManager;
     protected QueueFactory $queueFactory;
 
+    protected function setUpEnvironment(): void
+    {
+        // The queue table is created along with the first item. Do that once,
+        // so that the table belongs to the shared environment.
+        $queue = $this->container->get('queue')->get('unish');
+        $queue->createItem([]);
+        $queue->deleteQueue();
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->workerManager = $this->container->get('plugin.manager.queue_worker');
         $this->queueFactory = $this->container->get('queue');
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        // Leave no items behind, nor the attempts that the workers record.
+        foreach (array_keys($this->workerManager->getDefinitions()) as $name) {
+            $this->queueFactory->get($name)->deleteQueue();
+        }
+        $this->container->get('state')->deleteMultiple(['woot_custom_exception', 'woot_requeue_exception']);
     }
 
     /**

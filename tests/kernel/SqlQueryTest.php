@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Database\Database;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\sql\SqlQueryCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -19,12 +20,12 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(SqlQueryCommand::class)]
 class SqlQueryTest extends KernelTestBase
 {
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $schema = $this->container->get('database')->schema();
         $schema->createTable('sqltest', [
             'fields' => [
@@ -45,9 +46,12 @@ class SqlQueryTest extends KernelTestBase
         $json = json_decode($this->query(['query' => 'SELECT id, name FROM {sqltest} ORDER BY id', '--format' => 'json'])->getDisplay(), true, flags: JSON_THROW_ON_ERROR);
         $this->assertSame(['id' => '1', 'name' => 'b'], array_map(strval(...), $json[0]));
 
-        // A statement that returns no rows prints nothing.
-        $this->assertSame('', $this->query(['query' => "DELETE FROM {sqltest} WHERE name = 'a'"])->getDisplay());
-        $this->assertSame("b\n", $this->query(['query' => 'SELECT name FROM {sqltest}'])->getDisplay());
+        // A statement that returns no rows prints nothing. The row comes and
+        // goes here, since the other test methods read the same table.
+        $this->assertSame('', $this->query(['query' => "INSERT INTO {sqltest} (id, name) VALUES (3, 'c')"])->getDisplay());
+        $this->assertSame("c\n", $this->query(['query' => 'SELECT name FROM {sqltest} WHERE id = 3'])->getDisplay());
+        $this->assertSame('', $this->query(['query' => 'DELETE FROM {sqltest} WHERE id = 3'])->getDisplay());
+        $this->assertSame("a\nb\n", $this->query(['query' => 'SELECT name FROM {sqltest} ORDER BY name'])->getDisplay());
     }
 
     public function testResultFile(): void

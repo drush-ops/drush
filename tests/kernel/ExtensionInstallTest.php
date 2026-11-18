@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Command\Exception\UserAbortException;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drush\Doctor\Commands\ex\ExtensionInstallCommand;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Group;
@@ -20,6 +21,8 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+// Installing modules adds tables and configuration that outlive a test method.
+#[ShareEnvironment(false)]
 #[CoversClass(ExtensionInstallCommand::class)]
 class ExtensionInstallTest extends KernelTestBase
 {

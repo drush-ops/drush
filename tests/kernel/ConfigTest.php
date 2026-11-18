@@ -6,6 +6,7 @@ namespace Unish;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drupal\Tests\ConfigTestTrait;
 use Drush\Commands\config\ConfigDeleteCommand;
 use Drush\Commands\config\ConfigGetCommand;
@@ -23,6 +24,7 @@ use Symfony\Component\Console\Tester\CommandTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(ConfigDeleteCommand::class)]
 #[CoversClass(ConfigGetCommand::class)]
 #[CoversClass(ConfigSetCommand::class)]
@@ -30,8 +32,18 @@ use Symfony\Component\Console\Tester\CommandTester;
 class ConfigTest extends KernelTestBase
 {
     use ConfigTestTrait;
+    use RestoresConfigTrait;
 
     protected static $modules = ['system'];
+
+    /**
+     * Tables that core creates as configuration is compared, exported or
+     * imported. Their content is rebuilt on every use.
+     */
+    protected const array INFRASTRUCTURE_TABLES = [
+        'cache_container',
+        'config_import',
+    ];
 
     protected ConfigFactoryInterface $configFactory;
 
@@ -41,8 +53,19 @@ class ConfigTest extends KernelTestBase
         // allows. Set here, not redeclared: core 11.x types the property.
         $this->strictConfigSchema = false;
         parent::setUp();
-        $this->installConfig(['system']);
         $this->configFactory = $this->container->get('config.factory');
+    }
+
+    protected function setUpEnvironment(): void
+    {
+        $this->installConfig(['system']);
+        $this->saveInitialConfig();
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        $this->restoreInitialConfig();
     }
 
     public function testGet(): void

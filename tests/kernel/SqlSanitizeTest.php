@@ -7,6 +7,7 @@ namespace Unish;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\KernelTests\KernelTestBase;
+use Drupal\TestTools\Attribute\ShareEnvironment;
 use Drupal\user\Entity\Role;
 use Drupal\user\Entity\User;
 use Drush\Doctor\Commands\sql\SanitizeCommand;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Tester\ApplicationTester;
  */
 #[Group('commands')]
 #[RunTestsInSeparateProcesses]
+#[ShareEnvironment]
 #[CoversClass(SanitizeCommand::class)]
 #[CoversClass(SanitizeCommentsSubscriber::class)]
 #[CoversClass(SanitizeSessionsSubscriber::class)]
@@ -45,10 +47,11 @@ class SqlSanitizeTest extends KernelTestBase
     protected int $joe;
     protected int $ed;
 
-    protected function setUp(): void
+    protected function setUpEnvironment(): void
     {
-        parent::setUp();
         $this->installEntitySchema('user');
+        // Deleting an account cleans up users_data.
+        $this->installSchema('user', ['users_data']);
         $this->installConfig(['system', 'user']);
 
         foreach (['field_bio' => 'text_long', 'field_nickname' => 'string', 'field_alt_mail' => 'email'] as $name => $type) {
@@ -59,8 +62,35 @@ class SqlSanitizeTest extends KernelTestBase
 
         // uid 0, as on an installed site.
         User::create(['uid' => 0, 'name' => '', 'status' => 0])->save();
+    }
+
+    /**
+     * Every test method sanitizes accounts of its own.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
         $this->joe = $this->createAccount('joe user', 'joe@example.com');
         $this->ed = $this->createAccount('ed', 'ed@example.com', ['editor']);
+    }
+
+    protected function resetEnvironment(): void
+    {
+        parent::resetEnvironment();
+        $entityTypeManager = $this->container->get('entity_type.manager');
+        $storage = $entityTypeManager->getStorage('user');
+        $storage->delete($storage->loadMultiple([$this->joe, $this->ed]));
+        // Remove the tables that ::testComments() and ::createSessionsTable()
+        // added.
+        if ($entityTypeManager->hasDefinition('comment')) {
+            $this->container->get('entity_type.listener')->onEntityTypeDelete($entityTypeManager->getDefinition('comment'));
+        }
+        $schema = $this->container->get('database')->schema();
+        foreach (['comment_entity_statistics', 'sessions'] as $table) {
+            if ($schema->tableExists($table)) {
+                $schema->dropTable($table);
+            }
+        }
     }
 
     public function testSummaryAndDefaults(): void
@@ -199,6 +229,8 @@ class SqlSanitizeTest extends KernelTestBase
         // The subscriber is registered once the module is installed.
         $this->enableModules(['comment']);
         $this->installEntitySchema('comment');
+        // Deleting an account cleans up the comment statistics.
+        $this->installSchema('comment', ['comment_entity_statistics']);
         $database = $this->container->get('database');
         foreach ([0 => 'Visitor', $this->joe => 'joe user'] as $uid => $name) {
             $cid = $uid ? 2 : 1;
