@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Runtime\Runtime | Drush API 14</title>
+    <title>Drush\Runtime\Runtime | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -86,7 +86,7 @@
 
     
     <p>        class
-    <strong>Runtime</strong>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php">View source</a>)
+    <strong>Runtime</strong>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php">View source</a>)
 </p>
 
         
@@ -146,7 +146,7 @@
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_run">run</a>(array $argv)
+                    <a href="#method_run">run</a>($argv)
         
                                             <p><p>Run the application, catching any errors that may be thrown.</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -156,7 +156,7 @@
                     int
                 </div>
                 <div class="col-md-8">
-                    <a href="#method_doRun">doRun</a>(array $argv, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>|null $output)
+                    <a href="#method_doRun">doRun</a>($argv, $output)
         
                                             <p><p>Start up Drush</p></p>                </div>
                 <div class="col-md-2"></div>
@@ -199,7 +199,7 @@
             <div id="method-details">
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L28">at line 28</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L27">at line 27</a></div>
         <code>                    
     <strong>__construct</strong>(<a href="../../Drush/Preflight/Preflight.html"><abbr title="Drush\Preflight\Preflight">Preflight</abbr></a> $preflight, <a href="../../Drush/Runtime/DependencyInjection.html"><abbr title="Drush\Runtime\DependencyInjection">DependencyInjection</abbr></a> $di)
         </code>
@@ -239,9 +239,9 @@
             </div>
                     <div class="method-item">
                     <h3 id="method_run">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L37">at line 37</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L36">at line 36</a></div>
         <code>                    int
-    <strong>run</strong>(array $argv)
+    <strong>run</strong>($argv)
         </code>
     </h3>
     <div class="details">    
@@ -258,7 +258,7 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
+                <td></td>
                 <td>$argv</td>
                 <td></td>
             </tr>
@@ -283,9 +283,9 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_doRun">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L56">at line 56</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L55">at line 55</a></div>
         <code>            protected        int
-    <strong>doRun</strong>(array $argv, <abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>|null $output)
+    <strong>doRun</strong>($argv, $output)
         </code>
     </h3>
     <div class="details">    
@@ -301,12 +301,12 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
 
                     <table class="table table-condensed">
                     <tr>
-                <td>array</td>
+                <td></td>
                 <td>$argv</td>
                 <td></td>
             </tr>
                     <tr>
-                <td><abbr title="Symfony\Component\Console\Output\OutputInterface">OutputInterface</abbr>|null</td>
+                <td></td>
                 <td>$output</td>
                 <td></td>
             </tr>
@@ -331,7 +331,7 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setCompleted">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L126">at line 126</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L125">at line 125</a></div>
         <code>        static            void
     <strong>setCompleted</strong>()
         </code>
@@ -364,7 +364,7 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_setExitCode">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L137">at line 137</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L136">at line 136</a></div>
         <code>        static            void
     <strong>setExitCode</strong>(int $code)
         <small><span class="label label-danger">deprecated</span></small></code>
@@ -414,7 +414,7 @@ preflight. Later code should catch and handle its own exceptions.</p></p>
             </div>
                     <div class="method-item">
                     <h3 id="method_exitCode">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Runtime/Runtime.php#L148">at line 148</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Runtime/Runtime.php#L147">at line 147</a></div>
         <code>        static            
     <strong>exitCode</strong>()
         <small><span class="label label-danger">deprecated</span></small></code>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="robots" content="index, follow, all" />
-    <title>Drush\Attributes\ValidateQueueName | Drush API 14</title>
+    <title>Drush\Attributes\ValidateQueueName | Drush API 13</title>
 
             <link rel="stylesheet" type="text/css" href="../../css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="../../css/bootstrap-theme.min.css">
@@ -57,7 +57,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../../index.html">Drush API 14</a>
+                <a class="navbar-brand" href="../../index.html">Drush API 13</a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-elements">
                 <ul class="nav navbar-nav">
@@ -80,25 +80,17 @@
         </div>
                 <div id="page-content">
     <div class="page-header">
-        <h1>ValidateQueueName    <small><span class="label label-danger">deprecated</span></small>
+        <h1>ValidateQueueName    
             </h1>
     </div>
 
     
     <p>        class
-    <strong>ValidateQueueName</strong>        extends <a href="../../Drush/Attributes/ValidatorBase.html"><abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a>        implements        <a href="../../Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/ValidateQueueName.php">View source</a>)
+    <strong>ValidateQueueName</strong>        extends <a href="../../Drush/Attributes/ValidatorBase.html"><abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a>        implements        <a href="../../Drush/Attributes/ValidatorInterface.html"><abbr title="Drush\Attributes\ValidatorInterface">ValidatorInterface</abbr></a>        (<a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/ValidateQueueName.php">View source</a>)
 </p>
 
         
         
-            <p>
-                <small><span class="label label-danger">deprecated</span></small>
-                            <tr>
-                    <td>in</td>
-                    <td>Drush 14. Validate inside execute() instead, as the queue
-commands do via QueueTrait::validateQueueName().</td>
-                </tr>
-                    </p>
     
         
 
@@ -111,7 +103,7 @@ commands do via QueueTrait::validateQueueName().</td>
             <div class="container-fluid underlined">
                     <div class="row">
                 <div class="col-md-2 type">
-                    static&nbsp;void
+                    static&nbsp;
                 </div>
                 <div class="col-md-8">
                     <a href="#method_handle">handle</a>(ReflectionAttribute $attribute, <a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
@@ -163,8 +155,8 @@ commands do via QueueTrait::validateQueueName().</td>
                     <div class="method-item">
                     <h3 id="method_handle">
         <div class="location">in <a href="../../Drush/Attributes/ValidatorBase.html#method_handle">
-<abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/ValidatorBase.php#L13">at line 13</a></div>
-        <code>        static            void
+<abbr title="Drush\Attributes\ValidatorBase">ValidatorBase</abbr></a> <a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/ValidatorBase.php#L14">at line 14</a></div>
+        <code>        static            
     <strong>handle</strong>(ReflectionAttribute $attribute, <a href="../../Consolidation/AnnotatedCommand/Parser/CommandInfo.html"><abbr title="Consolidation\AnnotatedCommand\Parser\CommandInfo">CommandInfo</abbr></a> $commandInfo)
         </code>
     </h3>
@@ -194,15 +186,6 @@ commands do via QueueTrait::validateQueueName().</td>
             </table>
 
             
-                            <h4>Return Value</h4>
-
-                    <table class="table table-condensed">
-        <tr>
-            <td>void</td>
-            <td></td>
-        </tr>
-    </table>
-
             
             
             
@@ -212,7 +195,7 @@ commands do via QueueTrait::validateQueueName().</td>
             </div>
                     <div class="method-item">
                     <h3 id="method___construct">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/ValidateQueueName.php#L22">at line 22</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/ValidateQueueName.php#L18">at line 18</a></div>
         <code>                    
     <strong>__construct</strong>(string $argumentName = &#039;queue_name&#039;)
         </code>
@@ -247,7 +230,7 @@ commands do via QueueTrait::validateQueueName().</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_validate">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/ValidateQueueName.php#L27">at line 27</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/ValidateQueueName.php#L23">at line 23</a></div>
         <code>                    
     <strong>validate</strong>(<a href="../../Consolidation/AnnotatedCommand/CommandData.html"><abbr title="Consolidation\AnnotatedCommand\CommandData">CommandData</abbr></a> $commandData)
         </code>
@@ -282,7 +265,7 @@ commands do via QueueTrait::validateQueueName().</td>
             </div>
                     <div class="method-item">
                     <h3 id="method_getQueues">
-        <div class="location"><a href="https://github.com/drush-ops/drush/blob/14.x/src/Attributes/ValidateQueueName.php#L36">at line 36</a></div>
+        <div class="location"><a href="https://github.com/drush-ops/drush/blob/13.x/src/Attributes/ValidateQueueName.php#L32">at line 32</a></div>
         <code>        static            array
     <strong>getQueues</strong>()
         </code>
