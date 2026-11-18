@@ -1,4 +1,6 @@
-# This file is augmented with more nav pages by drush mk:docs command.
+# The navigation lives in docs/.nav.yml. The mk:docs command generates the command pages,
+# their navigation (docs/commands/.nav.yml), and the alias redirects in the inherited file.
+INHERIT: mkdocs_redirects.yml
 site_name: Drush
 site_author: 'Moshe Weitzman'
 site_description: A command line shell and Unix scripting interface for Drupal
@@ -40,16 +42,17 @@ repo_url: https://github.com/drush-ops/drush
 edit_uri: blob/15.x/docs
 extra_css:
   - css/extra.drush.css
+# A mapping, not a list, so that it merges with the inherited redirect_maps.
 plugins:
-  - search
-  - social
-  - mike:
-      canonical_version: latest
-      alias_type: redirect
-  # mk:docs adds the command alias redirects to this map.
-  - redirects:
-      redirect_maps:
-        listeners.md: subscribers.md
+  search: {}
+  social: {}
+  awesome-nav: {}
+  mike:
+    canonical_version: latest
+    alias_type: redirect
+  redirects:
+    redirect_maps:
+      listeners.md: subscribers.md
 extra:
   version:
     provider: mike
@@ -85,28 +88,9 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: '!!python/name:pymdownx.superfences.fence_code_format'
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.emoji:
-      emoji_index: '!!python/name:zensical.extensions.emoji.twemoji'
-      emoji_generator: '!!python/name:zensical.extensions.emoji.to_svg'
-nav:
-  - Home: index.md
-  - Use:
-    - Install: install.md
-    - Usage: usage.md
-    - Drupal configuration: config-exporting.md
-    - Drupal dependencies: drupal-dependencies.md
-    - Deploy: deploycommand.md
-  - Author:
-    - Command Authoring: commands.md
-    - Dependency injection: dependency-injection.md
-    - Event subscribers: subscribers.md
-  - Examples:
-      - examples/helloworld.script.md
-      - examples/XkcdFetchCommand.php.md
-      - git-bisect.sh: examples/git-bisect.example.sh.md
-  - Contribute:
-      - Guidelines: contribute/CONTRIBUTING.md
-      - Unish: contribute/unish.md
+      emoji_index: !!python/name:zensical.extensions.emoji.twemoji
+      emoji_generator: !!python/name:zensical.extensions.emoji.to_svg

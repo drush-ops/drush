@@ -18,5 +18,5 @@ Drush is built by people like you! Please [join us](https://github.com/drush-ops
 
 ## Documentation
 * The docs are on our [web site](https://www.drush.org).
-* The site is built with [Zensical](https://zensical.org). To preview it, run `composer mk:docs` to generate the command pages and `mkdocs.yml`, install Zensical in a virtual environment (`python3 -m venv .venv && .venv/bin/pip install zensical`; needs Python 3.11+), then run `.venv/bin/zensical serve`.
+* The site is built with [Zensical](https://zensical.org). To preview it, run `composer mk:docs` to generate the command pages, install Zensical in a virtual environment (`python3 -m venv .venv && .venv/bin/pip install zensical`; needs Python 3.11+), then run `.venv/bin/zensical serve`.
 * Documentation should be kept up-to-date. This means, when you add or change a command, option, or event, update the docs in the same pull request.

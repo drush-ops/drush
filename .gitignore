@@ -3,11 +3,10 @@ composer.lock
 tests/phpunit.xml
 .ddev/config.personal.yaml
 vendor
-#The docs site output directory, generated config, and local Python environment.
+#The docs site output directory and local Python environment.
 site
 .venv
 gh-pages
-mkdocs.yml
 #The Commands site output directory.
 docs/commands
 docs/generators

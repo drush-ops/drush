@@ -36,7 +36,7 @@ final class MkDocsCommand
 
     public function __invoke(Application $application, OutputInterface $output): int
     {
-        // Drush's own directory, which holds docs/ and mkdocs_base.yml.
+        // Drush's own directory, which holds docs/ and mkdocs.yml.
         $root = dirname(__DIR__, 3);
         $destination_path = Path::join($root, 'docs', self::DESTINATION);
         $output->writeln("Writing to $destination_path", OutputInterface::VERBOSITY_VERBOSE);
@@ -73,14 +73,19 @@ final class MkDocsCommand
                 $redirects = array_merge($redirects, self::getRedirectMap($command, self::DESTINATION));
             }
             $output->writeln(sprintf('Found %d pages in %s', count($pages), $category), OutputInterface::VERBOSITY_VERBOSE);
-            // Zensical needs a list of single-entry maps, not one map of pages.
-            $nav[] = [$category => array_map(static fn(string $name, string $page): array => [$name => $page], array_keys($pages), $pages)];
+            // Each entry is a single-entry map, with the page relative to this directory.
+            $nav[] = [$category => array_map(static fn(string $name, string $page): array => [$name => basename($page)], array_keys($pages), $pages)];
             $pages_all = array_merge($pages_all, $pages);
             $pages = [];
         }
 
         $filesystem->dumpFile(Path::join($destination_path, 'all.md'), self::allMd($pages_all));
-        $filesystem->dumpFile(Path::join($root, 'mkdocs.yml'), self::yml($nav, $redirects, $root));
+        // The navigation of this directory, which docs/.nav.yml includes.
+        $filesystem->dumpFile(Path::join($destination_path, '.nav.yml'), Yaml::dump(['title' => 'Commands', 'nav' => $nav], PHP_INT_MAX, 2));
+        // mkdocs.yml inherits this file, which adds the alias redirects to its own.
+        // It is committed with an empty map so that the site builds before this runs.
+        $comment = "# mkdocs.yml inherits this file. The mk:docs command fills in the alias redirects.\n# Do not commit the result; keep the map empty in Git.\n";
+        $filesystem->dumpFile(Path::join($root, 'mkdocs_redirects.yml'), $comment . Yaml::dump(['plugins' => ['redirects' => ['redirect_maps' => $redirects]]], PHP_INT_MAX, 2));
         return Command::SUCCESS;
     }
 
@@ -385,32 +390,5 @@ EOT;
 
 EOT;
         return $preamble . implode("\n", $items);
-    }
-
-    /**
-     * mkdocs.yml: mkdocs_base.yml plus the generated nav and redirects.
-     *
-     * @param array<string, string> $redirects
-     */
-    private static function yml(array $nav, array $redirects, string $root): string
-    {
-        $base = Yaml::parseFile(Path::join($root, 'mkdocs_base.yml'));
-        $base['nav'][] = ['Commands' => $nav];
-        $base['nav'][] = ['API' => '/api'];
-        // Keep the page redirects from mkdocs_base.yml; mkdocs allows one redirects plugin.
-        foreach ($base['plugins'] as $i => $plugin) {
-            if (is_array($plugin) && isset($plugin['redirects'])) {
-                $redirects = array_merge($plugin['redirects']['redirect_maps'] ?? [], $redirects);
-                unset($base['plugins'][$i]);
-            }
-        }
-        $base['plugins'] = array_values($base['plugins']);
-        $base['plugins'][]['redirects']['redirect_maps'] = $redirects;
-        $yaml = Yaml::dump($base, PHP_INT_MAX, 2);
-
-        // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
-        $yaml = str_replace("'!!python/name:zensical.extensions.emoji.twemoji'", '!!python/name:zensical.extensions.emoji.twemoji', $yaml);
-        $yaml = str_replace("'!!python/name:zensical.extensions.emoji.to_svg'", '!!python/name:zensical.extensions.emoji.to_svg', $yaml);
-        return str_replace("'!!python/name:pymdownx.superfences.fence_code_format'", '!!python/name:pymdownx.superfences.fence_code_format', $yaml);
     }
 }
