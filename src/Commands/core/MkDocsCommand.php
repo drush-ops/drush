@@ -51,14 +51,12 @@ final class MkDocsCommand
         }
 
         $global_options = self::globalOptions($application);
-        $pages = $pages_all = $nav = $redirects = [];
-        foreach (self::categorize($application->all()) as $category => $commands) {
+        $nav = $redirects = [];
+        $categories = self::categorize($application->all());
+        foreach ($categories as $category => $commands) {
+            // The first category also links to the page that lists everything.
+            $pages = $nav === [] ? [['all' => 'all.md']] : [];
             foreach ($commands as $command) {
-                // The first category also links to the page that lists everything.
-                if ($pages_all === []) {
-                    $pages['all'] = self::DESTINATION . '/all.md';
-                }
-
                 $body = self::preamble($command, $root)
                     . self::usages($command)
                     . self::arguments($command)
@@ -67,19 +65,17 @@ final class MkDocsCommand
                     . self::aliases($command)
                     . self::legend();
                 $filename = self::getFilename($command->getName());
-                $pages[$command->getName()] = self::DESTINATION . "/$filename";
+                // A single-entry map, with the page relative to this directory.
+                $pages[] = [$command->getName() => $filename];
                 $filesystem->dumpFile(Path::join($destination_path, $filename), $body);
 
                 $redirects = array_merge($redirects, self::getRedirectMap($command, self::DESTINATION));
             }
             $output->writeln(sprintf('Found %d pages in %s', count($pages), $category), OutputInterface::VERBOSITY_VERBOSE);
-            // Each entry is a single-entry map, with the page relative to this directory.
-            $nav[] = [$category => array_map(static fn(string $name, string $page): array => [$name => basename($page)], array_keys($pages), $pages)];
-            $pages_all = array_merge($pages_all, $pages);
-            $pages = [];
+            $nav[] = [self::categoryLabel($category) => $pages];
         }
 
-        $filesystem->dumpFile(Path::join($destination_path, 'all.md'), self::allMd($pages_all));
+        $filesystem->dumpFile(Path::join($destination_path, 'all.md'), self::allMd($categories));
         // The navigation of this directory, which docs/.nav.yml includes.
         $filesystem->dumpFile(Path::join($destination_path, '.nav.yml'), Yaml::dump(['title' => 'Commands', 'nav' => $nav], PHP_INT_MAX, 2));
         // mkdocs.yml inherits this file, which adds the alias redirects to its own.
@@ -369,26 +365,44 @@ EOT;
     }
 
     /**
-     * The page that lists every command.
-     *
-     * @param array<string, string> $pages
-     *   Page paths keyed by command name.
+     * The heading for a category. _global only exists to sort first.
      */
-    private static function allMd(array $pages): string
+    public static function categoryLabel(string $category): string
     {
-        unset($pages['all']);
-        $items = [];
-        foreach ($pages as $name => $page) {
-            $items[] = "* [$name](" . basename($page) . ')';
-        }
-        $preamble = <<<EOT
+        return $category === '_global' ? 'General' : $category;
+    }
+
+    /**
+     * The page that lists every command: one table per category.
+     *
+     * @param array<string, array<string, Command>> $categories
+     *   Commands keyed by category, as returned by categorize().
+     */
+    public static function allMd(array $categories): string
+    {
+        $body = <<<EOT
 # All commands
 
 !!! tip
 
     Press the ++slash++ key to Search for a command. Or use your browser's *Find in Page* feature.
 
+
 EOT;
-        return $preamble . implode("\n", $items);
+        // A category title is a paragraph styled as a heading, with an id to link to. A real
+        // heading would nest every category under this page in the sidebar.
+        foreach ($categories as $category => $commands) {
+            $label = self::categoryLabel($category);
+            $body .= sprintf("%s\n{: #%s .command-group }\n\n", $label, strtolower($label));
+            $body .= "| Command | Description | Aliases |\n| --- | --- | --- |\n";
+            foreach ($commands as $command) {
+                $aliases = implode(', ', array_map(static fn(string $alias): string => "`$alias`", $command->getAliases()));
+                // A pipe would end the table cell.
+                $description = str_replace('|', '\|', self::cliTextToMarkdown($command->getDescription()));
+                $body .= sprintf("| [`%s`](%s) | %s | %s |\n", $command->getName(), self::getFilename($command->getName()), $description, $aliases);
+            }
+            $body .= "\n";
+        }
+        return $body;
     }
 }

@@ -68,6 +68,7 @@ extra:
 #  disqus: drush
 markdown_extensions:
   - attr_list
+  - tables
   - toc:
       permalink: true
   - admonition: {  }

@@ -104,4 +104,17 @@ class MkDocsTest extends TestCase
         $this->assertSame(['core:route'], array_keys($namespaced['_global']));
         $this->assertSame(['pm:install', 'pm:list'], array_keys($namespaced['pm']));
     }
+
+    public function testAllMd(): void
+    {
+        $install = new Command('pm:install')->setAliases(['in', 'en'])->setDescription('Install <info>modules</info>.');
+        $route = new Command('core:route')->setDescription('View a|b routes.');
+
+        $markdown = MkDocsCommand::allMd(['_global' => ['core:route' => $route], 'pm' => ['pm:install' => $install]]);
+        // _global is presented as General, and a pipe is escaped.
+        $this->assertStringContainsString("General\n{: #general .command-group }\n\n| Command | Description | Aliases |", $markdown);
+        $this->assertStringContainsString('| [`core:route`](core_route.md) | View a\|b routes. |  |', $markdown);
+        $this->assertStringContainsString("pm\n{: #pm .command-group }\n\n", $markdown);
+        $this->assertStringContainsString('| [`pm:install`](pm_install.md) | Install *modules*. | `in`, `en` |', $markdown);
+    }
 }
