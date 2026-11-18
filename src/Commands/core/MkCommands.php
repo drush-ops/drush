@@ -41,8 +41,9 @@ final class MkCommands extends DrushCommands
         $application = Drush::getApplication();
         $all = $application->all();
         $namespaced = ListCommands::categorize($all);
-        [$nav_commands, $pages_commands, $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_commands, $destination_path, 'All commands');
+        [$nav_commands, , $map_commands] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
+        $this->writeAllMd($namespaced, $destination_path, 'All commands', 'Command');
+        $this->writeNav($nav_commands, $destination_path, 'Commands');
 
         $destination = 'generators';
         $destination_path = Path::join($dir_root, 'docs', $destination);
@@ -51,10 +52,11 @@ final class MkCommands extends DrushCommands
         $application_generate = (new ApplicationFactory($container, $this->logger()))->create();
         $all = $this->createAnnotatedCommands($application_generate, Drush::getApplication());
         $namespaced = ListCommands::categorize($all);
-        [$nav_generators, $pages_generators, $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
-        $this->writeAllMd($pages_generators, $destination_path, 'All generators');
+        [$nav_generators, , $map_generators] = $this->writeContentFilesAndBuildNavAndBuildRedirectMap($namespaced, $destination, $dir_root, $destination_path);
+        $this->writeAllMd($namespaced, $destination_path, 'All generators', 'Generator');
+        $this->writeNav($nav_generators, $destination_path, 'Generators');
 
-        $this->writeYml($nav_commands, $nav_generators, $map_commands, $map_generators, $dir_root);
+        $this->writeRedirects($map_commands + $map_generators, $dir_root);
     }
 
     /**
@@ -205,15 +207,13 @@ EOT;
             $path = Path::makeRelative($command->getAnnotationData()->get('_path'), $root);
         }
         $edit_url = $path ? "https://github.com/drush-ops/drush/blob/13.x/$path" : '';
-        $body = <<<EOT
----
-edit_url: $edit_url
-command: {$command->getName()}
-title: {$command->getName()}
-description: {$command->getDescription()}
----
-
-EOT;
+        // Dump as YAML so that a colon in a description stays valid front matter.
+        $front_matter = array_filter(['edit_url' => $edit_url]) + [
+            'command' => $command->getName(),
+            'title' => $command->getName(),
+            'description' => $command->getDescription(),
+        ];
+        $body = "---\n" . Yaml::dump($front_matter) . "---\n\n";
         $body .= "# {$command->getName()}\n\n";
         if ($command instanceof AnnotatedCommand && $version = $command->getAnnotationData()->get('version')) {
             $body .= ":octicons-tag-24: $version+\n\n";
@@ -229,39 +229,68 @@ EOT;
         return $body;
     }
 
-    protected function writeYml(array $nav_commands, array $nav_generators, array $map_commands, array $map_generators, string $dest): void
+    /**
+     * Write the navigation of a directory, which docs/.nav.yml includes.
+     */
+    protected function writeNav(array $nav, string $destination_path, string $title): void
     {
-        $base = Yaml::parseFile(Path::join($dest, 'mkdocs_base.yml'));
-        $base['nav'][] = ['Commands' => $nav_commands];
-        $base['nav'][] = ['Generators' => $nav_generators];
-        $base['nav'][] = ['API' => '/api'];
-        $base['plugins'][]['redirects']['redirect_maps'] = $map_commands + $map_generators;
-        $yaml_nav = Yaml::dump($base, PHP_INT_MAX, 2);
-
-        // Remove invalid quotes that Symfony YAML adds/needs. https://github.com/symfony/symfony/blob/6.1/src/Symfony/Component/Yaml/Inline.php#L624
-        $yaml_nav = str_replace("'!!python/name:material.extensions.emoji.twemoji'", '!!python/name:material.extensions.emoji.twemoji', $yaml_nav);
-        $yaml_nav = str_replace("'!!python/name:material.extensions.emoji.to_svg'", '!!python/name:material.extensions.emoji.to_svg', $yaml_nav);
-
-        file_put_contents(Path::join($dest, 'mkdocs.yml'), $yaml_nav);
+        file_put_contents(Path::join($destination_path, '.nav.yml'), Yaml::dump(['title' => $title, 'nav' => $nav], PHP_INT_MAX, 2));
     }
 
-    protected function writeAllMd(array $pages_all, string $destination_path, string $title): void
+    /**
+     * Fill in the file that mkdocs.yml inherits with the alias redirects.
+     *
+     * It is committed with an empty map so that the site builds before this runs.
+     */
+    protected function writeRedirects(array $map, string $dest): void
     {
-        $items = [];
-        unset($pages_all['all']);
-        foreach ($pages_all as $name => $page) {
-            $basename = basename($page);
-            $items[] = "* [$name]($basename)";
-        }
-        $preamble = <<<EOT
+        $comment = "# mkdocs.yml inherits this file. The mk:docs command fills in the alias redirects.\n# Do not commit the result; keep the map empty in Git.\n";
+        file_put_contents(Path::join($dest, 'mkdocs_redirects.yml'), $comment . Yaml::dump(['plugins' => ['redirects' => ['redirect_maps' => $map]]], PHP_INT_MAX, 2));
+    }
+
+    /**
+     * The heading for a category. _global only exists to sort first.
+     */
+    public static function categoryLabel(string $category): string
+    {
+        return $category === '_global' ? 'General' : $category;
+    }
+
+    /**
+     * Write the page that lists every command: one table per category.
+     *
+     * @param array<string, array<Command>> $namespaced
+     *   Commands keyed by category, as returned by ListCommands::categorize().
+     */
+    protected function writeAllMd(array $namespaced, string $destination_path, string $title, string $column): void
+    {
+        $body = <<<EOT
 # $title
 
 !!! tip
 
     Press the ++slash++ key to Search for a command. Or use your browser's *Find in Page* feature.
 
+
 EOT;
-        file_put_contents(Path::join($destination_path, 'all.md'), $preamble . implode("\n", $items));
+        // A category title is a paragraph styled as a heading, with an id to link to. A real
+        // heading would nest every category under this page in the sidebar.
+        foreach ($namespaced as $category => $commands) {
+            if ($commands === []) {
+                continue;
+            }
+            $label = self::categoryLabel($category);
+            $body .= sprintf("%s\n{: #%s .command-group }\n\n", $label, strtolower($label));
+            $body .= "| $column | Description | Aliases |\n| --- | --- | --- |\n";
+            foreach ($commands as $command) {
+                $aliases = implode(', ', array_map(static fn(string $alias): string => "`$alias`", $command->getAliases()));
+                // A pipe would end the table cell.
+                $description = str_replace('|', '\|', self::cliTextToMarkdown($command->getDescription()));
+                $body .= sprintf("| [`%s`](%s) | %s | %s |\n", $command->getName(), $this->getFilename($command->getName()), $description, $aliases);
+            }
+            $body .= "\n";
+        }
+        file_put_contents(Path::join($destination_path, 'all.md'), $body);
     }
 
     /**
@@ -326,14 +355,12 @@ EOT;
      */
     public function writeContentFilesAndBuildNavAndBuildRedirectMap(array $namespaced, string $destination, string $dir_root, string $destination_path): array
     {
-        $pages = $pages_all = $nav = $map_all = [];
+        $pages_all = $nav = $map_all = [];
         foreach ($namespaced as $category => $commands) {
+            // The first category also links to the page that lists everything. Each entry is a
+            // single-entry map, with the page relative to this directory.
+            $pages = $nav === [] ? [['all' => 'all.md']] : [];
             foreach ($commands as $command) {
-                // Special case a single page
-                if ($pages_all === []) {
-                    $pages['all'] = $destination . '/all.md';
-                }
-
                 if ($command instanceof AnnotatedCommand) {
                     $command->optionsHook();
                 }
@@ -354,7 +381,8 @@ EOT;
                     $body .= self::appendPostAmble();
                 }
                 $filename = $this->getFilename($command->getName());
-                $pages[$command->getName()] = $destination . "/$filename";
+                $pages[] = [$command->getName() => $filename];
+                $pages_all[$command->getName()] = $destination . "/$filename";
                 file_put_contents(Path::join($destination_path, $filename), $body);
 
                 if ($map = $this->getRedirectMap($command, $destination)) {
@@ -363,9 +391,7 @@ EOT;
                 unset($map);
             }
             $this->logger()->info('Found {pages} pages in {cat}', ['pages' => count($pages), 'cat' => $category]);
-            $nav[] = [$category => $pages];
-            $pages_all = array_merge($pages_all, $pages);
-            $pages = [];
+            $nav[] = [self::categoryLabel($category) => $pages];
         }
         return [$nav, $pages_all, $map_all];
     }

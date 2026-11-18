@@ -5,10 +5,11 @@ tests/phpunit.xml
 vendor
 box.phar
 drush.phar
-#The mkdocs output directory and generated file.
+#The docs site output directory and local Python environment.
 site
+.venv
+.cache
 gh-pages
-mkdocs.yml
 #The Commands site output directory.
 docs/commands
 docs/generators

@@ -1,23 +1,45 @@
-/*https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/#content-area-width. Looks worse IMO.*/
-/*.md-grid {*/
-/*    max-width: 1440px;*/
-/*}*/
+/* The theme sizes everything in rem, so scaling the root font size by 10% scales the whole
+   site. The theme's values are 125%, 137.5% and 150% at the same breakpoints. */
+html {
+    font-size: 137.5%;
+}
 
-/*https://github.com/squidfunk/mkdocs-material/issues/2574#issuecomment-821979698*/
-[data-md-toggle="search"]:not(:checked) ~ .md-header .md-search__form::after {
-    position: absolute;
-    top: .3rem;
-    right: .3rem;
-    display: block;
-    padding: .1rem .4rem;
-    color: var(--md-default-bg-color);
-    font-weight: bold;
-    font-size: .8rem;
-    border: .05rem solid var(--md-default-bg-color--lighter);
-    border-radius: .1rem;
-    content: "/";
+@media screen and (min-width: 100em) {
+    html {
+        font-size: 151.25%;
+    }
+}
+
+@media screen and (min-width: 125em) {
+    html {
+        font-size: 165%;
+    }
 }
 
 .md-typeset h1 {
     margin: 0 0 0.1em;
+}
+
+/* Category titles on the All commands page. They look like h2 but are paragraphs, so that
+   they stay out of the table of contents in the sidebar. */
+.md-typeset .command-group {
+    margin: 1.6em 0 0.64em;
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+}
+
+/* Full-width tables, so the per-category tables line up. */
+.md-typeset__table {
+    min-width: 100%;
+}
+
+.md-typeset table:not([class]) {
+    display: table;
+}
+
+/* Keep command names and aliases on one line. */
+.md-typeset table:not([class]) code {
+    white-space: nowrap;
 }
