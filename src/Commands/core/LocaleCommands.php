@@ -31,6 +31,7 @@ final class LocaleCommands extends DrushCommands
     const UPDATE = 'locale:update';
     const EXPORT = 'locale:export';
     const IMPORT = 'locale:import';
+    const EXPORT_ALL = 'locale:export-all';
     const IMPORT_ALL = 'locale:import-all';
 
     protected function getLanguageManager(): LanguageManagerInterface
@@ -279,6 +280,30 @@ final class LocaleCommands extends DrushCommands
 
         drush_backend_batch_process();
     }
+
+    /**
+     * Exports multiple translation files into the defined directory.
+     *
+     * @throws \Exception
+     */
+    #[CLI\Command(name: self::EXPORT_ALL, aliases: ['locale-export-all', 'locale:export:all'])]
+    #[CLI\Argument(name: 'directory', description: 'Export directory for translation files.')]
+    #[CLI\Option(name: 'types', description: 'A comma separated list of string types to include, defaults to all types. Recognized values: <info>not-customized</info>, <info>customized</info>, </info>not-translated<info>')]
+    #[CLI\ValidateModulesEnabled(modules: ['locale'])]
+    public function exportAll($directory, $options = ['types' => self::REQ])
+    {
+        if (!is_dir($directory)) {
+            throw new \Exception('The defined directory does not exist.');
+        }
+
+        $languages = $this->getLanguageManager()->getLanguages();
+        $poreader_options = $this->convertTypesToPoDbReaderOptions(StringUtils::csvToArray($options['types']));
+        foreach ($languages as $language) {
+            $langcode = $language->getId();
+            $this->writePoFile($directory . '/' . $langcode . '.po', $language, $poreader_options);
+        }
+    }
+
 
     /**
      * Converts input of translation type.
