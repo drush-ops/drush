@@ -171,7 +171,10 @@ final class SqlSyncCommands extends DrushCommands
         // Determine path/to/dump on target.
         if ($options['target-dump']) {
             $target_dump_path = $options['target-dump'];
-        } elseif (!$sourceRecord->isRemote() && !$targetRecord->isRemote()) {
+        } elseif (
+            !$sourceRecord->isRemote() && !$targetRecord->isRemote()
+            && (!$targetRecord->has('docker.host') && !$sourceRecord->has('docker.host'))
+        ) {
             $target_dump_path = $source_dump_path;
             $do_rsync = false;
         } else {

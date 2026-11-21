@@ -23,3 +23,19 @@ live:
     options: '-o PasswordAuthentication=example'
   paths:
     drush-script: '/example/path/to/drush'
+
+
+stage-docker:
+  root: /path/to/stage
+  uri: stage
+  docker:
+    service: php
+    host: ssh://user@host
+    project: 'project'
+    compose:
+      version: 1
+  command:
+    core:
+      rsync:
+        options:
+          exclude-paths: stage-path

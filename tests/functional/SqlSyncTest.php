@@ -69,6 +69,57 @@ class SqlSyncTest extends CommandUnishTestCase
         $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename'", $output);
     }
 
+    public function testSimulatedDockerRemoteSqlSync()
+    {
+        if ($this->isWindows()) {
+            $this->markTestSkipped('On Windows, Paths mismatch and confuse rsync.');
+        }
+
+        $fixtureSites = [
+            'remote' => [
+                'docker' => [
+                    'host' => 'ssh://www-admin@host',
+                    'service' => 'php'
+                ],
+                'paths' => [
+                    'drush-script' => '/path/to/drush',
+                ],
+            ],
+            'local' => [
+            ],
+        ];
+        $this->setUpSettings($fixtureSites, 'synctest');
+        $options = [
+            'uri' => 'OMIT',
+            'simulate' => null,
+            'alias-path' => __DIR__ . '/resources/alias-fixtures',
+            // @todo Ensure that shortcuts are normalized to long option names https://github.com/drush-ops/drush/pull/4515.
+            'verbose' => null,
+        ];
+
+        $expectedAliasPath = '--alias-path=__DIR__/resources/alias-fixtures';
+
+        // Test simulated simple rsync remote-to-local
+        $this->drush(SqlSyncCommands::SYNC, ['@synctest.remote', '@synctest.local'], $options, '@synctest.local');
+        $output = $this->getSimplifiedErrorOutput();
+        $this->assertStringContainsString("[notice] Simulating: docker-compose exec -T php /path/to/drush sql:dump --no-interaction --strict=0 --gzip --result-file=auto --format=json --uri=remote", $output);
+        $this->assertStringContainsString("[notice] Simulating: __DIR__/drush.php core:rsync @synctest.remote:/simulated/path/to/dump.tgz @synctest.local:__SANDBOX__/tmp/dump.tgz --yes --uri=local -- --remove-source-files", $output);
+        $this->assertStringContainsString("[notice] Simulating: __DIR__/drush.php sql:query --no-interaction --strict=0 --file=__SANDBOX__/tmp/dump.tgz --file-delete --uri=local", $output);
+
+
+        // Test simulated simple sql:sync local-to-remote
+        $this->drush(SqlSyncCommands::SYNC, ['@synctest.local', '@synctest.remote'], $options, '@synctest.local');
+        $output = $this->getSimplifiedErrorOutput();
+        $this->assertStringContainsString("[notice] Simulating: __DIR__/drush.php sql:dump --no-interaction --strict=0 --gzip --result-file=auto --format=json --uri=local", $output);
+        $this->assertStringContainsString("[notice] Simulating: __DIR__/drush.php core:rsync @synctest.local:/simulated/path/to/dump.tgz @synctest.remote:/tmp/dump.tgz --yes --uri=local -- --remove-source-files", $output);
+        $this->assertStringContainsString("[notice] Simulating: docker-compose exec -T php /path/to/drush sql:query --no-interaction --strict=0 --file=/tmp/dump.tgz --file-delete --uri=remote", $output);
+
+        // Test simulated remote invoke with a remote runner.
+        $this->drush(SqlSyncCommands::SYNC, ['@synctest.remote', '@synctest.local'], $options, 'user@server/path/to/drupal#sitename');
+        $output = $this->getSimplifiedErrorOutput();
+        $this->assertStringContainsString("[notice] Simulating: ssh -o PasswordAuthentication=no user@server '/path/to/vendor/bin/drush --no-interaction sql:sync @synctest.remote @synctest.local --uri=sitename'", $output);
+    }
+
     /**
      * Covers the following responsibilities.
      *   - A user created on the source site is copied to the destination site.
