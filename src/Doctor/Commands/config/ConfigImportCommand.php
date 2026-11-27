@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[AsCommand(
     name: self::NAME,
     description: 'Import configuration',
-    aliases: ['cim'],
+    aliases: ['cim', 'config-import'],
 )]
 final class ConfigImportCommand
 {

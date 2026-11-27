@@ -27,6 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 #[AsCommand(
     name: self::NAME,
     description: 'Export configuration.',
+    aliases: ['cex', 'config-export'],
 )]
 final class ConfigExportCommand
 {
