@@ -136,6 +136,7 @@ final class PmCommands extends DrushCommands
 
         require_once DRUSH_DRUPAL_CORE . '/includes/install.inc';
         $error = false;
+        $moduleName = '';
         foreach ($modules as $module) {
             // Note: we can't just call the API ($moduleHandler->loadInclude($module, 'install')),
             // because the API ignores modules that haven't been installed yet. We have
@@ -151,6 +152,7 @@ final class PmCommands extends DrushCommands
             }
             if (is_array($requirements) && drupal_requirements_severity($requirements) == REQUIREMENT_ERROR) {
                 $error = true;
+                $moduleName = $module;
                 $reasons = [];
                 foreach ($requirements as $id => $requirement) {
                     if (empty($requirement['severity'])) {
@@ -175,7 +177,7 @@ final class PmCommands extends DrushCommands
 
         if ($error) {
             // Allow the user to bypass the install requirements.
-            if (!$this->io()->confirm(dt('The !name module\'s install requirements failed. Do you wish to continue?', ['!name' => $module]), false)) {
+            if (!$this->io()->confirm(dt('The !name module\'s install requirements failed. Do you wish to continue?', ['!name' => $moduleName]), false)) {
                 throw new UserAbortException();
             }
         }
